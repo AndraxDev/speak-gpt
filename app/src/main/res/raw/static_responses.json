@@ -1,0 +1,18 @@
+[
+    {
+        "request": "open %s",
+        "response": "app://"
+    },
+    {
+        "request": "set %s",
+        "response": "intent://"
+    },
+    {
+        "request": "time and date",
+        "response": "date://"
+    },
+    {
+        "request": "Who are you",
+        "response": ""
+    }
+]
