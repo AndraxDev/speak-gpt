@@ -2,7 +2,20 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/teslasoft_id_btn"
+        android:name="org.teslasoft.core.auth.widget.TeslasoftIDCircledButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:elevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/widget_teslasoft_id_circle" />
 
     <Button
         android:id="@+id/btn_debug_tts"
@@ -95,7 +108,7 @@
         android:layout_height="64dp"
         android:layout_marginTop="48dp"
         android:background="@drawable/shadow_top"
-        android:elevation="2dp"
+        android:elevation="1dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
