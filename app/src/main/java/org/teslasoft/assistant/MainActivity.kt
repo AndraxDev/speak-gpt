@@ -13,7 +13,9 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
+import android.speech.tts.Voice
 import android.view.View
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
@@ -37,6 +39,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.teslasoft.assistant.adapters.ChatAdapter
+import org.teslasoft.assistant.onboarding.WelcomeActivity
+import org.teslasoft.assistant.settings.SettingsActivity
 import org.teslasoft.assistant.ui.MicrophonePermissionScreen
 import java.util.Locale
 
@@ -53,6 +57,7 @@ class MainActivity : FragmentActivity() {
     private var progress: ProgressBar? = null
     private var chat: ListView? = null
     private var activityTitle: TextView? = null
+    private var btnDebugTTS: Button? = null
 
     // Init chat
     private var messages: ArrayList<Map<String, Any>> = ArrayList()
@@ -62,9 +67,11 @@ class MainActivity : FragmentActivity() {
     private var isRecording = false
     private var keyboardMode = false
     private var isTTSInitialized = false
+    private var doesTTSSpeaking = false
 
     // init AI
     private var ai: OpenAI? = null
+    private var key: String? = null
 
     // Init audio
     private var recognizer: SpeechRecognizer? = null
@@ -114,6 +121,33 @@ class MainActivity : FragmentActivity() {
                 val result = tts!!.setLanguage(Locale.US)
 
                 isTTSInitialized = !(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED)
+
+                val voices: Set<Voice> = tts!!.voices
+                for (v: Voice in voices) {
+                    if (v.name.equals("en-us-x-iom-local")) {
+                        tts!!.voice = v
+                    }
+                }
+
+                /*
+                * Voice models (english: en-us-x):
+                * sfg-local
+                * iob-network
+                * iom-local
+                * iog-network
+                * tpc-local
+                * tpf-local
+                * sfg-network
+                * iob-local
+                * tpd-network
+                * tpc-network
+                * iol-network
+                * iom-network
+                * tpd-local
+                * tpf-network
+                * iog-local
+                * iol-local
+                * */
             }
         }
 
@@ -132,14 +166,6 @@ class MainActivity : FragmentActivity() {
         setContentView(R.layout.activity_main)
 
         initSettings()
-
-        adapter = ChatAdapter(messages, this)
-
-        initUI()
-        initSpeechListener()
-        initTTS()
-        initLogic()
-        initAI()
     }
 
     public override fun onDestroy() {
@@ -153,16 +179,33 @@ class MainActivity : FragmentActivity() {
     /** SYSTEM INITIALIZATION START **/
 
     private fun initSettings() {
-        val chat: SharedPreferences = getSharedPreferences("chat", MODE_PRIVATE)
+        val settings: SharedPreferences = getSharedPreferences("settings", MODE_PRIVATE)
 
-        messages = try {
-            val gson = Gson()
-            val json = chat.getString("chat", null)
-            val type: Type = object : TypeToken<ArrayList<Map<String, Any>?>?>() {}.type
+        key = settings.getString("api_key", null)
 
-            gson.fromJson<Any>(json, type) as ArrayList<Map<String, Any>>
-        } catch (e: Exception) {
-            ArrayList()
+        if (key == null) {
+            startActivity(Intent(this, WelcomeActivity::class.java))
+            finish()
+        } else {
+            val chat: SharedPreferences = getSharedPreferences("chat", MODE_PRIVATE)
+
+            messages = try {
+                val gson = Gson()
+                val json = chat.getString("chat", null)
+                val type: Type = object : TypeToken<ArrayList<Map<String, Any>?>?>() {}.type
+
+                gson.fromJson<Any>(json, type) as ArrayList<Map<String, Any>>
+            } catch (e: Exception) {
+                ArrayList()
+            }
+
+            adapter = ChatAdapter(messages, this)
+
+            initUI()
+            initSpeechListener()
+            initTTS()
+            initLogic()
+            initAI()
         }
     }
 
@@ -187,6 +230,7 @@ class MainActivity : FragmentActivity() {
         btnSend = findViewById(R.id.btn_send)
         progress = findViewById(R.id.progress)
         activityTitle = findViewById(R.id.activity_title)
+        btnDebugTTS = findViewById(R.id.btn_debug_tts)
 
         try {
             val pInfo: PackageInfo = this.packageManager.getPackageInfo(this.packageName, 0)
@@ -253,7 +297,7 @@ class MainActivity : FragmentActivity() {
 
         btnSend?.setOnClickListener {
             tts!!.stop()
-            if (!messageInput?.text!!.equals("")) {
+            if (messageInput?.text.toString() != "") {
                 val message: String = messageInput?.text.toString()
 
                 messageInput?.setText("")
@@ -275,7 +319,17 @@ class MainActivity : FragmentActivity() {
         }
 
         btnSettings?.setOnClickListener {
-            // TODO: Implement this method
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
+
+        btnDebugTTS?.setOnClickListener {
+            if (!doesTTSSpeaking) {
+                doesTTSSpeaking = true
+                tts!!.speak("Android is a mobile operating system developed by Google, based on the Linux kernel and designed primarily for touchscreen mobile devices such as smartphones and tablets.", TextToSpeech.QUEUE_FLUSH, null,"")
+            } else {
+                doesTTSSpeaking = false
+                tts!!.stop()
+            }
         }
     }
 
@@ -289,11 +343,12 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun initAI() {
-        /*****************************************************************************
-         * W A R N I N G
-         * TODO: Obfuscate before release to prevent leaks and surprise bills
-         *****************************************************************************/
-        ai = OpenAI("<OBFUSCATED>")
+        if (key == null) {
+            startActivity(Intent(this, WelcomeActivity::class.java))
+            finish()
+        } else {
+            ai = OpenAI(key!!)
+        }
     }
 
     /** SYSTEM INITIALIZATION END **/

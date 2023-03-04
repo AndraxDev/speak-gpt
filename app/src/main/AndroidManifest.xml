@@ -26,8 +26,11 @@
         android:theme="@style/Theme.App"
         tools:targetApi="31" >
 
-        <activity android:name=".MainActivity"
-            android:exported="true">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.App"
+            android:launchMode="singleTask">
 
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -35,9 +38,39 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.MicrophonePermissionScreen"
+        <activity
+            android:name=".onboarding.WelcomeActivity"
             android:exported="false"
-            android:theme="@style/Theme.Transparent">
+            android:theme="@style/UI.Fade"
+            android:launchMode="singleTask">
+        </activity>
+
+        <activity
+            android:name=".onboarding.TermsActivity"
+            android:exported="false"
+            android:theme="@style/UI.Fade"
+            android:launchMode="singleTask">
+        </activity>
+
+        <activity
+            android:name=".onboarding.ActivationActivity"
+            android:exported="false"
+            android:theme="@style/UI.Fade"
+            android:launchMode="singleTask">
+        </activity>
+
+        <activity
+            android:name=".settings.SettingsActivity"
+            android:exported="false"
+            android:theme="@style/UI.Fade"
+            android:launchMode="singleTask">
+        </activity>
+
+        <activity
+            android:name=".ui.MicrophonePermissionScreen"
+            android:exported="false"
+            android:theme="@style/Theme.Transparent"
+            android:launchMode="singleTask">
         </activity>
     </application>
 </manifest>
