@@ -68,6 +68,7 @@ class MainActivity : FragmentActivity() {
     private var keyboardMode = false
     private var isTTSInitialized = false
     private var doesTTSSpeaking = false
+    private var silenceMode = false
 
     // init AI
     private var ai: OpenAI? = null
@@ -187,6 +188,9 @@ class MainActivity : FragmentActivity() {
             startActivity(Intent(this, WelcomeActivity::class.java))
             finish()
         } else {
+            val silenceSettings: SharedPreferences = getSharedPreferences("settings", MODE_PRIVATE)
+            silenceMode = silenceSettings.getBoolean("silence_mode", false) == true
+
             val chat: SharedPreferences = getSharedPreferences("chat", MODE_PRIVATE)
 
             messages = try {
@@ -396,7 +400,7 @@ class MainActivity : FragmentActivity() {
             val response = completion.choices[0].message?.content
             putMessage(response!!, true)
 
-            if (shouldPronounce && isTTSInitialized) {
+            if (shouldPronounce && isTTSInitialized && !silenceMode) {
                 tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null,"")
             }
         } catch (e: Exception) {
