@@ -1,10 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <color name="black">#ff000000</color>
+    <color name="purple_50">#ffF6F0FF</color>
+    <color name="purple_100">#ffe7d4ff</color>
+    <color name="purple_150">#FFDBBEFF</color>
+    <color name="purple_200">#ffbb86fc</color>
+    <color name="purple_500">#ff6200ee</color>
+    <color name="purple_700">#ff3700b3</color>
+    <color name="purple_800">#FF240077</color>
+    <color name="purple_900">#FF0C1350</color>
+    <color name="shadow">#99000000</color>
+    <color name="text">#ee000000</color>
+    <color name="hint">#aa000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="white">#ffffffff</color>
+    <color name="warning">#ffff3d00</color>
+
+    <color name="accent_100">#e0dbff</color>
+    <color name="accent_200">#bab8ff</color>
+    <color name="accent_500">#7462ab</color>
+    <color name="accent_900">#453374</color>
+    <color name="fab">@color/accent_100</color>
+    <color name="icon_background">@color/accent_100</color>
+    <color name="icon_foreground">@color/accent_900</color>
+    <color name="bottom_navbar">@color/accent_900</color>
+    <color name="button">@color/accent_900</color>
+    <color name="error">#FFDB4437</color>
+    <color name="success">#136005</color>
+    <color name="gray">#99999999</color>
+    <color name="window_background">#fcfbff</color>
+    <color name="disabled">#DD666666</color>
+    <color name="green">#FF00FF00</color>
+    <color name="light_red">#E83A3A</color>
+    <color name="light_green">#AADC79</color>
+    <color name="light_blue">#9592E4</color>
+    <color name="text_title">#FF000000</color>
+    <color name="ripple">#4D000000</color>
+    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/accent_900</color>
+    <color name="system_bars">@color/accent_100</color>
 </resources>

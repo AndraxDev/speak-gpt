@@ -1,15 +1,23 @@
 package org.teslasoft.assistant
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
+import android.speech.tts.TextToSpeech
 import android.view.View
+import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.LinearLayout
+import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,44 +30,53 @@ import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatRole
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import io.ktor.util.reflect.Type
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.teslasoft.assistant.adapters.ChatAdapter
 import org.teslasoft.assistant.ui.MicrophonePermissionScreen
-import java.lang.Exception
 import java.util.Locale
+
 
 class MainActivity : FragmentActivity() {
 
+    // Init UI
+    private var messageInput: EditText? = null
+    private var btnSend: ImageButton? = null
     private var btnMicro: ImageButton? = null
-    private var text: TextView? = null
-    private var responseText: TextView? = null
-    private var recognizer: SpeechRecognizer? = null
+    private var btnSettings: ImageButton? = null
+    private var btnKeyboard: ImageButton? = null
+    private var keyboardInput: LinearLayout? = null
     private var progress: ProgressBar? = null
+    private var chat: ListView? = null
+    private var activityTitle: TextView? = null
 
+    // Init chat
+    private var messages: ArrayList<Map<String, Any>> = ArrayList()
+    private var adapter: ChatAdapter? = null
+
+    // Init states
     private var isRecording = false
+    private var keyboardMode = false
+    private var isTTSInitialized = false
 
-    private var ai: OpenAI? = null;
+    // init AI
+    private var ai: OpenAI? = null
 
+    // Init audio
+    private var recognizer: SpeechRecognizer? = null
     private val speechListener = object : RecognitionListener {
-        override fun onReadyForSpeech(params: Bundle?) {
-            /* unused */
-        }
-
-        override fun onBeginningOfSpeech() {
-
-        }
-
-        override fun onRmsChanged(rmsdB: Float) {
-            /* unused */
-        }
-
-        override fun onBufferReceived(buffer: ByteArray?) {
-            /* unused */
-        }
+        override fun onReadyForSpeech(params: Bundle?) { /* unused */ }
+        override fun onBeginningOfSpeech() { /* unused */ }
+        override fun onRmsChanged(rmsdB: Float) { /* unused */ }
+        override fun onBufferReceived(buffer: ByteArray?) { /* unused */ }
+        override fun onPartialResults(partialResults: Bundle?) { /* unused */ }
+        override fun onEvent(eventType: Int, params: Bundle?) { /* unused */ }
 
         override fun onEndOfSpeech() {
-            /* unused */
             isRecording = false
             btnMicro?.setImageResource(R.drawable.ic_microphone)
         }
@@ -75,26 +92,32 @@ class MainActivity : FragmentActivity() {
             val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
             if (matches != null && matches.size > 0) {
                 val recognizedText = matches[0]
-                text?.text = recognizedText
-                responseText?.text = "Generating AI response..."
 
+                putMessage(recognizedText, false)
+
+                btnMicro?.isEnabled = false
+                btnSend?.isEnabled = false
                 progress?.visibility = View.VISIBLE
 
                 CoroutineScope(Dispatchers.Main).launch {
-                    generateResponse(recognizedText)
+                    generateResponse(recognizedText, true)
                 }
             }
         }
-
-        override fun onPartialResults(partialResults: Bundle?) {
-            /* unused */
-        }
-
-        override fun onEvent(eventType: Int, params: Bundle?) {
-            /* unused */
-        }
     }
 
+    // Init TTS
+    private var tts: TextToSpeech? = null
+    private val ttsListener: TextToSpeech.OnInitListener =
+        TextToSpeech.OnInitListener { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                val result = tts!!.setLanguage(Locale.US)
+
+                isTTSInitialized = !(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED)
+            }
+        }
+
+    // Init permissions screen
     private val permissionResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         run {
             if (result.resultCode == Activity.RESULT_OK) {
@@ -108,29 +131,95 @@ class MainActivity : FragmentActivity() {
 
         setContentView(R.layout.activity_main)
 
+        initSettings()
+
+        adapter = ChatAdapter(messages, this)
+
         initUI()
         initSpeechListener()
+        initTTS()
         initLogic()
         initAI()
     }
 
+    public override fun onDestroy() {
+        if (tts != null) {
+            tts!!.stop()
+            tts!!.shutdown()
+        }
+        super.onDestroy()
+    }
+
+    /** SYSTEM INITIALIZATION START **/
+
+    private fun initSettings() {
+        val chat: SharedPreferences = getSharedPreferences("chat", MODE_PRIVATE)
+
+        messages = try {
+            val gson = Gson()
+            val json = chat.getString("chat", null)
+            val type: Type = object : TypeToken<ArrayList<Map<String, Any>?>?>() {}.type
+
+            gson.fromJson<Any>(json, type) as ArrayList<Map<String, Any>>
+        } catch (e: Exception) {
+            ArrayList()
+        }
+    }
+
+    private fun saveSettings() {
+        val chat = getSharedPreferences("chat", MODE_PRIVATE)
+        val editor = chat.edit()
+        val gson = Gson()
+        val json: String = gson.toJson(messages)
+
+        editor.putString("chat", json)
+        editor.apply()
+    }
+
+    @SuppressLint("SetTextI18n")
     private fun initUI() {
         btnMicro = findViewById(R.id.btn_micro)
-        btnMicro?.setImageResource(R.drawable.ic_microphone)
-
-        text = findViewById(R.id.debug_text)
-        responseText = findViewById(R.id.response)
+        btnSettings = findViewById(R.id.btn_settings)
+        btnKeyboard = findViewById(R.id.btn_keyboard)
+        keyboardInput = findViewById(R.id.keyboard_input)
+        chat = findViewById(R.id.messages)
+        messageInput = findViewById(R.id.message_input)
+        btnSend = findViewById(R.id.btn_send)
         progress = findViewById(R.id.progress)
+        activityTitle = findViewById(R.id.activity_title)
+
+        try {
+            val pInfo: PackageInfo = this.packageManager.getPackageInfo(this.packageName, 0)
+            val version = pInfo.versionName
+            activityTitle?.text = "${resources.getString(R.string.app_name)} $version"
+        } catch (e: PackageManager.NameNotFoundException) {
+            activityTitle?.text = resources.getString(R.string.app_name)
+        }
+
         progress?.visibility = View.GONE
+
+        btnMicro?.setImageResource(R.drawable.ic_microphone)
+        btnSettings?.setImageResource(R.drawable.ic_settings)
+        btnKeyboard?.setImageResource(R.drawable.ic_keyboard)
+
+        keyboardInput?.visibility = View.GONE
+
+        chat?.adapter = adapter
+        chat?.divider = ColorDrawable(0x3D000000)
+        chat?.dividerHeight = 1
+
+        adapter?.notifyDataSetChanged()
     }
 
     private fun initLogic() {
         btnMicro?.setOnClickListener {
             if (isRecording) {
+                tts!!.stop()
                 btnMicro?.setImageResource(R.drawable.ic_microphone)
                 recognizer?.stopListening()
                 isRecording = false
             } else {
+                tts!!.stop()
                 btnMicro?.setImageResource(R.drawable.ic_stop_recording)
                 if (ContextCompat.checkSelfPermission(
                         this, Manifest.permission.RECORD_AUDIO
@@ -149,7 +238,65 @@ class MainActivity : FragmentActivity() {
                 isRecording = true
             }
         }
+
+        btnKeyboard?.setOnClickListener {
+            if (keyboardMode) {
+                keyboardMode = false
+                keyboardInput?.visibility = View.GONE
+                btnKeyboard?.setImageResource(R.drawable.ic_keyboard)
+            } else {
+                keyboardMode = true
+                keyboardInput?.visibility = View.VISIBLE
+                btnKeyboard?.setImageResource(R.drawable.ic_keyboard_hide)
+            }
+        }
+
+        btnSend?.setOnClickListener {
+            tts!!.stop()
+            if (!messageInput?.text!!.equals("")) {
+                val message: String = messageInput?.text.toString()
+
+                messageInput?.setText("")
+
+                keyboardMode = false
+                keyboardInput?.visibility = View.GONE
+                btnKeyboard?.setImageResource(R.drawable.ic_keyboard)
+
+                putMessage(message, false)
+
+                btnMicro?.isEnabled = false
+                btnSend?.isEnabled = false
+                progress?.visibility = View.VISIBLE
+
+                CoroutineScope(Dispatchers.Main).launch {
+                    generateResponse(message, false)
+                }
+            }
+        }
+
+        btnSettings?.setOnClickListener {
+            // TODO: Implement this method
+        }
     }
+
+    private fun initSpeechListener() {
+        recognizer = SpeechRecognizer.createSpeechRecognizer(this)
+        recognizer?.setRecognitionListener(speechListener)
+    }
+
+    private fun initTTS() {
+        tts = TextToSpeech(this, ttsListener)
+    }
+
+    private fun initAI() {
+        /*****************************************************************************
+         * W A R N I N G
+         * TODO: Obfuscate before release to prevent leaks and surprise bills
+         *****************************************************************************/
+        ai = OpenAI("<OBFUSCATED>")
+    }
+
+    /** SYSTEM INITIALIZATION END **/
 
     private fun startRecognition() {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
@@ -160,22 +307,24 @@ class MainActivity : FragmentActivity() {
         recognizer?.startListening(intent)
     }
 
-    private fun initSpeechListener() {
-        recognizer = SpeechRecognizer.createSpeechRecognizer(this)
-        recognizer?.setRecognitionListener(speechListener)
-    }
+    private fun putMessage(message: String, isBot: Boolean) {
+        val map: HashMap<String, Any> = HashMap()
 
-    private fun initAI() {
-        /*****************************************************************************
-         * W A R N I N G
-         * TODO: Obfuscate before release to prevent leaks and surprise bills
-         *****************************************************************************/
-        ai = OpenAI("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")
+        map["message"] = message
+        map["isBot"] = isBot
 
+        messages.add(map)
+        adapter?.notifyDataSetChanged()
+
+        chat?.post {
+            chat?.setSelection(adapter?.count!! - 1)
+        }
+
+        saveSettings()
     }
 
     @OptIn(BetaOpenAI::class)
-    private suspend fun generateResponse(request: String) {
+    private suspend fun generateResponse(request: String, shouldPronounce: Boolean) {
         val chatCompletionRequest = ChatCompletionRequest(
             model = ModelId("gpt-3.5-turbo"),
             messages = listOf(
@@ -190,14 +339,17 @@ class MainActivity : FragmentActivity() {
             val completion: ChatCompletion = ai!!.chatCompletion(chatCompletionRequest)
 
             val response = completion.choices[0].message?.content
+            putMessage(response!!, true)
 
-            responseText?.text = response
+            if (shouldPronounce && isTTSInitialized) {
+                tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null,"")
+            }
         } catch (e: Exception) {
-            responseText?.text = e.stackTraceToString()
+            putMessage(e.stackTraceToString(), true)
         }
 
+        btnMicro?.isEnabled = true
+        btnSend?.isEnabled = true
         progress?.visibility = View.GONE
-
-        // val completions: Flow<ChatCompletionChunk> = ai.chatCompletions(chatCompletionRequest)
     }
 }

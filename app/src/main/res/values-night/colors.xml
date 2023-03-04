@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <color name="accent_100">#302f36</color>
+    <color name="accent_200">#424250</color>
+    <color name="accent_500">#a895e9</color>
+    <color name="accent_900">#c3b4ff</color>
+    <color name="icon_50">@color/purple_50</color>
+    <color name="icon_100">@color/purple_100</color>
+    <color name="icon_150">@color/purple_150</color>
+    <color name="icon_500">@color/purple_500</color>
+    <color name="icon_700">@color/purple_700</color>
+    <color name="icon_900">@color/purple_900</color>
+    <color name="icon_background">@color/accent_100</color>
+    <color name="icon_foreground">@color/accent_900</color>
+    <color name="bottom_navbar">@color/accent_900</color>
+    <color name="button">@color/accent_900</color>
+    <color name="window_background">#1b1b1e</color>
+    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/accent_900</color>
+    <color name="text_title">#FFFFFFFF</color>
+    <color name="ripple">#4DFFFFFF</color>
+    <color name="success">#9CE38F</color>
+    <color name="text">#eeffffff</color>
+    <color name="hint">#aaffffff</color>
+</resources>

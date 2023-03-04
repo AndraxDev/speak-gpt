@@ -10,6 +10,9 @@
             <action
                 android:name="android.speech.RecognitionService" />
         </intent>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
     </queries>
 
     <application
@@ -20,7 +23,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.SpeakGPT"
+        android:theme="@style/Theme.App"
         tools:targetApi="31" >
 
         <activity android:name=".MainActivity"
@@ -33,7 +36,8 @@
         </activity>
 
         <activity android:name=".ui.MicrophonePermissionScreen"
-            android:exported="false">
+            android:exported="false"
+            android:theme="@style/Theme.Transparent">
         </activity>
     </application>
 </manifest>
