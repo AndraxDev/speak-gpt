@@ -161,6 +161,8 @@ class MainActivity : FragmentActivity() {
         }
     }
 
+    private val settingsLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { recreate() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -323,7 +325,12 @@ class MainActivity : FragmentActivity() {
         }
 
         btnSettings?.setOnClickListener {
-            startActivity(Intent(this, SettingsActivity::class.java))
+            settingsLauncher.launch(
+                Intent(
+                    this,
+                    SettingsActivity::class.java
+                )
+            )
         }
 
         btnDebugTTS?.setOnClickListener {

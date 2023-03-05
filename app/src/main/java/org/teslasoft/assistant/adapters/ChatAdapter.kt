@@ -45,8 +45,8 @@ class ChatAdapter(data: ArrayList<Map<String, Any>>?, context: Context) : BaseAd
         message.setTextIsSelectable(true)
 
         if (dataArray?.get(position)?.get("isBot") == true) {
-            icon.setImageResource(R.drawable.chatgpt_icon)
-            username.text = "Bot"
+            icon.setImageResource(R.drawable.assistant)
+            username.text = "SpeakGPT"
             ui.setBackgroundResource(R.color.accent_100)
         }
         else {
