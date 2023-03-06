@@ -27,6 +27,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.aallam.openai.api.BetaOpenAI
 import com.aallam.openai.api.chat.ChatCompletion
+import com.aallam.openai.api.chat.ChatCompletionChunk
 import com.aallam.openai.api.chat.ChatCompletionRequest
 import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatRole
@@ -37,6 +38,7 @@ import com.google.gson.reflect.TypeToken
 import io.ktor.util.reflect.Type
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import org.teslasoft.assistant.adapters.ChatAdapter
 import org.teslasoft.assistant.onboarding.WelcomeActivity
@@ -57,17 +59,15 @@ class MainActivity : FragmentActivity() {
     private var progress: ProgressBar? = null
     private var chat: ListView? = null
     private var activityTitle: TextView? = null
-    private var btnDebugTTS: Button? = null
 
     // Init chat
-    private var messages: ArrayList<Map<String, Any>> = ArrayList()
+    private var messages: ArrayList<HashMap<String, Any>> = ArrayList()
     private var adapter: ChatAdapter? = null
 
     // Init states
     private var isRecording = false
     private var keyboardMode = false
     private var isTTSInitialized = false
-    private var doesTTSSpeaking = false
     private var silenceMode = false
 
     // init AI
@@ -198,9 +198,9 @@ class MainActivity : FragmentActivity() {
             messages = try {
                 val gson = Gson()
                 val json = chat.getString("chat", null)
-                val type: Type = object : TypeToken<ArrayList<Map<String, Any>?>?>() {}.type
+                val type: Type = object : TypeToken<ArrayList<HashMap<String, Any>?>?>() {}.type
 
-                gson.fromJson<Any>(json, type) as ArrayList<Map<String, Any>>
+                gson.fromJson<Any>(json, type) as ArrayList<HashMap<String, Any>>
             } catch (e: Exception) {
                 ArrayList()
             }
@@ -236,7 +236,6 @@ class MainActivity : FragmentActivity() {
         btnSend = findViewById(R.id.btn_send)
         progress = findViewById(R.id.progress)
         activityTitle = findViewById(R.id.activity_title)
-        btnDebugTTS = findViewById(R.id.btn_debug_tts)
 
         try {
             val pInfo: PackageInfo = this.packageManager.getPackageInfo(this.packageName, 0)
@@ -293,10 +292,12 @@ class MainActivity : FragmentActivity() {
             if (keyboardMode) {
                 keyboardMode = false
                 keyboardInput?.visibility = View.GONE
+                messageInput?.isEnabled = false
                 btnKeyboard?.setImageResource(R.drawable.ic_keyboard)
             } else {
                 keyboardMode = true
                 keyboardInput?.visibility = View.VISIBLE
+                messageInput?.isEnabled = true
                 btnKeyboard?.setImageResource(R.drawable.ic_keyboard_hide)
             }
         }
@@ -310,6 +311,7 @@ class MainActivity : FragmentActivity() {
 
                 keyboardMode = false
                 keyboardInput?.visibility = View.GONE
+                messageInput?.isEnabled = false
                 btnKeyboard?.setImageResource(R.drawable.ic_keyboard)
 
                 putMessage(message, false)
@@ -331,16 +333,6 @@ class MainActivity : FragmentActivity() {
                     SettingsActivity::class.java
                 )
             )
-        }
-
-        btnDebugTTS?.setOnClickListener {
-            if (!doesTTSSpeaking) {
-                doesTTSSpeaking = true
-                tts!!.speak("Android is a mobile operating system developed by Google, based on the Linux kernel and designed primarily for touchscreen mobile devices such as smartphones and tablets.", TextToSpeech.QUEUE_FLUSH, null,"")
-            } else {
-                doesTTSSpeaking = false
-                tts!!.stop()
-            }
         }
     }
 
@@ -385,14 +377,12 @@ class MainActivity : FragmentActivity() {
         chat?.post {
             chat?.setSelection(adapter?.count!! - 1)
         }
-
-        saveSettings()
     }
 
     @OptIn(BetaOpenAI::class)
     private suspend fun generateResponse(request: String, shouldPronounce: Boolean) {
         val chatCompletionRequest = ChatCompletionRequest(
-            model = ModelId("gpt-3.5-turbo"),
+            model = ModelId("gpt-3.5-turbo-0301"),
             messages = listOf(
                 ChatMessage(
                     role = ChatRole.User,
@@ -402,10 +392,25 @@ class MainActivity : FragmentActivity() {
         )
 
         try {
-            val completion: ChatCompletion = ai!!.chatCompletion(chatCompletionRequest)
+            val completions: Flow<ChatCompletionChunk> = ai!!.chatCompletions(chatCompletionRequest)
 
-            val response = completion.choices[0].message?.content
-            putMessage(response!!, true)
+            putMessage("", true)
+            var response = ""
+
+            completions.collect { v ->
+                run {
+                    if (v.choices[0].delta != null) {
+                        if (v.choices[0].delta?.content != null) {
+                            response += v.choices[0].delta?.content
+                            messages[messages.size - 1]["message"] = "$response █"
+                            adapter?.notifyDataSetChanged()
+                        }
+                    }
+                }
+            }
+
+            messages[messages.size - 1]["message"] = "$response\n"
+            adapter?.notifyDataSetChanged()
 
             if (shouldPronounce && isTTSInitialized && !silenceMode) {
                 tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null,"")
@@ -413,6 +418,8 @@ class MainActivity : FragmentActivity() {
         } catch (e: Exception) {
             putMessage(e.stackTraceToString(), true)
         }
+
+        saveSettings()
 
         btnMicro?.isEnabled = true
         btnSend?.isEnabled = true

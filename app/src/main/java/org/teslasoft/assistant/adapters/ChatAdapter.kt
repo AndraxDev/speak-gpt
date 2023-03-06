@@ -11,8 +11,8 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import org.teslasoft.assistant.R
 
-class ChatAdapter(data: ArrayList<Map<String, Any>>?, context: Context) : BaseAdapter() {
-    private val dataArray: ArrayList<Map<String, Any>>? = data
+class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: Context) : BaseAdapter() {
+    private val dataArray: ArrayList<HashMap<String, Any>>? = data
     private val mContext: Context = context
 
     override fun getCount(): Int {

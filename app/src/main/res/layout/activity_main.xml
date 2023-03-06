@@ -17,15 +17,6 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:layout="@layout/widget_teslasoft_id_circle" />
 
-    <Button
-        android:id="@+id/btn_debug_tts"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Test TTS"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <LinearLayout
         android:id="@+id/keyboard_input"
         android:layout_width="0dp"
@@ -179,6 +170,8 @@
         android:scrollbars="none"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:stackFromBottom="true"
+        android:transcriptMode="alwaysScroll"
         app:layout_constraintBottom_toTopOf="@+id/btn_micro"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
