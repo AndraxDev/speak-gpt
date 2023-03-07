@@ -20,7 +20,7 @@
     <LinearLayout
         android:id="@+id/keyboard_input"
         android:layout_width="0dp"
-        android:layout_height="72dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="16dp"
@@ -35,6 +35,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <TextView
+                android:id="@+id/command_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="Type /imagine: &lt;PROMPT&gt; to generate images"
+                android:textColor="@color/accent_900"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <ImageButton
                 android:id="@+id/btn_send"
                 android:layout_width="48dp"
@@ -42,16 +53,14 @@
                 android:layout_marginEnd="12dp"
                 android:background="@drawable/btn_accent_tonal_v2"
                 android:src="@drawable/ic_send"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/command_hint" />
 
             <EditText
                 android:id="@+id/message_input"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="48dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:background="@color/transparent"
@@ -64,7 +73,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/btn_send"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/command_hint" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 

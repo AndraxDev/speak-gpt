@@ -1,19 +1,28 @@
 package org.teslasoft.assistant.adapters
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import org.teslasoft.assistant.R
 
-class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: Context) : BaseAdapter() {
+class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: Activity) : BaseAdapter() {
     private val dataArray: ArrayList<HashMap<String, Any>>? = data
-    private val mContext: Context = context
+    private val mContext: Activity = context
 
     override fun getCount(): Int {
         return dataArray!!.size
@@ -41,6 +50,8 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: Context) : Ba
         val icon: ImageView = mView.findViewById(R.id.icon)
         val message: TextView = mView.findViewById(R.id.message)
         val username: TextView = mView.findViewById(R.id.username)
+        val dalleImage: ImageView = mView.findViewById(R.id.dalle_image)
+        val imageFrame: LinearLayout = mView.findViewById(R.id.image_frame)
 
         message.setTextIsSelectable(true)
 
@@ -57,6 +68,29 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: Context) : Ba
 
         message.text = dataArray?.get(position)?.get("message").toString()
 
+        if (dataArray?.get(position)?.get("message").toString().contains("https://")) {
+            imageFrame.visibility = View.VISIBLE
+            message.visibility = View.GONE
+
+            val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(convertDpToPixel(24f, mContext).toInt()))
+            Glide.with(mContext).load(Uri.parse(dataArray?.get(position)?.get("message").toString())).apply(requestOptions).into(dalleImage)
+
+            dalleImage.setOnClickListener {
+                val intent: Intent = Intent()
+                intent.action = Intent.ACTION_VIEW
+                intent.data = Uri.parse(dataArray?.get(position)?.get("message").toString())
+
+                mContext.startActivity(intent)
+            }
+        } else {
+            imageFrame.visibility = View.GONE
+            message.visibility = View.VISIBLE
+        }
+
         return mView
+    }
+
+    private fun convertDpToPixel(dp: Float, context: Context): Float {
+        return dp * (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
     }
 }

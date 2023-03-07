@@ -67,6 +67,13 @@
         </activity>
 
         <activity
+            android:name=".DebugActivity"
+            android:exported="false"
+            android:theme="@style/UI.Fade"
+            android:launchMode="singleTask">
+        </activity>
+
+        <activity
             android:name=".ui.MicrophonePermissionScreen"
             android:exported="false"
             android:theme="@style/Theme.Transparent"

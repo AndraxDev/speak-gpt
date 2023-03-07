@@ -15,7 +15,6 @@ import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
 import android.speech.tts.Voice
 import android.view.View
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
@@ -26,11 +25,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.aallam.openai.api.BetaOpenAI
-import com.aallam.openai.api.chat.ChatCompletion
 import com.aallam.openai.api.chat.ChatCompletionChunk
 import com.aallam.openai.api.chat.ChatCompletionRequest
 import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatRole
+import com.aallam.openai.api.image.ImageCreation
+import com.aallam.openai.api.image.ImageSize
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
 import com.google.gson.Gson
@@ -102,6 +102,7 @@ class MainActivity : FragmentActivity() {
                 val recognizedText = matches[0]
 
                 putMessage(recognizedText, false)
+                saveSettings()
 
                 btnMicro?.isEnabled = false
                 btnSend?.isEnabled = false
@@ -303,27 +304,7 @@ class MainActivity : FragmentActivity() {
         }
 
         btnSend?.setOnClickListener {
-            tts!!.stop()
-            if (messageInput?.text.toString() != "") {
-                val message: String = messageInput?.text.toString()
-
-                messageInput?.setText("")
-
-                keyboardMode = false
-                keyboardInput?.visibility = View.GONE
-                messageInput?.isEnabled = false
-                btnKeyboard?.setImageResource(R.drawable.ic_keyboard)
-
-                putMessage(message, false)
-
-                btnMicro?.isEnabled = false
-                btnSend?.isEnabled = false
-                progress?.visibility = View.VISIBLE
-
-                CoroutineScope(Dispatchers.Main).launch {
-                    generateResponse(message, false)
-                }
-            }
+            parseMessage(messageInput?.text.toString())
         }
 
         btnSettings?.setOnClickListener {
@@ -355,6 +336,39 @@ class MainActivity : FragmentActivity() {
     }
 
     /** SYSTEM INITIALIZATION END **/
+
+    private fun parseMessage(message: String) {
+        tts!!.stop()
+        if (messageInput?.text.toString() != "") {
+            val m: String = messageInput?.text.toString()
+
+            messageInput?.setText("")
+
+            keyboardMode = false
+            keyboardInput?.visibility = View.GONE
+            messageInput?.isEnabled = false
+            btnKeyboard?.setImageResource(R.drawable.ic_keyboard)
+
+            putMessage(m, false)
+            saveSettings()
+
+            btnMicro?.isEnabled = false
+            btnSend?.isEnabled = false
+            progress?.visibility = View.VISIBLE
+
+            if (m.contains("/imagine: ")) {
+                val x: String = m.substring(10)
+
+                CoroutineScope(Dispatchers.Main).launch {
+                    generateImage(x)
+                }
+            } else {
+                CoroutineScope(Dispatchers.Main).launch {
+                    generateResponse(m, false)
+                }
+            }
+        }
+    }
 
     private fun startRecognition() {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
@@ -415,6 +429,29 @@ class MainActivity : FragmentActivity() {
             if (shouldPronounce && isTTSInitialized && !silenceMode) {
                 tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null,"")
             }
+        } catch (e: Exception) {
+            putMessage(e.stackTraceToString(), true)
+        }
+
+        saveSettings()
+
+        btnMicro?.isEnabled = true
+        btnSend?.isEnabled = true
+        progress?.visibility = View.GONE
+    }
+
+    @OptIn(BetaOpenAI::class)
+    private suspend fun generateImage(p: String) {
+        try {
+            val images = ai?.imageURL(
+                creation = ImageCreation(
+                    prompt = p,
+                    n = 1,
+                    size = ImageSize.is512x512
+                )
+            )
+
+            putMessage(images?.get(0)?.url!!, true)
         } catch (e: Exception) {
             putMessage(e.stackTraceToString(), true)
         }

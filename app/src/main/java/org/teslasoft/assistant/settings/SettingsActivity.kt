@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.materialswitch.MaterialSwitch
+import org.teslasoft.assistant.DebugActivity
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.onboarding.ActivationActivity
 
@@ -20,6 +21,7 @@ class SettingsActivity : FragmentActivity() {
     private var btnChangeAccount: LinearLayout? = null
     private var silenceSwitch: MaterialSwitch? = null
     private var btnClearChat: MaterialButton? = null
+    private var btnDebugMenu: MaterialButton? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +31,7 @@ class SettingsActivity : FragmentActivity() {
         btnChangeAccount = findViewById(R.id.btn_manage_account)
         silenceSwitch = findViewById(R.id.silent_switch)
         btnClearChat = findViewById(R.id.btn_clear_chat)
+        btnDebugMenu = findViewById(R.id.btn_debug_menu)
 
         btnChangeApi?.setOnClickListener {
             startActivity(Intent(this, ActivationActivity::class.java))
@@ -57,6 +60,10 @@ class SettingsActivity : FragmentActivity() {
                 }
                 .setNegativeButton("Cancel") { _, _ -> }
                 .show()
+        }
+
+        btnDebugMenu?.setOnClickListener {
+            startActivity(Intent(this, DebugActivity::class.java))
         }
 
         val silenceSettings: SharedPreferences = getSharedPreferences("settings", MODE_PRIVATE)

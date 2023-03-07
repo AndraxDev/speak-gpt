@@ -13,8 +13,6 @@ n
 >app/src/main/java/org/teslasoft/assistant/util/LocaleParser.kt,0\7\0760db8b7c83aa949181c3d9730cbeff24efff7d
 `
 0app/src/main/java/org/teslasoft/assistant/App.kt,0\0\006d31948251c2707720a0bdfa841112ad7e2987
-P
- app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
 z
 Japp/src/main/java/org/teslasoft/assistant/onboarding/ActivationActivity.kt,5\d\5d69012421ca82ed0b94ca9aa229e4190692a2fc
 w
