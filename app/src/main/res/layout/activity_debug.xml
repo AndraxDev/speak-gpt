@@ -21,4 +21,12 @@
         android:text="TextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnDebug" />
+
+    <ImageView
+        android:id="@+id/debugImage"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/debugText"
+        app:srcCompat="@drawable/assistant" />
 </androidx.constraintlayout.widget.ConstraintLayout>

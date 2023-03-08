@@ -13,10 +13,6 @@ n
 >app/src/main/java/org/teslasoft/assistant/util/LocaleParser.kt,0\7\0760db8b7c83aa949181c3d9730cbeff24efff7d
 `
 0app/src/main/java/org/teslasoft/assistant/App.kt,0\0\006d31948251c2707720a0bdfa841112ad7e2987
-w
-Gapp/src/main/java/org/teslasoft/assistant/onboarding/WelcomeActivity.kt,7\0\703b22ba5dbbcd6754574fb6baeddf33df2ab167
-u
-Eapp/src/main/java/org/teslasoft/assistant/onboarding/TermsActivity.kt,0\0\0003358e1e2001cbb7673145f4ed1d05132bb7c7
 z
 Japp/src/main/java/org/teslasoft/assistant/onboarding/ActivationActivity.kt,5\d\5d69012421ca82ed0b94ca9aa229e4190692a2fc
 Y

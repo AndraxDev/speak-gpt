@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -18,6 +19,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import org.teslasoft.assistant.ImageBrowserActivity
 import org.teslasoft.assistant.R
 
 class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: Activity) : BaseAdapter() {
@@ -57,7 +59,7 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: Activity) : B
 
         if (dataArray?.get(position)?.get("isBot") == true) {
             icon.setImageResource(R.drawable.assistant)
-            username.text = "SpeakGPT"
+            username.text = mContext.resources.getString(R.string.app_name)
             ui.setBackgroundResource(R.color.accent_100)
         }
         else {
@@ -66,9 +68,7 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: Activity) : B
             ui.setBackgroundResource(R.color.window_background)
         }
 
-        message.text = dataArray?.get(position)?.get("message").toString()
-
-        if (dataArray?.get(position)?.get("message").toString().contains("https://")) {
+        if (dataArray?.get(position)?.get("message").toString().contains("data:image/png")) {
             imageFrame.visibility = View.VISIBLE
             message.visibility = View.GONE
 
@@ -76,13 +76,17 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: Activity) : B
             Glide.with(mContext).load(Uri.parse(dataArray?.get(position)?.get("message").toString())).apply(requestOptions).into(dalleImage)
 
             dalleImage.setOnClickListener {
-                val intent: Intent = Intent()
-                intent.action = Intent.ACTION_VIEW
-                intent.data = Uri.parse(dataArray?.get(position)?.get("message").toString())
+                val sharedPreferences: SharedPreferences = mContext.getSharedPreferences("tmp", Context.MODE_PRIVATE)
+                val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                editor.putString("tmp", dataArray?.get(position)?.get("message").toString())
+                editor.apply()
 
+                val intent = Intent(mContext, ImageBrowserActivity::class.java)
+                intent.putExtra("tmp", "1")
                 mContext.startActivity(intent)
             }
         } else {
+            message.text = dataArray?.get(position)?.get("message").toString()
             imageFrame.visibility = View.GONE
             message.visibility = View.VISIBLE
         }

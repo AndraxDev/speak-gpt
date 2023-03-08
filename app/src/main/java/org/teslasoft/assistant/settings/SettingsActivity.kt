@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.materialswitch.MaterialSwitch
 import org.teslasoft.assistant.DebugActivity
@@ -22,6 +23,10 @@ class SettingsActivity : FragmentActivity() {
     private var silenceSwitch: MaterialSwitch? = null
     private var btnClearChat: MaterialButton? = null
     private var btnDebugMenu: MaterialButton? = null
+    private var dalleResolutions: MaterialButtonToggleGroup? = null
+    private var r256: MaterialButton? = null
+    private var r512: MaterialButton? = null
+    private var r1024: MaterialButton? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +37,17 @@ class SettingsActivity : FragmentActivity() {
         silenceSwitch = findViewById(R.id.silent_switch)
         btnClearChat = findViewById(R.id.btn_clear_chat)
         btnDebugMenu = findViewById(R.id.btn_debug_menu)
+
+        dalleResolutions = findViewById(R.id.resolution_choices)
+        r256 = findViewById(R.id.r256)
+        r512 = findViewById(R.id.r512)
+        r1024 = findViewById(R.id.r1024)
+
+        loadResolution()
+
+        r256?.setOnClickListener { saveResolution("256x256") }
+        r512?.setOnClickListener { saveResolution("512x512") }
+        r1024?.setOnClickListener { saveResolution("1024x1024") }
 
         btnChangeApi?.setOnClickListener {
             startActivity(Intent(this, ActivationActivity::class.java))
@@ -83,5 +99,24 @@ class SettingsActivity : FragmentActivity() {
                 editor.apply()
             }
         }
+    }
+
+    private fun loadResolution() {
+        val settings: SharedPreferences = getSharedPreferences("settings", MODE_PRIVATE)
+        val r = settings.getString("resolution", "512x512")
+
+        when (r) {
+            "256x256" -> r256?.isChecked = true
+            "512x512" -> r512?.isChecked = true
+            "1024x1024" -> r1024?.isChecked = true
+            else -> r512?.isChecked = true
+        }
+    }
+
+    private fun saveResolution(r: String) {
+        val settings: SharedPreferences = getSharedPreferences("settings", MODE_PRIVATE)
+        val editor: SharedPreferences.Editor = settings.edit()
+        editor.putString("resolution", r)
+        editor.apply()
     }
 }

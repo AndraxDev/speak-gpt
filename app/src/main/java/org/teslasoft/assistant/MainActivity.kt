@@ -8,7 +8,9 @@ import android.content.SharedPreferences
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
+import android.os.StrictMode
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
@@ -33,6 +35,10 @@ import com.aallam.openai.api.image.ImageCreation
 import com.aallam.openai.api.image.ImageSize
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.ktor.util.reflect.Type
@@ -40,10 +46,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.teslasoft.assistant.adapters.ChatAdapter
 import org.teslasoft.assistant.onboarding.WelcomeActivity
 import org.teslasoft.assistant.settings.SettingsActivity
 import org.teslasoft.assistant.ui.MicrophonePermissionScreen
+import java.net.URL
+import java.util.Base64
 import java.util.Locale
 
 
@@ -73,6 +82,9 @@ class MainActivity : FragmentActivity() {
     // init AI
     private var ai: OpenAI? = null
     private var key: String? = null
+
+    // Init DALL-e
+    private var resolution = "512x152"
 
     // Init audio
     private var recognizer: SpeechRecognizer? = null
@@ -169,6 +181,9 @@ class MainActivity : FragmentActivity() {
 
         setContentView(R.layout.activity_main)
 
+        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+        StrictMode.setThreadPolicy(policy)
+
         initSettings()
     }
 
@@ -186,6 +201,8 @@ class MainActivity : FragmentActivity() {
         val settings: SharedPreferences = getSharedPreferences("settings", MODE_PRIVATE)
 
         key = settings.getString("api_key", null)
+
+        loadResolution()
 
         if (key == null) {
             startActivity(Intent(this, WelcomeActivity::class.java))
@@ -214,16 +231,6 @@ class MainActivity : FragmentActivity() {
             initLogic()
             initAI()
         }
-    }
-
-    private fun saveSettings() {
-        val chat = getSharedPreferences("chat", MODE_PRIVATE)
-        val editor = chat.edit()
-        val gson = Gson()
-        val json: String = gson.toJson(messages)
-
-        editor.putString("chat", json)
-        editor.apply()
     }
 
     @SuppressLint("SetTextI18n")
@@ -303,6 +310,8 @@ class MainActivity : FragmentActivity() {
             }
         }
 
+        keyboardInput?.setOnClickListener { /* preventDefault */ }
+
         btnSend?.setOnClickListener {
             parseMessage(messageInput?.text.toString())
         }
@@ -335,7 +344,23 @@ class MainActivity : FragmentActivity() {
         }
     }
 
+    // Init image resolutions
+    private fun loadResolution() {
+        val settings: SharedPreferences = getSharedPreferences("settings", MODE_PRIVATE)
+        resolution = settings.getString("resolution", "512x512")!!
+    }
+
     /** SYSTEM INITIALIZATION END **/
+
+    private fun saveSettings() {
+        val chat = getSharedPreferences("chat", MODE_PRIVATE)
+        val editor = chat.edit()
+        val gson = Gson()
+        val json: String = gson.toJson(messages)
+
+        editor.putString("chat", json)
+        editor.apply()
+    }
 
     private fun parseMessage(message: String) {
         tts!!.stop()
@@ -356,17 +381,26 @@ class MainActivity : FragmentActivity() {
             btnSend?.isEnabled = false
             progress?.visibility = View.VISIBLE
 
-            if (m.contains("/imagine: ")) {
+            if (m.lowercase().contains("/imagine: ")) {
                 val x: String = m.substring(10)
 
-                CoroutineScope(Dispatchers.Main).launch {
-                    generateImage(x)
-                }
+                sendImageRequest(x)
+            } else if (m.lowercase().contains("create an image") ||
+                m.lowercase().contains("generate an image") ||
+                m.lowercase().contains("create image") ||
+                m.lowercase().contains("generate image")) {
+                sendImageRequest(m)
             } else {
                 CoroutineScope(Dispatchers.Main).launch {
                     generateResponse(m, false)
                 }
             }
+        }
+    }
+
+    private fun sendImageRequest(str: String) {
+        CoroutineScope(Dispatchers.Main).launch {
+            generateImage(str)
         }
     }
 
@@ -447,11 +481,20 @@ class MainActivity : FragmentActivity() {
                 creation = ImageCreation(
                     prompt = p,
                     n = 1,
-                    size = ImageSize.is512x512
+                    size = ImageSize(resolution)
                 )
             )
 
-            putMessage(images?.get(0)?.url!!, true)
+            val url = URL(images?.get(0)?.url!!)
+            val `is` = withContext(Dispatchers.IO) {
+                url.openStream()
+            }
+            val bytes: ByteArray = org.apache.commons.io.IOUtils.toByteArray(`is`)
+            val encoded = Base64.getEncoder().encodeToString(bytes)
+
+            val path = "data:image/png;base64,$encoded"
+
+            putMessage(path, true)
         } catch (e: Exception) {
             putMessage(e.stackTraceToString(), true)
         }

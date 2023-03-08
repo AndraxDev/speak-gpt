@@ -79,5 +79,12 @@
             android:theme="@style/Theme.Transparent"
             android:launchMode="singleTask">
         </activity>
+
+        <activity
+            android:name=".ImageBrowserActivity"
+            android:exported="false"
+            android:theme="@style/UI.Fade"
+            android:launchMode="singleTask">
+        </activity>
     </application>
 </manifest>
