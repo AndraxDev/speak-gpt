@@ -11,8 +11,8 @@ android {
         applicationId "org.teslasoft.assistant"
         minSdk 28
         targetSdk 33
-        versionCode 4
-        versionName "1.4.0-beta05"
+        versionCode 5
+        versionName "1.5.0-beta06"
     }
 
     buildTypes {
@@ -46,5 +46,8 @@ dependencies {
     implementation ('com.github.chrisbanes.photoview:library:1.2.4') {
         exclude group: 'com.android.support', module: 'support-v4'
     }
-
+    implementation "io.noties.markwon:core:4.6.2"
+    implementation "io.noties.markwon:ext-strikethrough:4.6.2"
+    implementation "io.noties.markwon:ext-tables:4.6.2"
+    implementation "io.noties.markwon:ext-tasklist:4.6.2"
 }

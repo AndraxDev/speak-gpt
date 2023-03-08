@@ -6,10 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
+import android.text.Html
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -19,6 +21,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import io.noties.markwon.Markwon
 import org.teslasoft.assistant.ImageBrowserActivity
 import org.teslasoft.assistant.R
 
@@ -86,7 +89,14 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: Activity) : B
                 mContext.startActivity(intent)
             }
         } else {
-            message.text = dataArray?.get(position)?.get("message").toString()
+            val src = dataArray?.get(position)?.get("message").toString()
+
+            val markwon: Markwon = Markwon.create(mContext);
+
+            markwon.setMarkdown(message, src);
+
+            message.setTextIsSelectable(true)
+
             imageFrame.visibility = View.GONE
             message.visibility = View.VISIBLE
         }
