@@ -278,7 +278,7 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
                         android:layout_marginBottom="16dp"
-                        android:text="Note: All images are squared. Higher resolution is more expensive and it loads slower. You can see prices on the official OpenAI page. Averrage price is $0.18/image."
+                        android:text="Note: All images are squared. Higher resolution is more expensive and it loads slower. You can see prices on the official OpenAI page. Averrage price is $0.018/image."
                         android:textSize="12sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"

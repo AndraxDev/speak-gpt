@@ -42,7 +42,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="Type /imagine: &lt;PROMPT&gt; or start you message with &quot;Create an image...&quot; to generate images."
+                android:text="Type /imagine &lt;PROMPT&gt; or start you message with &quot;Create an image...&quot; to generate images."
                 android:textColor="@color/accent_900"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

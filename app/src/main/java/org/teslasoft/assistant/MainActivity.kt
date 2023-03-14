@@ -8,7 +8,6 @@ import android.content.SharedPreferences
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.os.StrictMode
 import android.speech.RecognitionListener
@@ -35,10 +34,6 @@ import com.aallam.openai.api.image.ImageCreation
 import com.aallam.openai.api.image.ImageSize
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.ktor.util.reflect.Type
@@ -70,8 +65,10 @@ class MainActivity : FragmentActivity() {
     private var activityTitle: TextView? = null
 
     // Init chat
-    private var messages: ArrayList<HashMap<String, Any>> = ArrayList()
+    private var messages: ArrayList<HashMap<String, Any>> = arrayListOf()
     private var adapter: ChatAdapter? = null
+    @OptIn(BetaOpenAI::class)
+    private var chatMessages: ArrayList<ChatMessage> = arrayListOf()
 
     // Init states
     private var isRecording = false
@@ -197,6 +194,8 @@ class MainActivity : FragmentActivity() {
 
     /** SYSTEM INITIALIZATION START **/
 
+    @OptIn(BetaOpenAI::class)
+    @Suppress("unchecked")
     private fun initSettings() {
         val settings: SharedPreferences = getSharedPreferences("settings", MODE_PRIVATE)
 
@@ -221,6 +220,26 @@ class MainActivity : FragmentActivity() {
                 gson.fromJson<Any>(json, type) as ArrayList<HashMap<String, Any>>
             } catch (e: Exception) {
                 ArrayList()
+            }
+
+            for (message: HashMap<String, Any> in messages) {
+                if (!message["message"].toString().contains("data:image")) {
+                    if (message["isBot"] == true) {
+                        chatMessages.add(
+                            ChatMessage(
+                                role = ChatRole.Assistant,
+                                content = message["message"].toString()
+                            )
+                        )
+                    } else {
+                        chatMessages.add(
+                            ChatMessage(
+                                role = ChatRole.User,
+                                content = message["message"].toString()
+                            )
+                        )
+                    }
+                }
             }
 
             adapter = ChatAdapter(messages, this)
@@ -362,11 +381,10 @@ class MainActivity : FragmentActivity() {
         editor.apply()
     }
 
+    @OptIn(BetaOpenAI::class)
     private fun parseMessage(message: String) {
         tts!!.stop()
-        if (messageInput?.text.toString() != "") {
-            val m: String = messageInput?.text.toString()
-
+        if (message != "") {
             messageInput?.setText("")
 
             keyboardMode = false
@@ -374,25 +392,42 @@ class MainActivity : FragmentActivity() {
             messageInput?.isEnabled = false
             btnKeyboard?.setImageResource(R.drawable.ic_keyboard)
 
-            putMessage(m, false)
+            putMessage(message, false)
             saveSettings()
 
             btnMicro?.isEnabled = false
             btnSend?.isEnabled = false
             progress?.visibility = View.VISIBLE
 
-            if (m.lowercase().contains("/imagine: ")) {
-                val x: String = m.substring(10)
+            if (message.lowercase().contains("/imagine") && message.length > 9) {
+                val x: String = message.substring(9)
 
                 sendImageRequest(x)
-            } else if (m.lowercase().contains("create an image") ||
-                m.lowercase().contains("generate an image") ||
-                m.lowercase().contains("create image") ||
-                m.lowercase().contains("generate image")) {
-                sendImageRequest(m)
+            } else if (message.lowercase().contains("/imagine") && message.length <= 9) {
+                putMessage("Prompt can not be empty. Use /imagine &lt;PROMPT&gt;", true)
+
+                saveSettings()
+
+                btnMicro?.isEnabled = true
+                btnSend?.isEnabled = true
+                progress?.visibility = View.GONE
+            } else if (message.lowercase().contains("create an image") ||
+                message.lowercase().contains("generate an image") ||
+                message.lowercase().contains("create image") ||
+                message.lowercase().contains("generate image") ||
+                message.lowercase().contains("create a photo") ||
+                message.lowercase().contains("generate a photo") ||
+                message.lowercase().contains("create photo") ||
+                message.lowercase().contains("generate photo")) {
+                sendImageRequest(message)
             } else {
+                chatMessages.add(ChatMessage(
+                    role = ChatRole.User,
+                    content = message
+                ))
+
                 CoroutineScope(Dispatchers.Main).launch {
-                    generateResponse(m, false)
+                    generateResponse(message, false)
                 }
             }
         }
@@ -413,6 +448,7 @@ class MainActivity : FragmentActivity() {
         recognizer?.startListening(intent)
     }
 
+    @OptIn(BetaOpenAI::class)
     private fun putMessage(message: String, isBot: Boolean) {
         val map: HashMap<String, Any> = HashMap()
 
@@ -431,12 +467,7 @@ class MainActivity : FragmentActivity() {
     private suspend fun generateResponse(request: String, shouldPronounce: Boolean) {
         val chatCompletionRequest = ChatCompletionRequest(
             model = ModelId("gpt-3.5-turbo-0301"),
-            messages = listOf(
-                ChatMessage(
-                    role = ChatRole.User,
-                    content = request
-                )
-            )
+            messages = chatMessages
         )
 
         try {
@@ -459,6 +490,11 @@ class MainActivity : FragmentActivity() {
 
             messages[messages.size - 1]["message"] = "$response\n"
             adapter?.notifyDataSetChanged()
+
+            chatMessages.add(ChatMessage(
+                role = ChatRole.Assistant,
+                content = response
+            ))
 
             if (shouldPronounce && isTTSInitialized && !silenceMode) {
                 tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null,"")

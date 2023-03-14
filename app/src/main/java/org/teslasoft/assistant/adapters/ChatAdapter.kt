@@ -6,17 +6,16 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
-import android.text.Html
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.FragmentActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -25,9 +24,9 @@ import io.noties.markwon.Markwon
 import org.teslasoft.assistant.ImageBrowserActivity
 import org.teslasoft.assistant.R
 
-class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: Activity) : BaseAdapter() {
+class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActivity) : BaseAdapter() {
     private val dataArray: ArrayList<HashMap<String, Any>>? = data
-    private val mContext: Activity = context
+    private val mContext: FragmentActivity = context
 
     override fun getCount(): Int {
         return dataArray!!.size
@@ -71,7 +70,7 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: Activity) : B
             ui.setBackgroundResource(R.color.window_background)
         }
 
-        if (dataArray?.get(position)?.get("message").toString().contains("data:image/png")) {
+        if (dataArray?.get(position)?.get("message").toString().contains("data:image")) {
             imageFrame.visibility = View.VISIBLE
             message.visibility = View.GONE
 
@@ -93,9 +92,7 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: Activity) : B
 
             val markwon: Markwon = Markwon.create(mContext);
 
-            markwon.setMarkdown(message, src);
-
-            message.setTextIsSelectable(true)
+            markwon.setMarkdown(message, src)
 
             imageFrame.visibility = View.GONE
             message.visibility = View.VISIBLE

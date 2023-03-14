@@ -17,3 +17,15 @@ z
 Japp/src/main/java/org/teslasoft/assistant/onboarding/ActivationActivity.kt,5\d\5d69012421ca82ed0b94ca9aa229e4190692a2fc
 Y
 )app/src/main/res/layout/activity_main.xml,7\6\76b07e40f24cce093536731477540f12e7da3cb6
+w
+Gapp/src/main/java/org/teslasoft/assistant/onboarding/WelcomeActivity.kt,7\0\703b22ba5dbbcd6754574fb6baeddf33df2ab167
+u
+Eapp/src/main/java/org/teslasoft/assistant/onboarding/TermsActivity.kt,0\0\0003358e1e2001cbb7673145f4ed1d05132bb7c7
+P
+ app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
+v
+Fapp/src/main/java/org/teslasoft/assistant/settings/SettingsActivity.kt,1\1\11694a9b3ac5d1717093bbacdc30911d82df4888
+j
+:app/src/main/java/org/teslasoft/assistant/DebugActivity.kt,5\2\52962aeefaff5b6610aa8c044a02793da0d18ce4
+q
+Aapp/src/main/java/org/teslasoft/assistant/ImageBrowserActivity.kt,8\e\8ec5e623a7d3ec58246047f7d6be8c461b548ba4
