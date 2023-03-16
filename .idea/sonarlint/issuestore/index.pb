@@ -27,5 +27,3 @@ j
 :app/src/main/java/org/teslasoft/assistant/DebugActivity.kt,5\2\52962aeefaff5b6610aa8c044a02793da0d18ce4
 q
 Aapp/src/main/java/org/teslasoft/assistant/ImageBrowserActivity.kt,8\e\8ec5e623a7d3ec58246047f7d6be8c461b548ba4
-v
-Fapp/src/main/java/org/teslasoft/assistant/settings/SettingsActivity.kt,1\1\11694a9b3ac5d1717093bbacdc30911d82df4888

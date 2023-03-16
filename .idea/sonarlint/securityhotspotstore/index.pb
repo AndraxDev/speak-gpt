@@ -23,8 +23,6 @@ u
 Eapp/src/main/java/org/teslasoft/assistant/onboarding/TermsActivity.kt,0\0\0003358e1e2001cbb7673145f4ed1d05132bb7c7
 P
  app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
-v
-Fapp/src/main/java/org/teslasoft/assistant/settings/SettingsActivity.kt,1\1\11694a9b3ac5d1717093bbacdc30911d82df4888
 j
 :app/src/main/java/org/teslasoft/assistant/DebugActivity.kt,5\2\52962aeefaff5b6610aa8c044a02793da0d18ce4
 q

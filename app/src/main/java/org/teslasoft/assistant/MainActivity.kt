@@ -30,10 +30,14 @@ import com.aallam.openai.api.chat.ChatCompletionChunk
 import com.aallam.openai.api.chat.ChatCompletionRequest
 import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatRole
+import com.aallam.openai.api.completion.CompletionRequest
+import com.aallam.openai.api.completion.TextCompletion
 import com.aallam.openai.api.image.ImageCreation
 import com.aallam.openai.api.image.ImageSize
+import com.aallam.openai.api.model.Model
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.ktor.util.reflect.Type
@@ -79,6 +83,7 @@ class MainActivity : FragmentActivity() {
     // init AI
     private var ai: OpenAI? = null
     private var key: String? = null
+    private var model = ""
 
     // Init DALL-e
     private var resolution = "512x152"
@@ -360,7 +365,31 @@ class MainActivity : FragmentActivity() {
             finish()
         } else {
             ai = OpenAI(key!!)
+            loadModel()
         }
+    }
+
+    private fun loadModel() {
+        val settings: SharedPreferences = getSharedPreferences("settings", MODE_PRIVATE)
+        model = settings.getString("model", "gpt-3.5-turbo").toString()
+    }
+
+    private suspend fun getModels() {
+        val models: List<Model> = ai!!.models()
+
+        var string = "";
+
+        for (m: Model in models) {
+            val tmp: String = m.id.toString().replace(")", "").replace("ModelId(id=", "")
+
+            if (tmp.contains("gpt")) string += "$tmp\n"
+        }
+
+        MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
+            .setTitle("Debug")
+            .setMessage(string)
+            .setPositiveButton("Close") { _, _, -> }
+            .show()
     }
 
     // Init image resolutions
@@ -448,7 +477,6 @@ class MainActivity : FragmentActivity() {
         recognizer?.startListening(intent)
     }
 
-    @OptIn(BetaOpenAI::class)
     private fun putMessage(message: String, isBot: Boolean) {
         val map: HashMap<String, Any> = HashMap()
 
@@ -465,24 +493,52 @@ class MainActivity : FragmentActivity() {
 
     @OptIn(BetaOpenAI::class)
     private suspend fun generateResponse(request: String, shouldPronounce: Boolean) {
-        val chatCompletionRequest = ChatCompletionRequest(
-            model = ModelId("gpt-3.5-turbo-0301"),
-            messages = chatMessages
-        )
+        putMessage("", true)
+        var response = ""
 
         try {
-            val completions: Flow<ChatCompletionChunk> = ai!!.chatCompletions(chatCompletionRequest)
+            if (model.contains("davinci") || model.contains("curie") || model.contains("babbage") || model.contains("ada")) {
 
-            putMessage("", true)
-            var response = ""
+                var tokens = 0
 
-            completions.collect { v ->
-                run {
-                    if (v.choices[0].delta != null) {
-                        if (v.choices[0].delta?.content != null) {
-                            response += v.choices[0].delta?.content
+                tokens = if (model.contains("text-davinci") || model.contains("code-davinci")) {
+                    2048
+                } else 1500
+
+                val completionRequest = CompletionRequest(
+                    model = ModelId(model),
+                    prompt = request,
+                    maxTokens = tokens,
+                    echo = false
+                )
+
+                val completions: Flow<TextCompletion> = ai!!.completions(completionRequest)
+
+                completions.collect { v ->
+                    run {
+                        if (v.choices[0].text != null) {
+                            response += v.choices[0].text
                             messages[messages.size - 1]["message"] = "$response █"
                             adapter?.notifyDataSetChanged()
+                        }
+                    }
+                }
+            } else {
+                val chatCompletionRequest = ChatCompletionRequest(
+                    model = ModelId(model),
+                    messages = chatMessages
+                )
+
+                val completions: Flow<ChatCompletionChunk> = ai!!.chatCompletions(chatCompletionRequest)
+
+                completions.collect { v ->
+                    run {
+                        if (v.choices[0].delta != null) {
+                            if (v.choices[0].delta?.content != null) {
+                                response += v.choices[0].delta?.content
+                                messages[messages.size - 1]["message"] = "$response █"
+                                adapter?.notifyDataSetChanged()
+                            }
                         }
                     }
                 }
@@ -500,7 +556,20 @@ class MainActivity : FragmentActivity() {
                 tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null,"")
             }
         } catch (e: Exception) {
-            putMessage(e.stackTraceToString(), true)
+            response += "[SYSTEM ERROR] "
+
+            if (e.stackTraceToString().contains("That model does not exist")) {
+                response += "Looks like this model (${model}) is not available to you right now. It can be because of high demand or this model is currently in limited beta."
+            } else if (e.stackTraceToString().contains("Connect timeout has expired")) {
+                response += "Could not connect to OpenAI servers. It may happen when your Internet speed is slow or too many users are using this model at the same time. Try to switch to another model."
+            } else if (e.stackTraceToString().contains("This model's maximum")) {
+                response += "Too many tokens. It is an internal error, please report it. Also try to truncate your input. Sometimes it may help."
+            } else {
+                response += e.stackTraceToString()
+            }
+
+            messages[messages.size - 1]["message"] = "${response}\n"
+            adapter?.notifyDataSetChanged()
         }
 
         saveSettings()

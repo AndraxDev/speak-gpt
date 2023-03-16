@@ -11,8 +11,8 @@ android {
         applicationId "org.teslasoft.assistant"
         minSdk 28
         targetSdk 33
-        versionCode 6
-        versionName "1.6.0-beta07"
+        versionCode 7
+        versionName "1.7.0-beta08"
     }
 
     buildTypes {
@@ -35,7 +35,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0-alpha02'
     implementation 'com.google.code.gson:gson:2.10.1'
-    implementation 'com.aallam.openai:openai-client:3.0.0'
+    implementation 'com.aallam.openai:openai-client:3.1.0'
     implementation 'io.ktor:ktor-client-android:2.2.3'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'

@@ -6,6 +6,7 @@ import android.content.SharedPreferences.Editor
 import android.net.Uri
 import android.os.Bundle
 import android.widget.LinearLayout
+import android.widget.RadioButton
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.button.MaterialButton
@@ -28,6 +29,24 @@ class SettingsActivity : FragmentActivity() {
     private var r512: MaterialButton? = null
     private var r1024: MaterialButton? = null
 
+    private var gpt_35_turbo: RadioButton? = null
+    private var gpt_35_turbo_0301: RadioButton? = null
+    private var gpt_4: RadioButton? = null
+    private var gpt_4_0314: RadioButton? = null
+    private var gpt_4_32k: RadioButton? = null
+    private var gpt_4_32k_0314: RadioButton? = null
+    private var text_davinci_003: RadioButton? = null
+    private var text_davinci_002: RadioButton? = null
+    private var code_davinci_002: RadioButton? = null
+    private var code_cushman_001: RadioButton? = null
+    private var text_curie_001: RadioButton? = null
+    private var text_babbage_001: RadioButton? = null
+    private var text_ada_001: RadioButton? = null
+    private var davinci: RadioButton? = null
+    private var curie: RadioButton? = null
+    private var babbage: RadioButton? = null
+    private var ada: RadioButton? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -38,16 +57,53 @@ class SettingsActivity : FragmentActivity() {
         btnClearChat = findViewById(R.id.btn_clear_chat)
         btnDebugMenu = findViewById(R.id.btn_debug_menu)
 
+        gpt_35_turbo = findViewById(R.id.gpt_35_turbo)
+        gpt_35_turbo_0301 = findViewById(R.id.gpt_35_turbo_0301)
+        gpt_4 = findViewById(R.id.gpt_4)
+        gpt_4_0314 = findViewById(R.id.gpt_4_0314)
+        gpt_4_32k = findViewById(R.id.gpt_4_32k)
+        gpt_4_32k_0314 = findViewById(R.id.gpt_4_32k_0314)
+        text_davinci_003 = findViewById(R.id.text_davinci_003)
+        text_davinci_002 = findViewById(R.id.text_davinci_002)
+        code_davinci_002 = findViewById(R.id.code_davinci_002)
+        code_cushman_001 = findViewById(R.id.code_cushman_001)
+        text_curie_001 = findViewById(R.id.text_curie_001)
+        text_babbage_001 = findViewById(R.id.text_babbage_001)
+        text_ada_001 = findViewById(R.id.text_ada_001)
+        davinci = findViewById(R.id.davinci)
+        curie = findViewById(R.id.curie)
+        babbage = findViewById(R.id.babbage)
+        ada = findViewById(R.id.ada)
+
         dalleResolutions = findViewById(R.id.resolution_choices)
         r256 = findViewById(R.id.r256)
         r512 = findViewById(R.id.r512)
         r1024 = findViewById(R.id.r1024)
 
         loadResolution()
+        loadModel()
 
         r256?.setOnClickListener { saveResolution("256x256") }
         r512?.setOnClickListener { saveResolution("512x512") }
         r1024?.setOnClickListener { saveResolution("1024x1024") }
+
+        gpt_35_turbo?.setOnClickListener { setModel("gpt-3.5-turbo") }
+        gpt_35_turbo_0301?.setOnClickListener { setModel("gpt-3.5-turbo-0301") }
+        gpt_4?.setOnClickListener { setModel("gpt-4") }
+        gpt_4_0314?.setOnClickListener { setModel("gpt-4-0314") }
+        gpt_4_32k?.setOnClickListener { setModel("gpt-4-32k") }
+        gpt_4_32k_0314?.setOnClickListener { setModel("gpt-4-32k-0314") }
+        text_davinci_003?.setOnClickListener { setModel("text-davinci-003") }
+        text_davinci_002?.setOnClickListener { setModel("text-davinci-002") }
+        code_davinci_002?.setOnClickListener { setModel("code-davinci-002") }
+        code_cushman_001?.setOnClickListener { setModel("code-cushman-001") }
+        text_curie_001?.setOnClickListener { setModel("text-curie-001") }
+        text_babbage_001?.setOnClickListener { setModel("text-babbage-001") }
+        text_ada_001?.setOnClickListener { setModel("text-ada-001") }
+        davinci?.setOnClickListener { setModel("davinci") }
+        curie?.setOnClickListener { setModel("curie") }
+        babbage?.setOnClickListener { setModel("babbage") }
+        ada?.setOnClickListener { setModel("ada") }
 
         btnChangeApi?.setOnClickListener {
             startActivity(Intent(this, ActivationActivity::class.java))
@@ -89,7 +145,7 @@ class SettingsActivity : FragmentActivity() {
 
         silenceSwitch?.setOnCheckedChangeListener { _, isChecked ->
             run {
-                val editor: SharedPreferences.Editor = silenceSettings.edit()
+                val editor: Editor = silenceSettings.edit()
                 if (isChecked) {
                     editor.putBoolean("silence_mode", true)
                 } else {
@@ -101,11 +157,43 @@ class SettingsActivity : FragmentActivity() {
         }
     }
 
+    private fun setModel(model: String) {
+        val settings: SharedPreferences = getSharedPreferences("settings", MODE_PRIVATE)
+        val editor = settings.edit()
+
+        editor.putString("model", model)
+        editor.apply()
+    }
+
+    private fun loadModel() {
+        val settings: SharedPreferences = getSharedPreferences("settings", MODE_PRIVATE)
+
+        when (settings.getString("model", "gpt-3.5-turbo")) { // load default model if settings not found
+            "gpt-3.5-turbo" -> gpt_35_turbo?.isChecked = true
+            "gpt-3.5-turbo-0301" -> gpt_35_turbo_0301?.isChecked = true
+            "gpt-4" -> gpt_4?.isChecked = true
+            "gpt-4-0314" -> gpt_4_0314?.isChecked = true
+            "gpt-4-32k" -> gpt_4_32k?.isChecked = true
+            "gpt-4-32k-0314" -> gpt_4_32k_0314?.isChecked = true
+            "text-davinci-003" -> text_davinci_003?.isChecked = true
+            "text-davinci-002" -> text_davinci_002?.isChecked = true
+            "code-davinci-002" -> code_davinci_002?.isChecked = true
+            "code-cushman-001" -> code_cushman_001?.isChecked = true
+            "text-curie-001" -> text_curie_001?.isChecked = true
+            "text-babbage-001" -> text_babbage_001?.isChecked = true
+            "text-ada-001" -> text_ada_001?.isChecked = true
+            "davinci" -> davinci?.isChecked = true
+            "curie" -> curie?.isChecked = true
+            "babbage" -> babbage?.isChecked = true
+            "ada" -> ada?.isChecked = true
+            else -> gpt_35_turbo?.isChecked = true
+        }
+    }
+
     private fun loadResolution() {
         val settings: SharedPreferences = getSharedPreferences("settings", MODE_PRIVATE)
-        val r = settings.getString("resolution", "512x512")
 
-        when (r) {
+        when (settings.getString("resolution", "512x512")) {
             "256x256" -> r256?.isChecked = true
             "512x512" -> r512?.isChecked = true
             "1024x1024" -> r1024?.isChecked = true
@@ -115,7 +203,7 @@ class SettingsActivity : FragmentActivity() {
 
     private fun saveResolution(r: String) {
         val settings: SharedPreferences = getSharedPreferences("settings", MODE_PRIVATE)
-        val editor: SharedPreferences.Editor = settings.edit()
+        val editor = settings.edit()
         editor.putString("resolution", r)
         editor.apply()
     }

@@ -1,7 +1,6 @@
 package org.teslasoft.assistant.adapters
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -91,8 +90,8 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActiv
             val src = dataArray?.get(position)?.get("message").toString()
 
             val markwon: Markwon = Markwon.create(mContext);
-
             markwon.setMarkdown(message, src)
+            message.setTextIsSelectable(true)
 
             imageFrame.visibility = View.GONE
             message.visibility = View.VISIBLE
