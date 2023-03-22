@@ -5,6 +5,8 @@ import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.Toast
@@ -28,6 +30,8 @@ class SettingsActivity : FragmentActivity() {
     private var r256: MaterialButton? = null
     private var r512: MaterialButton? = null
     private var r1024: MaterialButton? = null
+    private var promptInput: EditText? = null
+    private var promptSave: MaterialButton? = null
 
     private var gpt_35_turbo: RadioButton? = null
     private var gpt_35_turbo_0301: RadioButton? = null
@@ -37,8 +41,6 @@ class SettingsActivity : FragmentActivity() {
     private var gpt_4_32k_0314: RadioButton? = null
     private var text_davinci_003: RadioButton? = null
     private var text_davinci_002: RadioButton? = null
-    private var code_davinci_002: RadioButton? = null
-    private var code_cushman_001: RadioButton? = null
     private var text_curie_001: RadioButton? = null
     private var text_babbage_001: RadioButton? = null
     private var text_ada_001: RadioButton? = null
@@ -46,6 +48,8 @@ class SettingsActivity : FragmentActivity() {
     private var curie: RadioButton? = null
     private var babbage: RadioButton? = null
     private var ada: RadioButton? = null
+
+    private var chatId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +60,11 @@ class SettingsActivity : FragmentActivity() {
         silenceSwitch = findViewById(R.id.silent_switch)
         btnClearChat = findViewById(R.id.btn_clear_chat)
         btnDebugMenu = findViewById(R.id.btn_debug_menu)
+        promptInput = findViewById(R.id.prompt_input)
+        promptSave = findViewById(R.id.prompt_save)
+
+        val settings: SharedPreferences = getSharedPreferences("settings", MODE_PRIVATE)
+        promptInput?.setText(settings.getString("prompt", "").toString())
 
         gpt_35_turbo = findViewById(R.id.gpt_35_turbo)
         gpt_35_turbo_0301 = findViewById(R.id.gpt_35_turbo_0301)
@@ -65,8 +74,6 @@ class SettingsActivity : FragmentActivity() {
         gpt_4_32k_0314 = findViewById(R.id.gpt_4_32k_0314)
         text_davinci_003 = findViewById(R.id.text_davinci_003)
         text_davinci_002 = findViewById(R.id.text_davinci_002)
-        code_davinci_002 = findViewById(R.id.code_davinci_002)
-        code_cushman_001 = findViewById(R.id.code_cushman_001)
         text_curie_001 = findViewById(R.id.text_curie_001)
         text_babbage_001 = findViewById(R.id.text_babbage_001)
         text_ada_001 = findViewById(R.id.text_ada_001)
@@ -82,6 +89,7 @@ class SettingsActivity : FragmentActivity() {
 
         loadResolution()
         loadModel()
+        initChatId()
 
         r256?.setOnClickListener { saveResolution("256x256") }
         r512?.setOnClickListener { saveResolution("512x512") }
@@ -95,8 +103,6 @@ class SettingsActivity : FragmentActivity() {
         gpt_4_32k_0314?.setOnClickListener { setModel("gpt-4-32k-0314") }
         text_davinci_003?.setOnClickListener { setModel("text-davinci-003") }
         text_davinci_002?.setOnClickListener { setModel("text-davinci-002") }
-        code_davinci_002?.setOnClickListener { setModel("code-davinci-002") }
-        code_cushman_001?.setOnClickListener { setModel("code-cushman-001") }
         text_curie_001?.setOnClickListener { setModel("text-curie-001") }
         text_babbage_001?.setOnClickListener { setModel("text-babbage-001") }
         text_ada_001?.setOnClickListener { setModel("text-ada-001") }
@@ -123,7 +129,7 @@ class SettingsActivity : FragmentActivity() {
                 .setMessage("Are you sure? This action can not be undone.")
                 .setPositiveButton("Clear") { _, _ ->
                     run {
-                        val sharedPreferences: SharedPreferences = getSharedPreferences("chat", MODE_PRIVATE)
+                        val sharedPreferences: SharedPreferences = getSharedPreferences("chat_$chatId", MODE_PRIVATE)
                         val editor: Editor = sharedPreferences.edit()
                         editor.putString("chat", "[]")
                         editor.apply()
@@ -155,6 +161,29 @@ class SettingsActivity : FragmentActivity() {
                 editor.apply()
             }
         }
+
+        promptSave?.setOnClickListener {
+            val editor: Editor = settings.edit()
+
+            editor.putString("prompt", promptInput?.text.toString())
+            editor.apply()
+
+            Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun initChatId() {
+        val extras: Bundle? = intent.extras
+
+        if (extras != null) {
+            chatId = extras.getString("chatId", "")
+
+            if (chatId == "") {
+                btnClearChat?.visibility = View.GONE
+            }
+        } else {
+            btnClearChat?.visibility = View.GONE
+        }
     }
 
     private fun setModel(model: String) {
@@ -177,8 +206,6 @@ class SettingsActivity : FragmentActivity() {
             "gpt-4-32k-0314" -> gpt_4_32k_0314?.isChecked = true
             "text-davinci-003" -> text_davinci_003?.isChecked = true
             "text-davinci-002" -> text_davinci_002?.isChecked = true
-            "code-davinci-002" -> code_davinci_002?.isChecked = true
-            "code-cushman-001" -> code_cushman_001?.isChecked = true
             "text-curie-001" -> text_curie_001?.isChecked = true
             "text-babbage-001" -> text_babbage_001?.isChecked = true
             "text-ada-001" -> text_ada_001?.isChecked = true

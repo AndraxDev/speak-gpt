@@ -16,7 +16,8 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.teslasoft.assistant.MainActivity
+import org.teslasoft.assistant.ChatActivity
+import org.teslasoft.assistant.ChatsListActivity
 import org.teslasoft.assistant.R
 
 class ActivationActivity : FragmentActivity() {
@@ -77,7 +78,7 @@ class ActivationActivity : FragmentActivity() {
                 val editor: SharedPreferences.Editor = settings.edit()
                 editor.putString("api_key", keyInput?.text.toString())
                 editor.apply()
-                startActivity(Intent(this, MainActivity::class.java))
+                startActivity(Intent(this, ChatsListActivity::class.java))
             }
         }
     }

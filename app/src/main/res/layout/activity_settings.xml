@@ -346,105 +346,123 @@
                             app:layout_constraintTop_toBottomOf="@+id/model_title">
 
                             <RadioButton
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
                                 android:id="@+id/gpt_35_turbo"
                                 android:layout_width="match_parent"
-                                android:layout_height="36dp"
-                                android:text="gpt-3.5-turbo" />
+                                android:layout_height="wrap_content"
+                                android:text="gpt-3.5-turbo ($0.002/1k tokens)" />
 
                             <RadioButton
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
                                 android:id="@+id/gpt_35_turbo_0301"
                                 android:layout_width="match_parent"
-                                android:layout_height="36dp"
-                                android:text="gpt-3.5-turbo-0301 (deprecated)" />
+                                android:layout_height="wrap_content"
+                                android:text="gpt-3.5-turbo-0301 (deprecated) ($0.002/1k tokens)" />
 
                             <RadioButton
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
                                 android:id="@+id/gpt_4"
                                 android:layout_width="match_parent"
-                                android:layout_height="36dp"
-                                android:text="gpt-4" />
+                                android:layout_height="wrap_content"
+                                android:text="gpt-4 (prompts: $0.03/1k tokens, output: $0.06/1k tokens)" />
 
                             <RadioButton
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
                                 android:id="@+id/gpt_4_0314"
                                 android:layout_width="match_parent"
-                                android:layout_height="36dp"
-                                android:text="gpt-4-0314 (deprecated)" />
+                                android:layout_height="wrap_content"
+                                android:text="gpt-4-0314 (deprecated) (prompts: $0.03/1k tokens, output: $0.06/1k tokens)" />
 
                             <RadioButton
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
                                 android:id="@+id/gpt_4_32k"
                                 android:layout_width="match_parent"
-                                android:layout_height="36dp"
-                                android:text="gpt-4-32k" />
+                                android:layout_height="wrap_content"
+                                android:text="gpt-4-32k (prompts: $0.06/1k tokens, output: $0.012/1k tokens)" />
 
                             <RadioButton
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
                                 android:id="@+id/gpt_4_32k_0314"
                                 android:layout_width="match_parent"
-                                android:layout_height="36dp"
-                                android:text="gpt-4-32k-0314 (deprecated)" />
+                                android:layout_height="wrap_content"
+                                android:text="gpt-4-32k-0314 (deprecated) (prompts: $0.06/1k tokens, output: $0.012/1k tokens)" />
 
                             <RadioButton
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
                                 android:id="@+id/text_davinci_003"
                                 android:layout_width="match_parent"
-                                android:layout_height="36dp"
-                                android:text="text-davinci-003" />
+                                android:layout_height="wrap_content"
+                                android:text="text-davinci-003 ($0.02/1k tokens)" />
 
                             <RadioButton
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
                                 android:id="@+id/text_davinci_002"
                                 android:layout_width="match_parent"
-                                android:layout_height="36dp"
-                                android:text="text-davinci-002" />
+                                android:layout_height="wrap_content"
+                                android:text="text-davinci-002 ($0.02/1k tokens)" />
 
                             <RadioButton
-                                android:id="@+id/code_davinci_002"
-                                android:layout_width="match_parent"
-                                android:layout_height="36dp"
-                                android:text="code-davinci-002" />
-
-                            <RadioButton
-                                android:id="@+id/code_cushman_001"
-                                android:layout_width="match_parent"
-                                android:layout_height="36dp"
-                                android:text="code-cushman-001" />
-
-                            <RadioButton
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
                                 android:id="@+id/text_curie_001"
                                 android:layout_width="match_parent"
-                                android:layout_height="36dp"
-                                android:text="text-curie-001" />
+                                android:layout_height="wrap_content"
+                                android:text="text-curie-001 ($0.002/1k tokens)" />
 
                             <RadioButton
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
                                 android:id="@+id/text_babbage_001"
                                 android:layout_width="match_parent"
-                                android:layout_height="36dp"
-                                android:text="text-babbage-001" />
+                                android:layout_height="wrap_content"
+                                android:text="text-babbage-001 ($0.0005/1k tokens)" />
 
                             <RadioButton
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
                                 android:id="@+id/text_ada_001"
                                 android:layout_width="match_parent"
-                                android:layout_height="36dp"
-                                android:text="text-ada-001" />
+                                android:layout_height="wrap_content"
+                                android:text="text-ada-001 ($0.0004/1k tokens)" />
 
                             <RadioButton
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
                                 android:id="@+id/davinci"
                                 android:layout_width="match_parent"
-                                android:layout_height="36dp"
+                                android:layout_height="wrap_content"
                                 android:text="davinci" />
 
                             <RadioButton
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
                                 android:id="@+id/curie"
                                 android:layout_width="match_parent"
-                                android:layout_height="36dp"
+                                android:layout_height="wrap_content"
                                 android:text="curie" />
 
                             <RadioButton
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
                                 android:id="@+id/babbage"
                                 android:layout_width="match_parent"
-                                android:layout_height="36dp"
+                                android:layout_height="wrap_content"
                                 android:text="babbage" />
 
                             <RadioButton
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
                                 android:id="@+id/ada"
                                 android:layout_width="match_parent"
-                                android:layout_height="36dp"
+                                android:layout_height="wrap_content"
                                 android:text="ada" />
                         </RadioGroup>
 
@@ -487,7 +505,6 @@
                     android:background="@drawable/t_menu_center_item_background"
                     android:clickable="true"
                     android:orientation="vertical"
-                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/divider5">
@@ -517,7 +534,7 @@
                             android:layout_marginTop="8dp"
                             android:layout_marginEnd="16dp"
                             android:layout_marginBottom="16dp"
-                            android:text="Nots: This prompt will be sent on the start of each conversation. Please note that this feature may use additional tokens."
+                            android:text="Nots: This prompt will be sent on the start of each conversation. Please note that this feature may use additional tokens. Leave this blank empty to disable this feature. If it is not work just clear your chat history."
                             android:textSize="12sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -566,7 +583,6 @@
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@color/transparent"
-                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/btn_prompt" />

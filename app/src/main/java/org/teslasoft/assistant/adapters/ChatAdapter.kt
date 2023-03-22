@@ -93,6 +93,9 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActiv
             markwon.setMarkdown(message, src)
             message.setTextIsSelectable(true)
 
+            message.isFocusable = true;
+            message.isFocusableInTouchMode = true;
+
             imageFrame.visibility = View.GONE
             message.visibility = View.VISIBLE
         }
