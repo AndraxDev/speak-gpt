@@ -14,6 +14,7 @@ import org.teslasoft.assistant.adapters.ChatListAdapter
 import org.teslasoft.assistant.fragments.AddChatDialogFragment
 import org.teslasoft.assistant.onboarding.WelcomeActivity
 import org.teslasoft.assistant.settings.SettingsActivity
+import org.teslasoft.assistant.util.Hash
 import java.lang.reflect.Type
 
 class ChatsListActivity : FragmentActivity() {
@@ -29,7 +30,21 @@ class ChatsListActivity : FragmentActivity() {
     private var btnAdd: ExtendedFloatingActionButton? = null
 
     var chatListUpdatedListener: AddChatDialogFragment.StateChangesListener = object : AddChatDialogFragment.StateChangesListener {
-        override fun onEdit() {
+        override fun onAdd(name: String, id: String) {
+            initSettings()
+
+            val i = Intent(
+                this@ChatsListActivity,
+                ChatActivity::class.java
+            )
+
+            i.putExtra("name", name)
+            i.putExtra("chatId", id)
+
+            startActivity(i)
+        }
+
+        override fun onEdit(name: String, id: String) {
             initSettings()
         }
 

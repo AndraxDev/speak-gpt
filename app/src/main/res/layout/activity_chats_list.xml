@@ -20,18 +20,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_add" />
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/teslasoft_id_btn"
-        android:name="org.teslasoft.core.auth.widget.TeslasoftIDCircledButton"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        android:elevation="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout="@layout/widget_teslasoft_id_circle" />
-
     <TextView
         android:id="@+id/activity__title"
         android:layout_width="wrap_content"
@@ -49,9 +37,9 @@
         android:id="@+id/chats"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -63,10 +51,10 @@
         android:id="@+id/btn_settings_"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
         android:background="@drawable/btn_accent_tonal"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_settings" />
 </androidx.constraintlayout.widget.ConstraintLayout>

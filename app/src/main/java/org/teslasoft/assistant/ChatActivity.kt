@@ -15,6 +15,8 @@ import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
 import android.speech.tts.Voice
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
@@ -63,8 +65,6 @@ class ChatActivity : FragmentActivity() {
     private var btnSend: ImageButton? = null
     private var btnMicro: ImageButton? = null
     private var btnSettings: ImageButton? = null
-    private var btnKeyboard: ImageButton? = null
-    private var keyboardInput: LinearLayout? = null
     private var progress: ProgressBar? = null
     private var chat: ListView? = null
     private var activityTitle: TextView? = null
@@ -189,6 +189,9 @@ class ChatActivity : FragmentActivity() {
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
+        window.statusBarColor = ContextCompat.getColor(this, R.color.accent_100)
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.accent_100)
+
         initChatId()
 
         initSettings()
@@ -266,8 +269,6 @@ class ChatActivity : FragmentActivity() {
     private fun initUI() {
         btnMicro = findViewById(R.id.btn_micro)
         btnSettings = findViewById(R.id.btn_settings)
-        btnKeyboard = findViewById(R.id.btn_keyboard)
-        keyboardInput = findViewById(R.id.keyboard_input)
         chat = findViewById(R.id.messages)
         messageInput = findViewById(R.id.message_input)
         btnSend = findViewById(R.id.btn_send)
@@ -280,13 +281,9 @@ class ChatActivity : FragmentActivity() {
 
         btnMicro?.setImageResource(R.drawable.ic_microphone)
         btnSettings?.setImageResource(R.drawable.ic_settings)
-        btnKeyboard?.setImageResource(R.drawable.ic_keyboard)
-
-        keyboardInput?.visibility = View.GONE
 
         chat?.adapter = adapter
-        chat?.divider = ColorDrawable(0x3D000000)
-        chat?.dividerHeight = 1
+        chat?.dividerHeight = 0
 
         adapter?.notifyDataSetChanged()
     }
@@ -319,21 +316,26 @@ class ChatActivity : FragmentActivity() {
             }
         }
 
-        btnKeyboard?.setOnClickListener {
-            if (keyboardMode) {
-                keyboardMode = false
-                keyboardInput?.visibility = View.GONE
-                messageInput?.isEnabled = false
-                btnKeyboard?.setImageResource(R.drawable.ic_keyboard)
-            } else {
-                keyboardMode = true
-                keyboardInput?.visibility = View.VISIBLE
-                messageInput?.isEnabled = true
-                btnKeyboard?.setImageResource(R.drawable.ic_keyboard_hide)
+        messageInput?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                /* unused */
             }
-        }
 
-        keyboardInput?.setOnClickListener { /* preventDefault */ }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (s.toString() == "") {
+                    btnSend?.visibility = View.GONE
+                    btnMicro?.visibility = View.VISIBLE
+                } else {
+                    btnSend?.visibility = View.VISIBLE
+                    btnMicro?.visibility = View.GONE
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                /* unused */
+            }
+
+        })
 
         btnSend?.setOnClickListener {
             parseMessage(messageInput?.text.toString())
@@ -419,6 +421,7 @@ class ChatActivity : FragmentActivity() {
         model = settings.getString("model", "gpt-3.5-turbo").toString()
     }
 
+    @Suppress("unused")
     private suspend fun getModels() {
         val models: List<Model> = ai!!.models()
 
@@ -462,9 +465,6 @@ class ChatActivity : FragmentActivity() {
             messageInput?.setText("")
 
             keyboardMode = false
-            keyboardInput?.visibility = View.GONE
-            messageInput?.isEnabled = false
-            btnKeyboard?.setImageResource(R.drawable.ic_keyboard)
 
             putMessage(message, false)
             saveSettings()

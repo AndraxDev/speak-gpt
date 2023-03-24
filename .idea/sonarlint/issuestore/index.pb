@@ -11,13 +11,17 @@ p
 @app/src/main/java/org/teslasoft/assistant/util/ResponseParser.kt,c\6\c6eb91de5c2c04d9602e092e86d1a23069568ca2
 n
 >app/src/main/java/org/teslasoft/assistant/util/LocaleParser.kt,0\7\0760db8b7c83aa949181c3d9730cbeff24efff7d
-`
-0app/src/main/java/org/teslasoft/assistant/App.kt,0\0\006d31948251c2707720a0bdfa841112ad7e2987
-Y
-)app/src/main/res/layout/activity_main.xml,7\6\76b07e40f24cce093536731477540f12e7da3cb6
 w
 Gapp/src/main/java/org/teslasoft/assistant/onboarding/WelcomeActivity.kt,7\0\703b22ba5dbbcd6754574fb6baeddf33df2ab167
 u
 Eapp/src/main/java/org/teslasoft/assistant/onboarding/TermsActivity.kt,0\0\0003358e1e2001cbb7673145f4ed1d05132bb7c7
 q
 Aapp/src/main/java/org/teslasoft/assistant/ImageBrowserActivity.kt,8\e\8ec5e623a7d3ec58246047f7d6be8c461b548ba4
+j
+:app/src/main/java/org/teslasoft/assistant/DebugActivity.kt,5\2\52962aeefaff5b6610aa8c044a02793da0d18ce4
+P
+ app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
+z
+Japp/src/main/java/org/teslasoft/assistant/onboarding/ActivationActivity.kt,5\d\5d69012421ca82ed0b94ca9aa229e4190692a2fc
+f
+6app/src/main/java/org/teslasoft/assistant/util/Hash.kt,2\b\2b57dc8745f3dc071d6d3504e0373b969b6a7585

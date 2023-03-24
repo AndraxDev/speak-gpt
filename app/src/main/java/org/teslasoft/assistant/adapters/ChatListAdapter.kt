@@ -51,6 +51,13 @@ class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragme
 
         name.text = dataArray?.get(position)?.get("name").toString()
 
+        if (position % 2 == 0) {
+            selector.setBackgroundResource(R.drawable.btn_accent_selector_v2)
+            icon.setBackgroundResource(R.drawable.btn_accent_tonal_v2)
+        } else {
+            selector.setBackgroundResource(R.drawable.btn_accent_selector)
+        }
+
         selector.setOnClickListener {
             val i = Intent(
                     mContext,

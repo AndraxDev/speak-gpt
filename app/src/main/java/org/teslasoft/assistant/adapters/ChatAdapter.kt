@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.google.android.material.elevation.SurfaceColors
 import io.noties.markwon.Markwon
 import org.teslasoft.assistant.ImageBrowserActivity
 import org.teslasoft.assistant.R
@@ -61,9 +62,8 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActiv
         if (dataArray?.get(position)?.get("isBot") == true) {
             icon.setImageResource(R.drawable.assistant)
             username.text = mContext.resources.getString(R.string.app_name)
-            ui.setBackgroundResource(R.color.accent_100)
-        }
-        else {
+            ui.setBackgroundColor(getSurfaceColor(mContext))
+        } else {
             icon.setImageResource(R.drawable.ic_user)
             username.text = "User"
             ui.setBackgroundResource(R.color.window_background)
@@ -105,5 +105,9 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActiv
 
     private fun convertDpToPixel(dp: Float, context: Context): Float {
         return dp * (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+    }
+
+    private fun getSurfaceColor(context: Context): Int {
+        return SurfaceColors.SURFACE_2.getColor(context)
     }
 }

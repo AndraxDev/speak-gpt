@@ -146,7 +146,7 @@ class AddChatDialogFragment : DialogFragment() {
 
                             ed.apply()
 
-                            listener!!.onEdit()
+                            listener!!.onEdit(nameInput?.text.toString(), Hash.hash(nameInput?.text.toString()))
                         } else {
                             listener!!.onDuplicate()
                         }
@@ -178,7 +178,7 @@ class AddChatDialogFragment : DialogFragment() {
                     editor.putString("data", json2)
                     editor.apply()
 
-                    listener!!.onEdit()
+                    listener!!.onAdd(nameInput?.text.toString(), Hash.hash(nameInput?.text.toString()))
                 } else {
                     listener!!.onDuplicate()
                 }
@@ -240,7 +240,8 @@ class AddChatDialogFragment : DialogFragment() {
     }
 
     public interface StateChangesListener {
-        public fun onEdit()
+        public fun onAdd(name: String, id: String)
+        public fun onEdit(name: String, id: String)
         public fun onError()
         public fun onCanceled()
         public fun onDelete()
