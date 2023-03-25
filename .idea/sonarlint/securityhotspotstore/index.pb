@@ -29,8 +29,6 @@ Lapp/src/main/java/org/teslasoft/core/api/network/RequestNetworkController.kt,5
 Mapp/src/main/java/org/teslasoft/assistant/fragments/ActivationPromptDialog.kt,9\6\963bab82b2c2d9cbdc82d7d207f7d01ba061dfc0
 i
 9app/src/main/java/org/teslasoft/assistant/MainActivity.kt,b\d\bda2be9a430626f336d9e57f32743bf1df5661ac
-d
-4app/src/main/java/org/teslasoft/assistant/app/App.kt,a\c\acea5535163da44067b35d87080cf88ade667b1c
 w
 Gapp/src/main/java/org/teslasoft/assistant/onboarding/WelcomeActivity.kt,7\0\703b22ba5dbbcd6754574fb6baeddf33df2ab167
 u

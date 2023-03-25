@@ -35,5 +35,3 @@ u
 Eapp/src/main/java/org/teslasoft/assistant/onboarding/TermsActivity.kt,0\0\0003358e1e2001cbb7673145f4ed1d05132bb7c7
 z
 Japp/src/main/java/org/teslasoft/assistant/onboarding/ActivationActivity.kt,5\d\5d69012421ca82ed0b94ca9aa229e4190692a2fc
-d
-4app/src/main/java/org/teslasoft/assistant/app/App.kt,a\c\acea5535163da44067b35d87080cf88ade667b1c
