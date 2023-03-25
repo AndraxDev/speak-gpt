@@ -1,5 +1,6 @@
 package org.teslasoft.assistant.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -28,6 +29,7 @@ class PromptAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragment
         return position.toLong()
     }
 
+    @SuppressLint("SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val inflater = mContext.requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
@@ -45,7 +47,7 @@ class PromptAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragment
 
         promptName.text = dataArray?.get(position)?.get("name")
         promptDescription.text = dataArray?.get(position)?.get("desc")
-        promptAuthor.text = dataArray?.get(position)?.get("author")
+        promptAuthor.text = "By " + dataArray?.get(position)?.get("author")
         likesCounter.text = dataArray?.get(position)?.get("likes")
 
         bacground.setOnClickListener {
