@@ -4,6 +4,7 @@ import android.R.attr.label
 import android.R.attr.text
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
@@ -186,7 +187,9 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
                 }
 
                 btnFlag?.setOnClickListener {
-
+                    val i = Intent(this, ReportAbuseActivity::class.java)
+                    i.putExtra("id", id)
+                    startActivity(i)
                 }
 
                 requestNetwork = RequestNetwork(this)

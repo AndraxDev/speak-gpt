@@ -54,6 +54,13 @@
         </activity>
 
         <activity
+            android:name=".ReportAbuseActivity"
+            android:exported="false"
+            android:theme="@style/UI.Fade"
+            android:launchMode="singleTask">
+        </activity>
+
+        <activity
             android:name=".onboarding.WelcomeActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"

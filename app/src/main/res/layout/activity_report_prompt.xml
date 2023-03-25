@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/activity_report_title"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:background="@color/accent_100"
+        android:elevation="6dp"
+        android:gravity="center"
+        android:text="Report abuse"
+        android:textColor="@color/text_title"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:id="@+id/report_form"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activity_report_title">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView12"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="24dp"
+                    android:text="This prompt contains:"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <RadioGroup
+                    android:id="@+id/radioGroup2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="24dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView12">
+
+                    <RadioButton
+                        android:id="@+id/btn_illegal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Illegal activity" />
+
+                    <RadioButton
+                        android:id="@+id/btn_cp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Child Sexual Abuse" />
+
+                    <RadioButton
+                        android:id="@+id/btn_hate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Generation of hateful, harassing, or violent content" />
+
+                    <RadioButton
+                        android:id="@+id/btn_malware"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Generation of malware" />
+
+                    <RadioButton
+                        android:id="@+id/btn_fraud"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Fraudulent or deceptive activity" />
+
+                    <RadioButton
+                        android:id="@+id/btn_adult"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Adult content" />
+
+                    <RadioButton
+                        android:id="@+id/btn_political"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Political campaigning or lobbying" />
+
+                    <RadioButton
+                        android:id="@+id/btn_duplicated"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Duplicated prompt or spam" />
+                </RadioGroup>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputLayout5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="24dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/radioGroup2">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/field_details"
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:gravity="top|left"
+                        android:hint="Additional info" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_send_report"
+                    style="@style/Widget.Material3.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="Send report"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
+                <TextView
+                    android:id="@+id/textView11"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="24dp"
+                    android:text="Note: Sending multiple identical reports will not solve your problem faster."
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textInputLayout5" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/loading_bar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activity_report_title" />
+</androidx.constraintlayout.widget.ConstraintLayout>

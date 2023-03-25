@@ -2,6 +2,6 @@ package org.teslasoft.assistant
 
 class Api {
     companion object {
-        public val API_KEY: String = ""
+        public const val API_KEY: String = ""
     }
 }
