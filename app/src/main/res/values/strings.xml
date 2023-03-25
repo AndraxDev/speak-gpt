@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SpeakGPT</string>
+    <string name="activation_prompt_set_message">Tap to set activation prompt</string>
 </resources>

@@ -1,23 +1,27 @@
-package org.teslasoft.assistant
+package org.teslasoft.assistant.fragments
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ListView
 import android.widget.Toast
-import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.Fragment
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import org.teslasoft.assistant.ChatActivity
+import org.teslasoft.assistant.R
 import org.teslasoft.assistant.adapters.ChatListAdapter
-import org.teslasoft.assistant.fragments.AddChatDialogFragment
 import org.teslasoft.assistant.onboarding.WelcomeActivity
 import org.teslasoft.assistant.settings.SettingsActivity
-import org.teslasoft.assistant.util.Hash
 import java.lang.reflect.Type
 
-class ChatsListActivity : FragmentActivity() {
+class ChatsListFragment : Fragment() {
 
     private var chats: ArrayList<HashMap<String, String>> = arrayListOf()
 
@@ -34,7 +38,7 @@ class ChatsListActivity : FragmentActivity() {
             initSettings()
 
             val i = Intent(
-                this@ChatsListActivity,
+                requireActivity(),
                 ChatActivity::class.java
             )
 
@@ -49,11 +53,11 @@ class ChatsListActivity : FragmentActivity() {
         }
 
         override fun onError() {
-            Toast.makeText(this@ChatsListActivity, "Error", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireActivity(), "Error", Toast.LENGTH_SHORT).show()
 
             val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("")
             chatDialogFragment.setStateChangedListener(this)
-            chatDialogFragment.show(supportFragmentManager.beginTransaction(), "AddChatDialog")
+            chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
 
         override fun onCanceled() {
@@ -65,34 +69,40 @@ class ChatsListActivity : FragmentActivity() {
         }
 
         override fun onDuplicate() {
-            Toast.makeText(this@ChatsListActivity, "Name must be unique", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireActivity(), "Name must be unique", Toast.LENGTH_SHORT).show()
 
             val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("")
             chatDialogFragment.setStateChangedListener(this)
-            chatDialogFragment.show(supportFragmentManager.beginTransaction(), "AddChatDialog")
+            chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_chats_list, container, false)
+    }
 
-        setContentView(R.layout.activity_chats_list)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        chatsList = findViewById(R.id.chats)
-        btnSettings = findViewById(R.id.btn_settings_)
+        chatsList = view.findViewById(R.id.chats)
+        btnSettings = view.findViewById(R.id.btn_settings_)
 
         btnSettings?.setImageResource(R.drawable.ic_settings)
 
         btnSettings?.setOnClickListener {
-            startActivity(Intent(this, SettingsActivity::class.java))
+            startActivity(Intent(requireActivity(), SettingsActivity::class.java))
         }
 
-        btnAdd = findViewById(R.id.btn_add)
+        btnAdd = view.findViewById(R.id.btn_add)
 
         btnAdd?.setOnClickListener {
             val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("")
             chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
-            chatDialogFragment.show(supportFragmentManager.beginTransaction(), "AddChatDialog")
+            chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
 
         adapter = ChatListAdapter(chats, this)
@@ -108,20 +118,20 @@ class ChatsListActivity : FragmentActivity() {
     }
 
     private fun preInit() {
-        val settings: SharedPreferences = getSharedPreferences("settings", MODE_PRIVATE)
+        val settings: SharedPreferences = requireActivity().getSharedPreferences("settings", Context.MODE_PRIVATE)
 
         val key = settings.getString("api_key", null)
 
         if (key == null) {
-            startActivity(Intent(this, WelcomeActivity::class.java))
-            finish()
+            startActivity(Intent(requireActivity(), WelcomeActivity::class.java))
+            requireActivity().finish()
         } else {
             initSettings()
         }
     }
 
     private fun initSettings() {
-        val settings: SharedPreferences = getSharedPreferences("chat_list", MODE_PRIVATE)
+        val settings: SharedPreferences = requireActivity().getSharedPreferences("chat_list", Context.MODE_PRIVATE)
 
         chats = try {
             val gson = Gson()

@@ -10,16 +10,16 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.Fragment
 import org.teslasoft.assistant.ChatActivity
-import org.teslasoft.assistant.ChatsListActivity
+import org.teslasoft.assistant.fragments.ChatsListFragment
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.fragments.AddChatDialogFragment
 import org.teslasoft.assistant.util.Hash
 
-class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: FragmentActivity) : BaseAdapter() {
+class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragment) : BaseAdapter() {
     private val dataArray: ArrayList<HashMap<String, String>>? = data
-    private val mContext: FragmentActivity = context
+    private val mContext: Fragment = context
 
     override fun getCount(): Int {
         return dataArray!!.size
@@ -35,7 +35,7 @@ class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragme
 
     @SuppressLint("InflateParams", "SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        val inflater = mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val inflater = mContext.requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
         var mView: View? = convertView
 
@@ -60,20 +60,20 @@ class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragme
 
         selector.setOnClickListener {
             val i = Intent(
-                    mContext,
+                    mContext.requireActivity(),
                     ChatActivity::class.java
             )
 
             i.putExtra("name", dataArray?.get(position)?.get("name").toString())
             i.putExtra("chatId", Hash.hash(dataArray?.get(position)?.get("name").toString()))
 
-            mContext.startActivity(i)
+            mContext.requireActivity().startActivity(i)
         }
 
         selector.setOnLongClickListener {
             val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(name.text.toString())
-            chatDialogFragment.setStateChangedListener((mContext as ChatsListActivity).chatListUpdatedListener)
-            chatDialogFragment.show(mContext.supportFragmentManager.beginTransaction(), "AddChatDialog")
+            chatDialogFragment.setStateChangedListener((mContext as ChatsListFragment).chatListUpdatedListener)
+            chatDialogFragment.show(mContext.parentFragmentManager.beginTransaction(), "AddChatDialog")
 
             return@setOnLongClickListener true
         }

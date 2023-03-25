@@ -33,6 +33,7 @@
     <color name="green">#FF00FF00</color>
     <color name="light_red">#E83A3A</color>
     <color name="light_green">#AADC79</color>
+    <color name="tip1">#333b2f</color>
     <color name="light_blue">#9592E4</color>
     <color name="text_title">#FF000000</color>
     <color name="ripple">#4D000000</color>

@@ -18,6 +18,7 @@ class WelcomeActivity : FragmentActivity() {
 
         btnNext?.setOnClickListener {
             startActivity(Intent(this, TermsActivity::class.java))
+            finish()
         }
     }
 }

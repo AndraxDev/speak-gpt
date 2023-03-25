@@ -36,7 +36,7 @@
         android:layout_marginStart="36dp"
         android:layout_marginTop="36dp"
         android:layout_marginEnd="36dp"
-        android:text="To use this software you need to provide your OpenAI API key. SpeakGPT is based on a paid chatgpt-3.5-turbo model."
+        android:text="To use this software you need to provide your OpenAI API key. SpeakGPT uses paid OpenAI models."
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +60,7 @@
         android:layout_marginStart="36dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="36dp"
-        android:text="By using OpenAI API instead of ChatGPT Plus you can significantly save money because you will pay as you go instead of fixed $20/month."
+        android:text="API usage is significantly cheaper than fixed subscription."
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -93,6 +93,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="OpenAI API key"
-            android:imeOptions="actionDone" />
+            android:imeOptions="actionDone"
+            android:singleLine="true" />
     </com.google.android.material.textfield.TextInputLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

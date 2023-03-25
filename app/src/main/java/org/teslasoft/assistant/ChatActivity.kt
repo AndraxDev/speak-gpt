@@ -544,9 +544,7 @@ class ChatActivity : FragmentActivity() {
         try {
             if (model.contains("davinci") || model.contains("curie") || model.contains("babbage") || model.contains("ada")) {
 
-                var tokens = 0
-
-                tokens = if (model.contains("text-davinci") || model.contains("code-davinci")) {
+                val tokens = if (model.contains("text-davinci") || model.contains("code-davinci")) {
                     2048
                 } else 1500
 

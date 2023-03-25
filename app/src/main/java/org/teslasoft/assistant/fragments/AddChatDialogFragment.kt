@@ -50,13 +50,13 @@ class AddChatDialogFragment : DialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.add_dialog, container, false)
+        return inflater.inflate(R.layout.fragment_add_chat, container, false)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         builder = MaterialAlertDialogBuilder(this.requireContext())
 
-        val view: View = this.layoutInflater.inflate(R.layout.add_dialog, null)
+        val view: View = this.layoutInflater.inflate(R.layout.fragment_add_chat, null)
 
         nameInput = view.findViewById(R.id.field_name)
 
@@ -78,6 +78,36 @@ class AddChatDialogFragment : DialogFragment() {
             return builder!!.create()
         } else {
             dialogTitle.text = "New chat"
+
+            var x = 1
+
+            val settings: SharedPreferences = requireActivity().getSharedPreferences("chat_list", Context.MODE_PRIVATE)
+
+            val gson = Gson()
+            val json = settings.getString("data", null)
+            val type: Type = object : TypeToken<ArrayList<HashMap<String, String>?>?>() {}.type
+
+            val list: ArrayList<HashMap<String, String>> = try {
+                gson.fromJson<Any>(json, type) as ArrayList<HashMap<String, String>>
+            } catch (e: Exception) {
+                arrayListOf()
+            }
+
+            while (true) {
+                var isFound = false
+                for (map: HashMap<String, String> in list) {
+                    if (map["name"] == "New chat $x") {
+                        isFound = true
+                        break
+                    }
+                }
+
+                if (!isFound) break
+
+                x++
+            }
+
+            nameInput?.setText("New chat $x")
 
             builder!!.setView(view)
                     .setCancelable(false)

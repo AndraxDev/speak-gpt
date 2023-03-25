@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_chat"
+        android:enabled="true"
+        android:icon="@drawable/ic_chat"
+        android:title="Chat"/>
+
+    <item
+        android:id="@+id/menu_prompts"
+        android:enabled="true"
+        android:icon="@drawable/ic_prompts"
+        android:title="Prompts"/>
+
+    <item
+        android:id="@+id/menu_tips"
+        android:enabled="true"
+        android:icon="@drawable/ic_tips"
+        android:title="Tips"/>
+
+</menu>

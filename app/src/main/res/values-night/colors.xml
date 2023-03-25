@@ -21,4 +21,5 @@
     <color name="success">#9CE38F</color>
     <color name="text">#eeffffff</color>
     <color name="hint">#aaffffff</color>
+    <color name="tip1">#ccfcb3</color>
 </resources>

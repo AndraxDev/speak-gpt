@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/model_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:text="GPT model"
+            android:textColor="@color/text_title"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/model_title">
+
+            <RadioButton
+                android:id="@+id/gpt_35_turbo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="gpt-3.5-turbo ($0.002/1k tokens)" />
+
+            <RadioButton
+                android:id="@+id/gpt_35_turbo_0301"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="gpt-3.5-turbo-0301 (deprecated) ($0.002/1k tokens)" />
+
+            <RadioButton
+                android:id="@+id/gpt_4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="gpt-4 (prompts: $0.03/1k tokens, output: $0.06/1k tokens)" />
+
+            <RadioButton
+                android:id="@+id/gpt_4_0314"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="gpt-4-0314 (deprecated) (prompts: $0.03/1k tokens, output: $0.06/1k tokens)" />
+
+            <RadioButton
+                android:id="@+id/gpt_4_32k"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="gpt-4-32k (prompts: $0.06/1k tokens, output: $0.012/1k tokens)" />
+
+            <RadioButton
+                android:id="@+id/gpt_4_32k_0314"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="gpt-4-32k-0314 (deprecated) (prompts: $0.06/1k tokens, output: $0.012/1k tokens)" />
+
+            <RadioButton
+                android:id="@+id/text_davinci_003"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="text-davinci-003 ($0.02/1k tokens)" />
+
+            <RadioButton
+                android:id="@+id/text_davinci_002"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="text-davinci-002 ($0.02/1k tokens)" />
+
+            <RadioButton
+                android:id="@+id/text_curie_001"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="text-curie-001 ($0.002/1k tokens)" />
+
+            <RadioButton
+                android:id="@+id/text_babbage_001"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="text-babbage-001 ($0.0005/1k tokens)" />
+
+            <RadioButton
+                android:id="@+id/text_ada_001"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="text-ada-001 ($0.0004/1k tokens)" />
+
+            <RadioButton
+                android:id="@+id/davinci"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="davinci" />
+
+            <RadioButton
+                android:id="@+id/curie"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="curie" />
+
+            <RadioButton
+                android:id="@+id/babbage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="babbage" />
+
+            <RadioButton
+                android:id="@+id/ada"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="ada" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/model_desc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="16dp"
+            android:text="Note: ChatGPT 4 is currently in limited beta. Join waitlist to get API access. If you've got an error switch to another model. If you have slow perfomance on specified model it means that too many users use it at the same time. Some of models are deprecated and will be removed in future. See the documentation for more info."
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

@@ -11,8 +11,8 @@ android {
         applicationId "org.teslasoft.assistant"
         minSdk 28
         targetSdk 33
-        versionCode 9
-        versionName "1.9.0-beta10"
+        versionCode 10
+        versionName "1.10.0-beta11"
     }
 
     buildTypes {
@@ -33,7 +33,7 @@ android {
 dependencies {
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0-alpha02'
+    implementation 'com.google.android.material:material:1.9.0-beta01'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.aallam.openai:openai-client:3.1.0'
     implementation 'io.ktor:ktor-client-android:2.2.3'
@@ -50,4 +50,6 @@ dependencies {
     implementation "io.noties.markwon:ext-strikethrough:4.6.2"
     implementation "io.noties.markwon:ext-tables:4.6.2"
     implementation "io.noties.markwon:ext-tasklist:4.6.2"
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.11'
 }
