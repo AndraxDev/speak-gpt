@@ -47,7 +47,21 @@
         </activity>
 
         <activity
+            android:name=".PromptViewActivity"
+            android:exported="false"
+            android:theme="@style/Theme.App"
+            android:launchMode="singleTask">
+        </activity>
+
+        <activity
             android:name=".onboarding.WelcomeActivity"
+            android:exported="false"
+            android:theme="@style/UI.Fade"
+            android:launchMode="singleTask">
+        </activity>
+
+        <activity
+            android:name=".AboutActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
             android:launchMode="singleTask">

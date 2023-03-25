@@ -1,6 +1,7 @@
 package org.teslasoft.assistant.adapters
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import android.widget.BaseAdapter
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import org.teslasoft.assistant.PromptViewActivity
 import org.teslasoft.assistant.R
 
 class PromptAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragment) : BaseAdapter() {
@@ -47,7 +49,10 @@ class PromptAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragment
         likesCounter.text = dataArray?.get(position)?.get("likes")
 
         bacground.setOnClickListener {
-
+            val i = Intent(mContext.requireActivity(), PromptViewActivity::class.java)
+            i.putExtra("id", dataArray?.get(position)?.get("id"))
+            i.putExtra("title", dataArray?.get(position)?.get("name"))
+            mContext.requireActivity().startActivity(i)
         }
 
         return mView

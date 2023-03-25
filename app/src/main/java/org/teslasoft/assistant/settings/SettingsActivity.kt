@@ -15,6 +15,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.materialswitch.MaterialSwitch
+import org.teslasoft.assistant.AboutActivity
 import org.teslasoft.assistant.DebugActivity
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.fragments.ActivationPromptDialog
@@ -31,6 +32,7 @@ class SettingsActivity : FragmentActivity() {
     private var dalleResolutions: MaterialButtonToggleGroup? = null
     private var btnModel: LinearLayout? = null
     private var btnPrompt: LinearLayout? = null
+    private var btnAbout: LinearLayout? = null
     private var r256: MaterialButton? = null
     private var r512: MaterialButton? = null
     private var r1024: MaterialButton? = null
@@ -90,6 +92,7 @@ class SettingsActivity : FragmentActivity() {
         btnPrompt = findViewById(R.id.btn_prompt)
         promptDesc = findViewById(R.id.prompt_desc)
         modelDesc = findViewById(R.id.model_desc)
+        btnAbout = findViewById(R.id.btn_about)
 
         val settings: SharedPreferences = getSharedPreferences("settings", MODE_PRIVATE)
         activationPrompt = settings.getString("prompt", "").toString()
@@ -125,6 +128,10 @@ class SettingsActivity : FragmentActivity() {
             intent.action = Intent.ACTION_VIEW
             intent.data = Uri.parse("https://platform.openai.com/account")
             startActivity(intent)
+        }
+
+        btnAbout?.setOnClickListener {
+            startActivity(Intent(this, AboutActivity::class.java))
         }
 
         btnClearChat?.setOnClickListener {

@@ -79,6 +79,28 @@
                         android:text="Long press chat name to edit or delete it."
                         android:textColor="@color/tip1" />
                 </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tip_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="24dp"
+                    android:background="@drawable/btn_tip1"
+                    android:orientation="vertical"
+                    android:padding="24dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tip_2">
+
+                    <TextView
+                        android:id="@+id/tip3_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Use &quot;author:&quot; prefix to search prompts by author or &quot;title:&quot; to search by title.\n\nUse &quot;id:&quot; to search by id."
+                        android:textColor="@color/tip1" />
+                </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </ScrollView>

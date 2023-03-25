@@ -10,6 +10,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/accent_100"
+        android:elevation="6dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -53,7 +53,7 @@ class ChatsListFragment : Fragment() {
         }
 
         override fun onError() {
-            Toast.makeText(requireActivity(), "Error", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireActivity(), "Please fill name field", Toast.LENGTH_SHORT).show()
 
             val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("")
             chatDialogFragment.setStateChangedListener(this)
