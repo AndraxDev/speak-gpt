@@ -644,7 +644,11 @@ class ChatActivity : FragmentActivity() {
 
             putMessage(path, true)
         } catch (e: Exception) {
-            putMessage(e.stackTraceToString(), true)
+            if (e.stackTraceToString().contains("Your request was rejected")) {
+                putMessage("Your prompt contains inappropriate content and can not be processed. We strive to make AI safe and relevant for everyone.", true)
+            } else {
+                putMessage(e.stackTraceToString(), true)
+            }
         }
 
         saveSettings()

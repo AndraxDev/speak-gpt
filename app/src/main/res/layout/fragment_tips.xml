@@ -98,7 +98,51 @@
                         android:id="@+id/tip3_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Use &quot;author:&quot; prefix to search prompts by author or &quot;title:&quot; to search by title.\n\nUse &quot;id:&quot; to search by id."
+                        android:text="Search tricks:\n\nUse &quot;author:&quot; prefix to searh by author.\nUse &quot;title:&quot; prefix to search by title.\nUse &quot;id:&quot; prefix to search by id."
+                        android:textColor="@color/tip1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tip_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="24dp"
+                    android:background="@drawable/btn_tip1"
+                    android:orientation="vertical"
+                    android:padding="24dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tip_3">
+
+                    <TextView
+                        android:id="@+id/tip4_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="ChatGPT is stuffy? Try out other models. Sometimes you may get very interesting results."
+                        android:textColor="@color/tip1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tip_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="24dp"
+                    android:background="@drawable/btn_tip1"
+                    android:orientation="vertical"
+                    android:padding="24dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tip_4">
+
+                    <TextView
+                        android:id="@+id/tip5_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Only GPT models can remember previous messages. Other models are not optimized for it."
                         android:textColor="@color/tip1" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>

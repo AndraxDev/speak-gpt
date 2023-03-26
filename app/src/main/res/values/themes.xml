@@ -30,6 +30,18 @@
         <item name="colorPrimaryDark">#ff121212</item>
     </style>
 
+    <style name="Theme.Assistant" parent="@style/Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+        <item name="colorAccent">@color/accent_900</item>
+        <item name="colorPrimary">@color/transparent</item>
+        <item name="colorPrimaryDark">@color/transparent</item>
+    </style>
+
     <style name="Theme.Anim.Fade.Material" parent="@style/Theme.AppCompat">
         <item name="android:windowEnterAnimation">@anim/fade_in</item>
         <item name="android:windowExitAnimation">@anim/fade_out</item>

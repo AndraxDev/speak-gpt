@@ -1,149 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
-    <TextView
-        android:id="@+id/dialog_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
-        android:text="Post a prompt"
-        android:textColor="@color/text_title"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
 
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        android:layout_weight="1"
-        android:ems="10"
-        android:hint="Your name"
-        android:textColor="@color/accent_900"
-        android:textColorHint="@color/accent_500"
-        app:boxStrokeColor="@color/button"
-        app:boxStrokeErrorColor="@color/error"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dialog_title">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/field_author_name"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/dialog_title"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/button"
-            android:inputType="text"
-            android:textColor="@color/accent_900"
-            android:textColorHighlight="@color/accent_100"
-            android:textColorHint="@color/accent_500"
-            app:backgroundTint="@color/button" />
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="24dp"
+            android:text="Post a prompt"
+            android:textColor="@color/text_title"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout3"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        android:layout_weight="1"
-        android:ems="10"
-        android:hint="Prompt title"
-        android:textColor="@color/accent_900"
-        android:textColorHint="@color/accent_500"
-        app:boxStrokeColor="@color/button"
-        app:boxStrokeErrorColor="@color/error"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/field_prompt_title"
-            android:layout_width="match_parent"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout2"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/button"
-            android:inputType="text"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Your name"
             android:textColor="@color/accent_900"
-            android:textColorHighlight="@color/accent_100"
             android:textColorHint="@color/accent_500"
-            app:backgroundTint="@color/button" />
+            app:boxStrokeColor="@color/button"
+            app:boxStrokeErrorColor="@color/error"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dialog_title">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/field_author_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/button"
+                android:inputType="text"
+                android:textColor="@color/accent_900"
+                android:textColorHighlight="@color/accent_100"
+                android:textColorHint="@color/accent_500"
+                app:backgroundTint="@color/button" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout4"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        android:layout_weight="1"
-        android:ems="10"
-        android:hint="Brief description"
-        android:textColor="@color/accent_900"
-        android:textColorHint="@color/accent_500"
-        app:boxStrokeColor="@color/button"
-        app:boxStrokeErrorColor="@color/error"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout3">
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/field_prompt_desc"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:backgroundTint="@color/button"
-            android:gravity="top|left"
-            android:inputType="text|textMultiLine"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Prompt title"
             android:textColor="@color/accent_900"
-            android:textColorHighlight="@color/accent_100"
             android:textColorHint="@color/accent_500"
-            app:backgroundTint="@color/button" />
+            app:boxStrokeColor="@color/button"
+            app:boxStrokeErrorColor="@color/error"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/field_prompt_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/button"
+                android:inputType="text"
+                android:textColor="@color/accent_900"
+                android:textColorHighlight="@color/accent_100"
+                android:textColorHint="@color/accent_500"
+                app:backgroundTint="@color/button" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        android:layout_weight="1"
-        android:ems="10"
-        android:hint="Prompt"
-        android:textColor="@color/accent_900"
-        android:textColorHint="@color/accent_500"
-        app:boxStrokeColor="@color/button"
-        app:boxStrokeErrorColor="@color/error"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout4">
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/field_prompt"
-            android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:backgroundTint="@color/button"
-            android:gravity="top|left"
-            android:inputType="text|textMultiLine"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Brief description"
             android:textColor="@color/accent_900"
-            android:textColorHighlight="@color/accent_100"
             android:textColorHint="@color/accent_500"
-            app:backgroundTint="@color/button" />
+            app:boxStrokeColor="@color/button"
+            app:boxStrokeErrorColor="@color/error"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout3">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/field_prompt_desc"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:backgroundTint="@color/button"
+                android:gravity="top|left"
+                android:inputType="text|textMultiLine"
+                android:textColor="@color/accent_900"
+                android:textColorHighlight="@color/accent_100"
+                android:textColorHint="@color/accent_500"
+                app:backgroundTint="@color/button" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Prompt"
+            android:textColor="@color/accent_900"
+            android:textColorHint="@color/accent_500"
+            app:boxStrokeColor="@color/button"
+            app:boxStrokeErrorColor="@color/error"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout4">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/field_prompt"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:backgroundTint="@color/button"
+                android:gravity="top|left"
+                android:inputType="text|textMultiLine"
+                android:textColor="@color/accent_900"
+                android:textColorHighlight="@color/accent_100"
+                android:textColorHint="@color/accent_500"
+                app:backgroundTint="@color/button" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
