@@ -93,6 +93,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     // Init audio
     private var recognizer: SpeechRecognizer? = null
+    @OptIn(BetaOpenAI::class)
     private val speechListener = object : RecognitionListener {
         override fun onReadyForSpeech(params: Bundle?) { /* unused */ }
         override fun onBeginningOfSpeech() { /* unused */ }
@@ -117,6 +118,11 @@ class AssistantFragment : BottomSheetDialogFragment() {
             val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
             if (matches != null && matches.size > 0) {
                 val recognizedText = matches[0]
+
+                chatMessages.add(ChatMessage(
+                    role = ChatRole.User,
+                    content = recognizedText
+                ))
 
                 putMessage(recognizedText, false)
 

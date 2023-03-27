@@ -57,3 +57,13 @@ o
 ?app/src/main/java/org/teslasoft/assistant/PromptViewActivity.kt,d\e\de7ab1eae3970585ff68263dfe4ede16a860a918
 p
 @app/src/main/java/org/teslasoft/assistant/ReportAbuseActivity.kt,b\7\b780cc6d322741468ff9d1e4af7b7fa3f6c1329f
+P
+ app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
+q
+Aapp/src/main/java/org/teslasoft/assistant/adapters/ChatAdapter.kt,8\f\8ff7b1ca7b01bec802e2f5a87f13d205737e8e70
+w
+Gapp/src/main/java/org/teslasoft/assistant/widget/BottomSheetListView.kt,1\b\1b211aa235e28b18f120fa2e077025f678d57383
+n
+>app/src/main/java/org/teslasoft/assistant/AssistantActivity.kt,d\8\d89a613ef241eda5f0484ecd7598a668a9869716
+v
+Fapp/src/main/java/org/teslasoft/assistant/adapters/AssistantAdapter.kt,b\f\bf13c4a7cee746d96169b3b167512035c38eb9b2

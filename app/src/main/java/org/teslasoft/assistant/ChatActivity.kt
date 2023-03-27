@@ -93,6 +93,7 @@ class ChatActivity : FragmentActivity() {
 
     // Init audio
     private var recognizer: SpeechRecognizer? = null
+    @OptIn(BetaOpenAI::class)
     private val speechListener = object : RecognitionListener {
         override fun onReadyForSpeech(params: Bundle?) { /* unused */ }
         override fun onBeginningOfSpeech() { /* unused */ }
@@ -119,6 +120,12 @@ class ChatActivity : FragmentActivity() {
                 val recognizedText = matches[0]
 
                 putMessage(recognizedText, false)
+
+                chatMessages.add(ChatMessage(
+                    role = ChatRole.User,
+                    content = recognizedText
+                ))
+
                 saveSettings()
 
                 btnMicro?.isEnabled = false
