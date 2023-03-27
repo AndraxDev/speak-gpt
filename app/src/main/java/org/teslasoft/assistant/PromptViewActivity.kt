@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.elevation.SurfaceColors
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.teslasoft.core.api.network.RequestNetwork
@@ -161,6 +162,14 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
                 settings = getSharedPreferences("likes", MODE_PRIVATE)
 
                 likeState = settings?.getBoolean(id, false) == true
+
+                refreshPage?.setColorSchemeResources(R.color.accent_900)
+                refreshPage?.setProgressBackgroundColorSchemeColor(
+                    SurfaceColors.SURFACE_2.getColor(this)
+                )
+                refreshPage?.setSize(SwipeRefreshLayout.LARGE)
+
+                refreshPage?.setOnRefreshListener(this)
 
                 if (likeState) {
                     btnLike?.setIconResource(R.drawable.ic_like)

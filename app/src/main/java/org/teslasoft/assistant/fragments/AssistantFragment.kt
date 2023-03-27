@@ -494,14 +494,18 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null,"")
             }
         } catch (e: Exception) {
-            response += "[SYSTEM ERROR] "
-
             if (e.stackTraceToString().contains("does not exist")) {
                 response += "Looks like this model (${model}) is not available to you right now. It can be because of high demand or this model is currently in limited beta."
             } else if (e.stackTraceToString().contains("Connect timeout has expired") || e.stackTraceToString().contains("SocketTimeoutException")) {
                 response += "Could not connect to OpenAI servers. It may happen when your Internet speed is slow or too many users are using this model at the same time. Try to switch to another model."
             } else if (e.stackTraceToString().contains("This model's maximum")) {
                 response += "Too many tokens. It is an internal error, please report it. Also try to truncate your input. Sometimes it may help."
+            } else if (e.stackTraceToString().contains("No address associated with hostname")) {
+                response += "You are currently offline. Please check your connection and try again."
+            } else if (e.stackTraceToString().contains("Incorrect API key")) {
+                response += "Your API key is incorrect. Change it in Settings > Change OpenAI key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked."
+            } else if (e.stackTraceToString().contains("Software caused connection abort")) {
+                response += "\n\n[error] An error occurred while generating response. It may be due to a weak connection or high demand. Try to switch to another model or try again later."
             } else {
                 response += e.stackTraceToString()
             }
@@ -539,6 +543,12 @@ class AssistantFragment : BottomSheetDialogFragment() {
         } catch (e: Exception) {
             if (e.stackTraceToString().contains("Your request was rejected")) {
                 putMessage("Your prompt contains inappropriate content and can not be processed. We strive to make AI safe and relevant for everyone.", true)
+            } else if (e.stackTraceToString().contains("No address associated with hostname")) {
+                putMessage("You are currently offline. Please check your connection and try again.", true);
+            } else if (e.stackTraceToString().contains("Incorrect API key")) {
+                putMessage("Your API key is incorrect. Change it in Settings > Change OpenAI key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked.", true);
+            } else if (e.stackTraceToString().contains("Software caused connection abort")) {
+                putMessage("An error occurred while generating response. It may be due to a weak connection or high demand. Try again later.", true);
             } else {
                 putMessage(e.stackTraceToString(), true)
             }
