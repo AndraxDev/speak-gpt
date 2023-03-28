@@ -36,6 +36,7 @@ import com.aallam.openai.api.image.ImageCreation
 import com.aallam.openai.api.image.ImageSize
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.elevation.SurfaceColors
 import com.google.gson.Gson
@@ -433,6 +434,8 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     @OptIn(BetaOpenAI::class)
     private suspend fun generateResponse(request: String, shouldPronounce: Boolean) {
+        assistantConversation?.visibility = View.VISIBLE
+
         putMessage("", true)
         var response = ""
 
@@ -521,6 +524,8 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     @OptIn(BetaOpenAI::class)
     private suspend fun generateImage(p: String) {
+        assistantConversation?.visibility = View.VISIBLE
+
         try {
             val images = ai?.imageURL(
                 creation = ImageCreation(

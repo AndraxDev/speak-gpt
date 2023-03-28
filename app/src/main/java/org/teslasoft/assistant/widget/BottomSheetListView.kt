@@ -28,6 +28,7 @@ class BottomSheetListView(context: Context?, p_attrs: AttributeSet?) :
                 canScroll = true
             }
         }
+
         return canScroll
     }
 }

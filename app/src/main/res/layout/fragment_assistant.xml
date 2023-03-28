@@ -38,9 +38,9 @@
         android:paddingTop="24sp"
         android:text="SpeakGPT"
         android:textColor="@color/accent_900"
-        android:textSize="18sp"
+        android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/assistant_conversation"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -148,17 +148,27 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
-    <org.teslasoft.assistant.widget.BottomSheetListView
-        android:id="@+id/assistant_conversation"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout3"
         android:layout_width="0dp"
-        android:layout_height="500dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:scrollbars="none"
-        android:stackFromBottom="true"
-        android:transcriptMode="alwaysScroll"
         app:layout_constraintBottom_toTopOf="@+id/input_layout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <org.teslasoft.assistant.widget.BottomSheetListView
+            android:id="@+id/assistant_conversation"
+            android:layout_width="0dp"
+            android:layout_height="500dp"
+            android:scrollbars="none"
+            android:transcriptMode="alwaysScroll"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

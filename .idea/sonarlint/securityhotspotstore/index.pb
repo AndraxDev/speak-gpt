@@ -1,6 +1,4 @@
 
-<
-build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
 z
 Japp/src/main/java/org/teslasoft/assistant/ui/MicrophonePermissionScreen.kt,a\d\ad813be96defda79d0beaaf6b2f36006b7f7a65a
 Z
@@ -37,8 +35,6 @@ j
 :app/src/main/java/org/teslasoft/assistant/AboutActivity.kt,c\2\c2da04ba42d2f76ef0ad3a1c303bc3e98c41e188
 |
 Lapp/src/main/java/org/teslasoft/assistant/fragments/AddChatDialogFragment.kt,4\5\4568e310673ea6bd31a36b152cb65599f247605e
-v
-Fapp/src/main/java/org/teslasoft/assistant/settings/SettingsActivity.kt,1\1\11694a9b3ac5d1717093bbacdc30911d82df4888
 z
 Japp/src/main/java/org/teslasoft/assistant/fragments/ModelDialogFragment.kt,4\1\41d000af150847b8b7661aaff670fec20f02cdc6
 w
@@ -53,19 +49,11 @@ p
 @app/src/main/java/org/teslasoft/assistant/ReportAbuseActivity.kt,b\7\b780cc6d322741468ff9d1e4af7b7fa3f6c1329f
 P
  app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
-w
-Gapp/src/main/java/org/teslasoft/assistant/widget/BottomSheetListView.kt,1\b\1b211aa235e28b18f120fa2e077025f678d57383
 n
 >app/src/main/java/org/teslasoft/assistant/AssistantActivity.kt,d\8\d89a613ef241eda5f0484ecd7598a668a9869716
-v
-Fapp/src/main/java/org/teslasoft/assistant/adapters/AssistantAdapter.kt,b\f\bf13c4a7cee746d96169b3b167512035c38eb9b2
-@
-app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
 x
 Happ/src/main/java/org/teslasoft/assistant/fragments/ChatsListFragment.kt,5\9\59bbd72959bdc64efeb0677ae34494d6ba3d4f1a
 v
 Fapp/src/main/java/org/teslasoft/assistant/fragments/PromptsFragment.kt,0\f\0f5ffc8b56fee53245bd1b31c6ae145bcfda2910
 o
 ?app/src/main/java/org/teslasoft/assistant/PromptViewActivity.kt,d\e\de7ab1eae3970585ff68263dfe4ede16a860a918
-q
-Aapp/src/main/java/org/teslasoft/assistant/adapters/ChatAdapter.kt,8\f\8ff7b1ca7b01bec802e2f5a87f13d205737e8e70

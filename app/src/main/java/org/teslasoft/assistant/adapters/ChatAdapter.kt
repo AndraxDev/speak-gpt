@@ -44,10 +44,22 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActiv
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val inflater = mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
+        val settings: SharedPreferences = mContext.getSharedPreferences("settings",
+            FragmentActivity.MODE_PRIVATE
+        )
+
+        val layout  = settings.getString("layout", "classic").toString()
+
         var mView: View? = convertView
 
-        if (mView == null) {
-            mView = inflater.inflate(R.layout.view_message, null)
+        mView = if (layout == "bubbles") {
+            if (dataArray?.get(position)?.get("isBot") == true) {
+                inflater.inflate(R.layout.view_assistant_bot_message, null)
+            } else {
+                inflater.inflate(R.layout.view_assistant_user_message, null)
+            }
+        } else {
+            inflater.inflate(R.layout.view_message, null)
         }
 
         val ui: ConstraintLayout = mView!!.findViewById(R.id.ui)
@@ -59,14 +71,22 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActiv
 
         message.setTextIsSelectable(true)
 
-        if (dataArray?.get(position)?.get("isBot") == true) {
-            icon.setImageResource(R.drawable.assistant)
-            username.text = mContext.resources.getString(R.string.app_name)
-            ui.setBackgroundColor(getSurfaceColor(mContext))
+        if (layout == "bubbles") {
+            if (dataArray?.get(position)?.get("isBot") == true) {
+                icon.setImageResource(R.drawable.assistant)
+            } else {
+                icon.setImageResource(R.drawable.ic_user)
+            }
         } else {
-            icon.setImageResource(R.drawable.ic_user)
-            username.text = "User"
-            ui.setBackgroundResource(R.color.window_background)
+            if (dataArray?.get(position)?.get("isBot") == true) {
+                icon.setImageResource(R.drawable.assistant)
+                username.text = mContext.resources.getString(R.string.app_name)
+                ui.setBackgroundColor(getSurfaceColor(mContext))
+            } else {
+                icon.setImageResource(R.drawable.ic_user)
+                username.text = "User"
+                ui.setBackgroundResource(R.color.window_background)
+            }
         }
 
         if (dataArray?.get(position)?.get("message").toString().contains("data:image")) {

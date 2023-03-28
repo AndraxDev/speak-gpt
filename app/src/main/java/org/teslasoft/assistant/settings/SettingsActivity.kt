@@ -38,6 +38,8 @@ class SettingsActivity : FragmentActivity() {
     private var r1024: MaterialButton? = null
     private var promptDesc: TextView? = null
     private var modelDesc: TextView? = null
+    private var btnClassicView: LinearLayout? = null
+    private var btnBubblesView: LinearLayout? = null
 
     private var chatId = ""
 
@@ -93,9 +95,32 @@ class SettingsActivity : FragmentActivity() {
         promptDesc = findViewById(R.id.prompt_desc)
         modelDesc = findViewById(R.id.model_desc)
         btnAbout = findViewById(R.id.btn_about)
+        btnClassicView = findViewById(R.id.btn_classic_chat)
+        btnBubblesView = findViewById(R.id.btn_bubbles_chat)
+
 
         val settings: SharedPreferences = getSharedPreferences("settings", MODE_PRIVATE)
         activationPrompt = settings.getString("prompt", "").toString()
+
+        if (settings.getString("layout", "classic").toString() == "bubbles") {
+            btnBubblesView?.setBackgroundResource(R.drawable.btn_accent_tonal_selector_v2)
+            btnClassicView?.setBackgroundResource(R.drawable.btn_accent_tonal_selector_v3)
+        } else {
+            btnBubblesView?.setBackgroundResource(R.drawable.btn_accent_tonal_selector_v3)
+            btnClassicView?.setBackgroundResource(R.drawable.btn_accent_tonal_selector_v2)
+        }
+
+        btnClassicView?.setOnClickListener {
+            settings.edit().putString("layout", "classic").apply()
+            btnBubblesView?.setBackgroundResource(R.drawable.btn_accent_tonal_selector_v3)
+            btnClassicView?.setBackgroundResource(R.drawable.btn_accent_tonal_selector_v2)
+        }
+
+        btnBubblesView?.setOnClickListener {
+            settings.edit().putString("layout", "bubbles").apply()
+            btnBubblesView?.setBackgroundResource(R.drawable.btn_accent_tonal_selector_v2)
+            btnClassicView?.setBackgroundResource(R.drawable.btn_accent_tonal_selector_v3)
+        }
 
         if (activationPrompt != "") {
             promptDesc?.text = activationPrompt
