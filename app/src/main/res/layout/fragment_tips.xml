@@ -63,7 +63,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="24dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="24dp"
                     android:layout_marginEnd="24dp"
                     android:background="@drawable/btn_tip1"
                     android:orientation="vertical"
@@ -85,7 +85,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="24dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="24dp"
                     android:layout_marginEnd="24dp"
                     android:background="@drawable/btn_tip1"
                     android:orientation="vertical"
@@ -98,7 +98,7 @@
                         android:id="@+id/tip3_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Search tricks:\n\nUse &quot;author:&quot; prefix to searh by author.\nUse &quot;title:&quot; prefix to search by title.\nUse &quot;id:&quot; prefix to search by id."
+                        android:text="Search tricks:\n\nUse &quot;author:&quot; prefix to searh by author.\nUse &quot;title:&quot; prefix to search by title.\nUse &quot;id:&quot; prefix to search by id.\nUse &quot;cat:&quot; prefix to search y category.\nUse &quot;type:&quot; prefix to search by type."
                         android:textColor="@color/tip1" />
                 </LinearLayout>
 
@@ -107,7 +107,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="24dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="24dp"
                     android:layout_marginEnd="24dp"
                     android:background="@drawable/btn_tip1"
                     android:orientation="vertical"
@@ -129,7 +129,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="24dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="24dp"
                     android:layout_marginEnd="24dp"
                     android:background="@drawable/btn_tip1"
                     android:orientation="vertical"
@@ -143,6 +143,52 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Only GPT models can remember previous messages. Other models are not optimized for it."
+                        android:textColor="@color/tip1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tip_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:background="@drawable/btn_tip1"
+                    android:orientation="vertical"
+                    android:padding="24dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tip_5">
+
+                    <TextView
+                        android:id="@+id/tip6_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Sometimes some weird or useless features may appear. It because this app is in beta test."
+                        android:textColor="@color/tip1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tip_7"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginBottom="24dp"
+                    android:background="@drawable/btn_tip1"
+                    android:orientation="vertical"
+                    android:padding="24dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tip_6">
+
+                    <TextView
+                        android:id="@+id/tip7_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Select text in any app and tap &quot;SpeakGPT&quot; to start conversation with assistant. This feature is available even if default assistant app feature is off."
                         android:textColor="@color/tip1" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>

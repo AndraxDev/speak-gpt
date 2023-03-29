@@ -5,8 +5,8 @@ import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
 import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
-import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -26,6 +26,7 @@ class SettingsActivity : FragmentActivity() {
 
     private var btnChangeApi: LinearLayout? = null
     private var btnChangeAccount: LinearLayout? = null
+    private var btnSetAssisant: LinearLayout? = null
     private var silenceSwitch: MaterialSwitch? = null
     private var btnClearChat: MaterialButton? = null
     private var btnDebugMenu: MaterialButton? = null
@@ -87,6 +88,7 @@ class SettingsActivity : FragmentActivity() {
 
         btnChangeApi = findViewById(R.id.btn_manage_api)
         btnChangeAccount = findViewById(R.id.btn_manage_account)
+        btnSetAssisant = findViewById(R.id.btn_manage_assistant)
         silenceSwitch = findViewById(R.id.silent_switch)
         btnClearChat = findViewById(R.id.btn_clear_chat)
         btnDebugMenu = findViewById(R.id.btn_debug_menu)
@@ -128,7 +130,7 @@ class SettingsActivity : FragmentActivity() {
             promptDesc?.text = resources.getString(R.string.activation_prompt_set_message)
         }
 
-        dalleResolutions = findViewById(R.id.resolution_choices)
+        dalleResolutions = findViewById(R.id.model_for)
         r256 = findViewById(R.id.r256)
         r512 = findViewById(R.id.r512)
         r1024 = findViewById(R.id.r1024)
@@ -152,6 +154,12 @@ class SettingsActivity : FragmentActivity() {
             val intent = Intent()
             intent.action = Intent.ACTION_VIEW
             intent.data = Uri.parse("https://platform.openai.com/account")
+            startActivity(intent)
+        }
+
+        btnSetAssisant?.setOnClickListener {
+            val intent = Intent(Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
 

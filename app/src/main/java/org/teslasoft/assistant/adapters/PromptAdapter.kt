@@ -39,18 +39,20 @@ class PromptAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragment
             mView = inflater.inflate(R.layout.view_prompt, null)
         }
 
-        val bacground: LinearLayout = mView!!.findViewById(R.id.bg)
+        val background: LinearLayout = mView!!.findViewById(R.id.bg)
         val promptName: TextView = mView.findViewById(R.id.prompt_name)
         val promptDescription: TextView = mView.findViewById(R.id.prompt_description)
         val promptAuthor: TextView = mView.findViewById(R.id.prompt_author)
         val likesCounter: TextView = mView.findViewById(R.id.likes_count)
+        val textFor: TextView = mView.findViewById(R.id.text_for)
 
         promptName.text = dataArray?.get(position)?.get("name")
         promptDescription.text = dataArray?.get(position)?.get("desc")
         promptAuthor.text = "By " + dataArray?.get(position)?.get("author")
         likesCounter.text = dataArray?.get(position)?.get("likes")
+        textFor.text = dataArray?.get(position)?.get("type")
 
-        bacground.setOnClickListener {
+        background.setOnClickListener {
             val i = Intent(mContext.requireActivity(), PromptViewActivity::class.java)
             i.putExtra("id", dataArray?.get(position)?.get("id"))
             i.putExtra("title", dataArray?.get(position)?.get("name"))

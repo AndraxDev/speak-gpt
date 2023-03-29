@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.Intent.getIntent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -12,8 +13,6 @@ import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
 import android.speech.tts.Voice
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,11 +35,8 @@ import com.aallam.openai.api.image.ImageCreation
 import com.aallam.openai.api.image.ImageSize
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.elevation.SurfaceColors
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -48,11 +44,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.adapters.AssistantAdapter
-import org.teslasoft.assistant.adapters.ChatAdapter
 import org.teslasoft.assistant.onboarding.WelcomeActivity
 import org.teslasoft.assistant.settings.SettingsActivity
 import org.teslasoft.assistant.ui.MicrophonePermissionScreen
-import java.lang.reflect.Type
 import java.net.URL
 import java.util.Base64
 import java.util.Locale
@@ -311,10 +305,37 @@ class AssistantFragment : BottomSheetDialogFragment() {
         }
     }
 
-    @OptIn(BetaOpenAI::class)
     private fun setup() {
+        val extras: Bundle? = requireActivity().intent.extras
+
+        if (extras != null) {
+            val tryPrompt: String = extras.getString("prompt", "")
+
+            if (tryPrompt != "") {
+                run(tryPrompt)
+            } else {
+                runFromContextMenu()
+            }
+        } else {
+            runFromContextMenu()
+        }
+    }
+
+    private fun runFromContextMenu() {
+        val tryPrompt = requireActivity().intent.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT).toString()
+
+        if (tryPrompt != "") {
+            run(tryPrompt)
+        } else {
+            runActivationPrompt()
+        }
+    }
+
+    @OptIn(BetaOpenAI::class)
+    private fun runActivationPrompt() {
         if (messages.isEmpty()) {
-            val settings: SharedPreferences = requireActivity().getSharedPreferences("settings",
+            val settings: SharedPreferences = requireActivity().getSharedPreferences(
+                "settings",
                 FragmentActivity.MODE_PRIVATE
             )
 
@@ -586,6 +607,8 @@ class AssistantFragment : BottomSheetDialogFragment() {
         btnAssistantHideKeyboard?.setImageResource(R.drawable.ic_keyboard_hide)
         btnAssistantSend?.setImageResource(R.drawable.ic_send)
 
+        assistantConversation?.isNestedScrollingEnabled = true
+
         initSettings()
 
         btnAssistantShowKeyboard?.setOnClickListener {
@@ -616,5 +639,24 @@ class AssistantFragment : BottomSheetDialogFragment() {
         btnAssistantSend?.isEnabled = true
         btnAssistantHideKeyboard?.isEnabled = true
         btnAssistantVoice?.visibility = View.GONE
+    }
+
+    @OptIn(BetaOpenAI::class)
+    private fun run(prompt: String) {
+        putMessage(prompt, false)
+
+        hideKeyboard()
+        btnAssistantVoice?.isEnabled = false
+        btnAssistantSend?.isEnabled = false
+        assistantLoading?.visibility = View.VISIBLE
+
+        chatMessages.add(ChatMessage(
+            role = ChatRole.User,
+            content = prompt
+        ))
+
+        CoroutineScope(Dispatchers.Main).launch {
+            generateResponse(prompt, false)
+        }
     }
 }

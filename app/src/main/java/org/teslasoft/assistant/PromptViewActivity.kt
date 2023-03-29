@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -38,7 +39,9 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
 
     private var promptBy: TextView? = null
 
-    private var promptText: TextView? = null
+    private var promptText: EditText? = null
+
+    private var textCat: TextView? = null
 
     private var refreshPage: SwipeRefreshLayout? = null
 
@@ -47,6 +50,8 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
     private var btnCopy: MaterialButton? = null
 
     private var btnLike: MaterialButton? = null
+
+    private var btnTry: MaterialButton? = null
 
     private var btnFlag: ImageButton? = null
 
@@ -69,9 +74,15 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
                     message, TypeToken.getParameterized(HashMap::class.java, String::class.java, String::class.java).type
                 )
 
-                promptText?.text = map["prompt"]
+                promptText?.setText(map["prompt"])
                 promptBy?.text = "By " + map["author"]
                 btnLike?.text = map["likes"]
+
+                textCat?.text = if (map["category"] == "") {
+                    "Category: uncategorized"
+                } else {
+                    "Category: " + map["category"]
+                }
 
             } catch (e: Exception) {
                 MaterialAlertDialogBuilder(this@PromptViewActivity, R.style.App_MaterialAlertDialog)
@@ -156,6 +167,8 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
                 btnFlag = findViewById(R.id.btn_flag)
                 btnCopy = findViewById(R.id.btn_copy)
                 btnLike = findViewById(R.id.btn_like)
+                btnTry = findViewById(R.id.btn_try)
+                textCat = findViewById(R.id.text_cat)
 
                 btnFlag?.setImageResource(R.drawable.ic_flag)
 
@@ -195,6 +208,12 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
                     btnLike?.isEnabled = false
                 }
 
+                btnTry?.setOnClickListener {
+                    val i = Intent(this, AssistantActivity::class.java)
+                    i.putExtra("prompt", promptText?.text.toString())
+                    startActivity(i)
+                }
+
                 btnFlag?.setOnClickListener {
                     val i = Intent(this, ReportAbuseActivity::class.java)
                     i.putExtra("id", id)
@@ -204,8 +223,6 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
                 requestNetwork = RequestNetwork(this)
 
                 activityTitle?.text = title
-
-
 
                 btnReconnect?.setOnClickListener { loadData() }
 

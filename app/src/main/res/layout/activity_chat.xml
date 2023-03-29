@@ -29,11 +29,13 @@
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/btn_accent_tonal_v2"
                 android:src="@drawable/ic_send"
+                android:contentDescription="Send"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
+                android:autofillHints="message"
                 android:id="@+id/message_input"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -51,6 +53,7 @@
                 android:paddingTop="13dp"
                 android:paddingRight="12dp"
                 android:paddingBottom="13dp"
+                android:textColorHint="@color/accent_500"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -112,6 +115,7 @@
         android:layout_marginEnd="8dp"
         android:background="@drawable/btn_accent_tonal"
         android:elevation="6.01dip"
+        android:contentDescription="Settings"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_settings" />

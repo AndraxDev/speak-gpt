@@ -44,7 +44,7 @@
         android:text=""
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/icon"
-        app:layout_constraintTop_toBottomOf="@+id/username" />
+        app:layout_constraintTop_toBottomOf="@+id/username"/>
 
     <LinearLayout
         android:id="@+id/image_frame"
@@ -64,6 +64,21 @@
             android:id="@+id/dalle_image"
             android:layout_width="300dp"
             android:layout_height="300dp"
-            app:srcCompat="@drawable/assistant" />
+            app:srcCompat="@drawable/assistant"
+            android:descendantFocusability="blocksDescendants"/>
     </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/btn_copy"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/btn_accent_tonal"
+        android:contentDescription="Copy"
+        android:descendantFocusability="blocksDescendants"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image_frame"
+        app:srcCompat="@drawable/ic_copy" />
 </androidx.constraintlayout.widget.ConstraintLayout>

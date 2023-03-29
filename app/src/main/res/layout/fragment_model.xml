@@ -39,6 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"
+                android:minHeight="48dp"
                 android:text="gpt-3.5-turbo ($0.002/1k tokens)" />
 
             <RadioButton
@@ -47,6 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"
+                android:minHeight="48dp"
                 android:text="gpt-3.5-turbo-0301 (deprecated) ($0.002/1k tokens)" />
 
             <RadioButton
@@ -55,6 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"
+                android:minHeight="48dp"
                 android:text="gpt-4 (prompts: $0.03/1k tokens, output: $0.06/1k tokens)" />
 
             <RadioButton
@@ -63,6 +66,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"
+                android:minHeight="48dp"
                 android:text="gpt-4-0314 (deprecated) (prompts: $0.03/1k tokens, output: $0.06/1k tokens)" />
 
             <RadioButton
@@ -71,7 +75,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"
-                android:text="gpt-4-32k (prompts: $0.06/1k tokens, output: $0.012/1k tokens)" />
+                android:minHeight="48dp"
+                android:text="gpt-4-32k (prompts: $0.06/1k tokens, output: $0.12/1k tokens)" />
 
             <RadioButton
                 android:id="@+id/gpt_4_32k_0314"
@@ -79,7 +84,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"
-                android:text="gpt-4-32k-0314 (deprecated) (prompts: $0.06/1k tokens, output: $0.012/1k tokens)" />
+                android:minHeight="48dp"
+                android:text="gpt-4-32k-0314 (deprecated) (prompts: $0.06/1k tokens, output: $0.12/1k tokens)" />
 
             <RadioButton
                 android:id="@+id/text_davinci_003"
@@ -87,6 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"
+                android:minHeight="48dp"
                 android:text="text-davinci-003 ($0.02/1k tokens)" />
 
             <RadioButton
@@ -95,6 +102,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"
+                android:minHeight="48dp"
                 android:text="text-davinci-002 ($0.02/1k tokens)" />
 
             <RadioButton
@@ -103,6 +111,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"
+                android:minHeight="48dp"
                 android:text="text-curie-001 ($0.002/1k tokens)" />
 
             <RadioButton
@@ -111,6 +120,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"
+                android:minHeight="48dp"
                 android:text="text-babbage-001 ($0.0005/1k tokens)" />
 
             <RadioButton
@@ -119,6 +129,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"
+                android:minHeight="48dp"
                 android:text="text-ada-001 ($0.0004/1k tokens)" />
 
             <RadioButton
@@ -127,6 +138,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"
+                android:minHeight="48dp"
                 android:text="davinci" />
 
             <RadioButton
@@ -135,6 +147,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"
+                android:minHeight="48dp"
                 android:text="curie" />
 
             <RadioButton
@@ -143,6 +156,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"
+                android:minHeight="48dp"
                 android:text="babbage" />
 
             <RadioButton
@@ -151,6 +165,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"
+                android:minHeight="48dp"
                 android:text="ada" />
         </RadioGroup>
 

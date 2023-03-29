@@ -153,22 +153,29 @@
         android:id="@+id/constraintLayout3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:maxHeight="500dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/input_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <org.teslasoft.assistant.widget.BottomSheetListView
-            android:id="@+id/assistant_conversation"
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="500dp"
-            android:scrollbars="none"
-            android:transcriptMode="alwaysScroll"
-            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:maxHeight="500dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ListView
+                android:id="@+id/assistant_conversation"
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
+                android:scrollbars="none"
+                android:transcriptMode="alwaysScroll"
+                android:visibility="gone" />
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

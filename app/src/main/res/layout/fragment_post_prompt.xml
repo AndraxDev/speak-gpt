@@ -122,6 +122,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout6"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
@@ -151,6 +152,149 @@
                 app:backgroundTint="@color/button" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/model_for"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:weightSum="2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView13"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_gpt"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="GPT" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_dalle"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="DALL-e" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Prompt for"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout6" />
+
+        <TextView
+            android:id="@+id/textView16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Category"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/model_for" />
+
+        <RadioGroup
+            android:id="@+id/radioGroup3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView16">
+
+            <RadioButton
+                android:id="@+id/cat_development"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Development" />
+
+            <RadioButton
+                android:id="@+id/cat_music"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Music" />
+
+            <RadioButton
+                android:id="@+id/cat_art"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Art" />
+
+            <RadioButton
+                android:id="@+id/cat_culture"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Culture" />
+
+            <RadioButton
+                android:id="@+id/cat_business"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Business" />
+
+            <RadioButton
+                android:id="@+id/cat_gaming"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Gaming" />
+
+            <RadioButton
+                android:id="@+id/cat_education"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Education" />
+
+            <RadioButton
+                android:id="@+id/cat_history"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="History" />
+
+            <RadioButton
+                android:id="@+id/cat_helth"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Health" />
+
+            <RadioButton
+                android:id="@+id/cat_food"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Food" />
+
+            <RadioButton
+                android:id="@+id/cat_tourism"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Tourism" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:text="Follow OpenAI's safety principles. Do not post any inappropriate or sensitive information. All prompts is being moderated. Inappropriate prompts will be removed without futher notice."
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup3" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

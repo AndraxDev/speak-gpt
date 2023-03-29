@@ -57,14 +57,14 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private var progressbar: ProgressBar? = null
 
     private val postPromptListener: PostPromptDialog.StateChangesListener = object : PostPromptDialog.StateChangesListener {
-        override fun onFormFilled(name: String, title: String, desc: String, prompt: String) {
-            requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/post.php?api_key=${Api.API_KEY}&name=$name&title=$title&desc=$desc&prompt=$prompt", "A", promptPostListener)
+        override fun onFormFilled(name: String, title: String, desc: String, prompt: String, type: String, category: String) {
+            requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/post.php?api_key=${Api.API_KEY}&name=$name&title=$title&desc=$desc&prompt=$prompt&type=$type&category=$category", "A", promptPostListener)
         }
 
-        override fun onFormError(name: String, title: String, desc: String, prompt: String) {
+        override fun onFormError(name: String, title: String, desc: String, prompt: String, type: String, category: String) {
             Toast.makeText(requireActivity(), "Please fill all blanks", Toast.LENGTH_SHORT).show()
 
-            val promptDialog: PostPromptDialog = PostPromptDialog.newInstance(name, title, desc, prompt)
+            val promptDialog: PostPromptDialog = PostPromptDialog.newInstance(name, title, desc, prompt, type, category)
             promptDialog.setStateChangedListener(this)
             promptDialog.show(parentFragmentManager.beginTransaction(), "PromptDialog")
         }
@@ -178,7 +178,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         })
 
         btnPost?.setOnClickListener {
-            val promptDialog: PostPromptDialog = PostPromptDialog.newInstance("", "", "", "")
+            val promptDialog: PostPromptDialog = PostPromptDialog.newInstance("", "", "", "", "", "")
             promptDialog.setStateChangedListener(postPromptListener)
             promptDialog.show(parentFragmentManager.beginTransaction(), "PromptDialog")
         }

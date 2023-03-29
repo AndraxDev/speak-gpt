@@ -1,6 +1,8 @@
 package org.teslasoft.assistant.adapters
 
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -10,9 +12,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentActivity
 import com.bumptech.glide.Glide
@@ -56,8 +60,20 @@ class AssistantAdapter(data: ArrayList<HashMap<String, Any>>?, context: Fragment
         val message: TextView = mView.findViewById(R.id.message)
         val dalleImage: ImageView = mView.findViewById(R.id.dalle_image)
         val imageFrame: LinearLayout = mView.findViewById(R.id.image_frame)
+        val btnCopy: ImageButton = mView.findViewById(R.id.btn_copy)
 
-        message.setTextIsSelectable(true)
+        btnCopy.setImageResource(R.drawable.ic_copy)
+
+        btnCopy.setOnClickListener {
+            val clipboard: ClipboardManager = mContext.getSystemService(FragmentActivity.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("response", message.text.toString())
+            clipboard.setPrimaryClip(clip)
+
+            Toast.makeText(mContext, "Text copied to clipboard", Toast.LENGTH_SHORT).show()
+        }
+
+        message.setTextIsSelectable(false)
+        message.isClickable = false
 
         if (dataArray?.get(position)?.get("isBot") == true) {
             icon.setImageResource(R.drawable.assistant)
@@ -68,6 +84,8 @@ class AssistantAdapter(data: ArrayList<HashMap<String, Any>>?, context: Fragment
         if (dataArray?.get(position)?.get("message").toString().contains("data:image")) {
             imageFrame.visibility = View.VISIBLE
             message.visibility = View.GONE
+
+            btnCopy.visibility = View.GONE
 
             val requestOptions = RequestOptions().transform(
                 CenterCrop(),
@@ -94,10 +112,6 @@ class AssistantAdapter(data: ArrayList<HashMap<String, Any>>?, context: Fragment
 
             val markwon: Markwon = Markwon.create(mContext)
             markwon.setMarkdown(message, src)
-            message.setTextIsSelectable(true)
-
-            message.isFocusable = true
-            message.isFocusableInTouchMode = true
 
             imageFrame.visibility = View.GONE
             message.visibility = View.VISIBLE

@@ -1,0 +1,10 @@
+
+>kotlin:S1128"Remove this unused import.(·úóàùÿÿÿÿ8Û»œ‘ò0
+>kotlin:S1128
+"Remove this unused import.(ÚÚÙÁúÿÿÿÿ8Û»œ‘ò0
+9kotlin:S1128"Remove this unused import.(¼„¹8Û»œ‘ò0
+9kotlin:S1128"Remove this unused import.(´Ùí8Û»œ‘ò0
+rkotlin:S3776£"RRefactor this method to reduce its Cognitive Complexity from 31 to the 15 allowed.(¸Êú8ë»œ‘ò0
+Akotlin:S6310ˆ"Avoid hardcoded dispatchers.(ßûæÈúÿÿÿÿ8í»œ‘ò0
+Nkotlin:S1144°".Remove this unused private "getModels" method.(æ¨ÑÅ8ø»œ‘ò0
+Nkotlin:S1066Ê".Merge this "if" statement with the nested one.(ÒšäÑ8¼œ‘ò0

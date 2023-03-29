@@ -9,14 +9,21 @@ import android.widget.ListView
 class BottomSheetListView(context: Context?, p_attrs: AttributeSet?) :
     ListView(context, p_attrs) {
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
-        return true
+        return false
     }
 
     override fun onTouchEvent(ev: MotionEvent): Boolean {
         if (canScrollVertically(this)) {
             parent.requestDisallowInterceptTouchEvent(true)
         }
+
+        performClick()
+
         return super.onTouchEvent(ev)
+    }
+
+    override fun performClick(): Boolean {
+        return super.performClick()
     }
 
     private fun canScrollVertically(view: AbsListView?): Boolean {

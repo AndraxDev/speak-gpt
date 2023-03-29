@@ -66,49 +66,49 @@
                     <RadioButton
                         android:id="@+id/btn_illegal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
                         android:text="Illegal activity" />
 
                     <RadioButton
                         android:id="@+id/btn_cp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
                         android:text="Child Sexual Abuse" />
 
                     <RadioButton
                         android:id="@+id/btn_hate"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
                         android:text="Generation of hateful, harassing, or violent content" />
 
                     <RadioButton
                         android:id="@+id/btn_malware"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
                         android:text="Generation of malware" />
 
                     <RadioButton
                         android:id="@+id/btn_fraud"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
                         android:text="Fraudulent or deceptive activity" />
 
                     <RadioButton
                         android:id="@+id/btn_adult"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
                         android:text="Adult content" />
 
                     <RadioButton
                         android:id="@+id/btn_political"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
                         android:text="Political campaigning or lobbying" />
 
                     <RadioButton
                         android:id="@+id/btn_duplicated"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
                         android:text="Duplicated prompt or spam" />
                 </RadioGroup>
 

@@ -23,15 +23,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:focusable="true"
             android:maxWidth="300dp"
             android:minWidth="50dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:paddingBottom="12dp"
             android:text="Lorem ipsum"
             android:textColor="@color/accent_900"
             android:textIsSelectable="true"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,12 +40,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="12dp"
             android:gravity="center"
             android:orientation="vertical"
-            android:paddingTop="24dp"
-            android:paddingBottom="24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -56,8 +53,23 @@
                 android:id="@+id/dalle_image"
                 android:layout_width="270dp"
                 android:layout_height="270dp"
+                android:descendantFocusability="blocksDescendants"
                 app:srcCompat="@drawable/assistant" />
         </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btn_copy"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/btn_accent_tonal"
+            android:contentDescription="Copy"
+            android:descendantFocusability="blocksDescendants"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/message"
+            app:srcCompat="@drawable/ic_copy" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
@@ -82,6 +94,8 @@
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_marginStart="24dp"
+        android:background="@drawable/btn_accent_tonal"
+        android:clickable="false"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/constraintLayout4"
         app:srcCompat="@drawable/ic_launcher_foreground" />

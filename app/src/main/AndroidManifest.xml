@@ -71,13 +71,19 @@
             android:name=".AssistantActivity"
             android:exported="true"
             android:theme="@style/Theme.Assistant"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:label="@string/app_name">
 
             <intent-filter>
                 <action android:name="android.intent.action.ASSIST" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
+            <intent-filter>
+                <action android:name="android.intent.action.PROCESS_TEXT" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
         </activity>
 
         <activity
