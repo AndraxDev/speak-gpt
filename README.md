@@ -2,12 +2,65 @@
 
 SpeakGPT is an advanced and highly intuitive voice assistant that utilizes the powerful OpenAI ChatGPT technology to provide you with unparalleled performance and functionality.
 
-```
-This is the first developer preview of the SpeakGPT assistant. Static responses (performing routines, opening apps, providing search results) will be added in future releases.
-```
+## Screenshots
+
+<div align = "center">
+	<img src="https://gpt.teslasoft.org/s/1.png" width="200"/>
+	<img src="https://gpt.teslasoft.org/s/2.png" width="200"/>
+	<img src="https://gpt.teslasoft.org/s/3.png" width="200"/>
+</div>
+<div align = "center">
+	<img src="https://gpt.teslasoft.org/s/4.png" width="200"/>
+	<img src="https://gpt.teslasoft.org/s/6.png" width="200"/>
+	<img src="https://gpt.teslasoft.org/s/8.png" width="200"/>
+</div>
+
+## Basic features
+
+- [x] Chat
+- [x] Activation prompt
+- [x] Assistant
+- [x] SpeakGPT in context menu
+- [x] Prompts store
+- [x] Different chat layout
+- [x] Adaptive design
+- [x] A lot of different models
+- [x] No captcha
+- [x] Pay as you go system
+- [x] Long trial period (up to 4 months*)
+- [x] Tips for newbies
+
+> \* Note
+>
+> Trial period depends on your usage. Each new OpenAI customer gets $18 free credit. You can spend it less than 4 months.
+
+## Task list
+
+### ✔️ Already added
+
+- [x] Chat
+- [x] Activation prompt
+- [x] Assistant
+- [x] SpeakGPT in context menu
+- [x] Prompts store
+- [x] Different chat layout
+- [x] Adaptive design
+- [x] A lot of different models
+
+### ❌ Planned to add (Share your ideas in Issues)
+
+- [ ] Device routines (like set alarm or open app)
+- [ ] Sync chat history
+- [ ] Browse model so SpeakGPT can provide information from Internet
+- [ ] New experimental model llama 30b
+
+### You appreciated to
+
+- Report any bugs
+- Support me :)
+- Request new features. Don't forget to mark issue with a tag
 
 ## License
-
 
 ```
 Copyright (c) 2023 Dmytro Ostapenko. All rights reserved.

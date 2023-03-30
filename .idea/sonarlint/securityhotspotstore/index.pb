@@ -57,3 +57,9 @@ v
 Fapp/src/main/java/org/teslasoft/assistant/adapters/AssistantAdapter.kt,b\f\bf13c4a7cee746d96169b3b167512035c38eb9b2
 q
 Aapp/src/main/java/org/teslasoft/assistant/adapters/ChatAdapter.kt,8\f\8ff7b1ca7b01bec802e2f5a87f13d205737e8e70
+P
+ app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
+v
+Fapp/src/main/java/org/teslasoft/assistant/settings/SettingsActivity.kt,1\1\11694a9b3ac5d1717093bbacdc30911d82df4888
+o
+?app/src/main/java/org/teslasoft/assistant/PromptViewActivity.kt,d\e\de7ab1eae3970585ff68263dfe4ede16a860a918

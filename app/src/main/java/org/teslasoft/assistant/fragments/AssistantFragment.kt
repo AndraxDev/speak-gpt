@@ -324,7 +324,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private fun runFromContextMenu() {
         val tryPrompt = requireActivity().intent.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT).toString()
 
-        if (tryPrompt != "") {
+        if (tryPrompt != "" && tryPrompt != "null") {
             run(tryPrompt)
         } else {
             runActivationPrompt()
