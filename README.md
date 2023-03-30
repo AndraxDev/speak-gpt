@@ -2,6 +2,10 @@
 
 SpeakGPT is an advanced and highly intuitive voice assistant that utilizes the powerful OpenAI ChatGPT technology to provide you with unparalleled performance and functionality.
 
+## Download
+
+<a href='https://play.google.com/store/apps/details?id=org.teslasoft.assistant&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' width='300'/></a>
+
 ## Screenshots
 
 <div align = "center">
@@ -18,6 +22,7 @@ SpeakGPT is an advanced and highly intuitive voice assistant that utilizes the p
 ## Basic features
 
 - [x] Chat
+- [x] Images generation (DALL-e)
 - [x] Activation prompt
 - [x] Assistant
 - [x] SpeakGPT in context menu
@@ -45,6 +50,7 @@ SpeakGPT is an advanced and highly intuitive voice assistant that utilizes the p
 - [x] Prompts store
 - [x] Different chat layout
 - [x] Adaptive design
+- [x] DALL-e integration
 - [x] A lot of different models
 
 ### ❌ Planned to add (Share your ideas in Issues)
@@ -54,7 +60,7 @@ SpeakGPT is an advanced and highly intuitive voice assistant that utilizes the p
 - [ ] Browse model so SpeakGPT can provide information from Internet
 - [ ] New experimental model llama 30b
 
-### You appreciated to
+### You are appreciated to:
 
 - Report any bugs
 - Support me :)
