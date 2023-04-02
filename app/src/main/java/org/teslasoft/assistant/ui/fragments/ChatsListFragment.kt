@@ -1,7 +1,9 @@
 package org.teslasoft.assistant.ui.fragments
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -85,6 +87,8 @@ class ChatsListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        Log.e("T_DEBUG", "Fragment created")
+
         chatsList = view.findViewById(R.id.chats)
         btnSettings = view.findViewById(R.id.btn_settings_)
 
@@ -117,6 +121,7 @@ class ChatsListFragment : Fragment() {
     private fun preInit() {
         if (Preferences.getPreferences(requireActivity()).getApiKey(requireActivity()) == "") {
             if (Preferences.getPreferences(requireActivity()).getOldApiKey() == "") {
+                requireActivity().getSharedPreferences("chat_list", Context.MODE_PRIVATE).edit().putString("data", "[]").apply()
                 startActivity(Intent(requireActivity(), WelcomeActivity::class.java))
                 requireActivity().finish()
             } else {
@@ -130,6 +135,8 @@ class ChatsListFragment : Fragment() {
 
     private fun initSettings() {
         chats = ChatPreferences.getChatPreferences().getChatList(requireActivity())
+
+        if (chats == null) chats = arrayListOf()
 
         adapter = ChatListAdapter(chats, this)
         chatsList?.adapter = adapter

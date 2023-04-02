@@ -22,7 +22,7 @@ class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragme
     private val mContext: Fragment = context
 
     override fun getCount(): Int {
-        return dataArray!!.size
+        return if (dataArray == null) 0 else dataArray.size
     }
 
     override fun getItem(position: Int): Any {

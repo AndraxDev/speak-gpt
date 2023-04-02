@@ -18,48 +18,93 @@
 
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
-#-renamesourcefileattribute SourceFile
+-renamesourcefileattribute SourceFile
+-keepattributes SourceFile,LineNumberTable
+-optimizationpasses 5
+-dontusemixedcaseclassnames
+-verbose
 
-#-renamesourcefileattribute SourceFile
-#-keepattributes SourceFile,LineNumberTable
-#-optimizationpasses 5
-#-dontusemixedcaseclassnames
-#-verbose
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
 
-#-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
+-keepclassmembers,allowobfuscation class * {
+  @com.google.gson.annotations.SerializedName <fields>;
+}
 
-#-keepclassmembers,allowobfuscation class * {
-#  @com.google.gson.annotations.SerializedName <fields>;
-#}
+-keepattributes *Annotation*, InnerClasses
+-dontnote kotlinx.serialization.AnnotationsKt
+-keepclassmembers class kotlinx.serialization.json.** {
+    *** Companion;
+}
 
-#-assumenosideeffects class android.util.Log {
-#    public static *** d(...);
-#    public static *** v(...);
-#}
+-keepclasseswithmembers class kotlinx.serialization.json.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}
 
-#-keep class com.teslasoft.assistant.** { *; }
-#-keep class org.teslasoft.core.** { *; }
-#
-#-keepattributes InnerClasses
-#
-#-keep class **.R
-#-keep class **.R$* {
-#    <fields>;
-#}
+-keepclassmembers class com.aallam.openai.api.** {
+    *** Companion;
+}
 
-#-assumenosideeffects class kotlin.jvm.internal.Intrinsics {
-#  public static void checkExpressionValueIsNotNull(java.lang.Object, java.lang.String);
-#  public static void checkFieldIsNotNull(java.lang.Object, java.lang.String);
-#  public static void checkFieldIsNotNull(java.lang.Object, java.lang.String, java.lang.String);
-#  public static void checkNotNull(java.lang.Object);
-#  public static void checkNotNull(java.lang.Object, java.lang.String);
-#  public static void checkNotNullExpressionValue(java.lang.Object, java.lang.String);
-#  public static void checkNotNullParameter(java.lang.Object, java.lang.String);
-#  public static void checkParameterIsNotNull(java.lang.Object, java.lang.String);
-#  public static void checkReturnedValueIsNotNull(java.lang.Object, java.lang.String);
-#  public static void checkReturnedValueIsNotNull(java.lang.Object, java.lang.String, java.lang.String);
-#  public static void throwUninitializedPropertyAccessException(java.lang.String);
-#}
+-keep class com.teslasoft.assistant.** { *; }
+-keep class org.teslasoft.core.** { *; }
+
+-keepattributes InnerClasses
+
+-keep class **.R
+-keep class **.R$* {
+    <fields>;
+}
+
+-if @kotlinx.serialization.Serializable class
+com.aallam.openai.api.**,
+com.aallam.openai.client.internal.data.**,
+com.bumptech.glide.**
+
+{
+    static **$* *;
+}
+
+-keepnames class <1>$$serializer {
+    static <1>$$serializer INSTANCE;
+}
+
+-if @kotlinx.serialization.Serializable class **
+-keepclassmembers class <1> {
+   static <1>$Companion Companion;
+}
+
+# Keep `serializer()` on companion objects (both default and named) of serializable classes.
+-if @kotlinx.serialization.Serializable class ** {
+   static **$* *;
+}
+-keepclassmembers class <2>$<3> {
+   kotlinx.serialization.KSerializer serializer(...);
+}
+
+# Keep `INSTANCE.serializer()` of serializable objects.
+-if @kotlinx.serialization.Serializable class ** {
+   public static ** INSTANCE;
+}
+-keepclassmembers class <1> {
+   public static <1> INSTANCE;
+   kotlinx.serialization.KSerializer serializer(...);
+}
+
+# @Serializable and @Polymorphic are used at runtime for polymorphic serialization.
+-keepattributes RuntimeVisibleAnnotations,AnnotationDefault
+
+-assumenosideeffects class kotlin.jvm.internal.Intrinsics {
+  public static void checkExpressionValueIsNotNull(java.lang.Object, java.lang.String);
+  public static void checkFieldIsNotNull(java.lang.Object, java.lang.String);
+  public static void checkFieldIsNotNull(java.lang.Object, java.lang.String, java.lang.String);
+  public static void checkNotNull(java.lang.Object);
+  public static void checkNotNull(java.lang.Object, java.lang.String);
+  public static void checkNotNullExpressionValue(java.lang.Object, java.lang.String);
+  public static void checkNotNullParameter(java.lang.Object, java.lang.String);
+  public static void checkParameterIsNotNull(java.lang.Object, java.lang.String);
+  public static void checkReturnedValueIsNotNull(java.lang.Object, java.lang.String);
+  public static void checkReturnedValueIsNotNull(java.lang.Object, java.lang.String, java.lang.String);
+  public static void throwUninitializedPropertyAccessException(java.lang.String);
+}
 
 # Please add these rules to your existing keep rules in order to suppress warnings.
 # This is generated automatically by the Android Gradle plugin.

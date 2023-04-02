@@ -14,6 +14,7 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.Voice
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
@@ -223,6 +224,10 @@ class ChatActivity : FragmentActivity() {
             silenceMode = Preferences.getPreferences(this).getSilence()
 
             messages = ChatPreferences.getChatPreferences().getChatById(this, chatId)
+
+            if (messages == null) messages = arrayListOf()
+
+            if (chatMessages == null) chatMessages = arrayListOf()
 
             for (message: HashMap<String, Any> in messages) {
                 if (!message["message"].toString().contains("data:image")) {

@@ -24,6 +24,7 @@ import org.teslasoft.assistant.Api
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.ui.adapters.PromptAdapter
 import org.teslasoft.core.api.network.RequestNetwork
+import java.net.URLEncoder
 
 class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     override fun onCreateView(
@@ -58,7 +59,12 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private val postPromptListener: PostPromptDialog.StateChangesListener = object : PostPromptDialog.StateChangesListener {
         override fun onFormFilled(name: String, title: String, desc: String, prompt: String, type: String, category: String) {
-            requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/post.php?api_key=${Api.API_KEY}&name=$name&title=$title&desc=$desc&prompt=$prompt&type=$type&category=$category", "A", promptPostListener)
+            val mName: String = URLEncoder.encode(name, Charsets.UTF_8.name())
+            val mTitle: String = URLEncoder.encode(title, Charsets.UTF_8.name())
+            val mDesc: String = URLEncoder.encode(desc, Charsets.UTF_8.name())
+            val mPrompt: String = URLEncoder.encode(prompt, Charsets.UTF_8.name())
+
+            requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/post.php?api_key=${Api.API_KEY}&name=$mName&title=$mTitle&desc=$mDesc&prompt=$mPrompt&type=$type&category=$category", "A", promptPostListener)
         }
 
         override fun onFormError(name: String, title: String, desc: String, prompt: String, type: String, category: String) {

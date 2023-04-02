@@ -48,11 +48,13 @@ class ChatPreferences private constructor() {
         val json = settings.getString("data", null)
         val type: Type = TypeToken.getParameterized(ArrayList::class.java, HashMap::class.java).type
 
-        val list: ArrayList<HashMap<String, String>> = try {
+        var list: ArrayList<HashMap<String, String>> = try {
             gson.fromJson<Any>(json, type) as ArrayList<HashMap<String, String>>
         } catch (e: Exception) {
             arrayListOf()
         }
+
+        if (list == null) list = arrayListOf()
 
         return list
     }
@@ -62,7 +64,9 @@ class ChatPreferences private constructor() {
             Context.MODE_PRIVATE
         )
 
-        return try {
+
+
+        var list: ArrayList<HashMap<String, Any>> = try {
             val gson = Gson()
             val json = chat.getString("chat", null)
             val type: Type = TypeToken.getParameterized(ArrayList::class.java, HashMap::class.java).type
@@ -71,6 +75,10 @@ class ChatPreferences private constructor() {
         } catch (e: Exception) {
             arrayListOf()
         }
+
+        if (list == null) list = arrayListOf()
+
+        return list
     }
 
     fun getAvailableChatId(context: Context) : String {
@@ -108,6 +116,9 @@ class ChatPreferences private constructor() {
 
         val settings: SharedPreferences = context.getSharedPreferences("chat_list", Context.MODE_PRIVATE)
         settings.edit().putString("data", json).apply()
+
+        val settings2: SharedPreferences = context.getSharedPreferences("chat_${Hash.hash(chatName)}", Context.MODE_PRIVATE)
+        settings2.edit().putString("chat", "[]").apply()
     }
 
     fun checkDuplicate(context: Context, chatName: String) : Boolean {
