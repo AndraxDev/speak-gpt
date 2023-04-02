@@ -1,6 +1,4 @@
 
-z
-Japp/src/main/java/org/teslasoft/assistant/ui/MicrophonePermissionScreen.kt,a\d\ad813be96defda79d0beaaf6b2f36006b7f7a65a
 Z
 *app/src/main/res/drawable/chatgpt_icon.xml,c\2\c2b15bba76ee70f9bcf2ce52cab6de288d83c8e6
 o
@@ -31,35 +29,21 @@ u
 Eapp/src/main/java/org/teslasoft/assistant/onboarding/TermsActivity.kt,0\0\0003358e1e2001cbb7673145f4ed1d05132bb7c7
 z
 Japp/src/main/java/org/teslasoft/assistant/onboarding/ActivationActivity.kt,5\d\5d69012421ca82ed0b94ca9aa229e4190692a2fc
-j
-:app/src/main/java/org/teslasoft/assistant/AboutActivity.kt,c\2\c2da04ba42d2f76ef0ad3a1c303bc3e98c41e188
 |
 Lapp/src/main/java/org/teslasoft/assistant/fragments/AddChatDialogFragment.kt,4\5\4568e310673ea6bd31a36b152cb65599f247605e
 z
 Japp/src/main/java/org/teslasoft/assistant/fragments/ModelDialogFragment.kt,4\1\41d000af150847b8b7661aaff670fec20f02cdc6
 u
 Eapp/src/main/java/org/teslasoft/assistant/adapters/ChatListAdapter.kt,9\e\9e267b9130ab09c14d3423bce326cc2f99cae438
-d
-4app/src/main/java/org/teslasoft/assistant/app/App.kt,a\c\acea5535163da44067b35d87080cf88ade667b1c
 p
 @app/src/main/java/org/teslasoft/assistant/ReportAbuseActivity.kt,b\7\b780cc6d322741468ff9d1e4af7b7fa3f6c1329f
-n
->app/src/main/java/org/teslasoft/assistant/AssistantActivity.kt,d\8\d89a613ef241eda5f0484ecd7598a668a9869716
 x
 Happ/src/main/java/org/teslasoft/assistant/fragments/ChatsListFragment.kt,5\9\59bbd72959bdc64efeb0677ae34494d6ba3d4f1a
 i
 9app/src/main/java/org/teslasoft/assistant/ChatActivity.kt,c\7\c75f811209f08f049d46476e251a1c8bb2a03638
-<
-build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
 q
 Aapp/src/main/java/org/teslasoft/assistant/adapters/ChatAdapter.kt,8\f\8ff7b1ca7b01bec802e2f5a87f13d205737e8e70
 v
 Fapp/src/main/java/org/teslasoft/assistant/adapters/AssistantAdapter.kt,b\f\bf13c4a7cee746d96169b3b167512035c38eb9b2
-w
-Gapp/src/main/java/org/teslasoft/assistant/widget/BottomSheetListView.kt,1\b\1b211aa235e28b18f120fa2e077025f678d57383
-v
-Fapp/src/main/java/org/teslasoft/assistant/settings/SettingsActivity.kt,1\1\11694a9b3ac5d1717093bbacdc30911d82df4888
-P
- app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
 o
 ?app/src/main/java/org/teslasoft/assistant/PromptViewActivity.kt,d\e\de7ab1eae3970585ff68263dfe4ede16a860a918

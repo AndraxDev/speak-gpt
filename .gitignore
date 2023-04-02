@@ -2,6 +2,8 @@
 .gradle
 /local.properties
 /.idea/caches
+/.idea/sonarlint
+/.idea/codeStyles
 /.idea/libraries
 /.idea/modules.xml
 /.idea/workspace.xml

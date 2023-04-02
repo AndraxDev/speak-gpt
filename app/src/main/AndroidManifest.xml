@@ -24,11 +24,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.App"
-        android:name=".app.App"
+        android:name=".app.MainApplication"
         tools:targetApi="31" >
 
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.App"
             android:launchMode="singleTask">
@@ -40,39 +40,38 @@
         </activity>
 
         <activity
-            android:name=".ChatActivity"
+            android:name=".ui.ChatActivity"
             android:exported="false"
             android:theme="@style/Theme.App"
             android:launchMode="singleTask">
         </activity>
 
         <activity
-            android:name=".PromptViewActivity"
+            android:name=".ui.PromptViewActivity"
             android:exported="false"
             android:theme="@style/Theme.App"
             android:launchMode="singleTask">
         </activity>
 
         <activity
-            android:name=".ReportAbuseActivity"
+            android:name=".ui.ReportAbuseActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
             android:launchMode="singleTask">
         </activity>
 
         <activity
-            android:name=".onboarding.WelcomeActivity"
+            android:name="org.teslasoft.assistant.ui.onboarding.WelcomeActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
             android:launchMode="singleTask">
         </activity>
 
         <activity
-            android:name=".AssistantActivity"
+            android:name=".ui.assistant.AssistantActivity"
             android:exported="true"
             android:theme="@style/Theme.Assistant"
-            android:launchMode="singleTask"
-            android:label="@string/app_name">
+            android:launchMode="singleTask">
 
             <intent-filter>
                 <action android:name="android.intent.action.ASSIST" />
@@ -84,38 +83,45 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="text/plain" />
             </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
         </activity>
 
         <activity
-            android:name=".AboutActivity"
+            android:name=".ui.AboutActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
             android:launchMode="singleTask">
         </activity>
 
         <activity
-            android:name=".onboarding.TermsActivity"
+            android:name="org.teslasoft.assistant.ui.onboarding.TermsActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
             android:launchMode="singleTask">
         </activity>
 
         <activity
-            android:name=".onboarding.ActivationActivity"
+            android:name="org.teslasoft.assistant.ui.onboarding.ActivationActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
             android:launchMode="singleTask">
         </activity>
 
         <activity
-            android:name=".settings.SettingsActivity"
+            android:name=".ui.SettingsActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
             android:launchMode="singleTask">
         </activity>
 
         <activity
-            android:name=".DebugActivity"
+            android:name=".ui.DebugActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
             android:launchMode="singleTask">
@@ -129,7 +135,7 @@
         </activity>
 
         <activity
-            android:name=".ImageBrowserActivity"
+            android:name=".ui.ImageBrowserActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
             android:launchMode="singleTask">
