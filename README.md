@@ -60,7 +60,9 @@ SpeakGPT is an advanced and highly intuitive voice assistant that utilizes the p
 - [ ] Device routines (like set alarm or open app)
 - [ ] Sync chat history
 - [ ] Browse model so SpeakGPT can provide information from Internet
-- [ ] New experimental model llama 30b
+- [ ] New experimental model llama 7b
+- [ ] Add support of custom fine-tuned models
+- [ ] Add models exchange portal like prompts store
 
 ### You are appreciated to:
 

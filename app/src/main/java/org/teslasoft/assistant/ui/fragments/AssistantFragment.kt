@@ -36,8 +36,10 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import com.aallam.openai.api.BetaOpenAI
 import com.aallam.openai.api.chat.ChatCompletionChunk
 import com.aallam.openai.api.chat.ChatCompletionRequest
@@ -50,7 +52,9 @@ import com.aallam.openai.api.image.ImageSize
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.elevation.SurfaceColors
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -66,7 +70,6 @@ import java.net.URL
 import java.util.Base64
 import java.util.Locale
 
-
 class AssistantFragment : BottomSheetDialogFragment() {
 
     // Init UI
@@ -74,6 +77,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private var btnAssistantSettings: ImageButton? = null
     private var btnAssistantShowKeyboard: ImageButton? = null
     private var btnAssistantHideKeyboard: ImageButton? = null
+    private var btnSaveToChat: MaterialButton? = null
     private var btnAssistantSend: ImageButton? = null
     private var assistantMessage: EditText? = null
     private var assistantInputLayout: LinearLayout? = null
@@ -92,6 +96,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private var keyboardMode = false
     private var isTTSInitialized = false
     private var silenceMode = false
+    private var chatID = ""
 
     // init AI
     private var ai: OpenAI? = null
@@ -100,6 +105,41 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     // Init DALL-e
     private var resolution = "512x152"
+
+    // Init chat save feature
+    private var chatListUpdatedListener: AddChatDialogFragment.StateChangesListener = object : AddChatDialogFragment.StateChangesListener {
+        override fun onAdd(name: String, id: String) {
+            save(id)
+        }
+
+        override fun onEdit(name: String, id: String) {
+            save(id)
+        }
+
+        override fun onError() {
+            Toast.makeText(requireActivity(), "Please fill name field", Toast.LENGTH_SHORT).show()
+
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("")
+            chatDialogFragment.setStateChangedListener(this)
+            chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
+        }
+
+        override fun onCanceled() {
+            /* unused */
+        }
+
+        override fun onDelete() {
+            /* unused */
+        }
+
+        override fun onDuplicate() {
+            Toast.makeText(requireActivity(), "Name must be unique", Toast.LENGTH_SHORT).show()
+
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("")
+            chatDialogFragment.setStateChangedListener(this)
+            chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
+        }
+    }
 
     // Init audio
     private var recognizer: SpeechRecognizer? = null
@@ -133,6 +173,8 @@ class AssistantFragment : BottomSheetDialogFragment() {
                     role = ChatRole.User,
                     content = recognizedText
                 ))
+
+                saveSettings()
 
                 putMessage(recognizedText, false)
 
@@ -386,6 +428,8 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
             keyboardMode = false
 
+            saveSettings()
+
             putMessage(message, false)
 
             hideKeyboard()
@@ -399,6 +443,8 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 sendImageRequest(x)
             } else if (message.lowercase().contains("/imagine") && message.length <= 9) {
                 putMessage("Prompt can not be empty. Use /imagine &lt;PROMPT&gt;", true)
+
+                saveSettings()
 
                 btnAssistantVoice?.isEnabled = true
                 btnAssistantSend?.isEnabled = true
@@ -465,6 +511,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     @OptIn(BetaOpenAI::class)
     private suspend fun generateResponse(request: String, shouldPronounce: Boolean) {
         assistantConversation?.visibility = View.VISIBLE
+        btnSaveToChat?.visibility = View.VISIBLE
 
         putMessage("", true)
         var response = ""
@@ -540,6 +587,8 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 "Your API key is incorrect. Change it in Settings > Change OpenAI key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked."
             } else if (e.stackTraceToString().contains("Software caused connection abort")) {
                 "\n\n[error] An error occurred while generating response. It may be due to a weak connection or high demand. Try to switch to another model or try again later."
+            } else if (e.stackTraceToString().contains("You exceeded your current quota")) {
+                "You exceeded your current quota. If you had free trial usage please add payment info. Also please check your usage limits. You can change your limits in Account settings."
             } else {
                 e.stackTraceToString()
             }
@@ -547,6 +596,8 @@ class AssistantFragment : BottomSheetDialogFragment() {
             messages[messages.size - 1]["message"] = "${response}\n"
             adapter?.notifyDataSetChanged()
         }
+
+        saveSettings()
 
         btnAssistantVoice?.isEnabled = true
         btnAssistantSend?.isEnabled = true
@@ -556,6 +607,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     @OptIn(BetaOpenAI::class)
     private suspend fun generateImage(p: String) {
         assistantConversation?.visibility = View.VISIBLE
+        btnSaveToChat?.visibility = View.VISIBLE
 
         try {
             val images = ai?.imageURL(
@@ -586,14 +638,43 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 putMessage("Your API key is incorrect. Change it in Settings > Change OpenAI key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked.", true);
             } else if (e.stackTraceToString().contains("Software caused connection abort")) {
                 putMessage("An error occurred while generating response. It may be due to a weak connection or high demand. Try again later.", true);
+            } else if (e.stackTraceToString().contains("You exceeded your current quota")) {
+                putMessage("You exceeded your current quota. If you had free trial usage please add payment info. Also please check your usage limits. You can change your limits in Account settings.", true)
             } else {
                 putMessage(e.stackTraceToString(), true)
             }
         }
 
+        saveSettings()
+
         btnAssistantVoice?.isEnabled = true
         btnAssistantSend?.isEnabled = true
         assistantLoading?.visibility = View.GONE
+    }
+
+    private fun saveSettings() {
+        if (chatID != "") {
+            val chat = requireActivity().getSharedPreferences(
+                "chat_$chatID",
+                FragmentActivity.MODE_PRIVATE
+            )
+            val editor = chat.edit()
+            val gson = Gson()
+            val json: String = gson.toJson(messages)
+
+            if (json == "") editor.putString("chat", "[]")
+            else editor.putString("chat", json)
+
+            editor.apply()
+        }
+    }
+
+    private fun save(id: String) {
+        chatID = id
+        saveSettings()
+        btnSaveToChat?.text = "Saved"
+        btnSaveToChat?.isEnabled = false
+        btnSaveToChat?.setIconResource(R.drawable.ic_done)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -606,6 +687,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         btnAssistantShowKeyboard = view.findViewById(R.id.btn_assistant_show_keyboard)
         btnAssistantHideKeyboard = view.findViewById(R.id.btn_assistent_hide_keyboard)
         btnAssistantSend = view.findViewById(R.id.btn_assistant_send)
+        btnSaveToChat = view.findViewById(R.id.btn_save)
         assistantMessage = view.findViewById(R.id.assistant_message)
         assistantInputLayout = view.findViewById(R.id.input_layout)
         assistantActionsLayout = view.findViewById(R.id.assistant_actions)
@@ -619,6 +701,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         btnAssistantSend?.setImageResource(R.drawable.ic_send)
 
         assistantConversation?.isNestedScrollingEnabled = true
+        assistantMessage?.isNestedScrollingEnabled = true
 
         initSettings()
 
@@ -628,6 +711,12 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
         btnAssistantHideKeyboard?.setOnClickListener {
             hideKeyboard()
+        }
+
+        btnSaveToChat?.setOnClickListener {
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("")
+            chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
+            chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
 
         hideKeyboard()

@@ -8,12 +8,19 @@ android {
     namespace 'org.teslasoft.assistant'
     compileSdk 33
 
+    ndkVersion "23.1.7779620"
+
     defaultConfig {
         applicationId "org.teslasoft.assistant"
         minSdk 28
         targetSdk 33
-        versionCode 205
-        versionName "2.5"
+        versionCode 206
+        versionName "2.6"
+        externalNativeBuild {
+            cmake {
+                cppFlags ''
+            }
+        }
     }
 
     buildTypes {
@@ -39,6 +46,12 @@ android {
     }
     kotlinOptions {
         jvmTarget = '11'
+    }
+    externalNativeBuild {
+        cmake {
+            path file('cpp/CMakeLists.txt')
+            version '3.22.1'
+        }
     }
 }
 

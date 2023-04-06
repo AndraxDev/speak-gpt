@@ -179,7 +179,6 @@
                     android:background="@drawable/btn_tip1"
                     android:orientation="vertical"
                     android:padding="24dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tip_6">
@@ -188,7 +187,31 @@
                         android:id="@+id/tip7_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Select text in any app and tap &quot;SpeakGPT&quot; to start conversation with assistant. This feature is available even if default assistant app feature is off."
+                        android:text="Select text in any app and tap &quot;SpeakGPT&quot; to start conversation with assistant. This feature is available even if default assistant app feature is off. Also you can share text with SpeakGPT using default share option if SpeakGPT option is not available."
+                        android:textColor="@color/tip1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tip_8"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginBottom="24dp"
+                    android:background="@drawable/btn_tip1"
+                    android:orientation="vertical"
+                    android:padding="24dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tip_7">
+
+                    <TextView
+                        android:id="@+id/tip8_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="You can save your conversation with assistant. Once save button is clicked all future messages will also be saved."
                         android:textColor="@color/tip1" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>

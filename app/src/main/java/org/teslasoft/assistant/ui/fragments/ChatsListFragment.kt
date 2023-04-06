@@ -100,6 +100,11 @@ class ChatsListFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_chats_list, container, false)
     }
 
+    override fun onResume() {
+        super.onResume()
+        initSettings()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
