@@ -35,6 +35,7 @@ SpeakGPT is an advanced and highly intuitive voice assistant that utilizes the p
 - [x] Pay as you go system
 - [x] Long trial period (up to 4 months*)
 - [x] Tips for newbies
+- [x] Custom fine-tuned models are supported
 
 > \* Note
 >
@@ -54,6 +55,7 @@ SpeakGPT is an advanced and highly intuitive voice assistant that utilizes the p
 - [x] Adaptive design
 - [x] DALL-e integration
 - [x] A lot of different models
+- [x] Add support of custom fine-tuned models
 
 ### ❌ Planned to add (Share your ideas in Issues)
 
@@ -61,7 +63,6 @@ SpeakGPT is an advanced and highly intuitive voice assistant that utilizes the p
 - [ ] Sync chat history
 - [ ] Browse model so SpeakGPT can provide information from Internet
 - [ ] New experimental model llama 7b
-- [ ] Add support of custom fine-tuned models
 - [ ] Add models exchange portal like prompts store
 
 ### You are appreciated to:

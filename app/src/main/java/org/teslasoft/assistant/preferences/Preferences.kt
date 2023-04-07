@@ -54,6 +54,14 @@ class Preferences private constructor(private var preferences: SharedPreferences
         putString("model", model)
     }
 
+    fun getMaxTokens() : Int {
+        return getString("max_tokens", "1500").toInt()
+    }
+
+    fun setMaxTokens(tokens: Int) {
+        putString("max_tokens", tokens.toString())
+    }
+
     fun getResolution() : String {
         return getString("resolution", "512x512")
     }
@@ -68,6 +76,14 @@ class Preferences private constructor(private var preferences: SharedPreferences
 
     public fun setSilence(mode: Boolean) {
         putBoolean("silence_mode", mode)
+    }
+
+    fun getEndSeparator() : String {
+        return getString("end", "")
+    }
+
+    fun setEndSeparator(separator: String) {
+        putString("end", separator)
     }
 
     fun getPrompt() : String {

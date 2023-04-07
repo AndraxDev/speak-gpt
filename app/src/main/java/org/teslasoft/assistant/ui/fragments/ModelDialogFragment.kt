@@ -19,14 +19,18 @@ package org.teslasoft.assistant.ui.fragments
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.RadioButton
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.Preferences
 
 class ModelDialogFragment : DialogFragment() {
     companion object {
@@ -61,6 +65,10 @@ class ModelDialogFragment : DialogFragment() {
     private var curie: RadioButton? = null
     private var babbage: RadioButton? = null
     private var ada: RadioButton? = null
+    private var ft: RadioButton? = null
+    private var ftInput: EditText? = null
+    private var maxTokens: EditText? = null
+    private var endSeparator: EditText? = null
 
     private var listener: StateChangesListener? = null
 
@@ -95,6 +103,13 @@ class ModelDialogFragment : DialogFragment() {
         curie = view.findViewById(R.id.curie)
         babbage = view.findViewById(R.id.babbage)
         ada = view.findViewById(R.id.ada)
+        ft = view.findViewById(R.id.ft)
+        ftInput = view.findViewById(R.id.ft_input)
+        maxTokens = view.findViewById(R.id.max_tokens)
+        endSeparator = view.findViewById(R.id.end_separator)
+
+        maxTokens?.setText(Preferences.getPreferences(requireActivity()).getMaxTokens().toString())
+        endSeparator?.setText(Preferences.getPreferences(requireActivity()).getEndSeparator())
 
         gpt_35_turbo?.setOnClickListener { model = "gpt-3.5-turbo" }
         gpt_35_turbo_0301?.setOnClickListener { model = "gpt-3.5-turbo-0301" }
@@ -111,6 +126,21 @@ class ModelDialogFragment : DialogFragment() {
         curie?.setOnClickListener { model = "curie" }
         babbage?.setOnClickListener { model = "babbage" }
         ada?.setOnClickListener { model = "ada" }
+        ft?.setOnClickListener { model = ftInput?.text.toString() }
+
+        ftInput?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                /* unused */
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                model = s.toString()
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                /* unused */
+            }
+        })
 
         builder!!.setView(view)
             .setCancelable(false)
@@ -133,14 +163,37 @@ class ModelDialogFragment : DialogFragment() {
             "curie" -> curie?.isChecked = true
             "babbage" -> babbage?.isChecked = true
             "ada" -> ada?.isChecked = true
-            else -> gpt_35_turbo?.isChecked = true
+            else -> {
+                ft?.isChecked = true
+                ftInput?.setText(requireArguments().getString("name"))
+            }
         }
 
         return builder!!.create()
     }
 
     private fun validateForm() {
-        listener!!.onSelected(model)
+        if (ftInput?.text.toString() == "") {
+            listener!!.onFormError(model, maxTokens?.text.toString(), endSeparator?.text.toString())
+            return
+        }
+
+        if (maxTokens?.text.toString() == "") {
+            listener!!.onFormError(model, maxTokens?.text.toString(), endSeparator?.text.toString())
+            return
+        }
+
+        if (maxTokens?.text.toString().toInt() > 2048 && !model.contains("gpt-4")) {
+            listener!!.onFormError(model, maxTokens?.text.toString(), endSeparator?.text.toString())
+            return
+        }
+
+        if (maxTokens?.text.toString().toInt() > 8192 && model.contains("gpt-4")) {
+            listener!!.onFormError(model, maxTokens?.text.toString(), endSeparator?.text.toString())
+            return
+        }
+
+        listener!!.onSelected(model, maxTokens?.text.toString(), endSeparator?.text.toString())
     }
 
     fun setStateChangedListener(listener: StateChangesListener) {
@@ -148,6 +201,7 @@ class ModelDialogFragment : DialogFragment() {
     }
 
     public interface StateChangesListener {
-        public fun onSelected(name: String)
+        fun onSelected(name: String, maxTokens: String, endSeparator: String)
+        fun onFormError(name: String, maxTokens: String, endSeparator: String)
     }
 }

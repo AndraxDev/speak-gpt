@@ -62,10 +62,21 @@ class SettingsActivity : FragmentActivity() {
     private var activationPrompt : String = ""
 
     private var modelChangedListener: ModelDialogFragment.StateChangesListener = object : ModelDialogFragment.StateChangesListener {
-        override fun onSelected(name: String) {
+        override fun onSelected(name: String, maxTokens: String, endSeparator: String) {
             model = name
             preferences?.setModel(name)
+            preferences?.setMaxTokens(maxTokens.toInt())
+            preferences?.setEndSeparator(endSeparator)
             modelDesc?.text = model
+        }
+
+        override fun onFormError(name: String, maxTokens: String, endSeparator: String) {
+            if (name == "") Toast.makeText(this@SettingsActivity, "Error, no model name is provided", Toast.LENGTH_SHORT).show()
+            else if (name.contains("gpt-4")) Toast.makeText(this@SettingsActivity, "Error, GPT4 support maximum of 8192 tokens", Toast.LENGTH_SHORT).show()
+            else Toast.makeText(this@SettingsActivity, "Error, more than 2048 tokens is not supported", Toast.LENGTH_SHORT).show()
+            val modelDialogFragment: ModelDialogFragment = ModelDialogFragment.newInstance(model)
+            modelDialogFragment.setStateChangedListener(this)
+            modelDialogFragment.show(supportFragmentManager.beginTransaction(), "ModelDialog")
         }
     }
 

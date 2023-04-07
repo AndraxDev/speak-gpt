@@ -99,6 +99,7 @@ class ChatActivity : FragmentActivity() {
     private var ai: OpenAI? = null
     private var key: String? = null
     private var model = ""
+    private var endSeparator = ""
 
     // Init DALL-e
     private var resolution = "512x152"
@@ -131,11 +132,11 @@ class ChatActivity : FragmentActivity() {
             if (matches != null && matches.size > 0) {
                 val recognizedText = matches[0]
 
-                putMessage(recognizedText, false)
+                putMessage(recognizedText + endSeparator, false)
 
                 chatMessages.add(ChatMessage(
                     role = ChatRole.User,
-                    content = recognizedText
+                    content = recognizedText + endSeparator
                 ))
 
                 saveSettings()
@@ -145,7 +146,7 @@ class ChatActivity : FragmentActivity() {
                 progress?.visibility = View.VISIBLE
 
                 CoroutineScope(Dispatchers.Main).launch {
-                    generateResponse(recognizedText, true)
+                    generateResponse(recognizedText + endSeparator, true)
                 }
             }
         }
@@ -230,6 +231,8 @@ class ChatActivity : FragmentActivity() {
     @Suppress("unchecked")
     private fun initSettings() {
         key = Preferences.getPreferences(this).getApiKey(this)
+
+        endSeparator = Preferences.getPreferences(this).getEndSeparator()
 
         loadResolution()
 
@@ -472,7 +475,7 @@ class ChatActivity : FragmentActivity() {
 
             keyboardMode = false
 
-            putMessage(message, false)
+            putMessage(message + endSeparator, false)
             saveSettings()
 
             btnMicro?.isEnabled = false
@@ -503,11 +506,11 @@ class ChatActivity : FragmentActivity() {
             } else {
                 chatMessages.add(ChatMessage(
                     role = ChatRole.User,
-                    content = message
+                    content = message + endSeparator
                 ))
 
                 CoroutineScope(Dispatchers.Main).launch {
-                    generateResponse(message, false)
+                    generateResponse(message + endSeparator, false)
                 }
             }
         }
@@ -548,11 +551,9 @@ class ChatActivity : FragmentActivity() {
         var response = ""
 
         try {
-            if (model.contains("davinci") || model.contains("curie") || model.contains("babbage") || model.contains("ada")) {
+            if (model.contains("davinci") || model.contains("curie") || model.contains("babbage") || model.contains("ada") || model.contains(":ft-")) {
 
-                val tokens = if (model.contains("text-davinci") || model.contains("code-davinci")) {
-                    2048
-                } else 1500
+                val tokens = Preferences.getPreferences(this).getMaxTokens()
 
                 val completionRequest = CompletionRequest(
                     model = ModelId(model),
@@ -573,9 +574,12 @@ class ChatActivity : FragmentActivity() {
                     }
                 }
             } else {
+                val tokens = Preferences.getPreferences(this).getMaxTokens()
+
                 val chatCompletionRequest = ChatCompletionRequest(
                     model = ModelId(model),
-                    messages = chatMessages
+                    messages = chatMessages,
+                    maxTokens = tokens
                 )
 
                 val completions: Flow<ChatCompletionChunk> = ai!!.chatCompletions(chatCompletionRequest)
@@ -605,20 +609,24 @@ class ChatActivity : FragmentActivity() {
                 tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null,"")
             }
         } catch (e: Exception) {
-            if (e.stackTraceToString().contains("does not exist")) {
-                response += "Looks like this model (${model}) is not available to you right now. It can be because of high demand or this model is currently in limited beta."
+            response += if (e.stackTraceToString().contains("does not exist")) {
+                "Looks like this model (${model}) is not available to you right now. It can be because of high demand or this model is currently in limited beta."
             } else if (e.stackTraceToString().contains("Connect timeout has expired") || e.stackTraceToString().contains("SocketTimeoutException")) {
-                response += "Could not connect to OpenAI servers. It may happen when your Internet speed is slow or too many users are using this model at the same time. Try to switch to another model."
+                "Could not connect to OpenAI servers. It may happen when your Internet speed is slow or too many users are using this model at the same time. Try to switch to another model."
             } else if (e.stackTraceToString().contains("This model's maximum")) {
-                response += "Too many tokens. It is an internal error, please report it. Also try to truncate your input. Sometimes it may help."
+                "Too many tokens. It is an internal error, please report it. Also try to truncate your input. Sometimes it may help."
             } else if (e.stackTraceToString().contains("No address associated with hostname")) {
-                response += "You are currently offline. Please check your connection and try again."
+                "You are currently offline. Please check your connection and try again."
             } else if (e.stackTraceToString().contains("Incorrect API key")) {
-                response += "Your API key is incorrect. Change it in Settings > Change OpenAI key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked."
+                "Your API key is incorrect. Change it in Settings > Change OpenAI key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked."
+            } else if (e.stackTraceToString().contains("you must provide a model")) {
+                "No valid model is set in settings. Please change the model and try again."
             } else if (e.stackTraceToString().contains("Software caused connection abort")) {
-                response += "\n\n[error] An error occurred while generating response. It may be due to a weak connection or high demand. Try to switch to another model or try again later."
+                "\n\n[error] An error occurred while generating response. It may be due to a weak connection or high demand. Try to switch to another model or try again later."
+            } else if (e.stackTraceToString().contains("You exceeded your current quota")) {
+                "You exceeded your current quota. If you had free trial usage please add payment info. Also please check your usage limits. You can change your limits in Account settings."
             } else {
-                response += e.stackTraceToString()
+                e.stackTraceToString()
             }
 
             messages[messages.size - 1]["message"] = "${response}\n"
@@ -662,6 +670,8 @@ class ChatActivity : FragmentActivity() {
                 putMessage("Your API key is incorrect. Change it in Settings > Change OpenAI key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked.", true);
             } else if (e.stackTraceToString().contains("Software caused connection abort")) {
                 putMessage("An error occurred while generating response. It may be due to a weak connection or high demand. Try again later.", true);
+            } else if (e.stackTraceToString().contains("You exceeded your current quota")) {
+                putMessage("You exceeded your current quota. If you had free trial usage please add payment info. Also please check your usage limits. You can change your limits in Account settings.", true)
             } else {
                 putMessage(e.stackTraceToString(), true)
             }

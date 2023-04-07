@@ -102,6 +102,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private var ai: OpenAI? = null
     private var key: String? = null
     private var model = ""
+    private var endSeparator = ""
 
     // Init DALL-e
     private var resolution = "512x152"
@@ -171,12 +172,12 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
                 chatMessages.add(ChatMessage(
                     role = ChatRole.User,
-                    content = recognizedText
+                    content = recognizedText + endSeparator
                 ))
 
                 saveSettings()
 
-                putMessage(recognizedText, false)
+                putMessage(recognizedText + endSeparator, false)
 
                 hideKeyboard()
                 btnAssistantVoice?.isEnabled = false
@@ -184,7 +185,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 assistantLoading?.visibility = View.VISIBLE
 
                 CoroutineScope(Dispatchers.Main).launch {
-                    generateResponse(recognizedText, true)
+                    generateResponse(recognizedText + endSeparator, true)
                 }
             }
         }
@@ -261,10 +262,11 @@ class AssistantFragment : BottomSheetDialogFragment() {
         requireActivity().finishAndRemoveTask()
     }
 
-    @OptIn(BetaOpenAI::class)
     @Suppress("unchecked")
     private fun initSettings() {
         key = Preferences.getPreferences(requireActivity()).getApiKey(requireActivity())
+
+        endSeparator = Preferences.getPreferences(requireActivity()).getEndSeparator()
 
         loadResolution()
 
@@ -430,7 +432,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
             saveSettings()
 
-            putMessage(message, false)
+            putMessage(message + endSeparator, false)
 
             hideKeyboard()
             btnAssistantVoice?.isEnabled = false
@@ -461,11 +463,11 @@ class AssistantFragment : BottomSheetDialogFragment() {
             } else {
                 chatMessages.add(ChatMessage(
                     role = ChatRole.User,
-                    content = message
+                    content = message + endSeparator
                 ))
 
                 CoroutineScope(Dispatchers.Main).launch {
-                    generateResponse(message, false)
+                    generateResponse(message + endSeparator, false)
                 }
             }
         }
@@ -517,10 +519,8 @@ class AssistantFragment : BottomSheetDialogFragment() {
         var response = ""
 
         try {
-            if (model.contains("davinci") || model.contains("curie") || model.contains("babbage") || model.contains("ada")) {
-                val tokens = if (model.contains("text-davinci") || model.contains("code-davinci")) {
-                    2048
-                } else 1500
+            if (model.contains("davinci") || model.contains("curie") || model.contains("babbage") || model.contains("ada") || model.contains(":ft-")) {
+                val tokens = Preferences.getPreferences(requireActivity()).getMaxTokens()
 
                 val completionRequest = CompletionRequest(
                     model = ModelId(model),
@@ -541,9 +541,12 @@ class AssistantFragment : BottomSheetDialogFragment() {
                     }
                 }
             } else {
+                val tokens = Preferences.getPreferences(requireActivity()).getMaxTokens()
+
                 val chatCompletionRequest = ChatCompletionRequest(
                     model = ModelId(model),
-                    messages = chatMessages
+                    messages = chatMessages,
+                    maxTokens = tokens
                 )
 
                 val completions: Flow<ChatCompletionChunk> = ai!!.chatCompletions(chatCompletionRequest)
@@ -587,6 +590,8 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 "Your API key is incorrect. Change it in Settings > Change OpenAI key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked."
             } else if (e.stackTraceToString().contains("Software caused connection abort")) {
                 "\n\n[error] An error occurred while generating response. It may be due to a weak connection or high demand. Try to switch to another model or try again later."
+            } else if (e.stackTraceToString().contains("you must provide a model")) {
+                "No valid model is set in settings. Please change the model and try again."
             } else if (e.stackTraceToString().contains("You exceeded your current quota")) {
                 "You exceeded your current quota. If you had free trial usage please add payment info. Also please check your usage limits. You can change your limits in Account settings."
             } else {

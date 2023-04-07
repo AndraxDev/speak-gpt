@@ -7,8 +7,6 @@ p
 @app/src/main/java/org/teslasoft/assistant/app/MainApplication.kt,f\7\f72754bfb1ae0b0f2307f72f94e21f6fda20c1aa
 x
 Happ/src/main/java/org/teslasoft/assistant/preferences/ChatPreferences.kt,3\a\3a81525fa1c7a53fa085aa85ab40d571ff3ae4ef
-t
-Dapp/src/main/java/org/teslasoft/assistant/preferences/Preferences.kt,8\b\8bed103e96bb9c21d026c3d93a7e912de9343153
 |
 Lapp/src/main/java/org/teslasoft/assistant/ui/adapters/AbstractChatAdapter.kt,1\c\1c2c8ee6f0908739e7670031294c5b14701e562e
 y
@@ -23,8 +21,6 @@ Kapp/src/main/java/org/teslasoft/assistant/ui/assistant/AssistantActivity.kt,a\
 Papp/src/main/java/org/teslasoft/assistant/ui/fragments/ActivationPromptDialog.kt,3\8\38f2db1902e711368f906ee98317dc1b50c42d19
 
 Oapp/src/main/java/org/teslasoft/assistant/ui/fragments/AddChatDialogFragment.kt,5\f\5f9b04f68d2a8c62238a6fac7ea082493f2715c5
-}
-Mapp/src/main/java/org/teslasoft/assistant/ui/fragments/ModelDialogFragment.kt,4\b\4b2980e968cd15935c360ac2829ced72cf4f24c1
 z
 Japp/src/main/java/org/teslasoft/assistant/ui/fragments/PostPromptDialog.kt,b\3\b33d21f0114861f3e99222b9698afa3d43a1e661
 y
@@ -47,12 +43,8 @@ l
 <app/src/main/java/org/teslasoft/assistant/ui/MainActivity.kt,7\0\7032bdf73e915f57bb6be71d163658932960ebb2
 z
 Japp/src/main/java/org/teslasoft/assistant/ui/MicrophonePermissionScreen.kt,a\d\ad813be96defda79d0beaaf6b2f36006b7f7a65a
-r
-Bapp/src/main/java/org/teslasoft/assistant/ui/PromptViewActivity.kt,e\a\ea40a3238f5b57d6dcf0d5e5bcdc18fd06185c5e
 s
 Capp/src/main/java/org/teslasoft/assistant/ui/ReportAbuseActivity.kt,6\c\6c6158f7c4332259e7dd059c783ba5e49930ffc6
-p
-@app/src/main/java/org/teslasoft/assistant/ui/SettingsActivity.kt,3\d\3db51e5c5980efd2285e6ab90d2d65d534a13af6
 f
 6app/src/main/java/org/teslasoft/assistant/util/Hash.kt,2\b\2b57dc8745f3dc071d6d3504e0373b969b6a7585
 n
@@ -65,9 +57,13 @@ r
 Bapp/src/main/java/org/teslasoft/core/api/network/RequestNetwork.kt,4\8\48329a942751175534150aba44a6e523eb866884
 |
 Lapp/src/main/java/org/teslasoft/core/api/network/RequestNetworkController.kt,5\6\566e0d3c4c02135e084266864c7efe4df4b045a0
-B
-hs_err_pid1172.log,a\4\a4a0ac241a8067f222c50263aaef5fe7892769ec
 H
 app/cpp/libgpt-llama.cpp,6\f\6fb089e5a1fe8b9ae152f569e10f43f16db82c86
 F
 app/cpp/CMakeLists.txt,0\8\08ad8fc96c75158f948017c60f82016d82078246
+F
+app/proguard-rules.pro,9\e\9e08934d811afe28fbc77aaa3c0d747b94348db9
+<
+build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
+A
+gradle.properties,2\a\2afbb999f001938c88fa43fc2ef52abf0f8213e4

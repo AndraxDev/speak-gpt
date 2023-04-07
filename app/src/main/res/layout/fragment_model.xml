@@ -167,6 +167,68 @@
                 android:layout_marginBottom="4dp"
                 android:minHeight="48dp"
                 android:text="ada" />
+
+            <RadioButton
+                android:id="@+id/ft"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:minHeight="48dp"
+                android:text="Custom fine-tuned model" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ft_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="base:org_id:name"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/textView18"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="WARNING: We recommed to set max_tokens parameter for classifiers to avoid useless usage. Lower value will make generating process faster but may cut off output." />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/max_tokens"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Max tokens"
+                    android:imeOptions="actionDone"
+                    android:inputType="number|numberDecimal|numberSigned" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/textView20"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Some models work best if end separator is set. OpenAI recommend use &quot;\\n\\n###\\n\\n&quot; separator." />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/end_separator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="End separator" />
+            </com.google.android.material.textfield.TextInputLayout>
         </RadioGroup>
 
         <TextView
