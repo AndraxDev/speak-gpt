@@ -357,13 +357,14 @@ class AssistantFragment : BottomSheetDialogFragment() {
     }
 
     private fun setup() {
+        endSeparator = Preferences.getPreferences(requireActivity()).getEndSeparator()
         val extras: Bundle? = requireActivity().intent.extras
 
         if (extras != null) {
             val tryPrompt: String = extras.getString("prompt", "")
 
             if (tryPrompt != "") {
-                run(tryPrompt)
+                run(tryPrompt + endSeparator)
             } else {
                 runFromShareIntent()
             }
@@ -376,7 +377,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         if (requireActivity().intent?.action == Intent.ACTION_SEND && requireActivity().intent.type == "text/plain") {
             val receivedText = requireActivity().intent.getStringExtra(Intent.EXTRA_TEXT)
             if (receivedText != null) {
-                run(receivedText)
+                run(receivedText + endSeparator)
             } else {
                 runFromContextMenu()
             }
@@ -389,7 +390,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         val tryPrompt = requireActivity().intent.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT).toString()
 
         if (tryPrompt != "" && tryPrompt != "null") {
-            run(tryPrompt)
+            run(tryPrompt + endSeparator)
         } else {
             runActivationPrompt()
         }
@@ -475,6 +476,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     private fun loadModel() {
         model = Preferences.getPreferences(requireActivity()).getModel()
+        endSeparator = Preferences.getPreferences(requireActivity()).getEndSeparator()
     }
 
     private fun loadResolution() {

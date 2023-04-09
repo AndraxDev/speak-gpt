@@ -147,6 +147,8 @@ class ModelDialogFragment : DialogFragment() {
             .setPositiveButton("OK") { _, _ -> validateForm() }
             .setNegativeButton("Cancel") { _, _ ->  }
 
+        model = requireArguments().getString("name").toString()
+
         when (requireArguments().getString("name")) { // load default model if settings not found
             "gpt-3.5-turbo" -> gpt_35_turbo?.isChecked = true
             "gpt-3.5-turbo-0301" -> gpt_35_turbo_0301?.isChecked = true
@@ -173,7 +175,7 @@ class ModelDialogFragment : DialogFragment() {
     }
 
     private fun validateForm() {
-        if (ftInput?.text.toString() == "") {
+        if (ftInput?.text.toString() == "" && ft?.isChecked == true) {
             listener!!.onFormError(model, maxTokens?.text.toString(), endSeparator?.text.toString())
             return
         }
@@ -183,12 +185,12 @@ class ModelDialogFragment : DialogFragment() {
             return
         }
 
-        if (maxTokens?.text.toString().toInt() > 2048 && !model.contains("gpt-4")) {
+        if (maxTokens?.text.toString().toInt() > 8192 && model.contains("gpt-4")) {
             listener!!.onFormError(model, maxTokens?.text.toString(), endSeparator?.text.toString())
             return
         }
 
-        if (maxTokens?.text.toString().toInt() > 8192 && model.contains("gpt-4")) {
+        if (maxTokens?.text.toString().toInt() > 2048 && !model.contains("gpt-4")) {
             listener!!.onFormError(model, maxTokens?.text.toString(), endSeparator?.text.toString())
             return
         }

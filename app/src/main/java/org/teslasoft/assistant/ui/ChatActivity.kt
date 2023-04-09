@@ -429,6 +429,7 @@ class ChatActivity : FragmentActivity() {
 
     private fun loadModel() {
         model = Preferences.getPreferences(this).getModel()
+        endSeparator = Preferences.getPreferences(this).getEndSeparator()
     }
 
     @TestOnly
