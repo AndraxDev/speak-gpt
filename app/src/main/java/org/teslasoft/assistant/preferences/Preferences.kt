@@ -86,6 +86,14 @@ class Preferences private constructor(private var preferences: SharedPreferences
         putString("end", separator)
     }
 
+    fun getAudioModel() : String {
+        return getString("audio", "google")
+    }
+
+    fun setAudioModel(model: String) {
+        putString("audio", model)
+    }
+
     fun getPrompt() : String {
         return getString("prompt", "")
     }

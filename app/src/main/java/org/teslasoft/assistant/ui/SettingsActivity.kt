@@ -51,6 +51,8 @@ class SettingsActivity : FragmentActivity() {
     private var r256: MaterialButton? = null
     private var r512: MaterialButton? = null
     private var r1024: MaterialButton? = null
+    private var audioGoogle: MaterialButton? = null
+    private var audioWhisper: MaterialButton? = null
     private var promptDesc: TextView? = null
     private var modelDesc: TextView? = null
     private var btnClassicView: LinearLayout? = null
@@ -122,6 +124,8 @@ class SettingsActivity : FragmentActivity() {
         r256 = findViewById(R.id.r256)
         r512 = findViewById(R.id.r512)
         r1024 = findViewById(R.id.r1024)
+        audioGoogle = findViewById(R.id.google)
+        audioWhisper = findViewById(R.id.whisper)
     }
 
     private fun initSettings() {
@@ -213,6 +217,12 @@ class SettingsActivity : FragmentActivity() {
         r256?.setOnClickListener { saveResolution("256x256") }
         r512?.setOnClickListener { saveResolution("512x512") }
         r1024?.setOnClickListener { saveResolution("1024x1024") }
+
+        audioGoogle?.setOnClickListener { preferences?.setAudioModel("google") }
+        audioWhisper?.setOnClickListener { preferences?.setAudioModel("whisper") }
+
+        if (preferences?.getAudioModel().toString() == "google") audioGoogle?.isChecked = true
+        else audioWhisper?.isChecked = true
     }
 
     private fun switchUIToClassic() {

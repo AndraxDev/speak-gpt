@@ -15,10 +15,6 @@ t
 Dapp/src/main/java/org/teslasoft/assistant/ui/adapters/ChatAdapter.kt,2\3\237b54ca9127ddddc4e21a9985cafcb50d4fbe9b
 v
 Fapp/src/main/java/org/teslasoft/assistant/ui/adapters/PromptAdapter.kt,e\f\efb601a18b2cb5af4f3dc67cf9989b922ac06dfb
-{
-Kapp/src/main/java/org/teslasoft/assistant/ui/assistant/AssistantActivity.kt,a\d\ad53fe47e97773313cc1cb9fbcd8c5344cfbc4b1
-€
-Papp/src/main/java/org/teslasoft/assistant/ui/fragments/ActivationPromptDialog.kt,3\8\38f2db1902e711368f906ee98317dc1b50c42d19
 
 Oapp/src/main/java/org/teslasoft/assistant/ui/fragments/AddChatDialogFragment.kt,5\f\5f9b04f68d2a8c62238a6fac7ea082493f2715c5
 z

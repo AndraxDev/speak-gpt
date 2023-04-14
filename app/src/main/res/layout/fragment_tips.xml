@@ -225,7 +225,6 @@
                     android:background="@drawable/btn_tip1"
                     android:orientation="vertical"
                     android:padding="24dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tip_8">
@@ -235,6 +234,30 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="SpeakGPT is too slow? Try to reduce max tokens per output. You can do it in model settings."
+                        android:textColor="@color/tip1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tip_10"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginBottom="24dp"
+                    android:background="@drawable/btn_tip1"
+                    android:orientation="vertical"
+                    android:padding="24dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tip_9">
+
+                    <TextView
+                        android:id="@+id/tip10_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Voice input by Google may not be supported on all devices (especialy devices with no Google Services). You can switch to Whisper model in this case. Please note that Whisper is a paid API and it requires Internet connection."
                         android:textColor="@color/tip1" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>

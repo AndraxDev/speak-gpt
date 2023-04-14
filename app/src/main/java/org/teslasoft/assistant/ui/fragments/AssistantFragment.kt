@@ -21,6 +21,7 @@ import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.MediaRecorder
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
@@ -41,18 +42,21 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.aallam.openai.api.BetaOpenAI
+import com.aallam.openai.api.audio.TranscriptionRequest
 import com.aallam.openai.api.chat.ChatCompletionChunk
 import com.aallam.openai.api.chat.ChatCompletionRequest
 import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatRole
 import com.aallam.openai.api.completion.CompletionRequest
 import com.aallam.openai.api.completion.TextCompletion
+import com.aallam.openai.api.file.FileSource
 import com.aallam.openai.api.image.ImageCreation
 import com.aallam.openai.api.image.ImageSize
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
@@ -60,12 +64,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okio.FileSystem
+import okio.Path.Companion.toPath
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.AssistantAdapter
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
 import org.teslasoft.assistant.ui.SettingsActivity
 import org.teslasoft.assistant.ui.MicrophonePermissionScreen
+import java.io.IOException
 import java.net.URL
 import java.util.Base64
 import java.util.Locale
@@ -144,6 +151,8 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     // Init audio
     private var recognizer: SpeechRecognizer? = null
+    private var recorder: MediaRecorder? = null
+
     @OptIn(BetaOpenAI::class)
     private val speechListener = object : RecognitionListener {
         override fun onReadyForSpeech(params: Bundle?) { /* unused */ }
@@ -238,6 +247,14 @@ class AssistantFragment : BottomSheetDialogFragment() {
         }
     }
 
+    private val permissionResultLauncherV2 = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        run {
+            if (result.resultCode == Activity.RESULT_OK) {
+                startWhisper()
+            }
+        }
+    }
+
     private val settingsLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         loadModel()
         loadResolution()
@@ -294,29 +311,10 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     private fun initLogic() {
         btnAssistantVoice?.setOnClickListener {
-            if (isRecording) {
-                tts!!.stop()
-                btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
-                recognizer?.stopListening()
-                isRecording = false
+            if (Preferences.getPreferences(requireActivity()).getAudioModel() == "google") {
+                handleGoogleSpeechRecognition()
             } else {
-                tts!!.stop()
-                btnAssistantVoice?.setImageResource(R.drawable.ic_stop_recording)
-                if (ContextCompat.checkSelfPermission(
-                        requireActivity(), Manifest.permission.RECORD_AUDIO
-                    ) == PackageManager.PERMISSION_GRANTED
-                ) {
-                    startRecognition()
-                } else {
-                    permissionResultLauncher.launch(
-                        Intent(
-                            requireActivity(),
-                            MicrophonePermissionScreen::class.java
-                        )
-                    )
-                }
-
-                isRecording = true
+                handleWhisperSpeechRecognition()
             }
         }
 
@@ -333,6 +331,164 @@ class AssistantFragment : BottomSheetDialogFragment() {
             settingsLauncher.launch(
                 i
             )
+        }
+    }
+
+    private fun startWhisper() {
+        if (android.os.Build.VERSION.SDK_INT >= 31) {
+            recorder = MediaRecorder(requireActivity()).apply {
+                setAudioSource(MediaRecorder.AudioSource.MIC)
+                setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+                setAudioEncoder(MediaRecorder.AudioEncoder.HE_AAC)
+                setAudioChannels(1)
+                setAudioSamplingRate(44100)
+                setAudioEncodingBitRate(96000)
+                setOutputFile("${requireActivity().externalCacheDir?.absolutePath}/tmp.m4a")
+
+                try {
+                    prepare()
+                } catch (e: IOException) {
+                    btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+                    isRecording = false
+                    MaterialAlertDialogBuilder(requireActivity(), R.style.App_MaterialAlertDialog)
+                        .setTitle("Audio error")
+                        .setMessage("Failed to initialize microphone")
+                        .setPositiveButton("Close") { _, _, -> }
+                        .show()
+                }
+
+                start()
+            }
+        } else {
+            recorder = MediaRecorder().apply {
+                setAudioSource(MediaRecorder.AudioSource.MIC)
+                setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+                setAudioEncoder(MediaRecorder.AudioEncoder.HE_AAC)
+                setAudioChannels(1)
+                setAudioSamplingRate(44100)
+                setAudioEncodingBitRate(96000)
+                setOutputFile("${requireActivity().externalCacheDir?.absolutePath}/tmp.m4a")
+
+                try {
+                    prepare()
+                } catch (e: IOException) {
+                    btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+                    isRecording = false
+                    MaterialAlertDialogBuilder(requireActivity(), R.style.App_MaterialAlertDialog)
+                        .setTitle("Audio error")
+                        .setMessage("Failed to initialize microphone")
+                        .setPositiveButton("Close") { _, _, -> }
+                        .show()
+                }
+
+                start()
+            }
+        }
+    }
+
+    private fun stopWhisper() {
+        recorder?.apply {
+            stop()
+            release()
+        }
+        recorder = null
+
+        btnAssistantVoice?.isEnabled = false
+        btnAssistantSend?.isEnabled = false
+        assistantLoading?.visibility = View.VISIBLE
+
+        CoroutineScope(Dispatchers.Main).launch {
+            processRecording()
+        }
+    }
+
+    @OptIn(BetaOpenAI::class)
+    private suspend fun processRecording() {
+        try {
+            val transcriptionRequest = TranscriptionRequest(
+                audio = FileSource(
+                    path = "${requireActivity().externalCacheDir?.absolutePath}/tmp.m4a".toPath(),
+                    fileSystem = FileSystem.SYSTEM
+                ),
+                model = ModelId("whisper-1"),
+            )
+            val transcription = ai?.transcription(transcriptionRequest)!!.text
+
+            putMessage(transcription + endSeparator, false)
+
+            chatMessages.add(
+                ChatMessage(
+                    role = ChatRole.User,
+                    content = transcription + endSeparator
+                )
+            )
+
+            saveSettings()
+
+            btnAssistantVoice?.isEnabled = false
+            btnAssistantSend?.isEnabled = false
+            assistantLoading?.visibility = View.VISIBLE
+
+            CoroutineScope(Dispatchers.Main).launch {
+                generateResponse(transcription + endSeparator, true)
+            }
+        } catch (e: Exception) {
+            Toast.makeText(requireActivity(), "Failed to record audio", Toast.LENGTH_SHORT).show()
+            btnAssistantVoice?.isEnabled = true
+            btnAssistantSend?.isEnabled = true
+            assistantLoading?.visibility = View.GONE
+        }
+    }
+
+    private fun handleWhisperSpeechRecognition() {
+        if (isRecording) {
+            btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+            isRecording = false
+            stopWhisper()
+        } else {
+            btnAssistantVoice?.setImageResource(R.drawable.ic_stop_recording)
+            isRecording = true
+
+            if (ContextCompat.checkSelfPermission(
+                    requireActivity(), Manifest.permission.RECORD_AUDIO
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                startWhisper()
+            } else {
+                permissionResultLauncherV2.launch(
+                    Intent(
+                        requireActivity(),
+                        MicrophonePermissionScreen::class.java
+                    )
+                )
+            }
+        }
+    }
+
+    private fun handleGoogleSpeechRecognition() {
+        if (isRecording) {
+            tts!!.stop()
+            btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+            recognizer?.stopListening()
+            isRecording = false
+        } else {
+            tts!!.stop()
+            btnAssistantVoice?.setImageResource(R.drawable.ic_stop_recording)
+            if (ContextCompat.checkSelfPermission(
+                    requireActivity(), Manifest.permission.RECORD_AUDIO
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                startRecognition()
+            } else {
+                permissionResultLauncher.launch(
+                    Intent(
+                        requireActivity(),
+                        MicrophonePermissionScreen::class.java
+                    )
+                )
+            }
+
+            isRecording = true
         }
     }
 
