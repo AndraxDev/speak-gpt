@@ -69,7 +69,7 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
         btnCopy?.setImageResource(R.drawable.ic_copy)
         btnCopy?.setOnClickListener {
             val clipboard: ClipboardManager = mContext.getSystemService(FragmentActivity.CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("response", message?.text.toString())
+            val clip = ClipData.newPlainText("response", dataArray?.get(position)?.get("message").toString())
             clipboard.setPrimaryClip(clip)
             Toast.makeText(mContext, "Text copied to clipboard", Toast.LENGTH_SHORT).show()
         }

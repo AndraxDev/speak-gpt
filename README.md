@@ -24,6 +24,7 @@ SpeakGPT is an advanced and highly intuitive voice assistant that utilizes the p
 - [x] Chat
 - [x] Images generation (DALL-e)
 - [x] Activation prompt
+- [x] Voice input (Whisper and Google)
 - [x] Assistant
 - [x] SpeakGPT in context menu
 - [x] SpeakGPT in Share sheet
@@ -47,6 +48,7 @@ SpeakGPT is an advanced and highly intuitive voice assistant that utilizes the p
 
 - [x] Chat
 - [x] Activation prompt
+- [x] Voice input (Whisper and Google)
 - [x] Assistant
 - [x] SpeakGPT in context menu
 - [x] SpeakGPT in Share sheet

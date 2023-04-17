@@ -7,12 +7,6 @@ p
 @app/src/main/java/org/teslasoft/assistant/app/MainApplication.kt,f\7\f72754bfb1ae0b0f2307f72f94e21f6fda20c1aa
 x
 Happ/src/main/java/org/teslasoft/assistant/preferences/ChatPreferences.kt,3\a\3a81525fa1c7a53fa085aa85ab40d571ff3ae4ef
-|
-Lapp/src/main/java/org/teslasoft/assistant/ui/adapters/AbstractChatAdapter.kt,1\c\1c2c8ee6f0908739e7670031294c5b14701e562e
-y
-Iapp/src/main/java/org/teslasoft/assistant/ui/adapters/AssistantAdapter.kt,8\9\89ed0fb3f47a86959f040f7e2ee00d16b7ed848e
-t
-Dapp/src/main/java/org/teslasoft/assistant/ui/adapters/ChatAdapter.kt,2\3\237b54ca9127ddddc4e21a9985cafcb50d4fbe9b
 v
 Fapp/src/main/java/org/teslasoft/assistant/ui/adapters/PromptAdapter.kt,e\f\efb601a18b2cb5af4f3dc67cf9989b922ac06dfb
 
@@ -33,8 +27,6 @@ m
 =app/src/main/java/org/teslasoft/assistant/ui/AboutActivity.kt,9\5\95e03a66944d75495a0f11ebe22f69d5bcfd7563
 m
 =app/src/main/java/org/teslasoft/assistant/ui/DebugActivity.kt,7\c\7c05189160da950367aeb27858e545d7b3b9d3fd
-t
-Dapp/src/main/java/org/teslasoft/assistant/ui/ImageBrowserActivity.kt,2\5\2524960068149e7903a217783786cd0a4cbdf7a1
 l
 <app/src/main/java/org/teslasoft/assistant/ui/MainActivity.kt,7\0\7032bdf73e915f57bb6be71d163658932960ebb2
 z
@@ -63,3 +55,17 @@ F
 build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
 A
 gradle.properties,2\a\2afbb999f001938c88fa43fc2ef52abf0f8213e4
+r
+Bapp/src/main/java/org/teslasoft/assistant/ui/PromptViewActivity.kt,e\a\ea40a3238f5b57d6dcf0d5e5bcdc18fd06185c5e
+}
+Mapp/src/main/java/org/teslasoft/assistant/ui/fragments/ModelDialogFragment.kt,4\b\4b2980e968cd15935c360ac2829ced72cf4f24c1
+t
+Dapp/src/main/java/org/teslasoft/assistant/preferences/Preferences.kt,8\b\8bed103e96bb9c21d026c3d93a7e912de9343153
+p
+@app/src/main/java/org/teslasoft/assistant/ui/SettingsActivity.kt,3\d\3db51e5c5980efd2285e6ab90d2d65d534a13af6
+{
+Kapp/src/main/java/org/teslasoft/assistant/ui/assistant/AssistantActivity.kt,a\d\ad53fe47e97773313cc1cb9fbcd8c5344cfbc4b1
+€
+Papp/src/main/java/org/teslasoft/assistant/ui/fragments/ActivationPromptDialog.kt,3\8\38f2db1902e711368f906ee98317dc1b50c42d19
+{
+Kapp/src/main/java/org/teslasoft/assistant/ui/fragments/AssistantFragment.kt,1\b\1bf0f2f5bde3306e8f3d62b076422477d99223a2

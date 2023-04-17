@@ -14,8 +14,8 @@ android {
         applicationId "org.teslasoft.assistant"
         minSdk 28
         targetSdk 33
-        versionCode 209
-        versionName "2.9"
+        versionCode 210
+        versionName "2.10"
         externalNativeBuild {
             cmake {
                 cppFlags ''
