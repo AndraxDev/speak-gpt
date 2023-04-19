@@ -35,8 +35,7 @@ class Preferences private constructor(private var preferences: SharedPreferences
             return preferences!!
         }
     }
-
-    private fun setPreferences(chatId: String, context: Context) {
+    fun setPreferences(chatId: String, context: Context) {
         this.preferences = context.getSharedPreferences("settings.$chatId", Context.MODE_PRIVATE)
     }
 

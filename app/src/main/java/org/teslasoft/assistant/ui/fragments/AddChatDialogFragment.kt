@@ -29,6 +29,7 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ChatPreferences
+import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.util.Hash
 
 class AddChatDialogFragment : DialogFragment() {
@@ -114,6 +115,31 @@ class AddChatDialogFragment : DialogFragment() {
             if (chatPreferences?.checkDuplicate(requireActivity(), nameInput?.text.toString()) == false) {
                 if (isEdit) {
                     chatPreferences?.editChat(requireActivity(), nameInput?.text.toString(), requireArguments().getString("name").toString())
+
+                    // Transfer settings
+                    val preferences: Preferences = Preferences.getPreferences(requireActivity(), Hash.hash(arguments?.getString("name").toString()))
+
+                    val resolution = preferences.getResolution()
+                    val speech = preferences.getAudioModel()
+                    val model = preferences.getModel()
+                    val maxTokens = preferences.getMaxTokens()
+                    val prefix = preferences.getPrefix()
+                    val endSeparator = preferences.getEndSeparator()
+                    val activationPrompt = preferences.getPrompt()
+                    val layout = preferences.getLayout()
+                    val silent = preferences.getSilence()
+
+                    preferences.setPreferences(Hash.hash(nameInput?.text.toString()), requireActivity())
+                    preferences.setResolution(resolution)
+                    preferences.setAudioModel(speech)
+                    preferences.setModel(model)
+                    preferences.setMaxTokens(maxTokens)
+                    preferences.setPrefix(prefix)
+                    preferences.setEndSeparator(endSeparator)
+                    preferences.setPrompt(activationPrompt)
+                    preferences.setLayout(layout)
+                    preferences.setSilence(silent)
+
                     listener!!.onEdit(nameInput?.text.toString(), Hash.hash(nameInput?.text.toString()))
                 } else {
                     chatPreferences?.addChat(requireActivity(), nameInput?.text.toString())
