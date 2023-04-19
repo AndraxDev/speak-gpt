@@ -16,9 +16,12 @@
 
 package org.teslasoft.assistant.ui.fragments
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.DocumentsContract
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -26,8 +29,14 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ListView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ChatPreferences
 import org.teslasoft.assistant.preferences.Preferences
@@ -35,6 +44,9 @@ import org.teslasoft.assistant.ui.ChatActivity
 import org.teslasoft.assistant.ui.SettingsActivity
 import org.teslasoft.assistant.ui.adapters.ChatListAdapter
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
+import java.io.BufferedReader
+import java.io.InputStreamReader
+
 
 class ChatsListFragment : Fragment() {
 
@@ -48,9 +60,21 @@ class ChatsListFragment : Fragment() {
 
     private var btnAdd: ExtendedFloatingActionButton? = null
 
+    private var btnImport: FloatingActionButton? = null
+
+    private var selectedFile: String = ""
+
     var chatListUpdatedListener: AddChatDialogFragment.StateChangesListener = object : AddChatDialogFragment.StateChangesListener {
-        override fun onAdd(name: String, id: String) {
+        override fun onAdd(name: String, id: String, fromFile: Boolean) {
             initSettings()
+
+            if (fromFile && selectedFile.replace("null", "") != "") {
+                val chat = requireActivity().getSharedPreferences("chat_$id", FragmentActivity.MODE_PRIVATE)
+                val editor = chat.edit()
+
+                editor.putString("chat", selectedFile)
+                editor.apply()
+            }
 
             val i = Intent(
                 requireActivity(),
@@ -67,10 +91,10 @@ class ChatsListFragment : Fragment() {
             initSettings()
         }
 
-        override fun onError() {
+        override fun onError(fromFile: Boolean) {
             Toast.makeText(requireActivity(), "Please fill name field", Toast.LENGTH_SHORT).show()
 
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("")
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", fromFile)
             chatDialogFragment.setStateChangedListener(this)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -86,7 +110,7 @@ class ChatsListFragment : Fragment() {
         override fun onDuplicate() {
             Toast.makeText(requireActivity(), "Name must be unique", Toast.LENGTH_SHORT).show()
 
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("")
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false)
             chatDialogFragment.setStateChangedListener(this)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -112,6 +136,7 @@ class ChatsListFragment : Fragment() {
 
         chatsList = view.findViewById(R.id.chats)
         btnSettings = view.findViewById(R.id.btn_settings_)
+        btnImport = view.findViewById(R.id.btn_import)
 
         btnSettings?.setImageResource(R.drawable.ic_settings)
 
@@ -122,9 +147,13 @@ class ChatsListFragment : Fragment() {
         btnAdd = view.findViewById(R.id.btn_add)
 
         btnAdd?.setOnClickListener {
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("")
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false)
             chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
+        }
+
+        btnImport?.setOnClickListener {
+            openFile(Uri.parse("/storage/emulated/0/chat.json"))
         }
 
         adapter = ChatListAdapter(chats, this)
@@ -139,14 +168,76 @@ class ChatsListFragment : Fragment() {
         preInit()
     }
 
+    private val fileIntentLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        run {
+            if (result.resultCode == Activity.RESULT_OK) {
+                result.data?.data?.also { uri ->
+                    selectedFile = readFile(uri)
+
+                    if (isValidJson(selectedFile)) {
+                        val chatDialogFragment: AddChatDialogFragment =
+                            AddChatDialogFragment.newInstance("", true)
+                        chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
+                        chatDialogFragment.show(
+                            parentFragmentManager.beginTransaction(),
+                            "AddChatDialog"
+                        )
+                    } else {
+                        MaterialAlertDialogBuilder(requireActivity(), R.style.App_MaterialAlertDialog)
+                            .setTitle("Error")
+                            .setMessage("An error is occurred while analyzing file. The file might be corrupted or invalid.")
+                            .setPositiveButton("Close") { _, _ -> }
+                            .show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun isValidJson(jsonStr: String?): Boolean {
+        return try {
+            val gson = Gson()
+            gson.fromJson(jsonStr, ArrayList::class.java)
+            true
+        } catch (ex: JsonSyntaxException) {
+            false
+        }
+    }
+
+    private fun readFile(uri: Uri) : String {
+        val stringBuilder = StringBuilder()
+        requireActivity().contentResolver.openInputStream(uri)?.use { inputStream ->
+            BufferedReader(InputStreamReader(inputStream)).use { reader ->
+                var line: String? = reader.readLine()
+                while (line != null) {
+                    stringBuilder.append(line)
+                    line = reader.readLine()
+                }
+            }
+        }
+        return stringBuilder.toString()
+    }
+
+    private fun openFile(pickerInitialUri: Uri) {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "application/json"
+
+            putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri)
+        }
+
+        fileIntentLauncher.launch(intent)
+    }
+
+
     private fun preInit() {
-        if (Preferences.getPreferences(requireActivity()).getApiKey(requireActivity()) == "") {
-            if (Preferences.getPreferences(requireActivity()).getOldApiKey() == "") {
+        if (Preferences.getPreferences(requireActivity(), "").getApiKey(requireActivity()) == "") {
+            if (Preferences.getPreferences(requireActivity(), "").getOldApiKey() == "") {
                 requireActivity().getSharedPreferences("chat_list", Context.MODE_PRIVATE).edit().putString("data", "[]").apply()
                 startActivity(Intent(requireActivity(), WelcomeActivity::class.java))
                 requireActivity().finish()
             } else {
-                Preferences.getPreferences(requireActivity()).secureApiKey(requireActivity())
+                Preferences.getPreferences(requireActivity(), "").secureApiKey(requireActivity())
                 initSettings()
             }
         } else {

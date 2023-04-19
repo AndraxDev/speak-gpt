@@ -22,4 +22,5 @@
     <color name="text">#eeffffff</color>
     <color name="hint">#aaffffff</color>
     <color name="tip1">#ccfcb3</color>
+    <color name="marker">#22FFFFFF</color>
 </resources>

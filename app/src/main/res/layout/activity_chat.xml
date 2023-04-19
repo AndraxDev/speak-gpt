@@ -120,6 +120,20 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_settings" />
 
+    <ImageButton
+        android:id="@+id/btn_export"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/btn_accent_tonal"
+        android:contentDescription="Export chat"
+        android:elevation="6.01dip"
+        android:tooltipText="Export chat"
+        app:layout_constraintEnd_toStartOf="@id/btn_settings"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_upload" />
+
     <ListView
         android:id="@+id/messages"
         android:layout_width="0dp"

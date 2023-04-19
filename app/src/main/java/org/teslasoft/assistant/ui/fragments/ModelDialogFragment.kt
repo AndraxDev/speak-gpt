@@ -34,11 +34,12 @@ import org.teslasoft.assistant.preferences.Preferences
 
 class ModelDialogFragment : DialogFragment() {
     companion object {
-        fun newInstance(name: String) : ModelDialogFragment {
+        fun newInstance(name: String, chatId: String) : ModelDialogFragment {
             val modelDialogFragment = ModelDialogFragment()
 
             val args = Bundle()
             args.putString("name", name)
+            args.putString("chatId", chatId)
 
             modelDialogFragment.arguments = args
 
@@ -69,6 +70,7 @@ class ModelDialogFragment : DialogFragment() {
     private var ftInput: EditText? = null
     private var maxTokens: EditText? = null
     private var endSeparator: EditText? = null
+    private var prefix: EditText? = null
 
     private var listener: StateChangesListener? = null
 
@@ -107,9 +109,11 @@ class ModelDialogFragment : DialogFragment() {
         ftInput = view.findViewById(R.id.ft_input)
         maxTokens = view.findViewById(R.id.max_tokens)
         endSeparator = view.findViewById(R.id.end_separator)
+        prefix = view.findViewById(R.id.prefix)
 
-        maxTokens?.setText(Preferences.getPreferences(requireActivity()).getMaxTokens().toString())
-        endSeparator?.setText(Preferences.getPreferences(requireActivity()).getEndSeparator())
+        maxTokens?.setText(Preferences.getPreferences(requireActivity(), arguments?.getString("chatId")!!).getMaxTokens().toString())
+        endSeparator?.setText(Preferences.getPreferences(requireActivity(), arguments?.getString("chatId")!!).getEndSeparator())
+        prefix?.setText(Preferences.getPreferences(requireActivity(), arguments?.getString("chatId")!!).getPrefix())
 
         gpt_35_turbo?.setOnClickListener { model = "gpt-3.5-turbo" }
         gpt_35_turbo_0301?.setOnClickListener { model = "gpt-3.5-turbo-0301" }
@@ -176,26 +180,26 @@ class ModelDialogFragment : DialogFragment() {
 
     private fun validateForm() {
         if (ftInput?.text.toString() == "" && ft?.isChecked == true) {
-            listener!!.onFormError(model, maxTokens?.text.toString(), endSeparator?.text.toString())
+            listener!!.onFormError(model, maxTokens?.text.toString(), endSeparator?.text.toString(), prefix?.text.toString())
             return
         }
 
         if (maxTokens?.text.toString() == "") {
-            listener!!.onFormError(model, maxTokens?.text.toString(), endSeparator?.text.toString())
+            listener!!.onFormError(model, maxTokens?.text.toString(), endSeparator?.text.toString(), prefix?.text.toString())
             return
         }
 
         if (maxTokens?.text.toString().toInt() > 8192 && model.contains("gpt-4")) {
-            listener!!.onFormError(model, maxTokens?.text.toString(), endSeparator?.text.toString())
+            listener!!.onFormError(model, maxTokens?.text.toString(), endSeparator?.text.toString(), prefix?.text.toString())
             return
         }
 
         if (maxTokens?.text.toString().toInt() > 2048 && !model.contains("gpt-4")) {
-            listener!!.onFormError(model, maxTokens?.text.toString(), endSeparator?.text.toString())
+            listener!!.onFormError(model, maxTokens?.text.toString(), endSeparator?.text.toString(), prefix?.text.toString())
             return
         }
 
-        listener!!.onSelected(model, maxTokens?.text.toString(), endSeparator?.text.toString())
+        listener!!.onSelected(model, maxTokens?.text.toString(), endSeparator?.text.toString(), prefix?.text.toString())
     }
 
     fun setStateChangedListener(listener: StateChangesListener) {
@@ -203,7 +207,7 @@ class ModelDialogFragment : DialogFragment() {
     }
 
     public interface StateChangesListener {
-        fun onSelected(name: String, maxTokens: String, endSeparator: String)
-        fun onFormError(name: String, maxTokens: String, endSeparator: String)
+        fun onSelected(name: String, maxTokens: String, endSeparator: String, prefix: String)
+        fun onFormError(name: String, maxTokens: String, endSeparator: String, prefix: String)
     }
 }

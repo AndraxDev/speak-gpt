@@ -23,8 +23,10 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaRecorder
+import android.net.Uri
 import android.os.Bundle
 import android.os.StrictMode
+import android.provider.DocumentsContract
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
@@ -32,7 +34,6 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.Voice
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
@@ -45,7 +46,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.aallam.openai.api.BetaOpenAI
 import com.aallam.openai.api.audio.TranscriptionRequest
-import com.aallam.openai.api.audio.TranslationRequest
 import com.aallam.openai.api.chat.ChatCompletionChunk
 import com.aallam.openai.api.chat.ChatCompletionRequest
 import com.aallam.openai.api.chat.ChatMessage
@@ -67,14 +67,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okio.FileSystem
 import okio.Path.Companion.toPath
-import okio.Source
 import org.jetbrains.annotations.TestOnly
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ChatPreferences
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.ChatAdapter
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
-import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
 import java.io.IOException
 import java.net.URL
 import java.util.Base64
@@ -91,6 +91,8 @@ class ChatActivity : FragmentActivity() {
     private var progress: ProgressBar? = null
     private var chat: ListView? = null
     private var activityTitle: TextView? = null
+    private var btnExport: ImageButton? = null
+    private var fileContents: ByteArray? = null
 
     // Init chat
     private var messages: ArrayList<HashMap<String, Any>> = arrayListOf()
@@ -111,6 +113,7 @@ class ChatActivity : FragmentActivity() {
     private var key: String? = null
     private var model = ""
     private var endSeparator = ""
+    private var prefix = ""
 
     // Init DALL-e
     private var resolution = "512x152"
@@ -145,11 +148,11 @@ class ChatActivity : FragmentActivity() {
             if (matches != null && matches.size > 0) {
                 val recognizedText = matches[0]
 
-                putMessage(recognizedText + endSeparator, false)
+                putMessage(prefix + recognizedText + endSeparator, false)
 
                 chatMessages.add(ChatMessage(
                     role = ChatRole.User,
-                    content = recognizedText + endSeparator
+                    content = prefix + recognizedText + endSeparator
                 ))
 
                 saveSettings()
@@ -159,7 +162,7 @@ class ChatActivity : FragmentActivity() {
                 progress?.visibility = View.VISIBLE
 
                 CoroutineScope(Dispatchers.Main).launch {
-                    generateResponse(recognizedText + endSeparator, true)
+                    generateResponse(prefix + recognizedText + endSeparator, true)
                 }
             }
         }
@@ -251,9 +254,10 @@ class ChatActivity : FragmentActivity() {
     @OptIn(BetaOpenAI::class)
     @Suppress("unchecked")
     private fun initSettings() {
-        key = Preferences.getPreferences(this).getApiKey(this)
+        key = Preferences.getPreferences(this, chatId).getApiKey(this)
 
-        endSeparator = Preferences.getPreferences(this).getEndSeparator()
+        endSeparator = Preferences.getPreferences(this, chatId).getEndSeparator()
+        prefix = Preferences.getPreferences(this, chatId).getPrefix()
 
         loadResolution()
 
@@ -261,7 +265,7 @@ class ChatActivity : FragmentActivity() {
             startActivity(Intent(this, WelcomeActivity::class.java))
             finish()
         } else {
-            silenceMode = Preferences.getPreferences(this).getSilence()
+            silenceMode = Preferences.getPreferences(this, chatId).getSilence()
 
             messages = ChatPreferences.getChatPreferences().getChatById(this, chatId)
 
@@ -289,7 +293,7 @@ class ChatActivity : FragmentActivity() {
                 }
             }
 
-            adapter = ChatAdapter(messages, this)
+            adapter = ChatAdapter(messages, this, chatId)
 
             initUI()
             initSpeechListener()
@@ -308,6 +312,9 @@ class ChatActivity : FragmentActivity() {
         btnSend = findViewById(R.id.btn_send)
         progress = findViewById(R.id.progress)
         activityTitle = findViewById(R.id.chat_activity_title)
+        btnExport = findViewById(R.id.btn_export)
+
+        btnExport?.setImageResource(R.drawable.ic_upload)
 
         activityTitle?.text = chatName
 
@@ -324,7 +331,7 @@ class ChatActivity : FragmentActivity() {
 
     private fun initLogic() {
         btnMicro?.setOnClickListener {
-            if (Preferences.getPreferences(this).getAudioModel() == "google") {
+            if (Preferences.getPreferences(this, chatId).getAudioModel() == "google") {
                 handleGoogleSpeechRecognition()
             } else {
                 handleWhisperSpeechRecognition()
@@ -367,6 +374,50 @@ class ChatActivity : FragmentActivity() {
             settingsLauncher.launch(
                 i
             )
+        }
+
+        btnExport?.setOnClickListener {
+            val gson = Gson()
+            val json: String = gson.toJson(messages)
+
+            fileContents = json.toByteArray()
+
+            val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = "application/json"
+                putExtra(Intent.EXTRA_TITLE, "$chatId.json")
+                putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.parse("/storage/emulated/0/SpeakGPT/$chatId.json"))
+            }
+            fileSaveIntentLauncher.launch(intent)
+        }
+    }
+
+    private val fileSaveIntentLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        run {
+            if (result.resultCode == Activity.RESULT_OK) {
+                result.data?.data?.also { uri ->
+                    writeToFile(uri)
+                }
+            }
+        }
+    }
+
+    private fun writeToFile(uri: Uri) {
+        try {
+            contentResolver.openFileDescriptor(uri, "w")?.use {
+                FileOutputStream(it.fileDescriptor).use {
+                    it.write(
+                        fileContents
+                    )
+                }
+            }
+            Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show()
+        } catch (e: FileNotFoundException) {
+            Toast.makeText(this, "Save failed", Toast.LENGTH_SHORT).show()
+            e.printStackTrace()
+        } catch (e: IOException) {
+            Toast.makeText(this, "Save failed", Toast.LENGTH_SHORT).show()
+            e.printStackTrace()
         }
     }
 
@@ -450,12 +501,12 @@ class ChatActivity : FragmentActivity() {
             )
             val transcription = ai?.transcription(transcriptionRequest)!!.text
 
-            putMessage(transcription + endSeparator, false)
+            putMessage(prefix + transcription + endSeparator, false)
 
             chatMessages.add(
                 ChatMessage(
                     role = ChatRole.User,
-                    content = transcription + endSeparator
+                    content = prefix + transcription + endSeparator
                 )
             )
 
@@ -466,7 +517,7 @@ class ChatActivity : FragmentActivity() {
             progress?.visibility = View.VISIBLE
 
             CoroutineScope(Dispatchers.Main).launch {
-                generateResponse(transcription + endSeparator, true)
+                generateResponse(prefix + transcription + endSeparator, true)
             }
         } catch (e: Exception) {
             Toast.makeText(this, "Failed to record audio", Toast.LENGTH_SHORT).show()
@@ -564,7 +615,7 @@ class ChatActivity : FragmentActivity() {
     @OptIn(BetaOpenAI::class)
     private fun setup() {
         if (messages.isEmpty()) {
-            val prompt: String = Preferences.getPreferences(this).getPrompt()
+            val prompt: String = Preferences.getPreferences(this, chatId).getPrompt()
 
             if (prompt.toString() != "" && prompt.toString() != "null" && prompt != "") {
                 putMessage(prompt, false)
@@ -588,8 +639,9 @@ class ChatActivity : FragmentActivity() {
     }
 
     private fun loadModel() {
-        model = Preferences.getPreferences(this).getModel()
-        endSeparator = Preferences.getPreferences(this).getEndSeparator()
+        model = Preferences.getPreferences(this, chatId).getModel()
+        endSeparator = Preferences.getPreferences(this, chatId).getEndSeparator()
+        prefix = Preferences.getPreferences(this, chatId).getPrefix()
     }
 
     @TestOnly
@@ -613,7 +665,7 @@ class ChatActivity : FragmentActivity() {
 
     // Init image resolutions
     private fun loadResolution() {
-        resolution = Preferences.getPreferences(this).getResolution()
+        resolution = Preferences.getPreferences(this, chatId).getResolution()
     }
 
     /** SYSTEM INITIALIZATION END **/
@@ -636,7 +688,7 @@ class ChatActivity : FragmentActivity() {
 
             keyboardMode = false
 
-            putMessage(message + endSeparator, false)
+            putMessage(prefix + message + endSeparator, false)
             saveSettings()
 
             btnMicro?.isEnabled = false
@@ -667,11 +719,11 @@ class ChatActivity : FragmentActivity() {
             } else {
                 chatMessages.add(ChatMessage(
                     role = ChatRole.User,
-                    content = message + endSeparator
+                    content = prefix + message + endSeparator
                 ))
 
                 CoroutineScope(Dispatchers.Main).launch {
-                    generateResponse(message + endSeparator, false)
+                    generateResponse(prefix + message + endSeparator, false)
                 }
             }
         }
@@ -714,7 +766,7 @@ class ChatActivity : FragmentActivity() {
         try {
             if (model.contains("davinci") || model.contains("curie") || model.contains("babbage") || model.contains("ada") || model.contains(":ft-")) {
 
-                val tokens = Preferences.getPreferences(this).getMaxTokens()
+                val tokens = Preferences.getPreferences(this, chatId).getMaxTokens()
 
                 val completionRequest = CompletionRequest(
                     model = ModelId(model),
@@ -735,7 +787,7 @@ class ChatActivity : FragmentActivity() {
                     }
                 }
             } else {
-                val tokens = Preferences.getPreferences(this).getMaxTokens()
+                val tokens = Preferences.getPreferences(this, chatId).getMaxTokens()
 
                 val chatCompletionRequest = ChatCompletionRequest(
                     model = ModelId(model),

@@ -18,25 +18,21 @@ package org.teslasoft.assistant.ui.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.Preferences
 
-class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActivity) : AbstractChatAdapter(data, context) {
+class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActivity, private val chatID: String) : AbstractChatAdapter(data, context) {
 
     @SuppressLint("InflateParams", "SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val inflater = mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
-        val settings: SharedPreferences = mContext.getSharedPreferences("settings",
-            FragmentActivity.MODE_PRIVATE
-        )
-
-        val layout  = settings.getString("layout", "classic").toString()
+        val layout  = Preferences.getPreferences(mContext, chatID).getLayout()
 
         val mView: View? = if (layout == "bubbles") {
             if (dataArray?.get(position)?.get("isBot") == true) {

@@ -64,19 +64,20 @@ class SettingsActivity : FragmentActivity() {
     private var activationPrompt : String = ""
 
     private var modelChangedListener: ModelDialogFragment.StateChangesListener = object : ModelDialogFragment.StateChangesListener {
-        override fun onSelected(name: String, maxTokens: String, endSeparator: String) {
+        override fun onSelected(name: String, maxTokens: String, endSeparator: String, prefix: String) {
             model = name
             preferences?.setModel(name)
             preferences?.setMaxTokens(maxTokens.toInt())
             preferences?.setEndSeparator(endSeparator)
+            preferences?.setPrefix(prefix)
             modelDesc?.text = model
         }
 
-        override fun onFormError(name: String, maxTokens: String, endSeparator: String) {
+        override fun onFormError(name: String, maxTokens: String, endSeparator: String, prefix: String) {
             if (name == "") Toast.makeText(this@SettingsActivity, "Error, no model name is provided", Toast.LENGTH_SHORT).show()
             else if (name.contains("gpt-4")) Toast.makeText(this@SettingsActivity, "Error, GPT4 support maximum of 8192 tokens", Toast.LENGTH_SHORT).show()
             else Toast.makeText(this@SettingsActivity, "Error, more than 2048 tokens is not supported", Toast.LENGTH_SHORT).show()
-            val modelDialogFragment: ModelDialogFragment = ModelDialogFragment.newInstance(model)
+            val modelDialogFragment: ModelDialogFragment = ModelDialogFragment.newInstance(model, chatId)
             modelDialogFragment.setStateChangedListener(this)
             modelDialogFragment.show(supportFragmentManager.beginTransaction(), "ModelDialog")
         }
@@ -129,7 +130,7 @@ class SettingsActivity : FragmentActivity() {
     }
 
     private fun initSettings() {
-        preferences = Preferences.getPreferences(this)
+        preferences = Preferences.getPreferences(this, chatId)
 
         activationPrompt = preferences?.getPrompt().toString() // possible kotlin bug
 
@@ -199,7 +200,7 @@ class SettingsActivity : FragmentActivity() {
         }
 
         btnModel?.setOnClickListener {
-            val modelDialogFragment: ModelDialogFragment = ModelDialogFragment.newInstance(model)
+            val modelDialogFragment: ModelDialogFragment = ModelDialogFragment.newInstance(model, chatId)
             modelDialogFragment.setStateChangedListener(modelChangedListener)
             modelDialogFragment.show(supportFragmentManager.beginTransaction(), "ModelDialog")
         }

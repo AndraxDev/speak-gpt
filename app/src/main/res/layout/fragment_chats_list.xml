@@ -13,12 +13,28 @@
         android:layout_marginBottom="24dp"
         android:clickable="true"
         android:text="New chat"
+        android:textColor="@color/accent_100"
         app:elevation="6dp"
-        app:backgroundTint="@color/fab"
+        app:backgroundTint="@color/accent_500"
+        app:iconTint="@color/accent_100"
         app:icon="@drawable/ic_add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_add" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_import"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:clickable="true"
+        app:backgroundTint="@color/fab"
+        app:elevation="6dp"
+        app:icon="@drawable/ic_download"
+        app:layout_constraintBottom_toTopOf="@+id/btn_add"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_download" />
 
     <TextView
         android:id="@+id/activity_chats_title"
@@ -43,8 +59,10 @@
         android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_chats_title">
+        app:layout_constraintTop_toBottomOf="@+id/activity_chats_title"
+        app:layout_constraintVertical_bias="1.0">
 
     </ListView>
 

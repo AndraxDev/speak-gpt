@@ -110,13 +110,14 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private var key: String? = null
     private var model = ""
     private var endSeparator = ""
+    private var prefix = ""
 
     // Init DALL-e
     private var resolution = "512x152"
 
     // Init chat save feature
     private var chatListUpdatedListener: AddChatDialogFragment.StateChangesListener = object : AddChatDialogFragment.StateChangesListener {
-        override fun onAdd(name: String, id: String) {
+        override fun onAdd(name: String, id: String, fromFile: Boolean) {
             save(id)
         }
 
@@ -124,10 +125,10 @@ class AssistantFragment : BottomSheetDialogFragment() {
             save(id)
         }
 
-        override fun onError() {
+        override fun onError(fromFile: Boolean) {
             Toast.makeText(requireActivity(), "Please fill name field", Toast.LENGTH_SHORT).show()
 
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("")
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false)
             chatDialogFragment.setStateChangedListener(this)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -143,7 +144,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         override fun onDuplicate() {
             Toast.makeText(requireActivity(), "Name must be unique", Toast.LENGTH_SHORT).show()
 
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("")
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false)
             chatDialogFragment.setStateChangedListener(this)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -181,12 +182,12 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
                 chatMessages.add(ChatMessage(
                     role = ChatRole.User,
-                    content = recognizedText + endSeparator
+                    content = prefix + recognizedText + endSeparator
                 ))
 
                 saveSettings()
 
-                putMessage(recognizedText + endSeparator, false)
+                putMessage(prefix + recognizedText + endSeparator, false)
 
                 hideKeyboard()
                 btnAssistantVoice?.isEnabled = false
@@ -194,7 +195,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 assistantLoading?.visibility = View.VISIBLE
 
                 CoroutineScope(Dispatchers.Main).launch {
-                    generateResponse(recognizedText + endSeparator, true)
+                    generateResponse(prefix + recognizedText + endSeparator, true)
                 }
             }
         }
@@ -281,9 +282,10 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     @Suppress("unchecked")
     private fun initSettings() {
-        key = Preferences.getPreferences(requireActivity()).getApiKey(requireActivity())
+        key = Preferences.getPreferences(requireActivity(), "").getApiKey(requireActivity())
 
-        endSeparator = Preferences.getPreferences(requireActivity()).getEndSeparator()
+        endSeparator = Preferences.getPreferences(requireActivity(), "").getEndSeparator()
+        prefix = Preferences.getPreferences(requireActivity(), "").getPrefix()
 
         loadResolution()
 
@@ -291,7 +293,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
             startActivity(Intent(requireActivity(), WelcomeActivity::class.java))
             requireActivity().finishAndRemoveTask()
         } else {
-            silenceMode = Preferences.getPreferences(requireActivity()).getSilence()
+            silenceMode = Preferences.getPreferences(requireActivity(), "").getSilence()
 
             messages = ArrayList()
 
@@ -311,7 +313,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     private fun initLogic() {
         btnAssistantVoice?.setOnClickListener {
-            if (Preferences.getPreferences(requireActivity()).getAudioModel() == "google") {
+            if (Preferences.getPreferences(requireActivity(), "").getAudioModel() == "google") {
                 handleGoogleSpeechRecognition()
             } else {
                 handleWhisperSpeechRecognition()
@@ -414,12 +416,12 @@ class AssistantFragment : BottomSheetDialogFragment() {
             )
             val transcription = ai?.transcription(transcriptionRequest)!!.text
 
-            putMessage(transcription + endSeparator, false)
+            putMessage(prefix + transcription + endSeparator, false)
 
             chatMessages.add(
                 ChatMessage(
                     role = ChatRole.User,
-                    content = transcription + endSeparator
+                    content = prefix + transcription + endSeparator
                 )
             )
 
@@ -430,7 +432,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
             assistantLoading?.visibility = View.VISIBLE
 
             CoroutineScope(Dispatchers.Main).launch {
-                generateResponse(transcription + endSeparator, true)
+                generateResponse(prefix + transcription + endSeparator, true)
             }
         } catch (e: Exception) {
             Toast.makeText(requireActivity(), "Failed to record audio", Toast.LENGTH_SHORT).show()
@@ -513,14 +515,15 @@ class AssistantFragment : BottomSheetDialogFragment() {
     }
 
     private fun setup() {
-        endSeparator = Preferences.getPreferences(requireActivity()).getEndSeparator()
+        endSeparator = Preferences.getPreferences(requireActivity(), "").getEndSeparator()
+        prefix = Preferences.getPreferences(requireActivity(), "").getPrefix()
         val extras: Bundle? = requireActivity().intent.extras
 
         if (extras != null) {
             val tryPrompt: String = extras.getString("prompt", "")
 
             if (tryPrompt != "") {
-                run(tryPrompt + endSeparator)
+                run(prefix + tryPrompt + endSeparator)
             } else {
                 runFromShareIntent()
             }
@@ -533,7 +536,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         if (requireActivity().intent?.action == Intent.ACTION_SEND && requireActivity().intent.type == "text/plain") {
             val receivedText = requireActivity().intent.getStringExtra(Intent.EXTRA_TEXT)
             if (receivedText != null) {
-                run(receivedText + endSeparator)
+                run(prefix + receivedText + endSeparator)
             } else {
                 runFromContextMenu()
             }
@@ -546,7 +549,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         val tryPrompt = requireActivity().intent.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT).toString()
 
         if (tryPrompt != "" && tryPrompt != "null") {
-            run(tryPrompt + endSeparator)
+            run(prefix + tryPrompt + endSeparator)
         } else {
             runActivationPrompt()
         }
@@ -555,7 +558,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     @OptIn(BetaOpenAI::class)
     private fun runActivationPrompt() {
         if (messages.isEmpty()) {
-            val prompt: String = Preferences.getPreferences(requireActivity()).getPrompt()
+            val prompt: String = Preferences.getPreferences(requireActivity(), "").getPrompt()
 
             if (prompt.toString() != "" && prompt.toString() != "null" && prompt != "") {
                 putMessage(prompt, false)
@@ -589,7 +592,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
             saveSettings()
 
-            putMessage(message + endSeparator, false)
+            putMessage(prefix + message + endSeparator, false)
 
             hideKeyboard()
             btnAssistantVoice?.isEnabled = false
@@ -620,23 +623,24 @@ class AssistantFragment : BottomSheetDialogFragment() {
             } else {
                 chatMessages.add(ChatMessage(
                     role = ChatRole.User,
-                    content = message + endSeparator
+                    content = prefix + message + endSeparator
                 ))
 
                 CoroutineScope(Dispatchers.Main).launch {
-                    generateResponse(message + endSeparator, false)
+                    generateResponse(prefix + message + endSeparator, false)
                 }
             }
         }
     }
 
     private fun loadModel() {
-        model = Preferences.getPreferences(requireActivity()).getModel()
-        endSeparator = Preferences.getPreferences(requireActivity()).getEndSeparator()
+        model = Preferences.getPreferences(requireActivity(), "").getModel()
+        endSeparator = Preferences.getPreferences(requireActivity(), "").getEndSeparator()
+        prefix = Preferences.getPreferences(requireActivity(), "").getPrefix()
     }
 
     private fun loadResolution() {
-        resolution = Preferences.getPreferences(requireActivity()).getResolution()
+        resolution = Preferences.getPreferences(requireActivity(), "").getResolution()
     }
 
     private fun sendImageRequest(str: String) {
@@ -678,7 +682,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
         try {
             if (model.contains("davinci") || model.contains("curie") || model.contains("babbage") || model.contains("ada") || model.contains(":ft-")) {
-                val tokens = Preferences.getPreferences(requireActivity()).getMaxTokens()
+                val tokens = Preferences.getPreferences(requireActivity(), "").getMaxTokens()
 
                 val completionRequest = CompletionRequest(
                     model = ModelId(model),
@@ -699,7 +703,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                     }
                 }
             } else {
-                val tokens = Preferences.getPreferences(requireActivity()).getMaxTokens()
+                val tokens = Preferences.getPreferences(requireActivity(), "").getMaxTokens()
 
                 val chatCompletionRequest = ChatCompletionRequest(
                     model = ModelId(model),
@@ -877,7 +881,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         }
 
         btnSaveToChat?.setOnClickListener {
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("")
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false)
             chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }

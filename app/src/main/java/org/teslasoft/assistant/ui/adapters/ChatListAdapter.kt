@@ -30,6 +30,7 @@ import androidx.fragment.app.Fragment
 import org.teslasoft.assistant.ui.ChatActivity
 import org.teslasoft.assistant.ui.fragments.ChatsListFragment
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.fragments.AddChatDialogFragment
 import org.teslasoft.assistant.util.Hash
 
@@ -67,6 +68,29 @@ class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragme
 
         name.text = dataArray?.get(position)?.get("name").toString()
 
+        val model: String = Preferences.getPreferences(mContext.requireActivity(), Hash.hash(dataArray?.get(position)?.get("name").toString())).getModel()
+
+        val textModel: TextView = mView.findViewById(R.id.textModel)
+
+        textModel.text = when (model) {
+            "gpt-4" -> "GPT 4"
+            "gpt-4-0314" -> "GPT 4"
+            "gpt-4-32k" -> "GPT 4"
+            "gpt-4-32k-0314" -> "GPT 4"
+            "gpt-3.5-turbo" -> "GPT 3.5"
+            "gpt-3.5-turbo-0301" -> "GPT 3.5"
+            "text-davinci-003" -> "DAVINCI"
+            "text-davinci-002" -> "DAVINCI"
+            "text-curie-001" -> "CURIE"
+            "text-babbage-001" -> "BABBAGE"
+            "text-ada-001" -> "ADA"
+            "davinci" -> "DAVINCI"
+            "curie" -> "CURIE"
+            "babbage" -> "BABBAGE"
+            "ada" -> "ADA"
+            else -> "FT"
+        }
+
         if (position % 2 == 0) {
             selector.setBackgroundResource(R.drawable.btn_accent_selector_v2)
             icon.setBackgroundResource(R.drawable.btn_accent_tonal_v2)
@@ -87,7 +111,7 @@ class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragme
         }
 
         selector.setOnLongClickListener {
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(name.text.toString())
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(name.text.toString(), false)
             chatDialogFragment.setStateChangedListener((mContext as ChatsListFragment).chatListUpdatedListener)
             chatDialogFragment.show(mContext.parentFragmentManager.beginTransaction(), "AddChatDialog")
 

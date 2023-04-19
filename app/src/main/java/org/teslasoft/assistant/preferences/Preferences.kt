@@ -21,13 +21,23 @@ import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 
-class Preferences private constructor(private var preferences: SharedPreferences) {
+class Preferences private constructor(private var preferences: SharedPreferences, private var chatId: String) {
     companion object {
         private var preferences: Preferences? = null
-        public fun getPreferences(context: Context) : Preferences {
-            if (preferences == null) preferences = Preferences(context.getSharedPreferences("settings", Context.MODE_PRIVATE))
+        public fun getPreferences(context: Context, chatId: String) : Preferences {
+            if (preferences == null) preferences = Preferences(context.getSharedPreferences("settings.$chatId", Context.MODE_PRIVATE), chatId)
+            else {
+                if (preferences?.chatId != chatId) {
+                    preferences?.setPreferences(chatId, context)
+                }
+            }
+
             return preferences!!
         }
+    }
+
+    private fun setPreferences(chatId: String, context: Context) {
+        this.preferences = context.getSharedPreferences("settings.$chatId", Context.MODE_PRIVATE)
     }
 
     private fun getString(param: String?, default: String?) : String {
@@ -74,7 +84,7 @@ class Preferences private constructor(private var preferences: SharedPreferences
         return getBoolean("silence_mode", false)
     }
 
-    public fun setSilence(mode: Boolean) {
+    fun setSilence(mode: Boolean) {
         putBoolean("silence_mode", mode)
     }
 
@@ -84,6 +94,14 @@ class Preferences private constructor(private var preferences: SharedPreferences
 
     fun setEndSeparator(separator: String) {
         putString("end", separator)
+    }
+
+    fun getPrefix() : String {
+        return getString("prefix", "")
+    }
+
+    fun setPrefix(prefix: String) {
+        putString("prefix", prefix)
     }
 
     fun getAudioModel() : String {

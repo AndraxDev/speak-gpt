@@ -39,4 +39,5 @@
     <color name="ripple">#4D000000</color>
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/accent_900</color>
     <color name="system_bars">@color/accent_100</color>
+    <color name="marker">#22000000</color>
 </resources>

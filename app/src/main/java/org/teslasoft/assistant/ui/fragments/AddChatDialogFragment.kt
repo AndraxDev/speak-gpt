@@ -34,11 +34,12 @@ import org.teslasoft.assistant.util.Hash
 class AddChatDialogFragment : DialogFragment() {
 
     companion object {
-        public fun newInstance(name: String) : AddChatDialogFragment {
+        public fun newInstance(name: String, fromFile: Boolean) : AddChatDialogFragment {
             val addChatDialogFragment = AddChatDialogFragment()
 
             val args = Bundle()
             args.putString("name", name)
+            args.putBoolean("fromFile", fromFile)
 
             addChatDialogFragment.arguments = args
 
@@ -108,7 +109,7 @@ class AddChatDialogFragment : DialogFragment() {
 
     private fun validateForm() {
         if (nameInput?.text.toString() == "") {
-            listener!!.onError()
+            listener!!.onError(arguments?.getBoolean("fromFile") == true)
         } else {
             if (chatPreferences?.checkDuplicate(requireActivity(), nameInput?.text.toString()) == false) {
                 if (isEdit) {
@@ -116,7 +117,7 @@ class AddChatDialogFragment : DialogFragment() {
                     listener!!.onEdit(nameInput?.text.toString(), Hash.hash(nameInput?.text.toString()))
                 } else {
                     chatPreferences?.addChat(requireActivity(), nameInput?.text.toString())
-                    listener!!.onAdd(nameInput?.text.toString(), Hash.hash(nameInput?.text.toString()))
+                    listener!!.onAdd(nameInput?.text.toString(), Hash.hash(nameInput?.text.toString()), arguments?.getBoolean("fromFile") == true)
                 }
             } else {
                 listener!!.onDuplicate()
@@ -143,9 +144,9 @@ class AddChatDialogFragment : DialogFragment() {
     }
 
     interface StateChangesListener {
-        fun onAdd(name: String, id: String)
+        fun onAdd(name: String, id: String, fromFile: Boolean)
         fun onEdit(name: String, id: String)
-        fun onError()
+        fun onError(fromFile: Boolean)
         fun onCanceled()
         fun onDelete()
         fun onDuplicate()
