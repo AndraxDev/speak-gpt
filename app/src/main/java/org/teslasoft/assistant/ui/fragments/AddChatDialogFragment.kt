@@ -113,38 +113,41 @@ class AddChatDialogFragment : DialogFragment() {
             listener!!.onError(arguments?.getBoolean("fromFile") == true)
         } else {
             if (chatPreferences?.checkDuplicate(requireActivity(), nameInput?.text.toString()) == false) {
-                if (isEdit) {
+                val preferences: Preferences = if (isEdit) {
                     chatPreferences?.editChat(requireActivity(), nameInput?.text.toString(), requireArguments().getString("name").toString())
+                    listener!!.onEdit(nameInput?.text.toString(), Hash.hash(nameInput?.text.toString()))
 
                     // Transfer settings
-                    val preferences: Preferences = Preferences.getPreferences(requireActivity(), Hash.hash(arguments?.getString("name").toString()))
-
-                    val resolution = preferences.getResolution()
-                    val speech = preferences.getAudioModel()
-                    val model = preferences.getModel()
-                    val maxTokens = preferences.getMaxTokens()
-                    val prefix = preferences.getPrefix()
-                    val endSeparator = preferences.getEndSeparator()
-                    val activationPrompt = preferences.getPrompt()
-                    val layout = preferences.getLayout()
-                    val silent = preferences.getSilence()
-
-                    preferences.setPreferences(Hash.hash(nameInput?.text.toString()), requireActivity())
-                    preferences.setResolution(resolution)
-                    preferences.setAudioModel(speech)
-                    preferences.setModel(model)
-                    preferences.setMaxTokens(maxTokens)
-                    preferences.setPrefix(prefix)
-                    preferences.setEndSeparator(endSeparator)
-                    preferences.setPrompt(activationPrompt)
-                    preferences.setLayout(layout)
-                    preferences.setSilence(silent)
-
-                    listener!!.onEdit(nameInput?.text.toString(), Hash.hash(nameInput?.text.toString()))
+                    Preferences.getPreferences(requireActivity(), Hash.hash(arguments?.getString("name").toString()))
                 } else {
                     chatPreferences?.addChat(requireActivity(), nameInput?.text.toString())
                     listener!!.onAdd(nameInput?.text.toString(), Hash.hash(nameInput?.text.toString()), arguments?.getBoolean("fromFile") == true)
+
+                    // Copy settings from default
+                    Preferences.getPreferences(requireActivity(), "")
                 }
+
+                // Write settings
+                val resolution = preferences.getResolution()
+                val speech = preferences.getAudioModel()
+                val model = preferences.getModel()
+                val maxTokens = preferences.getMaxTokens()
+                val prefix = preferences.getPrefix()
+                val endSeparator = preferences.getEndSeparator()
+                val activationPrompt = preferences.getPrompt()
+                val layout = preferences.getLayout()
+                val silent = preferences.getSilence()
+
+                preferences.setPreferences(Hash.hash(nameInput?.text.toString()), requireActivity())
+                preferences.setResolution(resolution)
+                preferences.setAudioModel(speech)
+                preferences.setModel(model)
+                preferences.setMaxTokens(maxTokens)
+                preferences.setPrefix(prefix)
+                preferences.setEndSeparator(endSeparator)
+                preferences.setPrompt(activationPrompt)
+                preferences.setLayout(layout)
+                preferences.setSilence(silent)
             } else {
                 listener!!.onDuplicate()
             }

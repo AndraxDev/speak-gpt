@@ -799,12 +799,10 @@ class ChatActivity : FragmentActivity() {
 
                 completions.collect { v ->
                     run {
-                        if (v.choices[0].delta != null) {
-                            if (v.choices[0].delta?.content != null) {
-                                response += v.choices[0].delta?.content
-                                messages[messages.size - 1]["message"] = "$response █"
-                                adapter?.notifyDataSetChanged()
-                            }
+                        if (v.choices[0].delta!!.content != null) {
+                            response += v.choices[0].delta?.content
+                            messages[messages.size - 1]["message"] = "$response █"
+                            adapter?.notifyDataSetChanged()
                         }
                     }
                 }
@@ -865,6 +863,7 @@ class ChatActivity : FragmentActivity() {
             )
 
             val url = URL(images?.get(0)?.url!!)
+
             val `is` = withContext(Dispatchers.IO) {
                 url.openStream()
             }

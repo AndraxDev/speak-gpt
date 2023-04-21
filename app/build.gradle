@@ -7,6 +7,7 @@ plugins {
 android {
     namespace 'org.teslasoft.assistant'
     compileSdk 33
+    // compileSdkPreview "UpsideDownCake"
 
     ndkVersion "23.1.7779620"
 
@@ -14,8 +15,9 @@ android {
         applicationId "org.teslasoft.assistant"
         minSdk 28
         targetSdk 33
-        versionCode 212
-        versionName "2.12"
+        // targetSdkPreview "UpsideDownCake"
+        versionCode 214
+        versionName "2.14"
         externalNativeBuild {
             cmake {
                 cppFlags ''
@@ -41,11 +43,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '11'
+        jvmTarget = '17'
     }
     externalNativeBuild {
         cmake {
@@ -58,7 +60,7 @@ android {
 dependencies {
     implementation 'androidx.core:core-ktx:1.10.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0-beta01'
+    implementation 'com.google.android.material:material:1.9.0-alpha01'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.aallam.openai:openai-client:3.2.0'
     implementation 'io.ktor:ktor-client-android:2.2.4'

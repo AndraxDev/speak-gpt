@@ -34,10 +34,22 @@ class ChatPreferences private constructor() {
         }
     }
 
+    /**
+     * Clears all chat messages for a given chat ID.
+     *
+     * @param context The context of the application.
+     * @param chatId The ID of the chat to clear.
+     */
     fun clearChat(context: Context, chatId: String) {
         context.getSharedPreferences("chat_$chatId", Context.MODE_PRIVATE).edit().putString("chat", "[]").apply()
     }
 
+    /**
+     * Deletes a chat, including all messages, from the chat list.
+     *
+     * @param context The context of the application.
+     * @param chatName The name of the chat to delete.
+     */
     fun deleteChat(context: Context, chatName: String) {
         val list = getChatList(context)
 
@@ -57,6 +69,12 @@ class ChatPreferences private constructor() {
         settings2.edit().clear().apply()
     }
 
+    /**
+     * Retrieves a list of all available chats.
+     *
+     * @param context The context of the application.
+     * @return An ArrayList of HashMap objects, where each HashMap represents a chat with key-value pairs for the chat name and ID.
+     */
     fun getChatList(context: Context) : ArrayList<HashMap<String, String>> {
         val settings: SharedPreferences = context.getSharedPreferences("chat_list", Context.MODE_PRIVATE)
 
@@ -70,17 +88,23 @@ class ChatPreferences private constructor() {
             arrayListOf()
         }
 
+        // Bugfix for R8 minifier
         if (list == null) list = arrayListOf()
 
         return list
     }
 
+    /**
+     * Retrieves all chat messages for a given chat ID.
+     *
+     * @param context The context of the application.
+     * @param chatId The ID of the chat to retrieve messages for.
+     * @return An ArrayList of HashMap objects, where each HashMap represents a message with key-value pairs for the message content and sender ID.
+     */
     fun getChatById(context: Context, chatId: String) : ArrayList<HashMap<String, Any>> {
         val chat: SharedPreferences = context.getSharedPreferences("chat_$chatId",
             Context.MODE_PRIVATE
         )
-
-
 
         var list: ArrayList<HashMap<String, Any>> = try {
             val gson = Gson()
@@ -92,11 +116,18 @@ class ChatPreferences private constructor() {
             arrayListOf()
         }
 
+        // Bugfix for R8 minifier
         if (list == null) list = arrayListOf()
 
         return list
     }
 
+    /**
+     * Generates a unique chat ID for a new chat.
+     *
+     * @param context The context of the application.
+     * @return A unique chat ID as a String.
+     */
     fun getAvailableChatId(context: Context) : String {
         var x = 1
 
@@ -119,6 +150,12 @@ class ChatPreferences private constructor() {
         return x.toString()
     }
 
+    /**
+     * Adds a new chat to the chat list.
+     *
+     * @param context The context of the application.
+     * @param chatName The name of the chat to add.
+     */
     fun addChat(context: Context, chatName: String) {
         val list = getChatList(context)
 
@@ -137,6 +174,13 @@ class ChatPreferences private constructor() {
         settings2.edit().putString("chat", "[]").apply()
     }
 
+    /**
+     * Checks if a chat with the given name already exists in the chat list.
+     *
+     * @param context The context of the application.
+     * @param chatName The name of the chat to check for duplicates.
+     * @return True if a chat with the given name already exists in the chat list, false otherwise.
+     */
     fun checkDuplicate(context: Context, chatName: String) : Boolean {
         val list = getChatList(context)
 
@@ -151,6 +195,13 @@ class ChatPreferences private constructor() {
         return isFound
     }
 
+    /**
+     * Edits the name of a chat and updates the chat list and chat data accordingly.
+     *
+     * @param context The context of the application.
+     * @param chatName The new name of the chat.
+     * @param previousName The previous name of the chat.
+     */
     fun editChat(context: Context, chatName: String, previousName: String) {
         val list = getChatList(context)
 

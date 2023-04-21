@@ -19,6 +19,16 @@ package org.teslasoft.assistant.app
 import android.app.Application
 import com.google.android.material.color.DynamicColors
 
+/**
+ * Called when the application is starting up. This method is responsible for setting up
+ * the app and any necessary components.
+ *
+ * This implementation calls the [onCreate] method of the superclass [Application] and
+ * applies dynamic colors to the activities of the app using the [DynamicColors] class.
+ *
+ * @see [Application.onCreate]
+ * @see [DynamicColors.applyToActivitiesIfAvailable]
+ */
 class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()

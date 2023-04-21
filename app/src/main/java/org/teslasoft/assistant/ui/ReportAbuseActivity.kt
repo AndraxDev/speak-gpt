@@ -82,81 +82,89 @@ class ReportAbuseActivity : FragmentActivity() {
             if (id == "" || title == "") {
                 finish()
             } else {
-                setContentView(R.layout.activity_report_prompt)
+                initUI()
+            }
+        }
+    }
 
-                reportForm = findViewById(R.id.report_form)
-                loadingBar = findViewById(R.id.loading_bar)
-                btnIllegal = findViewById(R.id.btn_illegal)
-                btnCp = findViewById(R.id.btn_cp)
-                btnHate = findViewById(R.id.btn_hate)
-                btnMalware = findViewById(R.id.btn_malware)
-                btnFraud = findViewById(R.id.btn_fraud)
-                btnAdult = findViewById(R.id.btn_adult)
-                btnPolitical = findViewById(R.id.btn_political)
-                btnDuplicated = findViewById(R.id.btn_duplicated)
-                fieldDetails = findViewById(R.id.field_details)
-                btnSend = findViewById(R.id.btn_send_report)
+    private fun initUI() {
+        setContentView(R.layout.activity_report_prompt)
 
-                reportForm?.visibility = View.VISIBLE
-                loadingBar?.visibility = View.GONE
+        reportForm = findViewById(R.id.report_form)
+        loadingBar = findViewById(R.id.loading_bar)
+        btnIllegal = findViewById(R.id.btn_illegal)
+        btnCp = findViewById(R.id.btn_cp)
+        btnHate = findViewById(R.id.btn_hate)
+        btnMalware = findViewById(R.id.btn_malware)
+        btnFraud = findViewById(R.id.btn_fraud)
+        btnAdult = findViewById(R.id.btn_adult)
+        btnPolitical = findViewById(R.id.btn_political)
+        btnDuplicated = findViewById(R.id.btn_duplicated)
+        fieldDetails = findViewById(R.id.field_details)
+        btnSend = findViewById(R.id.btn_send_report)
 
-                requestNetwork = RequestNetwork(this)
+        reportForm?.visibility = View.VISIBLE
+        loadingBar?.visibility = View.GONE
 
-                btnIllegal?.setOnCheckedChangeListener { _, isChecked ->
-                    run {
-                        if (isChecked) reason = "Illegal activity"
-                    }
-                }
+        requestNetwork = RequestNetwork(this)
 
-                btnCp?.setOnCheckedChangeListener { _, isChecked ->
-                    run {
-                        if (isChecked) reason = "Child Sexual Abuse"
-                    }
-                }
+        initLogic()
+    }
 
-                btnHate?.setOnCheckedChangeListener { _, isChecked ->
-                    run {
-                        if (isChecked) reason = "Hateful content"
-                    }
-                }
+    private fun initLogic() {
+        btnIllegal?.setOnCheckedChangeListener { _, isChecked ->
+            run {
+                if (isChecked) reason = "Illegal activity"
+            }
+        }
 
-                btnMalware?.setOnCheckedChangeListener { _, isChecked ->
-                    run {
-                        if (isChecked) reason = "Generation of malware"
-                    }
-                }
+        btnCp?.setOnCheckedChangeListener { _, isChecked ->
+            run {
+                if (isChecked) reason = "Child Sexual Abuse"
+            }
+        }
 
-                btnFraud?.setOnCheckedChangeListener { _, isChecked ->
-                    run {
-                        if (isChecked) reason = "Fraud or deceptive content"
-                    }
-                }
+        btnHate?.setOnCheckedChangeListener { _, isChecked ->
+            run {
+                if (isChecked) reason = "Hateful content"
+            }
+        }
 
-                btnAdult?.setOnCheckedChangeListener { _, isChecked ->
-                    run {
-                        if (isChecked) reason = "Adult content"
-                    }
-                }
+        btnMalware?.setOnCheckedChangeListener { _, isChecked ->
+            run {
+                if (isChecked) reason = "Generation of malware"
+            }
+        }
 
-                btnPolitical?.setOnCheckedChangeListener { _, isChecked ->
-                    run {
-                        if (isChecked) reason = "Political campaigning or lobbying"
-                    }
-                }
+        btnFraud?.setOnCheckedChangeListener { _, isChecked ->
+            run {
+                if (isChecked) reason = "Fraud or deceptive content"
+            }
+        }
 
-                btnDuplicated?.setOnCheckedChangeListener { _, isChecked ->
-                    run {
-                        if (isChecked) reason = "Duplicated prompt or spam"
-                    }
-                }
+        btnAdult?.setOnCheckedChangeListener { _, isChecked ->
+            run {
+                if (isChecked) reason = "Adult content"
+            }
+        }
 
-                btnSend?.setOnClickListener {
-                    if (reason == "") {
-                        Toast.makeText(this, "Please select one option", Toast.LENGTH_SHORT).show()
-                    } else {
-                        loadData()
-                    }
-                }
+        btnPolitical?.setOnCheckedChangeListener { _, isChecked ->
+            run {
+                if (isChecked) reason = "Political campaigning or lobbying"
+            }
+        }
+
+        btnDuplicated?.setOnCheckedChangeListener { _, isChecked ->
+            run {
+                if (isChecked) reason = "Duplicated prompt or spam"
+            }
+        }
+
+        btnSend?.setOnClickListener {
+            if (reason == "") {
+                Toast.makeText(this, "Please select one option", Toast.LENGTH_SHORT).show()
+            } else {
+                loadData()
             }
         }
     }

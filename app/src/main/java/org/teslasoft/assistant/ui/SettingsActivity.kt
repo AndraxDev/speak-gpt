@@ -35,6 +35,7 @@ import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.fragments.ActivationPromptDialog
 import org.teslasoft.assistant.ui.fragments.ModelDialogFragment
 import org.teslasoft.assistant.ui.onboarding.ActivationActivity
+import org.teslasoft.core.auth.client.TeslasoftIDClient
 
 class SettingsActivity : FragmentActivity() {
 
@@ -62,6 +63,8 @@ class SettingsActivity : FragmentActivity() {
     private var chatId = ""
     private var model = ""
     private var activationPrompt : String = ""
+
+    private var teslasoftIDClient: TeslasoftIDClient? = null
 
     private var modelChangedListener: ModelDialogFragment.StateChangesListener = object : ModelDialogFragment.StateChangesListener {
         override fun onSelected(name: String, maxTokens: String, endSeparator: String, prefix: String) {

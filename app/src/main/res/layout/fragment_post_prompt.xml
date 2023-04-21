@@ -282,6 +282,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:text="Tourism" />
+
+            <RadioButton
+                android:id="@+id/cat_productivity"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Productivity" />
+
+            <RadioButton
+                android:id="@+id/cat_tools"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Tools" />
+
+            <RadioButton
+                android:id="@+id/cat_entertainment"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Entertainment" />
         </RadioGroup>
 
         <TextView

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple android:color="@color/warn_bg"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <corners android:radius="24dp" />
+            <solid android:color="@color/warn_bg" />
+        </shape>
+    </item>
+</ripple>

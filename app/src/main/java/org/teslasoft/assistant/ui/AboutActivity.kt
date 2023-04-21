@@ -52,8 +52,12 @@ class AboutActivity : FragmentActivity() {
         appIcon?.setImageResource(R.drawable.assistant)
 
         try {
-            val pInfo: PackageInfo =
+            val pInfo: PackageInfo = if (android.os.Build.VERSION.SDK_INT >= 33) {
+                packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
+            } else {
                 packageManager.getPackageInfo(packageName, 0)
+            }
+
             val version = pInfo.versionName
 
             appVer?.text = "App version: $version"

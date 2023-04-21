@@ -57,27 +57,6 @@ class DebugActivity : FragmentActivity() {
         Toast.makeText(this, "Nothing interesting here, finishing... :)", Toast.LENGTH_SHORT).show()
 
         finish()
-
-//        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
-//        StrictMode.setThreadPolicy(policy)
-//
-//        setContentView(R.layout.activity_debug)
-//
-//        btnDebug = findViewById(R.id.btnDebug)
-//        textDebug = findViewById(R.id.debugText)
-//
-//        debugImage = findViewById(R.id.debugImage)
-//
-//        textDebug?.setTextIsSelectable(true)
-//
-//        initAI()
-//
-//        btnDebug?.setOnClickListener {
-//            CoroutineScope(Dispatchers.Main).launch {
-//                // testImages()
-//                loadImage()
-//            }
-//        }
     }
 
     private fun loadImage() {

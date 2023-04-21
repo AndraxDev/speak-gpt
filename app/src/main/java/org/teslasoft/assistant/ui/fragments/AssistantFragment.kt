@@ -715,12 +715,10 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
                 completions.collect { v ->
                     run {
-                        if (v.choices[0].delta != null) {
-                            if (v.choices[0].delta?.content != null) {
-                                response += v.choices[0].delta?.content
-                                messages[messages.size - 1]["message"] = "$response █"
-                                adapter?.notifyDataSetChanged()
-                            }
+                        if (v.choices[0].delta!!.content != null) {
+                            response += v.choices[0].delta?.content
+                            messages[messages.size - 1]["message"] = "$response █"
+                            adapter?.notifyDataSetChanged()
                         }
                     }
                 }

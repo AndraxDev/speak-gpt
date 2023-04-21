@@ -74,6 +74,9 @@ class PostPromptDialog : DialogFragment() {
     private var catHealth: RadioButton? = null
     private var catFood: RadioButton? = null
     private var catTourism: RadioButton? = null
+    private var catProductivity: RadioButton? = null
+    private var catTools: RadioButton? = null
+    private var catEntertainment: RadioButton? = null
 
     private var category: String = ""
     private var type: String = ""
@@ -109,6 +112,9 @@ class PostPromptDialog : DialogFragment() {
         catHealth = view.findViewById(R.id.cat_helth)
         catFood = view.findViewById(R.id.cat_food)
         catTourism = view.findViewById(R.id.cat_tourism)
+        catProductivity = view.findViewById(R.id.cat_productivity)
+        catTools = view.findViewById(R.id.cat_tools)
+        catEntertainment = view.findViewById(R.id.cat_entertainment)
 
         gptButton?.setOnClickListener { type = "GPT" }
         dalleButton?.setOnClickListener { type = "DALL-e" }
@@ -124,6 +130,9 @@ class PostPromptDialog : DialogFragment() {
         catHealth ?.setOnClickListener { category = "health" }
         catFood?.setOnClickListener { category = "food" }
         catTourism?.setOnClickListener { category = "tourism" }
+        catProductivity?.setOnClickListener { category = "productivity" }
+        catTools?.setOnClickListener { category = "tools" }
+        catEntertainment?.setOnClickListener { category = "entertainment" }
 
         when (type) {
             "GPT" -> gptButton?.isChecked = true
@@ -142,6 +151,9 @@ class PostPromptDialog : DialogFragment() {
             "health" -> catHealth ?.isChecked = true
             "food" -> catFood?.isChecked = true
             "tourism" -> catTourism?.isChecked = true
+            "productivity" -> catProductivity?.isChecked = true
+            "tools" -> catTools?.isChecked = true
+            "entertainment" -> catEntertainment?.isChecked = true
         }
 
         fieldName?.setText(requireArguments().getString("name"))

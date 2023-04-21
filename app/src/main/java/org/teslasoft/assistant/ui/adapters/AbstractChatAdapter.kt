@@ -43,6 +43,7 @@ import io.noties.markwon.Markwon
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.ui.ImageBrowserActivity
 
+
 abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActivity) : BaseAdapter() {
     protected val dataArray: ArrayList<HashMap<String, Any>>? = data
     protected val mContext: FragmentActivity = context
