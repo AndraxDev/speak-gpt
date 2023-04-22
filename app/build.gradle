@@ -16,8 +16,8 @@ android {
         minSdk 28
         targetSdk 33
         // targetSdkPreview "UpsideDownCake"
-        versionCode 214
-        versionName "2.14"
+        versionCode 215
+        versionName "2.15"
         externalNativeBuild {
             cmake {
                 cppFlags ''
@@ -34,13 +34,13 @@ android {
             multiDexEnabled true
         }
 
-        debug {
-            debuggable false
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            multiDexEnabled true
-        }
+//        debug {
+//            debuggable false
+//            minifyEnabled true
+//            shrinkResources true
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//            multiDexEnabled true
+//        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17

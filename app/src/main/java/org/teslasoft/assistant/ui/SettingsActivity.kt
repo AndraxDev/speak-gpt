@@ -16,7 +16,9 @@
 
 package org.teslasoft.assistant.ui
 
+import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -24,10 +26,14 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.materialswitch.MaterialSwitch
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ChatPreferences
@@ -36,6 +42,7 @@ import org.teslasoft.assistant.ui.fragments.ActivationPromptDialog
 import org.teslasoft.assistant.ui.fragments.ModelDialogFragment
 import org.teslasoft.assistant.ui.onboarding.ActivationActivity
 import org.teslasoft.core.auth.client.TeslasoftIDClient
+import java.util.Objects
 
 class SettingsActivity : FragmentActivity() {
 
@@ -54,6 +61,8 @@ class SettingsActivity : FragmentActivity() {
     private var r1024: MaterialButton? = null
     private var audioGoogle: MaterialButton? = null
     private var audioWhisper: MaterialButton? = null
+    private var gpt30: MaterialButton? = null
+    private var gpt40: MaterialButton? = null
     private var promptDesc: TextView? = null
     private var modelDesc: TextView? = null
     private var btnClassicView: LinearLayout? = null
@@ -111,6 +120,7 @@ class SettingsActivity : FragmentActivity() {
 
     private fun initUI() {
         setContentView(R.layout.activity_settings)
+
         btnChangeApi = findViewById(R.id.btn_manage_api)
         btnChangeAccount = findViewById(R.id.btn_manage_account)
         btnSetAssistant = findViewById(R.id.btn_manage_assistant)
@@ -130,6 +140,47 @@ class SettingsActivity : FragmentActivity() {
         r1024 = findViewById(R.id.r1024)
         audioGoogle = findViewById(R.id.google)
         audioWhisper = findViewById(R.id.whisper)
+        gpt30 = findViewById(R.id.gpt30)
+        gpt40 = findViewById(R.id.gpt40)
+
+        btnChangeApi?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(this, R.drawable.t_menu_top_item_background)!!, this)
+
+        btnChangeAccount?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background)!!, this)
+
+        btnSetAssistant?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background)!!, this)
+
+        btnModel?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background)!!, this)
+
+        btnPrompt?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background)!!, this)
+
+        btnBubblesView?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(this, R.drawable.btn_accent_tonal_selector_v3)!!, this)
+
+        btnClassicView?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(this, R.drawable.btn_accent_tonal_selector_v3)!!, this)
+
+        findViewById<LinearLayout>(R.id.btn_dalle_resolution)!!.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background)!!, this)
+
+        findViewById<LinearLayout>(R.id.btn_audio_source)!!.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background)!!, this)
+
+        findViewById<LinearLayout>(R.id.btn_model_s)!!.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background)!!, this)
+
+        findViewById<LinearLayout>(R.id.btn_layout)!!.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background_noclick)!!, this)
+
+        findViewById<LinearLayout>(R.id.btn_silence_mode)!!.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background)!!, this)
+
+        btnAbout?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(this, R.drawable.t_menu_bottom_item_background)!!, this)
     }
 
     private fun initSettings() {
@@ -225,18 +276,51 @@ class SettingsActivity : FragmentActivity() {
         audioGoogle?.setOnClickListener { preferences?.setAudioModel("google") }
         audioWhisper?.setOnClickListener { preferences?.setAudioModel("whisper") }
 
+        gpt30?.setOnClickListener { preferences?.setModel("gpt-3.5-turbo") }
+        gpt40?.setOnClickListener { preferences?.setModel("gpt-4") }
+
         if (preferences?.getAudioModel().toString() == "google") audioGoogle?.isChecked = true
         else audioWhisper?.isChecked = true
+    }
+
+    private fun getDarkAccentDrawable(drawable: Drawable, context: Context) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getSurfaceColor(context))
+        return drawable
+    }
+
+    private fun getDarkAccentDrawableV2(drawable: Drawable, context: Context) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getSurfaceColorV2(context))
+        return drawable
+    }
+
+    private fun getSurfaceColor(context: Context) : Int {
+        return SurfaceColors.SURFACE_2.getColor(context)
+    }
+
+    private fun getSurfaceColorV2(context: Context) : Int {
+        return SurfaceColors.SURFACE_5.getColor(context)
     }
 
     private fun switchUIToClassic() {
         btnBubblesView?.setBackgroundResource(R.drawable.btn_accent_tonal_selector_v3)
         btnClassicView?.setBackgroundResource(R.drawable.btn_accent_tonal_selector_v2)
+
+        btnBubblesView?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(this, R.drawable.btn_accent_tonal_selector_v3)!!, this)
+
+        btnClassicView?.background = getDarkAccentDrawableV2(
+            ContextCompat.getDrawable(this, R.drawable.btn_accent_tonal_selector_v2)!!, this)
     }
 
     private fun switchUIToBubbles() {
         btnBubblesView?.setBackgroundResource(R.drawable.btn_accent_tonal_selector_v2)
         btnClassicView?.setBackgroundResource(R.drawable.btn_accent_tonal_selector_v3)
+
+        btnBubblesView?.background = getDarkAccentDrawableV2(
+            ContextCompat.getDrawable(this, R.drawable.btn_accent_tonal_selector_v2)!!, this)
+
+        btnClassicView?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(this, R.drawable.btn_accent_tonal_selector_v3)!!, this)
     }
 
     private fun initChatId() {
@@ -256,6 +340,9 @@ class SettingsActivity : FragmentActivity() {
     private fun loadModel() {
         model = preferences?.getModel().toString() // Possible kotlin bug
         modelDesc?.text = model
+
+        gpt30?.isChecked = model == "gpt-3.5-turbo"
+        gpt40?.isChecked = model == "gpt-4"
     }
 
     private fun loadResolution() {

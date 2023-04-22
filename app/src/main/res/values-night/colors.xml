@@ -2,6 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <color name="accent_100">#302f36</color>
     <color name="accent_200">#424250</color>
+    <color name="accent_250">#424250</color>
     <color name="accent_500">#a895e9</color>
     <color name="accent_900">#c3b4ff</color>
     <color name="icon_50">@color/purple_50</color>
@@ -22,5 +23,5 @@
     <color name="text">#eeffffff</color>
     <color name="hint">#aaffffff</color>
     <color name="tip1">#ccfcb3</color>
-    <color name="marker">#22FFFFFF</color>
+    <color name="marker">#15FFFFFF</color>
 </resources>

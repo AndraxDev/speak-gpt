@@ -18,6 +18,7 @@
 
     <color name="accent_100">#e0dbff</color>
     <color name="accent_200">#bab8ff</color>
+    <color name="accent_250">#bab8ff</color>
     <color name="accent_500">#7462ab</color>
     <color name="accent_900">#453374</color>
     <color name="fab">@color/accent_100</color>
@@ -39,6 +40,6 @@
     <color name="ripple">#4D000000</color>
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/accent_900</color>
     <color name="system_bars">@color/accent_100</color>
-    <color name="marker">#22000000</color>
+    <color name="marker">#15000000</color>
     <color name="warn_bg">#33DB4437</color>
 </resources>
