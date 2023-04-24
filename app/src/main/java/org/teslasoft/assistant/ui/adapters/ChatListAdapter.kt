@@ -32,10 +32,10 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.ui.ChatActivity
-import org.teslasoft.assistant.ui.fragments.ChatsListFragment
+import org.teslasoft.assistant.ui.fragments.tabs.ChatsListFragment
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
-import org.teslasoft.assistant.ui.fragments.AddChatDialogFragment
+import org.teslasoft.assistant.ui.fragments.dialogs.AddChatDialogFragment
 import org.teslasoft.assistant.util.Hash
 
 class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragment) : BaseAdapter() {

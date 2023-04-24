@@ -12,7 +12,7 @@
         android:background="@color/accent_100"
         android:elevation="6dp"
         android:gravity="center"
-        android:text="Report abuse"
+        android:text="@string/title_report_abuse"
         android:textColor="@color/text_title"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -46,7 +46,7 @@
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="24dp"
-                    android:text="This prompt contains:"
+                    android:text="@string/report_desc"
                     android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -67,49 +67,49 @@
                         android:id="@+id/btn_illegal"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:text="Illegal activity" />
+                        android:text="@string/illegal_activity" />
 
                     <RadioButton
                         android:id="@+id/btn_cp"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:text="Child Sexual Abuse" />
+                        android:text="@string/child_sexual_abuse" />
 
                     <RadioButton
                         android:id="@+id/btn_hate"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:text="Generation of hateful, harassing, or violent content" />
+                        android:text="@string/generation_of_hateful_harassing_or_violent_content" />
 
                     <RadioButton
                         android:id="@+id/btn_malware"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:text="Generation of malware" />
+                        android:text="@string/generation_of_malware" />
 
                     <RadioButton
                         android:id="@+id/btn_fraud"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:text="Fraudulent or deceptive activity" />
+                        android:text="@string/fraudulent_or_deceptive_activity" />
 
                     <RadioButton
                         android:id="@+id/btn_adult"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:text="Adult content" />
+                        android:text="@string/adult_content" />
 
                     <RadioButton
                         android:id="@+id/btn_political"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:text="Political campaigning or lobbying" />
+                        android:text="@string/political_campaigning_or_lobbying" />
 
                     <RadioButton
                         android:id="@+id/btn_duplicated"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:text="Duplicated prompt or spam" />
+                        android:text="@string/duplicated_prompt_or_spam" />
                 </RadioGroup>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -127,8 +127,8 @@
                         android:id="@+id/field_details"
                         android:layout_width="match_parent"
                         android:layout_height="120dp"
-                        android:gravity="top|left"
-                        android:hint="Additional info" />
+                        android:gravity="top|start"
+                        android:hint="@string/hint_additional_info" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
@@ -139,7 +139,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="24dp"
                     android:layout_marginBottom="16dp"
-                    android:text="Send report"
+                    android:text="@string/btn_send_report"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView11" />
@@ -151,7 +151,7 @@
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="24dp"
-                    android:text="Note: Sending multiple identical reports will not solve your problem faster."
+                    android:text="@string/report_warning"
                     android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

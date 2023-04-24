@@ -73,6 +73,8 @@ import org.teslasoft.assistant.preferences.ChatPreferences
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.ChatAdapter
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
+import org.teslasoft.assistant.ui.permission.MicrophonePermissionActivity
+import org.teslasoft.assistant.util.LocaleParser
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
@@ -173,13 +175,13 @@ class ChatActivity : FragmentActivity() {
     private val ttsListener: TextToSpeech.OnInitListener =
         TextToSpeech.OnInitListener { status ->
             if (status == TextToSpeech.SUCCESS) {
-                val result = tts!!.setLanguage(Locale.US)
+                val result = tts!!.setLanguage(LocaleParser.parse(Preferences.getPreferences(this@ChatActivity, chatId).getLanguage()))
 
                 isTTSInitialized = !(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED)
 
                 val voices: Set<Voice> = tts!!.voices
                 for (v: Voice in voices) {
-                    if (v.name.equals("en-us-x-iom-local")) {
+                    if (v.name.equals("en-us-x-iom-local") && Preferences.getPreferences(this@ChatActivity, chatId).getLanguage() == "en") {
                         tts!!.voice = v
                     }
                 }
@@ -545,7 +547,7 @@ class ChatActivity : FragmentActivity() {
                 permissionResultLauncherV2.launch(
                     Intent(
                         this,
-                        MicrophonePermissionScreen::class.java
+                        MicrophonePermissionActivity::class.java
                     )
                 )
             }
@@ -570,7 +572,7 @@ class ChatActivity : FragmentActivity() {
                 permissionResultLauncher.launch(
                     Intent(
                         this,
-                        MicrophonePermissionScreen::class.java
+                        MicrophonePermissionActivity::class.java
                     )
                 )
             }
@@ -738,7 +740,7 @@ class ChatActivity : FragmentActivity() {
     private fun startRecognition() {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, LocaleParser.parse(Preferences.getPreferences(this@ChatActivity, chatId).getLanguage()))
         intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
 
         recognizer?.startListening(intent)

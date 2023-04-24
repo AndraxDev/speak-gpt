@@ -15,7 +15,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_microphone" />
+        app:srcCompat="@drawable/ic_microphone"
+        android:contentDescription="@string/btn_speak" />
 
     <ProgressBar
         android:id="@+id/assistant_loading"
@@ -36,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:paddingTop="24sp"
-        android:text="SpeakGPT"
+        android:text="@string/app_name"
         android:textColor="@color/accent_900"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -70,7 +71,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_settings" />
+                app:srcCompat="@drawable/ic_settings"
+                android:contentDescription="@string/btn_settings" />
 
             <ImageButton
                 android:id="@+id/btn_assistant_show_keyboard"
@@ -81,7 +83,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_keyboard" />
+                app:srcCompat="@drawable/ic_keyboard"
+                android:contentDescription="@string/btn_show_keyboard" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
@@ -105,7 +108,7 @@
             android:layout_height="match_parent">
 
             <ImageButton
-                android:id="@+id/btn_assistent_hide_keyboard"
+                android:id="@+id/btn_assistant_hide_keyboard"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:layout_marginStart="8dp"
@@ -113,7 +116,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_keyboard_hide" />
+                app:srcCompat="@drawable/ic_keyboard_hide"
+                android:contentDescription="@string/btn_hide_keyboard" />
 
             <ImageButton
                 android:id="@+id/btn_assistant_send"
@@ -124,7 +128,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_send" />
+                app:srcCompat="@drawable/ic_send"
+                android:contentDescription="@string/btn_send" />
 
             <EditText
                 android:id="@+id/assistant_message"
@@ -134,7 +139,7 @@
                 android:layout_marginEnd="8dp"
                 android:background="@color/transparent"
                 android:ems="10"
-                android:gravity="top|left"
+                android:gravity="top|start"
                 android:inputType="text|textMultiLine"
                 android:maxHeight="150dp"
                 android:minHeight="48dp"
@@ -143,7 +148,7 @@
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/btn_assistant_send"
-                app:layout_constraintStart_toEndOf="@+id/btn_assistent_hide_keyboard"
+                app:layout_constraintStart_toEndOf="@+id/btn_assistant_hide_keyboard"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
@@ -186,7 +191,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="-8dp"
-        android:text="Save"
+        android:text="@string/btn_save"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/assistant_title"
         app:layout_constraintEnd_toEndOf="parent" />

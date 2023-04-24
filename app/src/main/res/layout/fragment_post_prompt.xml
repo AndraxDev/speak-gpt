@@ -9,7 +9,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="wrap_content" >
 
         <TextView
             android:id="@+id/dialog_title"
@@ -18,7 +18,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="24dp"
-            android:text="Post a prompt"
+            android:text="@string/title_post_a_prompt"
             android:textColor="@color/text_title"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -36,7 +36,7 @@
             android:layout_marginEnd="24dp"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="Your name"
+            android:hint="@string/hint_name"
             android:textColor="@color/accent_900"
             android:textColorHint="@color/accent_500"
             app:boxStrokeColor="@color/button"
@@ -67,7 +67,7 @@
             android:layout_marginEnd="24dp"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="Prompt title"
+            android:hint="@string/hint_prompt_title"
             android:textColor="@color/accent_900"
             android:textColorHint="@color/accent_500"
             app:boxStrokeColor="@color/button"
@@ -98,7 +98,7 @@
             android:layout_marginEnd="24dp"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="Brief description"
+            android:hint="@string/hint_prompt_desc"
             android:textColor="@color/accent_900"
             android:textColorHint="@color/accent_500"
             app:boxStrokeColor="@color/button"
@@ -112,7 +112,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:backgroundTint="@color/button"
-                android:gravity="top|left"
+                android:gravity="top|start"
                 android:inputType="text|textMultiLine"
                 android:textColor="@color/accent_900"
                 android:textColorHighlight="@color/accent_100"
@@ -130,7 +130,7 @@
             android:layout_marginEnd="24dp"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="Prompt"
+            android:hint="@string/hint_prompt"
             android:textColor="@color/accent_900"
             android:textColorHint="@color/accent_500"
             app:boxStrokeColor="@color/button"
@@ -144,7 +144,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
                 android:backgroundTint="@color/button"
-                android:gravity="top|left"
+                android:gravity="top|start"
                 android:inputType="text|textMultiLine"
                 android:textColor="@color/accent_900"
                 android:textColorHighlight="@color/accent_100"
@@ -189,7 +189,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Prompt for"
+            android:text="@string/prompt_for"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -200,7 +200,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Category"
+            android:text="@string/category"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -221,85 +221,85 @@
                 android:id="@+id/cat_development"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="Development" />
+                android:text="@string/cat_development" />
 
             <RadioButton
                 android:id="@+id/cat_music"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="Music" />
+                android:text="@string/cat_music" />
 
             <RadioButton
                 android:id="@+id/cat_art"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="Art" />
+                android:text="@string/cat_art" />
 
             <RadioButton
                 android:id="@+id/cat_culture"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="Culture" />
+                android:text="@string/cat_culture" />
 
             <RadioButton
                 android:id="@+id/cat_business"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="Business" />
+                android:text="@string/cat_business" />
 
             <RadioButton
                 android:id="@+id/cat_gaming"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="Gaming" />
+                android:text="@string/cat_gaming" />
 
             <RadioButton
                 android:id="@+id/cat_education"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="Education" />
+                android:text="@string/cat_education" />
 
             <RadioButton
                 android:id="@+id/cat_history"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="History" />
+                android:text="@string/cat_history" />
 
             <RadioButton
-                android:id="@+id/cat_helth"
+                android:id="@+id/cat_health"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="Health" />
+                android:text="@string/cat_health" />
 
             <RadioButton
                 android:id="@+id/cat_food"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="Food" />
+                android:text="@string/cat_food" />
 
             <RadioButton
                 android:id="@+id/cat_tourism"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="Tourism" />
+                android:text="@string/cat_tourism" />
 
             <RadioButton
                 android:id="@+id/cat_productivity"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="Productivity" />
+                android:text="@string/cat_productivity" />
 
             <RadioButton
                 android:id="@+id/cat_tools"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="Tools" />
+                android:text="@string/cat_tools" />
 
             <RadioButton
                 android:id="@+id/cat_entertainment"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="Entertainment" />
+                android:text="@string/cat_entertainment" />
         </RadioGroup>
 
         <TextView
@@ -309,7 +309,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
-            android:text="Follow OpenAI's safety principles. Do not post any inappropriate or sensitive information. All prompts is being moderated. Inappropriate prompts will be removed without futher notice."
+            android:text="@string/safety_warning"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/radioGroup3" />

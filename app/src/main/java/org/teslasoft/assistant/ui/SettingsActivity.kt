@@ -26,7 +26,6 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
@@ -38,11 +37,12 @@ import com.google.android.material.materialswitch.MaterialSwitch
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ChatPreferences
 import org.teslasoft.assistant.preferences.Preferences
-import org.teslasoft.assistant.ui.fragments.ActivationPromptDialog
-import org.teslasoft.assistant.ui.fragments.ModelDialogFragment
+import org.teslasoft.assistant.ui.debug.DebugActivity
+import org.teslasoft.assistant.ui.fragments.dialogs.ActivationPromptDialogFragment
+import org.teslasoft.assistant.ui.fragments.dialogs.AdvancedSettingsDialogFragment
+import org.teslasoft.assistant.ui.fragments.dialogs.LanguageSelectorDialogFragment
 import org.teslasoft.assistant.ui.onboarding.ActivationActivity
 import org.teslasoft.core.auth.client.TeslasoftIDClient
-import java.util.Objects
 
 class SettingsActivity : FragmentActivity() {
 
@@ -53,6 +53,7 @@ class SettingsActivity : FragmentActivity() {
     private var btnClearChat: MaterialButton? = null
     private var btnDebugMenu: MaterialButton? = null
     private var dalleResolutions: MaterialButtonToggleGroup? = null
+    private var btnModelGroup: MaterialButtonToggleGroup? = null
     private var btnModel: LinearLayout? = null
     private var btnPrompt: LinearLayout? = null
     private var btnAbout: LinearLayout? = null
@@ -67,35 +68,57 @@ class SettingsActivity : FragmentActivity() {
     private var modelDesc: TextView? = null
     private var btnClassicView: LinearLayout? = null
     private var btnBubblesView: LinearLayout? = null
+    private var assistantLanguage: LinearLayout? = null
 
     private var preferences: Preferences? = null
     private var chatId = ""
     private var model = ""
-    private var activationPrompt : String = ""
+    private var activationPrompt = ""
+    private var language = "en"
 
     private var teslasoftIDClient: TeslasoftIDClient? = null
 
-    private var modelChangedListener: ModelDialogFragment.StateChangesListener = object : ModelDialogFragment.StateChangesListener {
+    private var modelChangedListener: AdvancedSettingsDialogFragment.StateChangesListener = object : AdvancedSettingsDialogFragment.StateChangesListener {
         override fun onSelected(name: String, maxTokens: String, endSeparator: String, prefix: String) {
             model = name
             preferences?.setModel(name)
             preferences?.setMaxTokens(maxTokens.toInt())
             preferences?.setEndSeparator(endSeparator)
             preferences?.setPrefix(prefix)
-            modelDesc?.text = model
+
+            btnModelGroup?.isSingleSelection = false
+            gpt30?.isChecked = false
+            gpt40?.isChecked = false
+            btnModelGroup?.isSingleSelection = true
+            gpt30?.isChecked = model == "gpt-3.5-turbo"
+            gpt40?.isChecked = model == "gpt-4"
         }
 
         override fun onFormError(name: String, maxTokens: String, endSeparator: String, prefix: String) {
             if (name == "") Toast.makeText(this@SettingsActivity, "Error, no model name is provided", Toast.LENGTH_SHORT).show()
             else if (name.contains("gpt-4")) Toast.makeText(this@SettingsActivity, "Error, GPT4 support maximum of 8192 tokens", Toast.LENGTH_SHORT).show()
             else Toast.makeText(this@SettingsActivity, "Error, more than 2048 tokens is not supported", Toast.LENGTH_SHORT).show()
-            val modelDialogFragment: ModelDialogFragment = ModelDialogFragment.newInstance(model, chatId)
-            modelDialogFragment.setStateChangedListener(this)
-            modelDialogFragment.show(supportFragmentManager.beginTransaction(), "ModelDialog")
+            val advancedSettingsDialogFragment: AdvancedSettingsDialogFragment = AdvancedSettingsDialogFragment.newInstance(model, chatId)
+            advancedSettingsDialogFragment.setStateChangedListener(this)
+            advancedSettingsDialogFragment.show(supportFragmentManager.beginTransaction(), "ModelDialog")
         }
     }
 
-    private var promptChangedListener: ActivationPromptDialog.StateChangesListener = object : ActivationPromptDialog.StateChangesListener {
+    private var languageChangedListener: LanguageSelectorDialogFragment.StateChangesListener = object : LanguageSelectorDialogFragment.StateChangesListener {
+        override fun onSelected(name: String) {
+            preferences?.setLanguage(name)
+            language = name
+        }
+
+        override fun onFormError(name: String) {
+            Toast.makeText(this@SettingsActivity, "Please select language", Toast.LENGTH_SHORT).show()
+            val languageSelectorDialogFragment: LanguageSelectorDialogFragment = LanguageSelectorDialogFragment.newInstance(name, chatId)
+            languageSelectorDialogFragment.setStateChangedListener(this)
+            languageSelectorDialogFragment.show(supportFragmentManager.beginTransaction(), "LanguageSelectorDialog")
+        }
+    }
+
+    private var promptChangedListener: ActivationPromptDialogFragment.StateChangesListener = object : ActivationPromptDialogFragment.StateChangesListener {
         override fun onEdit(prompt: String) {
             activationPrompt = prompt
 
@@ -142,6 +165,8 @@ class SettingsActivity : FragmentActivity() {
         audioWhisper = findViewById(R.id.whisper)
         gpt30 = findViewById(R.id.gpt30)
         gpt40 = findViewById(R.id.gpt40)
+        assistantLanguage = findViewById(R.id.btn_manage_language)
+        btnModelGroup = findViewById(R.id.btn_model_s_for)
 
         btnChangeApi?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(this, R.drawable.t_menu_top_item_background)!!, this)
@@ -150,6 +175,9 @@ class SettingsActivity : FragmentActivity() {
             ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background)!!, this)
 
         btnSetAssistant?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background)!!, this)
+
+        assistantLanguage?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background)!!, this)
 
         btnModel?.background = getDarkAccentDrawable(
@@ -165,19 +193,19 @@ class SettingsActivity : FragmentActivity() {
             ContextCompat.getDrawable(this, R.drawable.btn_accent_tonal_selector_v3)!!, this)
 
         findViewById<LinearLayout>(R.id.btn_dalle_resolution)!!.background = getDarkAccentDrawable(
-            ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background)!!, this)
+            ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background_noclick)!!, this)
 
         findViewById<LinearLayout>(R.id.btn_audio_source)!!.background = getDarkAccentDrawable(
-            ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background)!!, this)
+            ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background_noclick)!!, this)
 
         findViewById<LinearLayout>(R.id.btn_model_s)!!.background = getDarkAccentDrawable(
-            ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background)!!, this)
+            ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background_noclick)!!, this)
 
         findViewById<LinearLayout>(R.id.btn_layout)!!.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background_noclick)!!, this)
 
         findViewById<LinearLayout>(R.id.btn_silence_mode)!!.background = getDarkAccentDrawable(
-            ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background)!!, this)
+            ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background_noclick)!!, this)
 
         btnAbout?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(this, R.drawable.t_menu_bottom_item_background)!!, this)
@@ -204,6 +232,7 @@ class SettingsActivity : FragmentActivity() {
 
         loadResolution()
         loadModel()
+        loadLanguage()
     }
 
     private fun initLogic() {
@@ -254,13 +283,19 @@ class SettingsActivity : FragmentActivity() {
         }
 
         btnModel?.setOnClickListener {
-            val modelDialogFragment: ModelDialogFragment = ModelDialogFragment.newInstance(model, chatId)
-            modelDialogFragment.setStateChangedListener(modelChangedListener)
-            modelDialogFragment.show(supportFragmentManager.beginTransaction(), "ModelDialog")
+            val advancedSettingsDialogFragment: AdvancedSettingsDialogFragment = AdvancedSettingsDialogFragment.newInstance(model, chatId)
+            advancedSettingsDialogFragment.setStateChangedListener(modelChangedListener)
+            advancedSettingsDialogFragment.show(supportFragmentManager.beginTransaction(), "AdvancedSettingsDialog")
+        }
+
+        assistantLanguage?.setOnClickListener {
+            val languageSelectorDialogFragment: LanguageSelectorDialogFragment = LanguageSelectorDialogFragment.newInstance(language, chatId)
+            languageSelectorDialogFragment.setStateChangedListener(languageChangedListener)
+            languageSelectorDialogFragment.show(supportFragmentManager.beginTransaction(), "LanguageSelectorDialog")
         }
 
         btnPrompt?.setOnClickListener {
-            val promptDialog: ActivationPromptDialog = ActivationPromptDialog.newInstance(activationPrompt)
+            val promptDialog: ActivationPromptDialogFragment = ActivationPromptDialogFragment.newInstance(activationPrompt)
             promptDialog.setStateChangedListener(promptChangedListener)
             promptDialog.show(supportFragmentManager.beginTransaction(), "PromptDialog")
         }
@@ -276,8 +311,14 @@ class SettingsActivity : FragmentActivity() {
         audioGoogle?.setOnClickListener { preferences?.setAudioModel("google") }
         audioWhisper?.setOnClickListener { preferences?.setAudioModel("whisper") }
 
-        gpt30?.setOnClickListener { preferences?.setModel("gpt-3.5-turbo") }
-        gpt40?.setOnClickListener { preferences?.setModel("gpt-4") }
+        gpt30?.setOnClickListener {
+            model = "gpt-3.5-turbo"
+            preferences?.setModel(model)
+        }
+        gpt40?.setOnClickListener {
+            model = "gpt-4"
+            preferences?.setModel(model)
+        }
 
         if (preferences?.getAudioModel().toString() == "google") audioGoogle?.isChecked = true
         else audioWhisper?.isChecked = true
@@ -338,8 +379,7 @@ class SettingsActivity : FragmentActivity() {
     }
 
     private fun loadModel() {
-        model = preferences?.getModel().toString() // Possible kotlin bug
-        modelDesc?.text = model
+        model = preferences?.getModel().toString()
 
         gpt30?.isChecked = model == "gpt-3.5-turbo"
         gpt40?.isChecked = model == "gpt-4"
@@ -352,6 +392,10 @@ class SettingsActivity : FragmentActivity() {
             "1024x1024" -> r1024?.isChecked = true
             else -> r512?.isChecked = true
         }
+    }
+
+    private fun loadLanguage() {
+        language = preferences?.getLanguage().toString()
     }
 
     private fun saveResolution(resolution: String) {

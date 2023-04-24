@@ -233,6 +233,24 @@ class Preferences private constructor(private var preferences: SharedPreferences
     }
 
     /**
+     * Retrieves the language from the shared preferences.
+     *
+     * @return The language value or an english if not found.
+     */
+    fun getLanguage() : String {
+        return getString("lang", "en")
+    }
+
+    /**
+     * Sets the language in the shared preferences.
+     *
+     * @param lang The language value to be stored.
+     */
+    fun setLanguage(lang: String) {
+        putString("lang", lang)
+    }
+
+    /**
      * Retrieves the layout mode from the shared preferences.
      *
      * @return The layout mode or "classic" if not found.

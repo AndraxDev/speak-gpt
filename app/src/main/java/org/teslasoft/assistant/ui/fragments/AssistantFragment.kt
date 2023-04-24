@@ -71,7 +71,9 @@ import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.AssistantAdapter
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
 import org.teslasoft.assistant.ui.SettingsActivity
-import org.teslasoft.assistant.ui.MicrophonePermissionScreen
+import org.teslasoft.assistant.ui.permission.MicrophonePermissionActivity
+import org.teslasoft.assistant.ui.fragments.dialogs.AddChatDialogFragment
+import org.teslasoft.assistant.util.LocaleParser
 import java.io.IOException
 import java.net.URL
 import java.util.Base64
@@ -206,13 +208,13 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private val ttsListener: TextToSpeech.OnInitListener =
         TextToSpeech.OnInitListener { status ->
             if (status == TextToSpeech.SUCCESS) {
-                val result = tts!!.setLanguage(Locale.US)
+                val result = tts!!.setLanguage(LocaleParser.parse(Preferences.getPreferences(requireActivity(), "").getLanguage()))
 
                 isTTSInitialized = !(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED)
 
                 val voices: Set<Voice> = tts!!.voices
                 for (v: Voice in voices) {
-                    if (v.name.equals("en-us-x-iom-local")) {
+                    if (v.name.equals("en-us-x-iom-local") && Preferences.getPreferences(requireActivity(), "").getLanguage() == "en") {
                         tts!!.voice = v
                     }
                 }
@@ -460,7 +462,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 permissionResultLauncherV2.launch(
                     Intent(
                         requireActivity(),
-                        MicrophonePermissionScreen::class.java
+                        MicrophonePermissionActivity::class.java
                     )
                 )
             }
@@ -485,7 +487,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 permissionResultLauncher.launch(
                     Intent(
                         requireActivity(),
-                        MicrophonePermissionScreen::class.java
+                        MicrophonePermissionActivity::class.java
                     )
                 )
             }
@@ -652,7 +654,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private fun startRecognition() {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, LocaleParser.parse(Preferences.getPreferences(requireActivity(), "").getLanguage()))
         intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
 
         recognizer?.startListening(intent)
@@ -850,7 +852,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         btnAssistantVoice = view.findViewById(R.id.btn_assistant_voice)
         btnAssistantSettings = view.findViewById(R.id.btn_assistant_settings)
         btnAssistantShowKeyboard = view.findViewById(R.id.btn_assistant_show_keyboard)
-        btnAssistantHideKeyboard = view.findViewById(R.id.btn_assistent_hide_keyboard)
+        btnAssistantHideKeyboard = view.findViewById(R.id.btn_assistant_hide_keyboard)
         btnAssistantSend = view.findViewById(R.id.btn_assistant_send)
         btnSaveToChat = view.findViewById(R.id.btn_save)
         assistantMessage = view.findViewById(R.id.assistant_message)

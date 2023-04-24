@@ -27,6 +27,7 @@
         android:clickable="true"
         android:src="@drawable/ic_download"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@string/btn_export_image" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

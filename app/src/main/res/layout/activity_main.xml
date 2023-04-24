@@ -17,7 +17,7 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment_tips_"
-            android:name="org.teslasoft.assistant.ui.fragments.TipsFragment"
+            android:name="org.teslasoft.assistant.ui.fragments.tabs.TipsFragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -40,7 +40,7 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment_prompts_"
-            android:name="org.teslasoft.assistant.ui.fragments.PromptsFragment"
+            android:name="org.teslasoft.assistant.ui.fragments.tabs.PromptsFragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -62,7 +62,7 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment_chats_"
-            android:name="org.teslasoft.assistant.ui.fragments.ChatsListFragment"
+            android:name="org.teslasoft.assistant.ui.fragments.tabs.ChatsListFragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"

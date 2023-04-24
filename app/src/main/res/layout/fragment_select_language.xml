@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/dialog_l_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/title_select_language"
+        android:textColor="@color/text_title"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dialog_l_title">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:paddingBottom="80dp">
+
+                <RadioButton
+                    android:id="@+id/lngEn"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text=" English"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/lngFr"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text=" French (Français)"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/lngDe"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text=" German (Deutsch)"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/lngIt"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text=" Italian (Italiano)"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/lngJp"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text=" Japanese (日本)"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/lngKp"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text=" Korean (한국인)"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/lngCnS"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text=" Chinese (Simplified) (中文(简体))"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/lngCnT"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=" Chinese (Traditional) (中文(繁体))"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/lngEs"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text=" Spanish (Español)"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/lngUk"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text=" Ukrainian (Українська)"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/lngRu"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text=" Russian (Русский)"
+                    android:textSize="16sp" />
+
+            </RadioGroup>
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

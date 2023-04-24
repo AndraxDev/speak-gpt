@@ -13,6 +13,6 @@
         <item name="android:windowSplashScreenBackground">@color/window_background</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
         <item name="android:windowSplashScreenAnimationDuration">1200</item>
-        <item name="android:windowSplashScreenIconBackgroundColor">@color/icon_100</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/accent_100</item>
     </style>
 </resources>

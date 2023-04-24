@@ -124,14 +124,14 @@
         </activity>
 
         <activity
-            android:name=".ui.DebugActivity"
+            android:name=".ui.debug.DebugActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
             android:launchMode="singleTask">
         </activity>
 
         <activity
-            android:name=".ui.MicrophonePermissionScreen"
+            android:name=".ui.permission.MicrophonePermissionActivity"
             android:exported="false"
             android:theme="@style/Theme.Transparent"
             android:launchMode="singleTask">
