@@ -19,13 +19,18 @@ package org.teslasoft.assistant.ui.adapters
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
+import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.ui.PromptViewActivity
 import org.teslasoft.assistant.R
 
@@ -62,6 +67,9 @@ class PromptAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragment
         val likesCounter: TextView = mView.findViewById(R.id.likes_count)
         val textFor: TextView = mView.findViewById(R.id.text_for)
 
+        background.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_selector)!!, mContext.requireActivity())
+
         promptName.text = dataArray?.get(position)?.get("name")
         promptDescription.text = dataArray?.get(position)?.get("desc")
         promptAuthor.text = "By " + dataArray?.get(position)?.get("author")
@@ -78,4 +86,12 @@ class PromptAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragment
         return mView
     }
 
+    private fun getDarkAccentDrawable(drawable: Drawable, context: Context) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getSurfaceColor(context))
+        return drawable
+    }
+
+    private fun getSurfaceColor(context: Context) : Int {
+        return SurfaceColors.SURFACE_2.getColor(context)
+    }
 }

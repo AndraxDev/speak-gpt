@@ -5,6 +5,7 @@
     <color name="accent_250">#424250</color>
     <color name="accent_500">#a895e9</color>
     <color name="accent_900">#c3b4ff</color>
+    <color name="neutral_200">#ddd9e6</color>
     <color name="icon_50">@color/purple_50</color>
     <color name="icon_100">@color/purple_100</color>
     <color name="icon_150">@color/purple_150</color>

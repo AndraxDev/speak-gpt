@@ -98,7 +98,7 @@ class SettingsActivity : FragmentActivity() {
             if (name == "") Toast.makeText(this@SettingsActivity, "Error, no model name is provided", Toast.LENGTH_SHORT).show()
             else if (name.contains("gpt-4")) Toast.makeText(this@SettingsActivity, "Error, GPT4 support maximum of 8192 tokens", Toast.LENGTH_SHORT).show()
             else Toast.makeText(this@SettingsActivity, "Error, more than 2048 tokens is not supported", Toast.LENGTH_SHORT).show()
-            val advancedSettingsDialogFragment: AdvancedSettingsDialogFragment = AdvancedSettingsDialogFragment.newInstance(model, chatId)
+            val advancedSettingsDialogFragment: AdvancedSettingsDialogFragment = AdvancedSettingsDialogFragment.newInstance(name, chatId)
             advancedSettingsDialogFragment.setStateChangedListener(this)
             advancedSettingsDialogFragment.show(supportFragmentManager.beginTransaction(), "ModelDialog")
         }
@@ -329,8 +329,8 @@ class SettingsActivity : FragmentActivity() {
         return drawable
     }
 
-    private fun getDarkAccentDrawableV2(drawable: Drawable, context: Context) : Drawable {
-        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getSurfaceColorV2(context))
+    private fun getDarkAccentDrawableV2(drawable: Drawable) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getSurfaceColorV2())
         return drawable
     }
 
@@ -338,8 +338,8 @@ class SettingsActivity : FragmentActivity() {
         return SurfaceColors.SURFACE_2.getColor(context)
     }
 
-    private fun getSurfaceColorV2(context: Context) : Int {
-        return SurfaceColors.SURFACE_5.getColor(context)
+    private fun getSurfaceColorV2() : Int {
+        return getColor(R.color.accent_250)
     }
 
     private fun switchUIToClassic() {
@@ -350,7 +350,7 @@ class SettingsActivity : FragmentActivity() {
             ContextCompat.getDrawable(this, R.drawable.btn_accent_tonal_selector_v3)!!, this)
 
         btnClassicView?.background = getDarkAccentDrawableV2(
-            ContextCompat.getDrawable(this, R.drawable.btn_accent_tonal_selector_v2)!!, this)
+            ContextCompat.getDrawable(this, R.drawable.btn_accent_tonal_selector_v2)!!)
     }
 
     private fun switchUIToBubbles() {
@@ -358,7 +358,7 @@ class SettingsActivity : FragmentActivity() {
         btnClassicView?.setBackgroundResource(R.drawable.btn_accent_tonal_selector_v3)
 
         btnBubblesView?.background = getDarkAccentDrawableV2(
-            ContextCompat.getDrawable(this, R.drawable.btn_accent_tonal_selector_v2)!!, this)
+            ContextCompat.getDrawable(this, R.drawable.btn_accent_tonal_selector_v2)!!)
 
         btnClassicView?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(this, R.drawable.btn_accent_tonal_selector_v3)!!, this)

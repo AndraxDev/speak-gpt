@@ -16,6 +16,8 @@
 
 package org.teslasoft.assistant.ui.fragments.tabs
 
+import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -28,6 +30,9 @@ import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.button.MaterialButton
@@ -113,7 +118,6 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 refreshLayout?.visibility = View.VISIBLE
                 noInternetLayout?.visibility = View.GONE
                 progressbar?.visibility = View.GONE
-
             } catch (e: Exception) {
                 MaterialAlertDialogBuilder(requireActivity(), R.style.App_MaterialAlertDialog)
                     .setTitle("Error")
@@ -156,6 +160,8 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         noInternetLayout = view.findViewById(R.id.no_internet)
         progressbar = view.findViewById(R.id.progress_bar)
 
+
+
         refreshLayout?.visibility = View.GONE
         noInternetLayout?.visibility = View.GONE
         progressbar?.visibility = View.VISIBLE
@@ -168,6 +174,10 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         refreshLayout?.setProgressBackgroundColorSchemeColor(
             SurfaceColors.SURFACE_2.getColor(requireActivity())
         )
+
+        view.findViewById<ConstraintLayout>(R.id.search_bar).background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector)!!, requireActivity())
+
         refreshLayout?.setSize(SwipeRefreshLayout.LARGE)
 
         refreshLayout?.setOnRefreshListener(this)
@@ -207,6 +217,15 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }
 
         loadData()
+    }
+
+    private fun getDarkAccentDrawable(drawable: Drawable, context: Context) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getSurfaceColor(context))
+        return drawable
+    }
+
+    private fun getSurfaceColor(context: Context) : Int {
+        return SurfaceColors.SURFACE_2.getColor(context)
     }
 
     private fun loadData() {

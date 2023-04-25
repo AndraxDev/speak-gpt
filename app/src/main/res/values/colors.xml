@@ -21,6 +21,7 @@
     <color name="accent_250">#bab8ff</color>
     <color name="accent_500">#7462ab</color>
     <color name="accent_900">#453374</color>
+    <color name="neutral_200">#26242b</color>
     <color name="fab">@color/accent_100</color>
     <color name="icon_background">@color/accent_100</color>
     <color name="icon_foreground">@color/accent_900</color>

@@ -2,9 +2,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <color name="accent_100">@android:color/system_neutral2_100</color>
     <color name="accent_200">@android:color/system_neutral2_200</color>
-    <color name="accent_250">@android:color/system_accent2_200</color>
+    <color name="accent_250">@android:color/system_accent2_100</color>
     <color name="accent_500">@android:color/system_accent1_800</color>
     <color name="accent_900">@android:color/system_accent1_600</color>
+    <color name="neutral_200">@android:color/system_neutral2_800</color>
     <color name="icon_50">@android:color/system_accent1_50</color>
     <color name="icon_100">@android:color/system_accent1_100</color>
     <color name="icon_150">@android:color/system_accent1_200</color>

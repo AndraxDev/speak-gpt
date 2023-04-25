@@ -1,8 +1,6 @@
 
 Z
 *app/src/main/res/drawable/chatgpt_icon.xml,c\2\c2b15bba76ee70f9bcf2ce52cab6de288d83c8e6
-P
- app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
 H
 app/cpp/libgpt-llama.cpp,6\f\6fb089e5a1fe8b9ae152f569e10f43f16db82c86
 F
@@ -19,8 +17,6 @@ Z
 *app/src/main/res/layout/view_chat_name.xml,e\d\ed49d90c7dd04a22267c71d919c62b26cd27cf5a
 x
 Happ/src/main/java/org/teslasoft/assistant/preferences/ChatPreferences.kt,3\a\3a81525fa1c7a53fa085aa85ab40d571ff3ae4ef
-v
-Fapp/src/main/java/org/teslasoft/assistant/ui/adapters/PromptAdapter.kt,e\f\efb601a18b2cb5af4f3dc67cf9989b922ac06dfb
 {
 Kapp/src/main/java/org/teslasoft/assistant/ui/assistant/AssistantActivity.kt,a\d\ad53fe47e97773313cc1cb9fbcd8c5344cfbc4b1
 }
@@ -59,21 +55,25 @@ Zapp/src/main/java/org/teslasoft/assistant/ui/fragments/dialogs/PostPromptDialog
 `app/src/main/java/org/teslasoft/assistant/ui/fragments/dialogs/ActivationPromptDialogFragment.kt,0\7\074036e306b2ebe273ff1c843895f35e4015683a
 ‡
 Wapp/src/main/java/org/teslasoft/assistant/ui/permission/MicrophonePermissionActivity.kt,0\9\09080366d4de4278b5fe03450e7a5ee3a19950bf
-
-`app/src/main/java/org/teslasoft/assistant/ui/fragments/dialogs/AdvancedSettingsDialogFragment.kt,7\4\74be9e3170cf2f4442fc75480250b5699afcabde
 t
 Dapp/src/main/java/org/teslasoft/assistant/ui/adapters/ChatAdapter.kt,2\3\237b54ca9127ddddc4e21a9985cafcb50d4fbe9b
 y
 Iapp/src/main/java/org/teslasoft/assistant/ui/adapters/AssistantAdapter.kt,8\9\89ed0fb3f47a86959f040f7e2ee00d16b7ed848e
 t
 Dapp/src/main/java/org/teslasoft/assistant/preferences/Preferences.kt,8\b\8bed103e96bb9c21d026c3d93a7e912de9343153
-p
-@app/src/main/java/org/teslasoft/assistant/ui/SettingsActivity.kt,3\d\3db51e5c5980efd2285e6ab90d2d65d534a13af6
-
-`app/src/main/java/org/teslasoft/assistant/ui/fragments/dialogs/LanguageSelectorDialogFragment.kt,8\4\84bdf176010441de0b4feb372568f02868e4ed47
 n
 >app/src/main/java/org/teslasoft/assistant/util/LocaleParser.kt,0\7\0760db8b7c83aa949181c3d9730cbeff24efff7d
 s
 Capp/src/main/java/org/teslasoft/assistant/ui/debug/DebugActivity.kt,3\c\3ce4b02bdc3432dd08c7ab36b0b6b458df397c38
 l
 <app/src/main/java/org/teslasoft/assistant/ui/ChatActivity.kt,d\e\de19a4918fe4ad54b9e9e9d9167eb561adf34416
+{
+Kapp/src/main/java/org/teslasoft/assistant/ui/fragments/AssistantFragment.kt,1\b\1bf0f2f5bde3306e8f3d62b076422477d99223a2
+‡
+Wapp/src/main/java/org/teslasoft/assistant/ui/fragments/dialogs/AddChatDialogFragment.kt,f\6\f6223e6223412d2726e6db7c60d1eb377640a54c
+~
+Napp/src/main/java/org/teslasoft/assistant/ui/fragments/tabs/PromptsFragment.kt,c\f\cfc5b7f682aa8a8b8b1c2885cbf0dca092cc4dd2
+v
+Fapp/src/main/java/org/teslasoft/assistant/ui/adapters/PromptAdapter.kt,e\f\efb601a18b2cb5af4f3dc67cf9989b922ac06dfb
+P
+ app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e

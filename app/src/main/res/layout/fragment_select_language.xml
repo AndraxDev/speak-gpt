@@ -9,12 +9,11 @@
         android:id="@+id/dialog_l_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:text="@string/title_select_language"
         android:textColor="@color/text_title"
         android:textSize="24sp"
-        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,82 +35,115 @@
                 android:layout_height="match_parent"
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp"
-                android:paddingBottom="80dp">
+                android:paddingBottom="84dp">
 
                 <RadioButton
+                    android:button="@null"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="8dp"
                     android:id="@+id/lngEn"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="56dp"
                     android:text=" English"
                     android:textSize="16sp" />
 
                 <RadioButton
+                    android:button="@null"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="8dp"
                     android:id="@+id/lngFr"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="56dp"
                     android:text=" French (Français)"
                     android:textSize="16sp" />
 
                 <RadioButton
+                    android:button="@null"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="8dp"
                     android:id="@+id/lngDe"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="56dp"
                     android:text=" German (Deutsch)"
                     android:textSize="16sp" />
 
                 <RadioButton
+                    android:button="@null"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="8dp"
                     android:id="@+id/lngIt"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="56dp"
                     android:text=" Italian (Italiano)"
                     android:textSize="16sp" />
 
                 <RadioButton
+                    android:button="@null"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="8dp"
                     android:id="@+id/lngJp"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="56dp"
                     android:text=" Japanese (日本)"
                     android:textSize="16sp" />
 
                 <RadioButton
+                    android:button="@null"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="8dp"
                     android:id="@+id/lngKp"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="56dp"
                     android:text=" Korean (한국인)"
                     android:textSize="16sp" />
 
                 <RadioButton
+                    android:button="@null"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="8dp"
                     android:id="@+id/lngCnS"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="56dp"
                     android:text=" Chinese (Simplified) (中文(简体))"
                     android:textSize="16sp" />
 
                 <RadioButton
+                    android:button="@null"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
                     android:id="@+id/lngCnT"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="56dp"
                     android:text=" Chinese (Traditional) (中文(繁体))"
                     android:textSize="16sp" />
 
                 <RadioButton
+                    android:button="@null"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="8dp"
                     android:id="@+id/lngEs"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="56dp"
                     android:text=" Spanish (Español)"
                     android:textSize="16sp" />
 
                 <RadioButton
+                    android:button="@null"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="8dp"
                     android:id="@+id/lngUk"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="56dp"
                     android:text=" Ukrainian (Українська)"
                     android:textSize="16sp" />
 
                 <RadioButton
+                    android:button="@null"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="8dp"
                     android:id="@+id/lngRu"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="56dp"
                     android:text=" Russian (Русский)"
                     android:textSize="16sp" />
 

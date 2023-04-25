@@ -14,10 +14,10 @@
         android:clickable="true"
         android:text="@string/btn_new_chat"
         android:textColor="@color/window_background"
+        app:backgroundTint="@color/accent_900"
         app:elevation="6dp"
-        app:backgroundTint="@color/accent_500"
-        app:iconTint="@color/window_background"
         app:icon="@drawable/ic_add"
+        app:iconTint="@color/window_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_add" />

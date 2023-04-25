@@ -18,6 +18,7 @@ package org.teslasoft.assistant.ui.fragments.dialogs
 
 import android.app.Dialog
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -27,8 +28,12 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.RadioButton
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 
@@ -115,22 +120,134 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
         endSeparator?.setText(Preferences.getPreferences(requireActivity(), arguments?.getString("chatId")!!).getEndSeparator())
         prefix?.setText(Preferences.getPreferences(requireActivity(), arguments?.getString("chatId")!!).getPrefix())
 
-        gpt_35_turbo?.setOnClickListener { model = "gpt-3.5-turbo" }
-        gpt_35_turbo_0301?.setOnClickListener { model = "gpt-3.5-turbo-0301" }
-        gpt_4?.setOnClickListener { model = "gpt-4" }
-        gpt_4_0314?.setOnClickListener { model = "gpt-4-0314" }
-        gpt_4_32k?.setOnClickListener { model = "gpt-4-32k" }
-        gpt_4_32k_0314?.setOnClickListener { model = "gpt-4-32k-0314" }
-        text_davinci_003?.setOnClickListener { model = "text-davinci-003" }
-        text_davinci_002?.setOnClickListener { model = "text-davinci-002" }
-        text_curie_001?.setOnClickListener { model = "text-curie-001" }
-        text_babbage_001?.setOnClickListener { model = "text-babbage-001" }
-        text_ada_001?.setOnClickListener { model = "text-ada-001" }
-        davinci?.setOnClickListener { model = "davinci" }
-        curie?.setOnClickListener { model = "curie" }
-        babbage?.setOnClickListener { model = "babbage" }
-        ada?.setOnClickListener { model = "ada" }
-        ft?.setOnClickListener { model = ftInput?.text.toString() }
+        gpt_35_turbo?.setOnClickListener {
+            model = "gpt-3.5-turbo"
+            clearSelection()
+            gpt_35_turbo?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+            gpt_35_turbo?.background = getDarkAccentDrawableV2(
+                ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+            ftInput?.visibility = View.GONE
+        }
+        gpt_35_turbo_0301?.setOnClickListener {
+            model = "gpt-3.5-turbo-0301"
+            clearSelection()
+            gpt_35_turbo_0301?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+            gpt_35_turbo_0301?.background = getDarkAccentDrawableV2(
+                ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+            ftInput?.visibility = View.GONE
+        }
+        gpt_4?.setOnClickListener {
+            model = "gpt-4"
+            clearSelection()
+            gpt_4?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+            gpt_4?.background = getDarkAccentDrawableV2(
+                ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+            ftInput?.visibility = View.GONE
+        }
+        gpt_4_0314?.setOnClickListener {
+            model = "gpt-4-0314"
+            clearSelection()
+            gpt_4_0314?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+            gpt_4_0314?.background = getDarkAccentDrawableV2(
+                ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+            ftInput?.visibility = View.GONE
+        }
+        gpt_4_32k?.setOnClickListener {
+            model = "gpt-4-32k"
+            clearSelection()
+            gpt_4_32k?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+            gpt_4_32k?.background = getDarkAccentDrawableV2(
+                ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+            ftInput?.visibility = View.GONE
+        }
+        gpt_4_32k_0314?.setOnClickListener {
+            model = "gpt-4-32k-0314"
+            clearSelection()
+            gpt_4_32k_0314?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+            gpt_4_32k_0314?.background = getDarkAccentDrawableV2(
+                ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+            ftInput?.visibility = View.GONE
+        }
+        text_davinci_003?.setOnClickListener {
+            model = "text-davinci-003"
+            clearSelection()
+            text_davinci_003?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+            text_davinci_003?.background = getDarkAccentDrawableV2(
+                ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+            ftInput?.visibility = View.GONE
+        }
+        text_davinci_002?.setOnClickListener {
+            model = "text-davinci-002"
+            clearSelection()
+            text_davinci_002?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+            text_davinci_002?.background = getDarkAccentDrawableV2(
+                ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+            ftInput?.visibility = View.GONE
+        }
+        text_curie_001?.setOnClickListener {
+            model = "text-curie-001"
+            clearSelection()
+            text_curie_001?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+            text_curie_001?.background = getDarkAccentDrawableV2(
+                ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+            ftInput?.visibility = View.GONE
+        }
+        text_babbage_001?.setOnClickListener {
+            model = "text-babbage-001"
+            clearSelection()
+            text_babbage_001?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+            text_babbage_001?.background = getDarkAccentDrawableV2(
+                ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+            ftInput?.visibility = View.GONE
+        }
+        text_ada_001?.setOnClickListener {
+            model = "text-ada-001"
+            clearSelection()
+            text_ada_001?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+            text_ada_001?.background = getDarkAccentDrawableV2(
+                ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+            ftInput?.visibility = View.GONE
+        }
+        davinci?.setOnClickListener {
+            model = "davinci"
+            clearSelection()
+            davinci?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+            davinci?.background = getDarkAccentDrawableV2(
+                ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+            ftInput?.visibility = View.GONE
+        }
+        curie?.setOnClickListener {
+            model = "curie"
+            clearSelection()
+            curie?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+            curie?.background = getDarkAccentDrawableV2(
+                ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+            ftInput?.visibility = View.GONE
+        }
+        babbage?.setOnClickListener {
+            model = "babbage"
+            clearSelection()
+            babbage?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+            babbage?.background = getDarkAccentDrawableV2(
+                ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+            ftInput?.visibility = View.GONE
+        }
+        ada?.setOnClickListener {
+            model = "ada"
+            clearSelection()
+            ada?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+            ada?.background = getDarkAccentDrawableV2(
+                ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+            ftInput?.visibility = View.GONE
+        }
+        ft?.setOnClickListener {
+            model = ftInput?.text.toString()
+            clearSelection()
+            ft?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+            ft?.background = getDarkAccentDrawableV2(
+                ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+            ftInput?.visibility = View.VISIBLE
+        }
 
         ftInput?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -154,28 +271,226 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
         model = requireArguments().getString("name").toString()
 
         when (requireArguments().getString("name")) { // load default model if settings not found
-            "gpt-3.5-turbo" -> gpt_35_turbo?.isChecked = true
-            "gpt-3.5-turbo-0301" -> gpt_35_turbo_0301?.isChecked = true
-            "gpt-4" -> gpt_4?.isChecked = true
-            "gpt-4-0314" -> gpt_4_0314?.isChecked = true
-            "gpt-4-32k" -> gpt_4_32k?.isChecked = true
-            "gpt-4-32k-0314" -> gpt_4_32k_0314?.isChecked = true
-            "text-davinci-003" -> text_davinci_003?.isChecked = true
-            "text-davinci-002" -> text_davinci_002?.isChecked = true
-            "text-curie-001" -> text_curie_001?.isChecked = true
-            "text-babbage-001" -> text_babbage_001?.isChecked = true
-            "text-ada-001" -> text_ada_001?.isChecked = true
-            "davinci" -> davinci?.isChecked = true
-            "curie" -> curie?.isChecked = true
-            "babbage" -> babbage?.isChecked = true
-            "ada" -> ada?.isChecked = true
+            "gpt-3.5-turbo" -> {
+                gpt_35_turbo?.isChecked = true
+                clearSelection()
+                gpt_35_turbo?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+                gpt_35_turbo?.background = getDarkAccentDrawableV2(
+                    ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+                ftInput?.visibility = View.GONE
+            }
+            /* DEPRECATED */
+            /*"gpt-3.5-turbo-0301" -> {
+                gpt_35_turbo_0301?.isChecked = true
+                clearSelection()
+                gpt_35_turbo_0301?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+                gpt_35_turbo_0301?.background = getDarkAccentDrawableV2(
+                    ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+                ftInput?.visibility = View.GONE
+            }*/
+            "gpt-4" -> {
+                gpt_4?.isChecked = true
+                clearSelection()
+                gpt_4?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+                gpt_4?.background = getDarkAccentDrawableV2(
+                    ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+                ftInput?.visibility = View.GONE
+            }
+            /* DEPRECATED */
+            /*"gpt-4-0314" -> {
+                gpt_4_0314?.isChecked = true
+                clearSelection()
+                gpt_4_0314?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+                gpt_4_0314?.background = getDarkAccentDrawableV2(
+                    ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+                ftInput?.visibility = View.GONE
+            }*/
+            "gpt-4-32k" -> {
+                gpt_4_32k?.isChecked = true
+                clearSelection()
+                gpt_4_32k?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+                gpt_4_32k?.background = getDarkAccentDrawableV2(
+                    ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+                ftInput?.visibility = View.GONE
+            }
+            /* DEPRECATED */
+            /*"gpt-4-32k-0314" -> {
+                gpt_4_32k_0314?.isChecked = true
+                clearSelection()
+                gpt_4_32k_0314?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+                gpt_4_32k_0314?.background = getDarkAccentDrawableV2(
+                    ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+                ftInput?.visibility = View.GONE
+            }*/
+            "text-davinci-003" -> {
+                text_davinci_003?.isChecked = true
+                clearSelection()
+                text_davinci_003?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+                text_davinci_003?.background = getDarkAccentDrawableV2(
+                    ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+                ftInput?.visibility = View.GONE
+            }
+            "text-davinci-002" -> {
+                text_davinci_002?.isChecked = true
+                clearSelection()
+                text_davinci_002?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+                text_davinci_002?.background = getDarkAccentDrawableV2(
+                    ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+                ftInput?.visibility = View.GONE
+            }
+            "text-curie-001" -> {
+                text_curie_001?.isChecked = true
+                clearSelection()
+                text_curie_001?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+                text_curie_001?.background = getDarkAccentDrawableV2(
+                    ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+                ftInput?.visibility = View.GONE
+            }
+            "text-babbage-001" -> {
+                text_babbage_001?.isChecked = true
+                clearSelection()
+                text_babbage_001?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+                text_babbage_001?.background = getDarkAccentDrawableV2(
+                    ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+                ftInput?.visibility = View.GONE
+            }
+            "text-ada-001" -> {
+                text_ada_001?.isChecked = true
+                clearSelection()
+                text_ada_001?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+                text_ada_001?.background = getDarkAccentDrawableV2(
+                    ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+                ftInput?.visibility = View.GONE
+            }
+            /* DEPRECATED */
+            /*"davinci" -> {
+                davinci?.isChecked = true
+                clearSelection()
+                davinci?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+                davinci?.background = getDarkAccentDrawableV2(
+                    ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+                ftInput?.visibility = View.GONE
+            }
+            "curie" -> {
+                curie?.isChecked = true
+                clearSelection()
+                curie?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+                curie?.background = getDarkAccentDrawableV2(
+                    ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+                ftInput?.visibility = View.GONE
+            }
+            "babbage" -> {
+                babbage?.isChecked = true
+                clearSelection()
+                babbage?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+                babbage?.background = getDarkAccentDrawableV2(
+                    ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+                ftInput?.visibility = View.GONE
+            }
+            "ada" -> {
+                ada?.isChecked = true
+                clearSelection()
+                ada?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+                ada?.background = getDarkAccentDrawableV2(
+                    ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+                ftInput?.visibility = View.GONE
+            }*/
             else -> {
                 ft?.isChecked = true
                 ftInput?.setText(requireArguments().getString("name"))
+                clearSelection()
+                ft?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+                ft?.background = getDarkAccentDrawableV2(
+                    ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+                ftInput?.visibility = View.VISIBLE
             }
         }
 
         return builder!!.create()
+    }
+
+    private fun clearSelection() {
+        gpt_35_turbo?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
+        gpt_35_turbo?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
+
+        gpt_35_turbo_0301?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
+        gpt_35_turbo_0301?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
+
+        gpt_4?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
+        gpt_4?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
+
+        gpt_4_0314?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
+        gpt_4_0314?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
+
+        gpt_4_32k?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
+        gpt_4_32k?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
+
+        gpt_4_32k_0314?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
+        gpt_4_32k_0314?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
+
+        text_davinci_003?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
+        text_davinci_003?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
+
+        text_davinci_002?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
+        text_davinci_002?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
+
+        text_curie_001?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
+        text_curie_001?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
+
+        text_babbage_001?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
+        text_babbage_001?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
+
+        text_ada_001?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
+        text_ada_001?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
+
+        davinci?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
+        davinci?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
+
+        curie?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
+        curie?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
+
+        babbage?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
+        babbage?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
+
+        ada?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
+        ada?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
+
+        ft?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
+        ft?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
+    }
+
+    private fun getDarkAccentDrawable(drawable: Drawable, context: Context) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getSurfaceColor(context))
+        return drawable
+    }
+
+    private fun getDarkAccentDrawableV2(drawable: Drawable) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getSurfaceColorV2())
+        return drawable
+    }
+
+    private fun getSurfaceColor(context: Context) : Int {
+        return SurfaceColors.SURFACE_3.getColor(context)
+    }
+
+    private fun getSurfaceColorV2() : Int {
+        return requireActivity().getColor(R.color.accent_900)
     }
 
     private fun validateForm() {
