@@ -59,6 +59,8 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import com.google.gson.Gson
+import com.google.mlkit.nl.languageid.LanguageIdentification
+import com.google.mlkit.nl.languageid.LanguageIdentifier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -105,7 +107,10 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private var keyboardMode = false
     private var isTTSInitialized = false
     private var silenceMode = false
+    private var autoLangDetect = false
     private var chatID = ""
+    private lateinit var languageIdentifier: LanguageIdentifier
+
 
     // init AI
     private var ai: OpenAI? = null
@@ -296,6 +301,8 @@ class AssistantFragment : BottomSheetDialogFragment() {
             requireActivity().finishAndRemoveTask()
         } else {
             silenceMode = Preferences.getPreferences(requireActivity(), "").getSilence()
+            autoLangDetect = Preferences.getPreferences(requireActivity(), "").getAutoLangDetect()
+            languageIdentifier = LanguageIdentification.getClient()
 
             messages = ArrayList()
 
@@ -723,6 +730,35 @@ class AssistantFragment : BottomSheetDialogFragment() {
                             adapter?.notifyDataSetChanged()
                         }
                     }
+                }
+
+                if (autoLangDetect) {
+                    languageIdentifier.identifyLanguage(response)
+                        .addOnSuccessListener { languageCode ->
+                            if (languageCode == "und") {
+                                Log.i("MLKit", "Can't identify language.")
+                            } else {
+                                Log.i("MLKit", "Language: $languageCode")
+                                var ttsLangResult = tts!!.setLanguage(
+                                    Locale.forLanguageTag(
+                                        languageCode
+                                    )
+                                )
+
+                                Log.i("MLKit", "Language: $languageCode")
+                                if (ttsLangResult == TextToSpeech.LANG_MISSING_DATA || ttsLangResult == TextToSpeech.LANG_NOT_SUPPORTED) {
+                                    Log.e("TTS", "The Language is not supported!")
+                                } else {
+                                    Log.i("TTS", "Language Supported.")
+                                    if (!silenceMode) {
+                                        tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
+                                    }
+                                }
+                            }
+                        }.addOnFailureListener {
+                            // Model couldn’t be loaded or other internal error.
+                            // ...
+                        }
                 }
             }
 
