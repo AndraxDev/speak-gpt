@@ -50,6 +50,7 @@ class SettingsActivity : FragmentActivity() {
     private var btnChangeAccount: LinearLayout? = null
     private var btnSetAssistant: LinearLayout? = null
     private var silenceSwitch: MaterialSwitch? = null
+    private var autoLangDetectSwitch: MaterialSwitch? = null
     private var btnClearChat: MaterialButton? = null
     private var btnDebugMenu: MaterialButton? = null
     private var dalleResolutions: MaterialButtonToggleGroup? = null
@@ -148,6 +149,7 @@ class SettingsActivity : FragmentActivity() {
         btnChangeAccount = findViewById(R.id.btn_manage_account)
         btnSetAssistant = findViewById(R.id.btn_manage_assistant)
         silenceSwitch = findViewById(R.id.silent_switch)
+        autoLangDetectSwitch = findViewById(R.id.autoLangDetect_switch)
         btnClearChat = findViewById(R.id.btn_clear_chat)
         btnDebugMenu = findViewById(R.id.btn_debug_menu)
         btnModel = findViewById(R.id.btn_model)
@@ -229,6 +231,7 @@ class SettingsActivity : FragmentActivity() {
         }
 
         silenceSwitch?.isChecked = preferences?.getSilence() == true
+        autoLangDetectSwitch?.isChecked = preferences?.getAutoLangDetect() == true
 
         loadResolution()
         loadModel()
@@ -303,6 +306,7 @@ class SettingsActivity : FragmentActivity() {
         btnDebugMenu?.setOnClickListener { startActivity(Intent(this, DebugActivity::class.java)) }
 
         silenceSwitch?.setOnCheckedChangeListener { _, isChecked -> preferences?.setSilence(isChecked) }
+        autoLangDetectSwitch?.setOnCheckedChangeListener { _, isChecked -> preferences?.setAutoLangDetect(isChecked) }
 
         r256?.setOnClickListener { saveResolution("256x256") }
         r512?.setOnClickListener { saveResolution("512x512") }

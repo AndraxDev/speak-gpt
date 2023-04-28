@@ -152,12 +152,30 @@ class Preferences private constructor(private var preferences: SharedPreferences
     }
 
     /**
-     * Sets the silence mode status in the shared preferences.
+     * Retrieves the auto language detection status from the shared preferences.
      *
-     * @param mode The silence mode status to be stored (true for enabled, false otherwise).
+     * @return true if auto language detection is enabled, false otherwise.
      */
     fun setSilence(mode: Boolean) {
         putBoolean("silence_mode", mode)
+    }
+
+    /**
+     * Sets the auto language detection status in the shared preferences.
+     *
+     * @param mode The auto language detection status to be stored (true for enabled, false otherwise).
+     */
+    fun getAutoLangDetect() : Boolean {
+        return getBoolean("autoLangDetect", false)
+    }
+
+    /**
+     * Sets the auto language detection status in the shared preferences.
+     *
+     * @param mode The auto language detection status to be stored (true for enabled, false otherwise).
+     */
+    fun setAutoLangDetect(mode: Boolean) {
+        putBoolean("autoLangDetect", mode)
     }
 
     /**
