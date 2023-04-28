@@ -70,6 +70,7 @@ class SettingsActivity : FragmentActivity() {
     private var btnClassicView: LinearLayout? = null
     private var btnBubblesView: LinearLayout? = null
     private var assistantLanguage: LinearLayout? = null
+    private var btnAutoLanguageDetect: LinearLayout? = null
 
     private var preferences: Preferences? = null
     private var chatId = ""
@@ -169,6 +170,7 @@ class SettingsActivity : FragmentActivity() {
         gpt40 = findViewById(R.id.gpt40)
         assistantLanguage = findViewById(R.id.btn_manage_language)
         btnModelGroup = findViewById(R.id.btn_model_s_for)
+        btnAutoLanguageDetect = findViewById(R.id.btn_auto_lang_detect)
 
         btnChangeApi?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(this, R.drawable.t_menu_top_item_background)!!, this)
@@ -207,6 +209,9 @@ class SettingsActivity : FragmentActivity() {
             ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background_noclick)!!, this)
 
         findViewById<LinearLayout>(R.id.btn_silence_mode)!!.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background_noclick)!!, this)
+
+        btnAutoLanguageDetect?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background_noclick)!!, this)
 
         btnAbout?.background = getDarkAccentDrawable(

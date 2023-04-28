@@ -53,13 +53,17 @@ import com.aallam.openai.api.completion.TextCompletion
 import com.aallam.openai.api.file.FileSource
 import com.aallam.openai.api.image.ImageCreation
 import com.aallam.openai.api.image.ImageSize
+import com.aallam.openai.api.logging.LogLevel
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
+import com.aallam.openai.client.OpenAIConfig
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import com.google.gson.Gson
+import com.google.mlkit.nl.languageid.LanguageIdentification
+import com.google.mlkit.nl.languageid.LanguageIdentifier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -104,6 +108,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private var adapter: AssistantAdapter? = null
     @OptIn(BetaOpenAI::class)
     private var chatMessages: ArrayList<ChatMessage> = arrayListOf()
+    private lateinit var languageIdentifier: LanguageIdentifier
 
     // Init states
     private var isRecording = false
@@ -111,6 +116,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private var isTTSInitialized = false
     private var silenceMode = false
     private var chatID = ""
+    private var autoLangDetect = false
 
     // init AI
     private var ai: OpenAI? = null
@@ -213,38 +219,44 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private val ttsListener: TextToSpeech.OnInitListener =
         TextToSpeech.OnInitListener { status ->
             if (status == TextToSpeech.SUCCESS) {
-                val result = tts!!.setLanguage(LocaleParser.parse(Preferences.getPreferences(requireActivity(), "").getLanguage()))
-
-                isTTSInitialized = !(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED)
-
-                val voices: Set<Voice> = tts!!.voices
-                for (v: Voice in voices) {
-                    if (v.name.equals("en-us-x-iom-local") && Preferences.getPreferences(requireActivity(), "").getLanguage() == "en") {
-                        tts!!.voice = v
-                    }
-                }
-
-                /*
-                * Voice models (english: en-us-x):
-                * sfg-local
-                * iob-network
-                * iom-local
-                * iog-network
-                * tpc-local
-                * tpf-local
-                * sfg-network
-                * iob-local
-                * tpd-network
-                * tpc-network
-                * iol-network
-                * iom-network
-                * tpd-local
-                * tpf-network
-                * iog-local
-                * iol-local
-                * */
+                ttsPostInit()
             }
         }
+
+    private fun ttsPostInit() {
+        if (!autoLangDetect) {
+            val result = tts!!.setLanguage(LocaleParser.parse(Preferences.getPreferences(requireActivity(), "").getLanguage()))
+
+            isTTSInitialized = !(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED)
+
+            val voices: Set<Voice> = tts!!.voices
+            for (v: Voice in voices) {
+                if (v.name.equals("en-us-x-iom-local") && Preferences.getPreferences(requireActivity(), "").getLanguage() == "en") {
+                    tts!!.voice = v
+                }
+            }
+
+            /*
+            * Voice models (english: en-us-x):
+            * sfg-local
+            * iob-network
+            * iom-local
+            * iog-network
+            * tpc-local
+            * tpf-local
+            * sfg-network
+            * iob-local
+            * tpd-network
+            * tpc-network
+            * iol-network
+            * iom-network
+            * tpd-local
+            * tpf-network
+            * iog-local
+            * iol-local
+            * */
+        }
+    }
 
     // Init permissions screen
     private val permissionResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -301,6 +313,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
             requireActivity().finishAndRemoveTask()
         } else {
             silenceMode = Preferences.getPreferences(requireActivity(), "").getSilence()
+            autoLangDetect = Preferences.getPreferences(requireActivity(), "").getAutoLangDetect()
 
             messages = ArrayList()
 
@@ -515,7 +528,11 @@ class AssistantFragment : BottomSheetDialogFragment() {
             startActivity(Intent(requireActivity(), WelcomeActivity::class.java))
             requireActivity().finish()
         } else {
-            ai = OpenAI(key!!)
+            val config = OpenAIConfig(
+                token = key!!,
+                logLevel = LogLevel.None,
+            )
+            ai = OpenAI(config)
             loadModel()
             setup()
         }
@@ -733,18 +750,38 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 }
             }
 
-            Log.e("DEBUG", "Showing result")
             messages[messages.size - 1]["message"] = "$response\n"
             adapter?.notifyDataSetChanged()
 
-            Log.e("DEBUG", "Saving chat")
             chatMessages.add(ChatMessage(
                 role = ChatRole.Assistant,
                 content = response
             ))
 
             if (shouldPronounce && isTTSInitialized && !silenceMode) {
-                tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null,"")
+                if (autoLangDetect) {
+                    languageIdentifier.identifyLanguage(response)
+                        .addOnSuccessListener { languageCode ->
+                            if (languageCode == "und") {
+                                Log.i("MLKit", "Can't identify language.")
+                            } else {
+                                Log.i("MLKit", "Language: $languageCode")
+                                tts!!.language = Locale.forLanguageTag(
+                                    languageCode
+                                )
+                            }
+
+                            tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
+                        }.addOnFailureListener {
+                            // Ignore auto language detection if an error is occurred
+                            autoLangDetect = false
+                            ttsPostInit()
+
+                            tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
+                        }
+                } else {
+                    tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
+                }
             }
         } catch (e: Exception) {
             response += if (e.stackTraceToString().contains("does not exist")) {
@@ -872,6 +909,8 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        languageIdentifier = LanguageIdentification.getClient()
 
         dialog?.window?.navigationBarColor = SurfaceColors.SURFACE_1.getColor(requireActivity())
 

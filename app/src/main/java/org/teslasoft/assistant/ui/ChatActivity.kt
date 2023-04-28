@@ -56,9 +56,11 @@ import com.aallam.openai.api.completion.TextCompletion
 import com.aallam.openai.api.file.FileSource
 import com.aallam.openai.api.image.ImageCreation
 import com.aallam.openai.api.image.ImageSize
+import com.aallam.openai.api.logging.LogLevel
 import com.aallam.openai.api.model.Model
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
+import com.aallam.openai.client.OpenAIConfig
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import com.google.mlkit.nl.languageid.LanguageIdentification
@@ -85,6 +87,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.net.URL
 import java.util.Base64
+import java.util.Locale
 
 
 class ChatActivity : FragmentActivity() {
@@ -109,14 +112,12 @@ class ChatActivity : FragmentActivity() {
     private var chatName = ""
     private lateinit var languageIdentifier: LanguageIdentifier
 
-
     // Init states
     private var isRecording = false
     private var keyboardMode = false
     private var isTTSInitialized = false
     private var silenceMode = false
     private var autoLangDetect = false
-
 
     // init AI
     private var ai: OpenAI? = null
@@ -182,39 +183,57 @@ class ChatActivity : FragmentActivity() {
     private var tts: TextToSpeech? = null
     private val ttsListener: TextToSpeech.OnInitListener =
         TextToSpeech.OnInitListener { status ->
-            if (status == TextToSpeech.SUCCESS && !autoLangDetect) {
-                val result = tts!!.setLanguage(LocaleParser.parse(Preferences.getPreferences(this@ChatActivity, chatId).getLanguage()))
-
-                isTTSInitialized = !(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED)
-
-                val voices: Set<Voice> = tts!!.voices
-                for (v: Voice in voices) {
-                    if (v.name.equals("en-us-x-iom-local") && Preferences.getPreferences(this@ChatActivity, chatId).getLanguage() == "en") {
-                        tts!!.voice = v
-                    }
-                }
-
-                /*
-                * Voice models (english: en-us-x):
-                * sfg-local
-                * iob-network
-                * iom-local
-                * iog-network
-                * tpc-local
-                * tpf-local
-                * sfg-network
-                * iob-local
-                * tpd-network
-                * tpc-network
-                * iol-network
-                * iom-network
-                * tpd-local
-                * tpf-network
-                * iog-local
-                * iol-local
-                * */
+            if (status == TextToSpeech.SUCCESS) {
+                ttsPostInit()
             }
         }
+
+    private fun ttsPostInit() {
+        if (!autoLangDetect) {
+            val result = tts!!.setLanguage(
+                LocaleParser.parse(
+                    Preferences.getPreferences(
+                        this@ChatActivity,
+                        chatId
+                    ).getLanguage()
+                )
+            )
+
+            isTTSInitialized =
+                !(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED)
+
+            val voices: Set<Voice> = tts!!.voices
+            for (v: Voice in voices) {
+                if (v.name.equals("en-us-x-iom-local") && Preferences.getPreferences(
+                        this@ChatActivity,
+                        chatId
+                    ).getLanguage() == "en"
+                ) {
+                    tts!!.voice = v
+                }
+            }
+
+            /*
+            * Voice models (english: en-us-x):
+            * sfg-local
+            * iob-network
+            * iom-local
+            * iog-network
+            * tpc-local
+            * tpf-local
+            * sfg-network
+            * iob-local
+            * tpd-network
+            * tpc-network
+            * iol-network
+            * iom-network
+            * tpd-local
+            * tpf-network
+            * iog-local
+            * iol-local
+            * */
+        }
+    }
 
     // Init permissions screen
     private val permissionResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -605,7 +624,11 @@ class ChatActivity : FragmentActivity() {
             startActivity(Intent(this, WelcomeActivity::class.java))
             finish()
         } else {
-            ai = OpenAI(key!!)
+            val config = OpenAIConfig(
+                token = key!!,
+                logLevel = LogLevel.None,
+            )
+            ai = OpenAI(config)
             loadModel()
             setup()
         }
@@ -820,35 +843,6 @@ class ChatActivity : FragmentActivity() {
                         }
                     }
                 }
-
-                if (autoLangDetect) {
-                    languageIdentifier.identifyLanguage(response)
-                        .addOnSuccessListener { languageCode ->
-                            if (languageCode == "und") {
-                                Log.i("MLKit", "Can't identify language.")
-                            } else {
-                                Log.i("MLKit", "Language: $languageCode")
-                                var ttsLangResult = tts!!.setLanguage(
-                                    Locale.forLanguageTag(
-                                        languageCode
-                                    )
-                                )
-
-                                Log.i("MLKit", "Language: $languageCode")
-                                if (ttsLangResult == TextToSpeech.LANG_MISSING_DATA || ttsLangResult == TextToSpeech.LANG_NOT_SUPPORTED) {
-                                    Log.e("TTS", "The Language is not supported!")
-                                } else {
-                                    Log.i("TTS", "Language Supported.")
-                                    if (!silenceMode) {
-                                        tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
-                                    }
-                                }
-                            }
-                        }.addOnFailureListener {
-                            // Model couldn’t be loaded or other internal error.
-                            // ...
-                        }
-                }
             }
 
             messages[messages.size - 1]["message"] = "$response\n"
@@ -860,7 +854,29 @@ class ChatActivity : FragmentActivity() {
             ))
 
             if (shouldPronounce && isTTSInitialized && !silenceMode) {
-                tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null,"")
+                if (autoLangDetect) {
+                    languageIdentifier.identifyLanguage(response)
+                        .addOnSuccessListener { languageCode ->
+                            if (languageCode == "und") {
+                                Log.i("MLKit", "Can't identify language.")
+                            } else {
+                                Log.i("MLKit", "Language: $languageCode")
+                                tts!!.language = Locale.forLanguageTag(
+                                    languageCode
+                                )
+                            }
+
+                            tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
+                        }.addOnFailureListener {
+                            // Ignore auto language detection if an error is occurred
+                            autoLangDetect = false
+                            ttsPostInit()
+
+                            tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
+                        }
+                } else {
+                    tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
+                }
             }
         } catch (e: Exception) {
             response += if (e.stackTraceToString().contains("does not exist")) {
