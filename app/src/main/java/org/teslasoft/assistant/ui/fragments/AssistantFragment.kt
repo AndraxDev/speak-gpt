@@ -22,6 +22,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaRecorder
+import android.net.Uri
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
@@ -73,7 +74,11 @@ import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
 import org.teslasoft.assistant.ui.SettingsActivity
 import org.teslasoft.assistant.ui.permission.MicrophonePermissionActivity
 import org.teslasoft.assistant.ui.fragments.dialogs.AddChatDialogFragment
+import org.teslasoft.assistant.util.Hash
 import org.teslasoft.assistant.util.LocaleParser
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
 import java.io.IOException
 import java.net.URL
 import java.util.Base64
@@ -592,20 +597,22 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
             keyboardMode = false
 
+            val m = prefix + message + endSeparator
+
             saveSettings()
 
-            putMessage(prefix + message + endSeparator, false)
+            putMessage(m, false)
 
             hideKeyboard()
             btnAssistantVoice?.isEnabled = false
             btnAssistantSend?.isEnabled = false
             assistantLoading?.visibility = View.VISIBLE
 
-            if (message.lowercase().contains("/imagine") && message.length > 9) {
-                val x: String = message.substring(9)
+            if (m.lowercase().contains("/imagine") && m.length > 9) {
+                val x: String = m.substring(9)
 
                 sendImageRequest(x)
-            } else if (message.lowercase().contains("/imagine") && message.length <= 9) {
+            } else if (m.lowercase().contains("/imagine") && m.length <= 9) {
                 putMessage("Prompt can not be empty. Use /imagine &lt;PROMPT&gt;", true)
 
                 saveSettings()
@@ -613,23 +620,23 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 btnAssistantVoice?.isEnabled = true
                 btnAssistantSend?.isEnabled = true
                 assistantLoading?.visibility = View.GONE
-            } else if (message.lowercase().contains("create an image") ||
-                message.lowercase().contains("generate an image") ||
-                message.lowercase().contains("create image") ||
-                message.lowercase().contains("generate image") ||
-                message.lowercase().contains("create a photo") ||
-                message.lowercase().contains("generate a photo") ||
-                message.lowercase().contains("create photo") ||
-                message.lowercase().contains("generate photo")) {
-                sendImageRequest(message)
+            } else if (m.lowercase().contains("create an image") ||
+                m.lowercase().contains("generate an image") ||
+                m.lowercase().contains("create image") ||
+                m.lowercase().contains("generate image") ||
+                m.lowercase().contains("create a photo") ||
+                m.lowercase().contains("generate a photo") ||
+                m.lowercase().contains("create photo") ||
+                m.lowercase().contains("generate photo")) {
+                sendImageRequest(m)
             } else {
                 chatMessages.add(ChatMessage(
                     role = ChatRole.User,
-                    content = prefix + message + endSeparator
+                    content = m
                 ))
 
                 CoroutineScope(Dispatchers.Main).launch {
-                    generateResponse(prefix + message + endSeparator, false)
+                    generateResponse(m, false)
                 }
             }
         }
@@ -771,6 +778,22 @@ class AssistantFragment : BottomSheetDialogFragment() {
         assistantLoading?.visibility = View.GONE
     }
 
+    private fun writeImageToCache(bytes: ByteArray) {
+        try {
+            requireActivity().contentResolver.openFileDescriptor(Uri.fromFile(File(requireActivity().getExternalFilesDir("images")?.absolutePath + "/" + Hash.hash(Base64.getEncoder().encodeToString(bytes)) + ".png")), "w")?.use {
+                FileOutputStream(it.fileDescriptor).use {
+                    it.write(
+                        bytes
+                    )
+                }
+            }
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
     @OptIn(BetaOpenAI::class)
     private suspend fun generateImage(p: String) {
         assistantConversation?.visibility = View.VISIBLE
@@ -791,6 +814,9 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 url.openStream()
             }
             val bytes: ByteArray = org.apache.commons.io.IOUtils.toByteArray(`is`)
+
+            writeImageToCache(bytes)
+
             val encoded = Base64.getEncoder().encodeToString(bytes)
 
             val path = "data:image/png;base64,$encoded"

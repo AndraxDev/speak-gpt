@@ -24,6 +24,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
@@ -42,6 +43,13 @@ import com.google.android.material.elevation.SurfaceColors
 import io.noties.markwon.Markwon
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.ui.ImageBrowserActivity
+import org.teslasoft.assistant.util.Hash
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
+import java.util.Base64
 
 
 abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActivity) : BaseAdapter() {
@@ -92,9 +100,47 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
                 intent.putExtra("tmp", "1")
                 mContext.startActivity(intent)
             }
+        } else if (dataArray?.get(position)?.get("message").toString().contains("~file:")) {
+            imageFrame?.visibility = View.VISIBLE
+            message?.visibility = View.GONE
+            btnCopy?.visibility = View.GONE
+
+
+            val contents: String = dataArray?.get(position)?.get("message").toString()
+            val fileName: String = contents.replace("~file:", "")
+            try {
+                val fullPath = mContext.getExternalFilesDir("images")?.absolutePath + "/" + fileName + ".png"
+                mContext.contentResolver.openFileDescriptor(Uri.fromFile(
+                    File(fullPath))
+                    , "r")?.use {
+                    FileInputStream(it.fileDescriptor).use {
+                        val c: ByteArray = it.readBytes()
+                        val m: String = "data:image/png;base64," + Base64.getEncoder().encodeToString(c)
+
+                        val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(convertDpToPixel(24f, mContext).toInt()))
+                        Glide.with(mContext).load(Uri.parse(m)).apply(requestOptions).into(dalleImage!!)
+
+                        dalleImage?.setOnClickListener {
+                            val sharedPreferences: SharedPreferences = mContext.getSharedPreferences("tmp", Context.MODE_PRIVATE)
+                            val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                            editor.putString("tmp", m)
+                            editor.apply()
+                            val intent = Intent(mContext, ImageBrowserActivity::class.java)
+                            intent.putExtra("tmp", "1")
+                            mContext.startActivity(intent)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                imageFrame?.visibility = View.GONE
+                message?.visibility = View.VISIBLE
+                btnCopy?.visibility = View.VISIBLE
+                message?.text = "<FILE NOT FOUND>"
+            }
         } else {
             val src = dataArray?.get(position)?.get("message").toString()
-            val markwon: Markwon = Markwon.create(mContext);
+            val markwon: Markwon = Markwon.create(mContext)
             markwon.setMarkdown(message!!, src)
 
             imageFrame?.visibility = View.GONE

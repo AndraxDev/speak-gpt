@@ -34,6 +34,7 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.Voice
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
@@ -74,13 +75,14 @@ import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.ChatAdapter
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
 import org.teslasoft.assistant.ui.permission.MicrophonePermissionActivity
+import org.teslasoft.assistant.util.Hash
 import org.teslasoft.assistant.util.LocaleParser
+import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 import java.net.URL
 import java.util.Base64
-import java.util.Locale
 
 
 class ChatActivity : FragmentActivity() {
@@ -690,18 +692,20 @@ class ChatActivity : FragmentActivity() {
 
             keyboardMode = false
 
-            putMessage(prefix + message + endSeparator, false)
+            val m = prefix + message + endSeparator
+
+            putMessage(m, false)
             saveSettings()
 
             btnMicro?.isEnabled = false
             btnSend?.isEnabled = false
             progress?.visibility = View.VISIBLE
 
-            if (message.lowercase().contains("/imagine") && message.length > 9) {
-                val x: String = message.substring(9)
+            if (m.lowercase().contains("/imagine") && m.length > 9) {
+                val x: String = m.substring(9)
 
                 sendImageRequest(x)
-            } else if (message.lowercase().contains("/imagine") && message.length <= 9) {
+            } else if (m.lowercase().contains("/imagine") && m.length <= 9) {
                 putMessage("Prompt can not be empty. Use /imagine &lt;PROMPT&gt;", true)
 
                 saveSettings()
@@ -709,23 +713,23 @@ class ChatActivity : FragmentActivity() {
                 btnMicro?.isEnabled = true
                 btnSend?.isEnabled = true
                 progress?.visibility = View.GONE
-            } else if (message.lowercase().contains("create an image") ||
-                message.lowercase().contains("generate an image") ||
-                message.lowercase().contains("create image") ||
-                message.lowercase().contains("generate image") ||
-                message.lowercase().contains("create a photo") ||
-                message.lowercase().contains("generate a photo") ||
-                message.lowercase().contains("create photo") ||
-                message.lowercase().contains("generate photo")) {
-                sendImageRequest(message)
+            } else if (m.lowercase().contains("create an image") ||
+                m.lowercase().contains("generate an image") ||
+                m.lowercase().contains("create image") ||
+                m.lowercase().contains("generate image") ||
+                m.lowercase().contains("create a photo") ||
+                m.lowercase().contains("generate a photo") ||
+                m.lowercase().contains("create photo") ||
+                m.lowercase().contains("generate photo")) {
+                sendImageRequest(m)
             } else {
                 chatMessages.add(ChatMessage(
                     role = ChatRole.User,
-                    content = prefix + message + endSeparator
+                    content = m
                 ))
 
                 CoroutineScope(Dispatchers.Main).launch {
-                    generateResponse(prefix + message + endSeparator, false)
+                    generateResponse(m, false)
                 }
             }
         }
@@ -853,6 +857,22 @@ class ChatActivity : FragmentActivity() {
         progress?.visibility = View.GONE
     }
 
+    private fun writeImageToCache(bytes: ByteArray) {
+        try {
+            contentResolver.openFileDescriptor(Uri.fromFile(File(getExternalFilesDir("images")?.absolutePath + "/" + Hash.hash(Base64.getEncoder().encodeToString(bytes)) + ".png")), "w")?.use {
+                FileOutputStream(it.fileDescriptor).use {
+                    it.write(
+                        bytes
+                    )
+                }
+            }
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
     @OptIn(BetaOpenAI::class)
     private suspend fun generateImage(p: String) {
         try {
@@ -870,11 +890,13 @@ class ChatActivity : FragmentActivity() {
                 url.openStream()
             }
             val bytes: ByteArray = org.apache.commons.io.IOUtils.toByteArray(`is`)
+
+            writeImageToCache(bytes)
+
             val encoded = Base64.getEncoder().encodeToString(bytes)
 
-            val path = "data:image/png;base64,$encoded"
-
-            putMessage(path, true)
+            val file = Hash.hash(encoded)
+            putMessage("~file:$file", true)
         } catch (e: Exception) {
             if (e.stackTraceToString().contains("Your request was rejected")) {
                 putMessage("Your prompt contains inappropriate content and can not be processed. We strive to make AI safe and relevant for everyone.", true)
