@@ -34,6 +34,7 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.Voice
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
@@ -60,6 +61,8 @@ import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
+import com.google.mlkit.nl.languageid.LanguageIdentification
+import com.google.mlkit.nl.languageid.LanguageIdentifier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -103,12 +106,16 @@ class ChatActivity : FragmentActivity() {
     private var chatMessages: ArrayList<ChatMessage> = arrayListOf()
     private var chatId = ""
     private var chatName = ""
+    private lateinit var languageIdentifier: LanguageIdentifier
+
 
     // Init states
     private var isRecording = false
     private var keyboardMode = false
     private var isTTSInitialized = false
     private var silenceMode = false
+    private var autoLangDetect = false
+
 
     // init AI
     private var ai: OpenAI? = null
@@ -174,7 +181,7 @@ class ChatActivity : FragmentActivity() {
     private var tts: TextToSpeech? = null
     private val ttsListener: TextToSpeech.OnInitListener =
         TextToSpeech.OnInitListener { status ->
-            if (status == TextToSpeech.SUCCESS) {
+            if (status == TextToSpeech.SUCCESS && !autoLangDetect) {
                 val result = tts!!.setLanguage(LocaleParser.parse(Preferences.getPreferences(this@ChatActivity, chatId).getLanguage()))
 
                 isTTSInitialized = !(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED)
@@ -231,6 +238,8 @@ class ChatActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_chat)
+        languageIdentifier = LanguageIdentification.getClient()
+
 
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
@@ -268,7 +277,7 @@ class ChatActivity : FragmentActivity() {
             finish()
         } else {
             silenceMode = Preferences.getPreferences(this, chatId).getSilence()
-
+            autoLangDetect = Preferences.getPreferences(this, chatId).getAutoLangDetect()
             messages = ChatPreferences.getChatPreferences().getChatById(this, chatId)
 
             if (messages == null) messages = arrayListOf()
@@ -807,6 +816,35 @@ class ChatActivity : FragmentActivity() {
                             adapter?.notifyDataSetChanged()
                         }
                     }
+                }
+
+                if (autoLangDetect) {
+                    languageIdentifier.identifyLanguage(response)
+                        .addOnSuccessListener { languageCode ->
+                            if (languageCode == "und") {
+                                Log.i("MLKit", "Can't identify language.")
+                            } else {
+                                Log.i("MLKit", "Language: $languageCode")
+                                var ttsLangResult = tts!!.setLanguage(
+                                    Locale.forLanguageTag(
+                                        languageCode
+                                    )
+                                )
+
+                                Log.i("MLKit", "Language: $languageCode")
+                                if (ttsLangResult == TextToSpeech.LANG_MISSING_DATA || ttsLangResult == TextToSpeech.LANG_NOT_SUPPORTED) {
+                                    Log.e("TTS", "The Language is not supported!")
+                                } else {
+                                    Log.i("TTS", "Language Supported.")
+                                    if (!silenceMode) {
+                                        tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
+                                    }
+                                }
+                            }
+                        }.addOnFailureListener {
+                            // Model couldn’t be loaded or other internal error.
+                            // ...
+                        }
                 }
             }
 
