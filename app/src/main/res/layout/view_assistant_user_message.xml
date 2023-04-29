@@ -6,87 +6,95 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="32dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/bubble_out"
+        android:gravity="end"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/username"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:paddingBottom="4dp"
-            android:text="@string/user"
-            android:textColor="@color/accent_900"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:visibility="gone"
-            tools:layout_editor_absoluteX="76dp"
-            tools:layout_editor_absoluteY="16dp"/>
-
-        <ImageView
-            android:id="@+id/icon"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:visibility="gone"
-            app:srcCompat="@drawable/ic_launcher_foreground"
-            tools:layout_editor_absoluteX="24dp"
-            tools:layout_editor_absoluteY="16dp" />
-
-        <TextView
-            android:id="@+id/message"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="12dp"
-            android:maxWidth="270dp"
-            android:text="Lorem ipsum"
-            android:textColor="@color/window_background"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/bubble_out">
 
-        <LinearLayout
-            android:id="@+id/image_frame"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingTop="24dp"
-            android:paddingBottom="24dp"
-            android:visibility="gone"
-            tools:layout_editor_absoluteX="87dp">
+            <TextView
+                android:id="@+id/username"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="4dp"
+                android:text="@string/user"
+                android:textColor="@color/accent_900"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:layout_editor_absoluteX="76dp"
+                tools:layout_editor_absoluteY="16dp" />
 
             <ImageView
-                android:id="@+id/dalle_image"
-                android:layout_width="300dp"
-                android:layout_height="300dp"
-                app:srcCompat="@drawable/assistant" />
-        </LinearLayout>
+                android:id="@+id/icon"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_launcher_foreground"
+                tools:layout_editor_absoluteX="24dp"
+                tools:layout_editor_absoluteY="16dp" />
 
-        <ImageButton
-            android:id="@+id/btn_copy"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/btn_accent_tonal"
-            android:contentDescription="@string/btn_copy"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/image_frame"
-            app:srcCompat="@drawable/ic_copy" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="12dp"
+                android:text="Lorem ipsum"
+                android:textColor="@color/window_background"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/image_frame"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingTop="24dp"
+                android:paddingBottom="24dp"
+                android:visibility="gone"
+                tools:layout_editor_absoluteX="87dp">
+
+                <ImageView
+                    android:id="@+id/dalle_image"
+                    android:layout_width="300dp"
+                    android:layout_height="300dp"
+                    app:srcCompat="@drawable/assistant" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btn_copy"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/btn_accent_tonal"
+                android:contentDescription="@string/btn_copy"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/image_frame"
+                app:srcCompat="@drawable/ic_copy" />
+        </LinearLayout>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
