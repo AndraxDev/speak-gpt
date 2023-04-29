@@ -56,9 +56,11 @@ import com.aallam.openai.api.completion.TextCompletion
 import com.aallam.openai.api.file.FileSource
 import com.aallam.openai.api.image.ImageCreation
 import com.aallam.openai.api.image.ImageSize
+import com.aallam.openai.api.logging.LogLevel
 import com.aallam.openai.api.model.Model
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
+import com.aallam.openai.client.OpenAIConfig
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import com.google.mlkit.nl.languageid.LanguageIdentification
@@ -77,7 +79,9 @@ import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.ChatAdapter
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
 import org.teslasoft.assistant.ui.permission.MicrophonePermissionActivity
+import org.teslasoft.assistant.util.Hash
 import org.teslasoft.assistant.util.LocaleParser
+import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
@@ -108,14 +112,12 @@ class ChatActivity : FragmentActivity() {
     private var chatName = ""
     private lateinit var languageIdentifier: LanguageIdentifier
 
-
     // Init states
     private var isRecording = false
     private var keyboardMode = false
     private var isTTSInitialized = false
     private var silenceMode = false
     private var autoLangDetect = false
-
 
     // init AI
     private var ai: OpenAI? = null
@@ -181,39 +183,57 @@ class ChatActivity : FragmentActivity() {
     private var tts: TextToSpeech? = null
     private val ttsListener: TextToSpeech.OnInitListener =
         TextToSpeech.OnInitListener { status ->
-            if (status == TextToSpeech.SUCCESS && !autoLangDetect) {
-                val result = tts!!.setLanguage(LocaleParser.parse(Preferences.getPreferences(this@ChatActivity, chatId).getLanguage()))
-
-                isTTSInitialized = !(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED)
-
-                val voices: Set<Voice> = tts!!.voices
-                for (v: Voice in voices) {
-                    if (v.name.equals("en-us-x-iom-local") && Preferences.getPreferences(this@ChatActivity, chatId).getLanguage() == "en") {
-                        tts!!.voice = v
-                    }
-                }
-
-                /*
-                * Voice models (english: en-us-x):
-                * sfg-local
-                * iob-network
-                * iom-local
-                * iog-network
-                * tpc-local
-                * tpf-local
-                * sfg-network
-                * iob-local
-                * tpd-network
-                * tpc-network
-                * iol-network
-                * iom-network
-                * tpd-local
-                * tpf-network
-                * iog-local
-                * iol-local
-                * */
+            if (status == TextToSpeech.SUCCESS) {
+                ttsPostInit()
             }
         }
+
+    private fun ttsPostInit() {
+        if (!autoLangDetect) {
+            val result = tts!!.setLanguage(
+                LocaleParser.parse(
+                    Preferences.getPreferences(
+                        this@ChatActivity,
+                        chatId
+                    ).getLanguage()
+                )
+            )
+
+            isTTSInitialized =
+                !(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED)
+
+            val voices: Set<Voice> = tts!!.voices
+            for (v: Voice in voices) {
+                if (v.name.equals("en-us-x-iom-local") && Preferences.getPreferences(
+                        this@ChatActivity,
+                        chatId
+                    ).getLanguage() == "en"
+                ) {
+                    tts!!.voice = v
+                }
+            }
+
+            /*
+            * Voice models (english: en-us-x):
+            * sfg-local
+            * iob-network
+            * iom-local
+            * iog-network
+            * tpc-local
+            * tpf-local
+            * sfg-network
+            * iob-local
+            * tpd-network
+            * tpc-network
+            * iol-network
+            * iom-network
+            * tpd-local
+            * tpf-network
+            * iog-local
+            * iol-local
+            * */
+        }
+    }
 
     // Init permissions screen
     private val permissionResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -604,7 +624,11 @@ class ChatActivity : FragmentActivity() {
             startActivity(Intent(this, WelcomeActivity::class.java))
             finish()
         } else {
-            ai = OpenAI(key!!)
+            val config = OpenAIConfig(
+                token = key!!,
+                logLevel = LogLevel.None,
+            )
+            ai = OpenAI(config)
             loadModel()
             setup()
         }
@@ -699,18 +723,20 @@ class ChatActivity : FragmentActivity() {
 
             keyboardMode = false
 
-            putMessage(prefix + message + endSeparator, false)
+            val m = prefix + message + endSeparator
+
+            putMessage(m, false)
             saveSettings()
 
             btnMicro?.isEnabled = false
             btnSend?.isEnabled = false
             progress?.visibility = View.VISIBLE
 
-            if (message.lowercase().contains("/imagine") && message.length > 9) {
-                val x: String = message.substring(9)
+            if (m.lowercase().contains("/imagine") && m.length > 9) {
+                val x: String = m.substring(9)
 
                 sendImageRequest(x)
-            } else if (message.lowercase().contains("/imagine") && message.length <= 9) {
+            } else if (m.lowercase().contains("/imagine") && m.length <= 9) {
                 putMessage("Prompt can not be empty. Use /imagine &lt;PROMPT&gt;", true)
 
                 saveSettings()
@@ -718,23 +744,23 @@ class ChatActivity : FragmentActivity() {
                 btnMicro?.isEnabled = true
                 btnSend?.isEnabled = true
                 progress?.visibility = View.GONE
-            } else if (message.lowercase().contains("create an image") ||
-                message.lowercase().contains("generate an image") ||
-                message.lowercase().contains("create image") ||
-                message.lowercase().contains("generate image") ||
-                message.lowercase().contains("create a photo") ||
-                message.lowercase().contains("generate a photo") ||
-                message.lowercase().contains("create photo") ||
-                message.lowercase().contains("generate photo")) {
-                sendImageRequest(message)
+            } else if (m.lowercase().contains("create an image") ||
+                m.lowercase().contains("generate an image") ||
+                m.lowercase().contains("create image") ||
+                m.lowercase().contains("generate image") ||
+                m.lowercase().contains("create a photo") ||
+                m.lowercase().contains("generate a photo") ||
+                m.lowercase().contains("create photo") ||
+                m.lowercase().contains("generate photo")) {
+                sendImageRequest(m)
             } else {
                 chatMessages.add(ChatMessage(
                     role = ChatRole.User,
-                    content = prefix + message + endSeparator
+                    content = m
                 ))
 
                 CoroutineScope(Dispatchers.Main).launch {
-                    generateResponse(prefix + message + endSeparator, false)
+                    generateResponse(m, false)
                 }
             }
         }
@@ -817,35 +843,6 @@ class ChatActivity : FragmentActivity() {
                         }
                     }
                 }
-
-                if (autoLangDetect) {
-                    languageIdentifier.identifyLanguage(response)
-                        .addOnSuccessListener { languageCode ->
-                            if (languageCode == "und") {
-                                Log.i("MLKit", "Can't identify language.")
-                            } else {
-                                Log.i("MLKit", "Language: $languageCode")
-                                var ttsLangResult = tts!!.setLanguage(
-                                    Locale.forLanguageTag(
-                                        languageCode
-                                    )
-                                )
-
-                                Log.i("MLKit", "Language: $languageCode")
-                                if (ttsLangResult == TextToSpeech.LANG_MISSING_DATA || ttsLangResult == TextToSpeech.LANG_NOT_SUPPORTED) {
-                                    Log.e("TTS", "The Language is not supported!")
-                                } else {
-                                    Log.i("TTS", "Language Supported.")
-                                    if (!silenceMode) {
-                                        tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
-                                    }
-                                }
-                            }
-                        }.addOnFailureListener {
-                            // Model couldn’t be loaded or other internal error.
-                            // ...
-                        }
-                }
             }
 
             messages[messages.size - 1]["message"] = "$response\n"
@@ -857,7 +854,29 @@ class ChatActivity : FragmentActivity() {
             ))
 
             if (shouldPronounce && isTTSInitialized && !silenceMode) {
-                tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null,"")
+                if (autoLangDetect) {
+                    languageIdentifier.identifyLanguage(response)
+                        .addOnSuccessListener { languageCode ->
+                            if (languageCode == "und") {
+                                Log.i("MLKit", "Can't identify language.")
+                            } else {
+                                Log.i("MLKit", "Language: $languageCode")
+                                tts!!.language = Locale.forLanguageTag(
+                                    languageCode
+                                )
+                            }
+
+                            tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
+                        }.addOnFailureListener {
+                            // Ignore auto language detection if an error is occurred
+                            autoLangDetect = false
+                            ttsPostInit()
+
+                            tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
+                        }
+                } else {
+                    tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
+                }
             }
         } catch (e: Exception) {
             response += if (e.stackTraceToString().contains("does not exist")) {
@@ -891,6 +910,22 @@ class ChatActivity : FragmentActivity() {
         progress?.visibility = View.GONE
     }
 
+    private fun writeImageToCache(bytes: ByteArray) {
+        try {
+            contentResolver.openFileDescriptor(Uri.fromFile(File(getExternalFilesDir("images")?.absolutePath + "/" + Hash.hash(Base64.getEncoder().encodeToString(bytes)) + ".png")), "w")?.use {
+                FileOutputStream(it.fileDescriptor).use {
+                    it.write(
+                        bytes
+                    )
+                }
+            }
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
     @OptIn(BetaOpenAI::class)
     private suspend fun generateImage(p: String) {
         try {
@@ -908,11 +943,13 @@ class ChatActivity : FragmentActivity() {
                 url.openStream()
             }
             val bytes: ByteArray = org.apache.commons.io.IOUtils.toByteArray(`is`)
+
+            writeImageToCache(bytes)
+
             val encoded = Base64.getEncoder().encodeToString(bytes)
 
-            val path = "data:image/png;base64,$encoded"
-
-            putMessage(path, true)
+            val file = Hash.hash(encoded)
+            putMessage("~file:$file", true)
         } catch (e: Exception) {
             if (e.stackTraceToString().contains("Your request was rejected")) {
                 putMessage("Your prompt contains inappropriate content and can not be processed. We strive to make AI safe and relevant for everyone.", true)

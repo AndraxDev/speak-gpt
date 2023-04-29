@@ -16,8 +16,8 @@ android {
         minSdk 28
         targetSdk 33
         // targetSdkPreview "UpsideDownCake"
-        versionCode 217
-        versionName "2.17"
+        versionCode 218
+        versionName "2.18"
         externalNativeBuild {
             cmake {
                 cppFlags ''
@@ -60,6 +60,7 @@ android {
 dependencies {
     implementation 'androidx.core:core-ktx:1.10.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
+    //noinspection GradleDependency
     implementation 'com.google.android.material:material:1.9.0-beta01'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.aallam.openai:openai-client:3.2.1'

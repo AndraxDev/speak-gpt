@@ -1075,7 +1075,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/btn_silence_mode" />
 
                 <LinearLayout
-                    android:id="@+id/btn_autoLangDetect"
+                    android:id="@+id/btn_auto_lang_detect"
                     android:layout_width="match_parent"
                     android:layout_height="72dp"
                     android:layout_marginStart="1dp"
@@ -1148,7 +1148,7 @@
                     android:background="@color/transparent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btn_autoLangDetect" />
+                    app:layout_constraintTop_toBottomOf="@+id/btn_auto_lang_detect" />
 
                 <LinearLayout
                     android:id="@+id/btn_about"
