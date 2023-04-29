@@ -49,7 +49,7 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActiv
         message = mView.findViewById(R.id.message)
         val username: TextView = mView.findViewById(R.id.username)
         dalleImage = mView.findViewById(R.id.dalle_image)
-        imageFrame = mView.findViewById(R.id.image_frame)
+        // imageFrame = mView.findViewById(R.id.dalle_image)
         btnCopy = mView.findViewById(R.id.btn_copy)
 
         super.getView(position, mView, parent)

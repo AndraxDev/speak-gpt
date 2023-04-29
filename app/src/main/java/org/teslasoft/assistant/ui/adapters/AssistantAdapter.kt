@@ -38,7 +38,6 @@ class AssistantAdapter(data: ArrayList<HashMap<String, Any>>?, context: Fragment
         icon = mView!!.findViewById(R.id.icon)
         message = mView.findViewById(R.id.message)
         dalleImage = mView.findViewById(R.id.dalle_image)
-        imageFrame = mView.findViewById(R.id.image_frame)
         btnCopy = mView.findViewById(R.id.btn_copy)
 
         super.getView(position, mView, parent)

@@ -69,7 +69,6 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
     protected var icon: ImageView? = null
     protected var message: TextView? = null
     protected var dalleImage: ImageView? = null
-    protected var imageFrame: LinearLayout? = null
     protected var btnCopy: ImageButton? = null
 
     @SuppressLint("InflateParams", "SetTextI18n")
@@ -84,7 +83,7 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
         }
 
         if (dataArray?.get(position)?.get("message").toString().contains("data:image")) {
-            imageFrame?.visibility = View.VISIBLE
+            dalleImage?.visibility = View.VISIBLE
             message?.visibility = View.GONE
             btnCopy?.visibility = View.GONE
 
@@ -101,7 +100,7 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
                 mContext.startActivity(intent)
             }
         } else if (dataArray?.get(position)?.get("message").toString().contains("~file:")) {
-            imageFrame?.visibility = View.VISIBLE
+            dalleImage?.visibility = View.VISIBLE
             message?.visibility = View.GONE
             btnCopy?.visibility = View.GONE
 
@@ -133,7 +132,7 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                imageFrame?.visibility = View.GONE
+                dalleImage?.visibility = View.GONE
                 message?.visibility = View.VISIBLE
                 btnCopy?.visibility = View.VISIBLE
                 message?.text = "<FILE NOT FOUND>"
@@ -143,7 +142,7 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
             val markwon: Markwon = Markwon.create(mContext)
             markwon.setMarkdown(message!!, src)
 
-            imageFrame?.visibility = View.GONE
+            dalleImage?.visibility = View.GONE
             message?.visibility = View.VISIBLE
         }
 
