@@ -147,6 +147,16 @@
                     android:text=" Russian (Русский)"
                     android:textSize="16sp" />
 
+                <RadioButton
+                    android:button="@null"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="8dp"
+                    android:id="@+id/lngTr"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text=" Turkish (Türkçe)"
+                    android:textSize="16sp" />
+
             </RadioGroup>
         </LinearLayout>
     </ScrollView>

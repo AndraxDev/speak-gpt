@@ -179,6 +179,24 @@ class Preferences private constructor(private var preferences: SharedPreferences
     }
 
     /**
+     * Retrieves the always speak status from the shared preferences.
+     *
+     * @return true if always speak is enabled, false otherwise.
+     */
+    fun getAlwaysSpeak() : Boolean {
+        return getBoolean("alwaysSpeak", false)
+    }
+
+    /**
+     * Sets the always speak status in the shared preferences.
+     *
+     * @param mode The always speak status to be stored (true for enabled, false otherwise).
+     */
+    fun setAlwaysSpeak(mode: Boolean) {
+        putBoolean("alwaysSpeak", mode)
+    }
+
+    /**
      * Retrieves the end separator from the shared preferences.
      *
      * @return The end separator value or an empty String if not found.

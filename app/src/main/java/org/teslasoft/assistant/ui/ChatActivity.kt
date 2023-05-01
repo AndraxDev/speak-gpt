@@ -106,6 +106,7 @@ class ChatActivity : FragmentActivity() {
     // Init chat
     private var messages: ArrayList<HashMap<String, Any>> = arrayListOf()
     private var adapter: ChatAdapter? = null
+
     @OptIn(BetaOpenAI::class)
     private var chatMessages: ArrayList<ChatMessage> = arrayListOf()
     private var chatId = ""
@@ -118,6 +119,7 @@ class ChatActivity : FragmentActivity() {
     private var isTTSInitialized = false
     private var silenceMode = false
     private var autoLangDetect = false
+    private var alwaysSpeak = false
 
     // init AI
     private var ai: OpenAI? = null
@@ -135,12 +137,23 @@ class ChatActivity : FragmentActivity() {
 
     @OptIn(BetaOpenAI::class)
     private val speechListener = object : RecognitionListener {
-        override fun onReadyForSpeech(params: Bundle?) { /* unused */ }
-        override fun onBeginningOfSpeech() { /* unused */ }
-        override fun onRmsChanged(rmsdB: Float) { /* unused */ }
-        override fun onBufferReceived(buffer: ByteArray?) { /* unused */ }
-        override fun onPartialResults(partialResults: Bundle?) { /* unused */ }
-        override fun onEvent(eventType: Int, params: Bundle?) { /* unused */ }
+        override fun onReadyForSpeech(params: Bundle?) { /* unused */
+        }
+
+        override fun onBeginningOfSpeech() { /* unused */
+        }
+
+        override fun onRmsChanged(rmsdB: Float) { /* unused */
+        }
+
+        override fun onBufferReceived(buffer: ByteArray?) { /* unused */
+        }
+
+        override fun onPartialResults(partialResults: Bundle?) { /* unused */
+        }
+
+        override fun onEvent(eventType: Int, params: Bundle?) { /* unused */
+        }
 
         override fun onEndOfSpeech() {
             isRecording = false
@@ -161,10 +174,12 @@ class ChatActivity : FragmentActivity() {
 
                 putMessage(prefix + recognizedText + endSeparator, false)
 
-                chatMessages.add(ChatMessage(
-                    role = ChatRole.User,
-                    content = prefix + recognizedText + endSeparator
-                ))
+                chatMessages.add(
+                    ChatMessage(
+                        role = ChatRole.User,
+                        content = prefix + recognizedText + endSeparator
+                    )
+                )
 
                 saveSettings()
 
@@ -236,23 +251,26 @@ class ChatActivity : FragmentActivity() {
     }
 
     // Init permissions screen
-    private val permissionResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        run {
-            if (result.resultCode == Activity.RESULT_OK) {
-                startRecognition()
+    private val permissionResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            run {
+                if (result.resultCode == Activity.RESULT_OK) {
+                    startRecognition()
+                }
             }
         }
-    }
 
-    private val permissionResultLauncherV2 = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        run {
-            if (result.resultCode == Activity.RESULT_OK) {
-                startWhisper()
+    private val permissionResultLauncherV2 =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            run {
+                if (result.resultCode == Activity.RESULT_OK) {
+                    startWhisper()
+                }
             }
         }
-    }
 
-    private val settingsLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { recreate() }
+    private val settingsLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { recreate() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -298,6 +316,7 @@ class ChatActivity : FragmentActivity() {
         } else {
             silenceMode = Preferences.getPreferences(this, chatId).getSilence()
             autoLangDetect = Preferences.getPreferences(this, chatId).getAutoLangDetect()
+            alwaysSpeak = Preferences.getPreferences(this, chatId).getAlwaysSpeak()
             messages = ChatPreferences.getChatPreferences().getChatById(this, chatId)
 
             if (messages == null) messages = arrayListOf()
@@ -396,8 +415,8 @@ class ChatActivity : FragmentActivity() {
 
         btnSettings?.setOnClickListener {
             val i = Intent(
-                    this,
-                    SettingsActivity::class.java
+                this,
+                SettingsActivity::class.java
             )
 
             i.putExtra("chatId", chatId)
@@ -417,21 +436,25 @@ class ChatActivity : FragmentActivity() {
                 addCategory(Intent.CATEGORY_OPENABLE)
                 type = "application/json"
                 putExtra(Intent.EXTRA_TITLE, "$chatId.json")
-                putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.parse("/storage/emulated/0/SpeakGPT/$chatId.json"))
+                putExtra(
+                    DocumentsContract.EXTRA_INITIAL_URI,
+                    Uri.parse("/storage/emulated/0/SpeakGPT/$chatId.json")
+                )
             }
             fileSaveIntentLauncher.launch(intent)
         }
     }
 
-    private val fileSaveIntentLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        run {
-            if (result.resultCode == Activity.RESULT_OK) {
-                result.data?.data?.also { uri ->
-                    writeToFile(uri)
+    private val fileSaveIntentLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            run {
+                if (result.resultCode == Activity.RESULT_OK) {
+                    result.data?.data?.also { uri ->
+                        writeToFile(uri)
+                    }
                 }
             }
         }
-    }
 
     private fun writeToFile(uri: Uri) {
         try {
@@ -471,7 +494,7 @@ class ChatActivity : FragmentActivity() {
                     MaterialAlertDialogBuilder(this@ChatActivity, R.style.App_MaterialAlertDialog)
                         .setTitle("Audio error")
                         .setMessage("Failed to initialize microphone")
-                        .setPositiveButton("Close") { _, _, -> }
+                        .setPositiveButton("Close") { _, _ -> }
                         .show()
                 }
 
@@ -495,7 +518,7 @@ class ChatActivity : FragmentActivity() {
                     MaterialAlertDialogBuilder(this@ChatActivity, R.style.App_MaterialAlertDialog)
                         .setTitle("Audio error")
                         .setMessage("Failed to initialize microphone")
-                        .setPositiveButton("Close") { _, _, -> }
+                        .setPositiveButton("Close") { _, _ -> }
                         .show()
                 }
 
@@ -694,7 +717,7 @@ class ChatActivity : FragmentActivity() {
         MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
             .setTitle("Debug")
             .setMessage(string)
-            .setPositiveButton("Close") { _, _, -> }
+            .setPositiveButton("Close") { _, _ -> }
             .show()
     }
 
@@ -751,13 +774,16 @@ class ChatActivity : FragmentActivity() {
                 m.lowercase().contains("create a photo") ||
                 m.lowercase().contains("generate a photo") ||
                 m.lowercase().contains("create photo") ||
-                m.lowercase().contains("generate photo")) {
+                m.lowercase().contains("generate photo")
+            ) {
                 sendImageRequest(m)
             } else {
-                chatMessages.add(ChatMessage(
-                    role = ChatRole.User,
-                    content = m
-                ))
+                chatMessages.add(
+                    ChatMessage(
+                        role = ChatRole.User,
+                        content = m
+                    )
+                )
 
                 CoroutineScope(Dispatchers.Main).launch {
                     generateResponse(m, false)
@@ -774,8 +800,14 @@ class ChatActivity : FragmentActivity() {
 
     private fun startRecognition() {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, LocaleParser.parse(Preferences.getPreferences(this@ChatActivity, chatId).getLanguage()))
+        intent.putExtra(
+            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+        )
+        intent.putExtra(
+            RecognizerIntent.EXTRA_LANGUAGE,
+            LocaleParser.parse(Preferences.getPreferences(this@ChatActivity, chatId).getLanguage())
+        )
         intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
 
         recognizer?.startListening(intent)
@@ -801,7 +833,10 @@ class ChatActivity : FragmentActivity() {
         var response = ""
 
         try {
-            if (model.contains("davinci") || model.contains("curie") || model.contains("babbage") || model.contains("ada") || model.contains(":ft-")) {
+            if (model.contains("davinci") || model.contains("curie") || model.contains("babbage") || model.contains(
+                    "ada"
+                ) || model.contains(":ft-")
+            ) {
 
                 val tokens = Preferences.getPreferences(this, chatId).getMaxTokens()
 
@@ -832,7 +867,8 @@ class ChatActivity : FragmentActivity() {
                     maxTokens = tokens
                 )
 
-                val completions: Flow<ChatCompletionChunk> = ai!!.chatCompletions(chatCompletionRequest)
+                val completions: Flow<ChatCompletionChunk> =
+                    ai!!.chatCompletions(chatCompletionRequest)
 
                 completions.collect { v ->
                     run {
@@ -848,40 +884,56 @@ class ChatActivity : FragmentActivity() {
             messages[messages.size - 1]["message"] = "$response\n"
             adapter?.notifyDataSetChanged()
 
-            chatMessages.add(ChatMessage(
-                role = ChatRole.Assistant,
-                content = response
-            ))
+            chatMessages.add(
+                ChatMessage(
+                    role = ChatRole.Assistant,
+                    content = response
+                )
+            )
 
-            if (shouldPronounce && isTTSInitialized && !silenceMode) {
-                if (autoLangDetect) {
-                    languageIdentifier.identifyLanguage(response)
-                        .addOnSuccessListener { languageCode ->
-                            if (languageCode == "und") {
-                                Log.i("MLKit", "Can't identify language.")
-                            } else {
-                                Log.i("MLKit", "Language: $languageCode")
-                                tts!!.language = Locale.forLanguageTag(
-                                    languageCode
-                                )
+            if (!silenceMode) {
+                if (alwaysSpeak) {
+                    if (autoLangDetect) {
+                        // Ignore speech recognition service and always speak from the detected language in the response
+                        languageIdentifier.identifyLanguage(response)
+                            .addOnSuccessListener { languageCode ->
+                                if (languageCode == "und") {
+                                    Log.i("MLKit", "Can't identify language.")
+                                } else {
+                                    Log.i("MLKit", "Language: $languageCode")
+                                    tts!!.language = Locale.forLanguageTag(
+                                        languageCode
+                                    )
+                                }
+
+                                tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
+                            }.addOnFailureListener {
+                                // Ignore auto language detection if an error is occurred
+                                autoLangDetect = false
+                                ttsPostInit()
+
+                                tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
                             }
-
-                            tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
-                        }.addOnFailureListener {
-                            // Ignore auto language detection if an error is occurred
-                            autoLangDetect = false
-                            ttsPostInit()
-
-                            tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
-                        }
-                } else {
+                    } else {
+                        // Igonere speech recognition service and always speak the response
+                        // Respect user selected assistant language
+                        ttsPostInit()
+                        tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
+                    }
+                } else if (shouldPronounce) {
+                    // Only pronounce if the user use speech recognition service
+                    // Respect user selected assistant language
+                    ttsPostInit()
                     tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
                 }
             }
         } catch (e: Exception) {
             response += if (e.stackTraceToString().contains("does not exist")) {
                 "Looks like this model (${model}) is not available to you right now. It can be because of high demand or this model is currently in limited beta."
-            } else if (e.stackTraceToString().contains("Connect timeout has expired") || e.stackTraceToString().contains("SocketTimeoutException")) {
+            } else if (e.stackTraceToString()
+                    .contains("Connect timeout has expired") || e.stackTraceToString()
+                    .contains("SocketTimeoutException")
+            ) {
                 "Could not connect to OpenAI servers. It may happen when your Internet speed is slow or too many users are using this model at the same time. Try to switch to another model."
             } else if (e.stackTraceToString().contains("This model's maximum")) {
                 "Too many tokens. It is an internal error, please report it. Also try to truncate your input. Sometimes it may help."
@@ -912,7 +964,15 @@ class ChatActivity : FragmentActivity() {
 
     private fun writeImageToCache(bytes: ByteArray) {
         try {
-            contentResolver.openFileDescriptor(Uri.fromFile(File(getExternalFilesDir("images")?.absolutePath + "/" + Hash.hash(Base64.getEncoder().encodeToString(bytes)) + ".png")), "w")?.use {
+            contentResolver.openFileDescriptor(
+                Uri.fromFile(
+                    File(
+                        getExternalFilesDir("images")?.absolutePath + "/" + Hash.hash(
+                            Base64.getEncoder().encodeToString(bytes)
+                        ) + ".png"
+                    )
+                ), "w"
+            )?.use {
                 FileOutputStream(it.fileDescriptor).use {
                     it.write(
                         bytes
@@ -952,15 +1012,30 @@ class ChatActivity : FragmentActivity() {
             putMessage("~file:$file", true)
         } catch (e: Exception) {
             if (e.stackTraceToString().contains("Your request was rejected")) {
-                putMessage("Your prompt contains inappropriate content and can not be processed. We strive to make AI safe and relevant for everyone.", true)
+                putMessage(
+                    "Your prompt contains inappropriate content and can not be processed. We strive to make AI safe and relevant for everyone.",
+                    true
+                )
             } else if (e.stackTraceToString().contains("No address associated with hostname")) {
-                putMessage("You are currently offline. Please check your connection and try again.", true);
+                putMessage(
+                    "You are currently offline. Please check your connection and try again.",
+                    true
+                );
             } else if (e.stackTraceToString().contains("Incorrect API key")) {
-                putMessage("Your API key is incorrect. Change it in Settings > Change OpenAI key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked.", true);
+                putMessage(
+                    "Your API key is incorrect. Change it in Settings > Change OpenAI key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked.",
+                    true
+                );
             } else if (e.stackTraceToString().contains("Software caused connection abort")) {
-                putMessage("An error occurred while generating response. It may be due to a weak connection or high demand. Try again later.", true);
+                putMessage(
+                    "An error occurred while generating response. It may be due to a weak connection or high demand. Try again later.",
+                    true
+                );
             } else if (e.stackTraceToString().contains("You exceeded your current quota")) {
-                putMessage("You exceeded your current quota. If you had free trial usage please add payment info. Also please check your usage limits. You can change your limits in Account settings.", true)
+                putMessage(
+                    "You exceeded your current quota. If you had free trial usage please add payment info. Also please check your usage limits. You can change your limits in Account settings.",
+                    true
+                )
             } else {
                 putMessage(e.stackTraceToString(), true)
             }

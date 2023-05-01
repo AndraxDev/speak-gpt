@@ -35,7 +35,7 @@ import org.teslasoft.assistant.util.Hash
 class AddChatDialogFragment : DialogFragment() {
 
     companion object {
-        public fun newInstance(name: String, fromFile: Boolean) : AddChatDialogFragment {
+        public fun newInstance(name: String, fromFile: Boolean): AddChatDialogFragment {
             val addChatDialogFragment = AddChatDialogFragment()
 
             val args = Bundle()
@@ -65,7 +65,11 @@ class AddChatDialogFragment : DialogFragment() {
         context = this.activity
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_add_chat, container, false)
     }
 
@@ -86,10 +90,10 @@ class AddChatDialogFragment : DialogFragment() {
             nameInput?.setText(requireArguments().getString("name"))
 
             builder!!.setView(view)
-                    .setCancelable(false)
-                    .setPositiveButton("OK") { _, _ -> validateForm() }
-                    .setNeutralButton("Delete") { _, _ -> confirmDeletion(requireActivity()) }
-                    .setNegativeButton("Cancel") { _, _ -> listener!!.onCanceled() }
+                .setCancelable(false)
+                .setPositiveButton("OK") { _, _ -> validateForm() }
+                .setNeutralButton("Delete") { _, _ -> confirmDeletion(requireActivity()) }
+                .setNegativeButton("Cancel") { _, _ -> listener!!.onCanceled() }
 
             isEdit = true
 
@@ -97,12 +101,18 @@ class AddChatDialogFragment : DialogFragment() {
         } else {
             dialogTitle.text = requireActivity().resources.getString(R.string.title_new_chat)
 
-            nameInput?.setText("New chat ${chatPreferences?.getAvailableChatId(requireActivity())}")
+            nameInput?.setText(
+                "${getResources().getString(R.string.title_new_chat)} ${
+                    chatPreferences?.getAvailableChatId(
+                        requireActivity()
+                    )
+                }"
+            )
 
             builder!!.setView(view)
-                    .setCancelable(false)
-                    .setPositiveButton("OK") { _, _ -> validateForm() }
-                    .setNegativeButton("Cancel") { _, _: Int -> listener!!.onCanceled() }
+                .setCancelable(false)
+                .setPositiveButton("OK") { _, _ -> validateForm() }
+                .setNegativeButton("Cancel") { _, _: Int -> listener!!.onCanceled() }
 
             return builder!!.create()
         }
@@ -112,16 +122,34 @@ class AddChatDialogFragment : DialogFragment() {
         if (nameInput?.text.toString() == "") {
             listener!!.onError(arguments?.getBoolean("fromFile") == true)
         } else {
-            if (chatPreferences?.checkDuplicate(requireActivity(), nameInput?.text.toString()) == false) {
+            if (chatPreferences?.checkDuplicate(
+                    requireActivity(),
+                    nameInput?.text.toString()
+                ) == false
+            ) {
                 val preferences: Preferences = if (isEdit) {
-                    chatPreferences?.editChat(requireActivity(), nameInput?.text.toString(), requireArguments().getString("name").toString())
-                    listener!!.onEdit(nameInput?.text.toString(), Hash.hash(nameInput?.text.toString()))
+                    chatPreferences?.editChat(
+                        requireActivity(),
+                        nameInput?.text.toString(),
+                        requireArguments().getString("name").toString()
+                    )
+                    listener!!.onEdit(
+                        nameInput?.text.toString(),
+                        Hash.hash(nameInput?.text.toString())
+                    )
 
                     // Transfer settings
-                    Preferences.getPreferences(requireActivity(), Hash.hash(arguments?.getString("name").toString()))
+                    Preferences.getPreferences(
+                        requireActivity(),
+                        Hash.hash(arguments?.getString("name").toString())
+                    )
                 } else {
                     chatPreferences?.addChat(requireActivity(), nameInput?.text.toString())
-                    listener!!.onAdd(nameInput?.text.toString(), Hash.hash(nameInput?.text.toString()), arguments?.getBoolean("fromFile") == true)
+                    listener!!.onAdd(
+                        nameInput?.text.toString(),
+                        Hash.hash(nameInput?.text.toString()),
+                        arguments?.getBoolean("fromFile") == true
+                    )
 
                     // Copy settings from default
                     Preferences.getPreferences(requireActivity(), "")
@@ -156,11 +184,11 @@ class AddChatDialogFragment : DialogFragment() {
 
     private fun confirmDeletion(context: Context) {
         MaterialAlertDialogBuilder(requireActivity(), R.style.App_MaterialAlertDialog)
-                .setTitle("Confirm deletion")
-                .setMessage("This action can not be undone.")
-                .setPositiveButton("Delete") { _, _ -> delete(context) }
-                .setNegativeButton("Cancel") { _, _ -> }
-                .show()
+            .setTitle("Confirm deletion")
+            .setMessage("This action can not be undone.")
+            .setPositiveButton("Delete") { _, _ -> delete(context) }
+            .setNegativeButton("Cancel") { _, _ -> }
+            .show()
     }
 
     private fun delete(context: Context) {

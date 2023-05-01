@@ -133,4 +133,8 @@
     <string name="btn_copy">Копировать</string>
     <string name="user">Пользователь</string>
     <string name="title_edit_chat">Редактировать чат</string>
+    <string name="setting_auto_lang_detect">Auto Language Detect</string>
+    <string name="setting_auto_lang_detect_desc">Set TTS Language From Chat Response</string>
+    <string name="setting_always_speak">Always Speak</string>
+    <string name="setting_always_speak_desc">Ignore speech recognition and always speak</string>
 </resources>

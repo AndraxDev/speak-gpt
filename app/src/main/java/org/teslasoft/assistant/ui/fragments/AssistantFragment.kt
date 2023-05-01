@@ -106,6 +106,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     // Init chat
     private var messages: ArrayList<HashMap<String, Any>> = arrayListOf()
     private var adapter: AssistantAdapter? = null
+
     @OptIn(BetaOpenAI::class)
     private var chatMessages: ArrayList<ChatMessage> = arrayListOf()
     private lateinit var languageIdentifier: LanguageIdentifier
@@ -117,6 +118,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private var silenceMode = false
     private var chatID = ""
     private var autoLangDetect = false
+    private var alwaysSpeak = false
 
     // init AI
     private var ai: OpenAI? = null
@@ -129,39 +131,43 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private var resolution = "512x152"
 
     // Init chat save feature
-    private var chatListUpdatedListener: AddChatDialogFragment.StateChangesListener = object : AddChatDialogFragment.StateChangesListener {
-        override fun onAdd(name: String, id: String, fromFile: Boolean) {
-            save(id)
+    private var chatListUpdatedListener: AddChatDialogFragment.StateChangesListener =
+        object : AddChatDialogFragment.StateChangesListener {
+            override fun onAdd(name: String, id: String, fromFile: Boolean) {
+                save(id)
+            }
+
+            override fun onEdit(name: String, id: String) {
+                save(id)
+            }
+
+            override fun onError(fromFile: Boolean) {
+                Toast.makeText(requireActivity(), "Please fill name field", Toast.LENGTH_SHORT)
+                    .show()
+
+                val chatDialogFragment: AddChatDialogFragment =
+                    AddChatDialogFragment.newInstance("", false)
+                chatDialogFragment.setStateChangedListener(this)
+                chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
+            }
+
+            override fun onCanceled() {
+                /* unused */
+            }
+
+            override fun onDelete() {
+                /* unused */
+            }
+
+            override fun onDuplicate() {
+                Toast.makeText(requireActivity(), "Name must be unique", Toast.LENGTH_SHORT).show()
+
+                val chatDialogFragment: AddChatDialogFragment =
+                    AddChatDialogFragment.newInstance("", false)
+                chatDialogFragment.setStateChangedListener(this)
+                chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
+            }
         }
-
-        override fun onEdit(name: String, id: String) {
-            save(id)
-        }
-
-        override fun onError(fromFile: Boolean) {
-            Toast.makeText(requireActivity(), "Please fill name field", Toast.LENGTH_SHORT).show()
-
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false)
-            chatDialogFragment.setStateChangedListener(this)
-            chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
-        }
-
-        override fun onCanceled() {
-            /* unused */
-        }
-
-        override fun onDelete() {
-            /* unused */
-        }
-
-        override fun onDuplicate() {
-            Toast.makeText(requireActivity(), "Name must be unique", Toast.LENGTH_SHORT).show()
-
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false)
-            chatDialogFragment.setStateChangedListener(this)
-            chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
-        }
-    }
 
     // Init audio
     private var recognizer: SpeechRecognizer? = null
@@ -169,12 +175,23 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     @OptIn(BetaOpenAI::class)
     private val speechListener = object : RecognitionListener {
-        override fun onReadyForSpeech(params: Bundle?) { /* unused */ }
-        override fun onBeginningOfSpeech() { /* unused */ }
-        override fun onRmsChanged(rmsdB: Float) { /* unused */ }
-        override fun onBufferReceived(buffer: ByteArray?) { /* unused */ }
-        override fun onPartialResults(partialResults: Bundle?) { /* unused */ }
-        override fun onEvent(eventType: Int, params: Bundle?) { /* unused */ }
+        override fun onReadyForSpeech(params: Bundle?) { /* unused */
+        }
+
+        override fun onBeginningOfSpeech() { /* unused */
+        }
+
+        override fun onRmsChanged(rmsdB: Float) { /* unused */
+        }
+
+        override fun onBufferReceived(buffer: ByteArray?) { /* unused */
+        }
+
+        override fun onPartialResults(partialResults: Bundle?) { /* unused */
+        }
+
+        override fun onEvent(eventType: Int, params: Bundle?) { /* unused */
+        }
 
         override fun onEndOfSpeech() {
             isRecording = false
@@ -193,10 +210,12 @@ class AssistantFragment : BottomSheetDialogFragment() {
             if (matches != null && matches.size > 0) {
                 val recognizedText = matches[0]
 
-                chatMessages.add(ChatMessage(
-                    role = ChatRole.User,
-                    content = prefix + recognizedText + endSeparator
-                ))
+                chatMessages.add(
+                    ChatMessage(
+                        role = ChatRole.User,
+                        content = prefix + recognizedText + endSeparator
+                    )
+                )
 
                 saveSettings()
 
@@ -225,13 +244,25 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     private fun ttsPostInit() {
         if (!autoLangDetect) {
-            val result = tts!!.setLanguage(LocaleParser.parse(Preferences.getPreferences(requireActivity(), "").getLanguage()))
+            val result = tts!!.setLanguage(
+                LocaleParser.parse(
+                    Preferences.getPreferences(
+                        requireActivity(),
+                        ""
+                    ).getLanguage()
+                )
+            )
 
-            isTTSInitialized = !(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED)
+            isTTSInitialized =
+                !(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED)
 
             val voices: Set<Voice> = tts!!.voices
             for (v: Voice in voices) {
-                if (v.name.equals("en-us-x-iom-local") && Preferences.getPreferences(requireActivity(), "").getLanguage() == "en") {
+                if (v.name.equals("en-us-x-iom-local") && Preferences.getPreferences(
+                        requireActivity(),
+                        ""
+                    ).getLanguage() == "en"
+                ) {
                     tts!!.voice = v
                 }
             }
@@ -259,26 +290,29 @@ class AssistantFragment : BottomSheetDialogFragment() {
     }
 
     // Init permissions screen
-    private val permissionResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        run {
-            if (result.resultCode == Activity.RESULT_OK) {
-                startRecognition()
+    private val permissionResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            run {
+                if (result.resultCode == Activity.RESULT_OK) {
+                    startRecognition()
+                }
             }
         }
-    }
 
-    private val permissionResultLauncherV2 = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        run {
-            if (result.resultCode == Activity.RESULT_OK) {
-                startWhisper()
+    private val permissionResultLauncherV2 =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            run {
+                if (result.resultCode == Activity.RESULT_OK) {
+                    startWhisper()
+                }
             }
         }
-    }
 
-    private val settingsLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        loadModel()
-        loadResolution()
-    }
+    private val settingsLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            loadModel()
+            loadResolution()
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -314,6 +348,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         } else {
             silenceMode = Preferences.getPreferences(requireActivity(), "").getSilence()
             autoLangDetect = Preferences.getPreferences(requireActivity(), "").getAutoLangDetect()
+            alwaysSpeak = Preferences.getPreferences(requireActivity(), "").getAlwaysSpeak()
 
             messages = ArrayList()
 
@@ -375,7 +410,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                     MaterialAlertDialogBuilder(requireActivity(), R.style.App_MaterialAlertDialog)
                         .setTitle("Audio error")
                         .setMessage("Failed to initialize microphone")
-                        .setPositiveButton("Close") { _, _, -> }
+                        .setPositiveButton("Close") { _, _ -> }
                         .show()
                 }
 
@@ -399,7 +434,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                     MaterialAlertDialogBuilder(requireActivity(), R.style.App_MaterialAlertDialog)
                         .setTitle("Audio error")
                         .setMessage("Failed to initialize microphone")
-                        .setPositiveButton("Close") { _, _, -> }
+                        .setPositiveButton("Close") { _, _ -> }
                         .show()
                 }
 
@@ -570,7 +605,8 @@ class AssistantFragment : BottomSheetDialogFragment() {
     }
 
     private fun runFromContextMenu() {
-        val tryPrompt = requireActivity().intent.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT).toString()
+        val tryPrompt =
+            requireActivity().intent.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT).toString()
 
         if (tryPrompt != "" && tryPrompt != "null") {
             run(prefix + tryPrompt + endSeparator)
@@ -644,13 +680,16 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 m.lowercase().contains("create a photo") ||
                 m.lowercase().contains("generate a photo") ||
                 m.lowercase().contains("create photo") ||
-                m.lowercase().contains("generate photo")) {
+                m.lowercase().contains("generate photo")
+            ) {
                 sendImageRequest(m)
             } else {
-                chatMessages.add(ChatMessage(
-                    role = ChatRole.User,
-                    content = m
-                ))
+                chatMessages.add(
+                    ChatMessage(
+                        role = ChatRole.User,
+                        content = m
+                    )
+                )
 
                 CoroutineScope(Dispatchers.Main).launch {
                     generateResponse(m, false)
@@ -677,8 +716,14 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     private fun startRecognition() {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, LocaleParser.parse(Preferences.getPreferences(requireActivity(), "").getLanguage()))
+        intent.putExtra(
+            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+        )
+        intent.putExtra(
+            RecognizerIntent.EXTRA_LANGUAGE,
+            LocaleParser.parse(Preferences.getPreferences(requireActivity(), "").getLanguage())
+        )
         intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
 
         recognizer?.startListening(intent)
@@ -707,7 +752,10 @@ class AssistantFragment : BottomSheetDialogFragment() {
         var response = ""
 
         try {
-            if (model.contains("davinci") || model.contains("curie") || model.contains("babbage") || model.contains("ada") || model.contains(":ft-")) {
+            if (model.contains("davinci") || model.contains("curie") || model.contains("babbage") || model.contains(
+                    "ada"
+                ) || model.contains(":ft-")
+            ) {
                 val tokens = Preferences.getPreferences(requireActivity(), "").getMaxTokens()
 
                 val completionRequest = CompletionRequest(
@@ -737,7 +785,8 @@ class AssistantFragment : BottomSheetDialogFragment() {
                     maxTokens = tokens
                 )
 
-                val completions: Flow<ChatCompletionChunk> = ai!!.chatCompletions(chatCompletionRequest)
+                val completions: Flow<ChatCompletionChunk> =
+                    ai!!.chatCompletions(chatCompletionRequest)
 
                 completions.collect { v ->
                     run {
@@ -753,40 +802,61 @@ class AssistantFragment : BottomSheetDialogFragment() {
             messages[messages.size - 1]["message"] = "$response\n"
             adapter?.notifyDataSetChanged()
 
-            chatMessages.add(ChatMessage(
-                role = ChatRole.Assistant,
-                content = response
-            ))
+            chatMessages.add(
+                ChatMessage(
+                    role = ChatRole.Assistant,
+                    content = response
+                )
+            )
 
-            if (shouldPronounce && isTTSInitialized && !silenceMode) {
-                if (autoLangDetect) {
-                    languageIdentifier.identifyLanguage(response)
-                        .addOnSuccessListener { languageCode ->
-                            if (languageCode == "und") {
-                                Log.i("MLKit", "Can't identify language.")
-                            } else {
-                                Log.i("MLKit", "Language: $languageCode")
-                                tts!!.language = Locale.forLanguageTag(
-                                    languageCode
-                                )
+            if (!silenceMode) {
+                /*
+                "Always talk feature" Useful if the user
+                * wants to listen to the assistant response
+                * even when not using the speech recognition service
+                * */
+                if (alwaysSpeak) {
+                    if (autoLangDetect) {
+                        // Ignore speech recognition service and always speak from the detected language in the response
+                        languageIdentifier.identifyLanguage(response)
+                            .addOnSuccessListener { languageCode ->
+                                if (languageCode == "und") {
+                                    Log.i("MLKit", "Can't identify language.")
+                                } else {
+                                    Log.i("MLKit", "Language: $languageCode")
+                                    tts!!.language = Locale.forLanguageTag(
+                                        languageCode
+                                    )
+                                }
+
+                                tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
+                            }.addOnFailureListener {
+                                // Ignore auto language detection if an error is occurred
+                                autoLangDetect = false
+                                ttsPostInit()
+
+                                tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
                             }
-
-                            tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
-                        }.addOnFailureListener {
-                            // Ignore auto language detection if an error is occurred
-                            autoLangDetect = false
-                            ttsPostInit()
-
-                            tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
-                        }
-                } else {
+                    } else {
+                        // Igonere speech recognition service and always speak the response
+                        // Respect user selected assistant language
+                        ttsPostInit()
+                        tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
+                    }
+                } else if (shouldPronounce) {
+                    // Only pronounce if the user use speech recognition service
+                    // Respect user selected assistant language
+                    ttsPostInit()
                     tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
                 }
             }
         } catch (e: Exception) {
             response += if (e.stackTraceToString().contains("does not exist")) {
                 "Looks like this model (${model}) is not available to you right now. It can be because of high demand or this model is currently in limited beta."
-            } else if (e.stackTraceToString().contains("Connect timeout has expired") || e.stackTraceToString().contains("SocketTimeoutException")) {
+            } else if (e.stackTraceToString()
+                    .contains("Connect timeout has expired") || e.stackTraceToString()
+                    .contains("SocketTimeoutException")
+            ) {
                 "Could not connect to OpenAI servers. It may happen when your Internet speed is slow or too many users are using this model at the same time. Try to switch to another model."
             } else if (e.stackTraceToString().contains("This model's maximum")) {
                 "Too many tokens. It is an internal error, please report it. Also try to truncate your input. Sometimes it may help."
@@ -817,7 +887,17 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     private fun writeImageToCache(bytes: ByteArray) {
         try {
-            requireActivity().contentResolver.openFileDescriptor(Uri.fromFile(File(requireActivity().getExternalFilesDir("images")?.absolutePath + "/" + Hash.hash(Base64.getEncoder().encodeToString(bytes)) + ".png")), "w")?.use {
+            requireActivity().contentResolver.openFileDescriptor(
+                Uri.fromFile(
+                    File(
+                        requireActivity().getExternalFilesDir(
+                            "images"
+                        )?.absolutePath + "/" + Hash.hash(
+                            Base64.getEncoder().encodeToString(bytes)
+                        ) + ".png"
+                    )
+                ), "w"
+            )?.use {
                 FileOutputStream(it.fileDescriptor).use {
                     it.write(
                         bytes
@@ -861,15 +941,30 @@ class AssistantFragment : BottomSheetDialogFragment() {
             putMessage(path, true)
         } catch (e: Exception) {
             if (e.stackTraceToString().contains("Your request was rejected")) {
-                putMessage("Your prompt contains inappropriate content and can not be processed. We strive to make AI safe and relevant for everyone.", true)
+                putMessage(
+                    "Your prompt contains inappropriate content and can not be processed. We strive to make AI safe and relevant for everyone.",
+                    true
+                )
             } else if (e.stackTraceToString().contains("No address associated with hostname")) {
-                putMessage("You are currently offline. Please check your connection and try again.", true);
+                putMessage(
+                    "You are currently offline. Please check your connection and try again.",
+                    true
+                );
             } else if (e.stackTraceToString().contains("Incorrect API key")) {
-                putMessage("Your API key is incorrect. Change it in Settings > Change OpenAI key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked.", true);
+                putMessage(
+                    "Your API key is incorrect. Change it in Settings > Change OpenAI key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked.",
+                    true
+                );
             } else if (e.stackTraceToString().contains("Software caused connection abort")) {
-                putMessage("An error occurred while generating response. It may be due to a weak connection or high demand. Try again later.", true);
+                putMessage(
+                    "An error occurred while generating response. It may be due to a weak connection or high demand. Try again later.",
+                    true
+                );
             } else if (e.stackTraceToString().contains("You exceeded your current quota")) {
-                putMessage("You exceeded your current quota. If you had free trial usage please add payment info. Also please check your usage limits. You can change your limits in Account settings.", true)
+                putMessage(
+                    "You exceeded your current quota. If you had free trial usage please add payment info. Also please check your usage limits. You can change your limits in Account settings.",
+                    true
+                )
             } else {
                 putMessage(e.stackTraceToString(), true)
             }
@@ -946,7 +1041,8 @@ class AssistantFragment : BottomSheetDialogFragment() {
         }
 
         btnSaveToChat?.setOnClickListener {
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false)
+            val chatDialogFragment: AddChatDialogFragment =
+                AddChatDialogFragment.newInstance("", false)
             chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -982,10 +1078,12 @@ class AssistantFragment : BottomSheetDialogFragment() {
         btnAssistantSend?.isEnabled = false
         assistantLoading?.visibility = View.VISIBLE
 
-        chatMessages.add(ChatMessage(
-            role = ChatRole.User,
-            content = prompt
-        ))
+        chatMessages.add(
+            ChatMessage(
+                role = ChatRole.User,
+                content = prompt
+            )
+        )
 
         CoroutineScope(Dispatchers.Main).launch {
             generateResponse(prompt, false)
