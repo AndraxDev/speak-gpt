@@ -31,12 +31,13 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.teslasoft.assistant.ui.MainActivity
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
+import org.teslasoft.assistant.ui.MainActivity
 
 class ActivationActivity : FragmentActivity() {
 
+    private var baseUrl: EditText? = null
     private var btnNext: MaterialButton? = null
     private var webView: WebView? = null
     private var keyInput: EditText? = null
@@ -48,6 +49,9 @@ class ActivationActivity : FragmentActivity() {
         btnNext = findViewById(R.id.btn_next)
         webView = findViewById(R.id.webview)
         keyInput = findViewById(R.id.key_input)
+        baseUrl = findViewById(R.id.base_url)
+        baseUrl?.setText("https://api.openai.com/")
+
 
         webView?.setBackgroundColor(0x00000000)
 
@@ -89,7 +93,10 @@ class ActivationActivity : FragmentActivity() {
             if (keyInput?.text.toString() == "") {
                 Toast.makeText(this, "Please enter an API key", Toast.LENGTH_SHORT).show()
             } else {
-                Preferences.getPreferences(this, "").setApiKey(keyInput?.text.toString(), this)
+                val preferences = Preferences.getPreferences(this, "")
+
+                preferences.setApiKey(keyInput?.text.toString(), this)
+                preferences.setBaseUrl(baseUrl?.text.toString().trim().trimEnd('/'))
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
             }

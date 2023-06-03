@@ -286,6 +286,14 @@ class Preferences private constructor(private var preferences: SharedPreferences
         putString("layout", layout)
     }
 
+    fun getBaseUrl() : String {
+        return getString("base_url", "https://api.openai.com/")
+    }
+
+    fun setBaseUrl(url: String) {
+        putString("base_url", url)
+    }
+
     /**
      * Retrieves the encrypted API key from the shared preferences.
      *

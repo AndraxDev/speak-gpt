@@ -17,15 +17,23 @@
 package org.teslasoft.core.api.network
 
 import com.google.gson.Gson
-import okhttp3.*
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.FormBody
+import okhttp3.Headers
+import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
 import okio.IOException
 import java.lang.String.valueOf
 import java.security.KeyStore
 import java.security.SecureRandom
-import java.util.*
+import java.util.Arrays
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSocketFactory
@@ -148,7 +156,8 @@ open class RequestNetworkController {
             override fun onResponse(call: Call, response: Response) {
                 val responseBody: String = response.body.string().trim()
 
-                requestNetwork.getActivity().runOnUiThread {
+                val activity = requestNetwork.getActivity()
+                activity.runOnUiThread {
                     requestListener.onResponse(
                         tag, responseBody
                     )

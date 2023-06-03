@@ -61,6 +61,7 @@ import com.aallam.openai.api.model.Model
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
 import com.aallam.openai.client.OpenAIConfig
+import com.aallam.openai.client.OpenAIHost
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import com.google.mlkit.nl.languageid.LanguageIdentification
@@ -122,6 +123,7 @@ class ChatActivity : FragmentActivity() {
     // init AI
     private var ai: OpenAI? = null
     private var key: String? = null
+    private var baseUrl: String? = null
     private var model = ""
     private var endSeparator = ""
     private var prefix = ""
@@ -286,6 +288,7 @@ class ChatActivity : FragmentActivity() {
     @Suppress("unchecked")
     private fun initSettings() {
         key = Preferences.getPreferences(this, chatId).getApiKey(this)
+        baseUrl = Preferences.getPreferences(this, chatId).getBaseUrl()
 
         endSeparator = Preferences.getPreferences(this, chatId).getEndSeparator()
         prefix = Preferences.getPreferences(this, chatId).getPrefix()
@@ -627,6 +630,7 @@ class ChatActivity : FragmentActivity() {
             val config = OpenAIConfig(
                 token = key!!,
                 logLevel = LogLevel.None,
+                host = OpenAIHost(baseUrl!!)
             )
             ai = OpenAI(config)
             loadModel()

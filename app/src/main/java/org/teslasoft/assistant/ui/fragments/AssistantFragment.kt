@@ -57,6 +57,7 @@ import com.aallam.openai.api.logging.LogLevel
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
 import com.aallam.openai.client.OpenAIConfig
+import com.aallam.openai.client.OpenAIHost
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -89,6 +90,8 @@ import java.util.Base64
 import java.util.Locale
 
 class AssistantFragment : BottomSheetDialogFragment() {
+
+    private lateinit var baseUrl: String
 
     // Init UI
     private var btnAssistantVoice: ImageButton? = null
@@ -302,6 +305,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     @Suppress("unchecked")
     private fun initSettings() {
         key = Preferences.getPreferences(requireActivity(), "").getApiKey(requireActivity())
+        baseUrl = Preferences.getPreferences(requireActivity(), "").getBaseUrl()
 
         endSeparator = Preferences.getPreferences(requireActivity(), "").getEndSeparator()
         prefix = Preferences.getPreferences(requireActivity(), "").getPrefix()
@@ -531,6 +535,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
             val config = OpenAIConfig(
                 token = key!!,
                 logLevel = LogLevel.None,
+                host = OpenAIHost(baseUrl)
             )
             ai = OpenAI(config)
             loadModel()
