@@ -133,4 +133,5 @@
     <string name="btn_copy">Kopírovať</string>
     <string name="user">Používateľ</string>
     <string name="title_edit_chat">Upraviť chat</string>
+    <string name="base_url">Základná URL</string>
 </resources>

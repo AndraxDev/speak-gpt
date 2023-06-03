@@ -133,4 +133,5 @@
     <string name="btn_copy">Копіювати</string>
     <string name="user">Користувач</string>
     <string name="title_edit_chat">Редагувати чат</string>
+    <string name="base_url">Базовий URL</string>
 </resources>
