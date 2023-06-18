@@ -708,12 +708,11 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
         try {
             if (model.contains("davinci") || model.contains("curie") || model.contains("babbage") || model.contains("ada") || model.contains(":ft-")) {
-                val tokens = Preferences.getPreferences(requireActivity(), "").getMaxTokens()
+                // val tokens = Preferences.getPreferences(requireActivity(), "").getMaxTokens()
 
                 val completionRequest = CompletionRequest(
                     model = ModelId(model),
                     prompt = request,
-                    maxTokens = tokens,
                     echo = false
                 )
 
@@ -729,12 +728,11 @@ class AssistantFragment : BottomSheetDialogFragment() {
                     }
                 }
             } else {
-                val tokens = Preferences.getPreferences(requireActivity(), "").getMaxTokens()
+                // val tokens = Preferences.getPreferences(requireActivity(), "").getMaxTokens()
 
                 val chatCompletionRequest = ChatCompletionRequest(
                     model = ModelId(model),
-                    messages = chatMessages,
-                    maxTokens = tokens
+                    messages = chatMessages
                 )
 
                 val completions: Flow<ChatCompletionChunk> = ai!!.chatCompletions(chatCompletionRequest)

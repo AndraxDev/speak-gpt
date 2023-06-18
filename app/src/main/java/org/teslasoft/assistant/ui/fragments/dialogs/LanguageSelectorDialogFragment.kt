@@ -49,6 +49,7 @@ class LanguageSelectorDialogFragment : DialogFragment() {
     private var lngEs: RadioButton? = null
     private var lngUk: RadioButton? = null
     private var lngRu: RadioButton? = null
+    private var lngPl: RadioButton? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         builder = MaterialAlertDialogBuilder(this.requireContext())
@@ -66,6 +67,7 @@ class LanguageSelectorDialogFragment : DialogFragment() {
         lngEs = view.findViewById(R.id.lngEs)
         lngUk = view.findViewById(R.id.lngUk)
         lngRu = view.findViewById(R.id.lngRu)
+        lngPl = view.findViewById(R.id.lngPl)
 
         builder!!.setView(view)
             .setCancelable(false)
@@ -85,6 +87,7 @@ class LanguageSelectorDialogFragment : DialogFragment() {
         lngEs?.isChecked = language == "es"
         lngUk?.isChecked = language == "uk"
         lngRu?.isChecked = language == "ru"
+        lngPl?.isChecked = language == "pl"
 
         when (language) {
             "en" -> {
@@ -151,6 +154,12 @@ class LanguageSelectorDialogFragment : DialogFragment() {
                 clearSelection()
                 lngRu?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
                 lngRu?.background = getDarkAccentDrawableV2(
+                    ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!, requireActivity())
+            }
+            "pl" -> {
+                clearSelection()
+                lngPl?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+                lngPl?.background = getDarkAccentDrawableV2(
                     ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!, requireActivity())
             }
         }
@@ -232,6 +241,13 @@ class LanguageSelectorDialogFragment : DialogFragment() {
             lngRu?.background = getDarkAccentDrawableV2(
                 ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!, requireActivity())
         }
+        lngPl?.setOnClickListener {
+            language = "pl"
+            clearSelection()
+            lngPl?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+            lngPl?.background = getDarkAccentDrawableV2(
+                ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!, requireActivity())
+        }
 
         return builder!!.create()
     }
@@ -280,6 +296,10 @@ class LanguageSelectorDialogFragment : DialogFragment() {
         lngRu?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
         lngRu?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
+
+        lngPl?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
+        lngPl?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
     }
 
     private fun getDarkAccentDrawable(drawable: Drawable, context: Context) : Drawable {
