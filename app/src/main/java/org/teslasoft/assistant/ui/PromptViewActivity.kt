@@ -27,20 +27,22 @@ import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+
 import org.teslasoft.assistant.Api
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.ui.assistant.AssistantActivity
 import org.teslasoft.core.api.network.RequestNetwork
-
 
 class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListener {
 

@@ -16,8 +16,8 @@ android {
         minSdk 28
         targetSdk 33
         // targetSdkPreview "UpsideDownCake"
-        versionCode 220
-        versionName "2.20"
+        versionCode 221
+        versionName "2.21"
         externalNativeBuild {
             cmake {
                 cppFlags ''
@@ -60,8 +60,7 @@ android {
 dependencies {
     implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    //noinspection GradleDependency
-    implementation 'com.google.android.material:material:1.9.0-beta01'
+    implementation 'com.google.android.material:material:1.9.0'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.aallam.openai:openai-client:3.2.3'
     implementation 'io.ktor:ktor-client-android:2.3.0'
@@ -82,4 +81,5 @@ dependencies {
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'androidx.security:security-crypto-ktx:1.1.0-alpha06'
     implementation 'com.google.mlkit:language-id:17.0.4'
+    implementation 'cat.ereza:customactivityoncrash:2.4.0'
 }

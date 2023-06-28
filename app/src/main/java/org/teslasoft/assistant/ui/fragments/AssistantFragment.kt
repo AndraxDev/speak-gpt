@@ -39,9 +39,11 @@ import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.Toast
+
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+
 import com.aallam.openai.api.BetaOpenAI
 import com.aallam.openai.api.audio.TranscriptionRequest
 import com.aallam.openai.api.chat.ChatCompletionChunk
@@ -57,6 +59,7 @@ import com.aallam.openai.api.logging.LogLevel
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
 import com.aallam.openai.client.OpenAIConfig
+
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -64,13 +67,16 @@ import com.google.android.material.elevation.SurfaceColors
 import com.google.gson.Gson
 import com.google.mlkit.nl.languageid.LanguageIdentification
 import com.google.mlkit.nl.languageid.LanguageIdentifier
+
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
 import okio.FileSystem
 import okio.Path.Companion.toPath
+
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.AssistantAdapter
@@ -80,6 +86,7 @@ import org.teslasoft.assistant.ui.permission.MicrophonePermissionActivity
 import org.teslasoft.assistant.ui.fragments.dialogs.AddChatDialogFragment
 import org.teslasoft.assistant.util.Hash
 import org.teslasoft.assistant.util.LocaleParser
+
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream

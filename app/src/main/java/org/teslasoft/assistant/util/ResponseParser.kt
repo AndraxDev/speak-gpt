@@ -20,6 +20,7 @@ package org.teslasoft.assistant.util
 * This class should parse bot response into Markdown format
 * */
 
+@Deprecated("DODO: Migrate to GPT functions")
 class ResponseParser {
     // TODO: Implement
 }

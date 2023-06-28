@@ -23,9 +23,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+
 import org.teslasoft.assistant.R
 
 class ActivationPromptDialogFragment : DialogFragment() {
@@ -83,7 +86,7 @@ class ActivationPromptDialogFragment : DialogFragment() {
         this.listener = listener
     }
 
-    interface StateChangesListener {
+    fun interface StateChangesListener {
         fun onEdit(prompt: String)
     }
 }

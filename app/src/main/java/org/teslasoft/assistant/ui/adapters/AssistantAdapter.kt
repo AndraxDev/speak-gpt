@@ -21,7 +21,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+
 import androidx.fragment.app.FragmentActivity
+
 import org.teslasoft.assistant.R
 
 class AssistantAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActivity) : AbstractChatAdapter(data, context) {

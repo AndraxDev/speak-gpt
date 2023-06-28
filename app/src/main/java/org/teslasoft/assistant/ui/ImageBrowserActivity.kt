@@ -24,15 +24,22 @@ import android.os.Bundle
 import android.provider.DocumentsContract
 import android.widget.ImageView
 import android.widget.Toast
+
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentActivity
+
 import com.bumptech.glide.Glide
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+
 import org.teslasoft.assistant.R
+
 import uk.co.senab.photoview.PhotoViewAttacher
+
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException

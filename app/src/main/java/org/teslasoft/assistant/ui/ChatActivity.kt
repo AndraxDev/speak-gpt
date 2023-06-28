@@ -42,9 +42,11 @@ import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+
 import com.aallam.openai.api.BetaOpenAI
 import com.aallam.openai.api.audio.TranscriptionRequest
 import com.aallam.openai.api.chat.ChatCompletionChunk
@@ -61,17 +63,21 @@ import com.aallam.openai.api.model.Model
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
 import com.aallam.openai.client.OpenAIConfig
+
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import com.google.mlkit.nl.languageid.LanguageIdentification
 import com.google.mlkit.nl.languageid.LanguageIdentifier
+
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
 import okio.FileSystem
 import okio.Path.Companion.toPath
+
 import org.jetbrains.annotations.TestOnly
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ChatPreferences
@@ -81,14 +87,16 @@ import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
 import org.teslasoft.assistant.ui.permission.MicrophonePermissionActivity
 import org.teslasoft.assistant.util.Hash
 import org.teslasoft.assistant.util.LocaleParser
+
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
+
 import java.net.URL
+
 import java.util.Base64
 import java.util.Locale
-
 
 class ChatActivity : FragmentActivity() {
 

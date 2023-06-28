@@ -23,10 +23,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.fragment.app.FragmentActivity
-import com.google.android.material.button.MaterialButton
-import org.teslasoft.assistant.R
 
+import androidx.fragment.app.FragmentActivity
+
+import com.google.android.material.button.MaterialButton
+
+import org.teslasoft.assistant.R
 
 class AboutActivity : FragmentActivity() {
 

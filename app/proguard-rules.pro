@@ -46,6 +46,14 @@
 
 -keep class com.teslasoft.assistant.** { *; }
 -keep class org.teslasoft.core.** { *; }
+-keep class com.didalgo.gpt3.** { *; }
+-keep class com.theokanning.openai.** { *; }
+-keep class com.theokanning.openai.completion.** { *; }
+-keep class com.theokanning.openai.completion.chat.** { *; }
+-keep class com.google.android.material.** { *; }
+-keep class com.google.android.material.bottomnavigation.** { *; }
+-keep class com.google.android.material.bottomnavigation.BottomNavigationView
+-dontwarn com.theokanning.openai.completion.chat.ChatMessage
 
 -keepattributes InnerClasses
 

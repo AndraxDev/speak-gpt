@@ -27,13 +27,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.RadioButton
+
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.DialogFragment
+
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
+
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 
@@ -58,8 +60,10 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
 
     private var gpt_35_turbo: RadioButton? = null
     private var gpt_35_turbo_0301: RadioButton? = null
+    private var gpt_35_turbo_0613: RadioButton? = null
     private var gpt_4: RadioButton? = null
     private var gpt_4_0314: RadioButton? = null
+    private var gpt_4_0613: RadioButton? = null
     private var gpt_4_32k: RadioButton? = null
     private var gpt_4_32k_0314: RadioButton? = null
     private var text_davinci_003: RadioButton? = null
@@ -97,8 +101,10 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
 
         gpt_35_turbo = view.findViewById(R.id.gpt_35_turbo)
         gpt_35_turbo_0301 = view.findViewById(R.id.gpt_35_turbo_0301)
+        gpt_35_turbo_0613 = view.findViewById(R.id.gpt_35_turbo_0613)
         gpt_4 = view.findViewById(R.id.gpt_4)
         gpt_4_0314 = view.findViewById(R.id.gpt_4_0314)
+        gpt_4_0613 = view.findViewById(R.id.gpt_4_0613)
         gpt_4_32k = view.findViewById(R.id.gpt_4_32k)
         gpt_4_32k_0314 = view.findViewById(R.id.gpt_4_32k_0314)
         text_davinci_003 = view.findViewById(R.id.text_davinci_003)
@@ -136,6 +142,14 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
                 ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
             ftInput?.visibility = View.GONE
         }
+        gpt_35_turbo_0613?.setOnClickListener {
+            model = "gpt-3.5-turbo-0613"
+            clearSelection()
+            gpt_35_turbo_0613?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+            gpt_35_turbo_0613?.background = getDarkAccentDrawableV2(
+                ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+            ftInput?.visibility = View.GONE
+        }
         gpt_4?.setOnClickListener {
             model = "gpt-4"
             clearSelection()
@@ -149,6 +163,14 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
             clearSelection()
             gpt_4_0314?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
             gpt_4_0314?.background = getDarkAccentDrawableV2(
+                ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+            ftInput?.visibility = View.GONE
+        }
+        gpt_4_0613?.setOnClickListener {
+            model = "gpt-4-0613"
+            clearSelection()
+            gpt_4_0613?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+            gpt_4_0613?.background = getDarkAccentDrawableV2(
                 ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
             ftInput?.visibility = View.GONE
         }
@@ -279,6 +301,14 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
                     ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
                 ftInput?.visibility = View.GONE
             }
+            "gpt-3.5-turbo-0613" -> {
+                gpt_35_turbo_0613?.isChecked = true
+                clearSelection()
+                gpt_35_turbo_0613?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+                gpt_35_turbo_0613?.background = getDarkAccentDrawableV2(
+                    ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+                ftInput?.visibility = View.GONE
+            }
             /* DEPRECATED */
             /*"gpt-3.5-turbo-0301" -> {
                 gpt_35_turbo_0301?.isChecked = true
@@ -293,6 +323,14 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
                 clearSelection()
                 gpt_4?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
                 gpt_4?.background = getDarkAccentDrawableV2(
+                    ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
+                ftInput?.visibility = View.GONE
+            }
+            "gpt-4-0613" -> {
+                gpt_4_0613?.isChecked = true
+                clearSelection()
+                gpt_4_0613?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+                gpt_4_0613?.background = getDarkAccentDrawableV2(
                     ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
                 ftInput?.visibility = View.GONE
             }
@@ -418,6 +456,10 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
             ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
         gpt_35_turbo_0301?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
 
+        gpt_35_turbo_0613?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
+        gpt_35_turbo_0613?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
+
         gpt_4?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
         gpt_4?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
@@ -425,6 +467,10 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
         gpt_4_0314?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
         gpt_4_0314?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
+
+        gpt_4_0613?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
+        gpt_4_0613?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
 
         gpt_4_32k?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())

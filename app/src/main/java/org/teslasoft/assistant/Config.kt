@@ -16,8 +16,10 @@
 
 package org.teslasoft.assistant
 
-class Api {
+class Config {
+
     companion object {
-        const val API_KEY: String = "16790f7ac03237764a8a0ad36eede490"
+        const val DOMAIN = "teslasoft.org"
+        const val API_SERVER_NAME = "gpt.teslasoft.org"
     }
 }

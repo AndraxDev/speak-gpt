@@ -17,7 +17,12 @@
 package org.teslasoft.assistant.app
 
 import android.app.Application
+
+import cat.ereza.customactivityoncrash.config.CaocConfig
+
 import com.google.android.material.color.DynamicColors
+
+import org.teslasoft.assistant.R
 
 /**
  * Called when the application is starting up. This method is responsible for setting up
@@ -34,5 +39,20 @@ class MainApplication : Application() {
         super.onCreate()
 
         DynamicColors.applyToActivitiesIfAvailable(this)
+
+        CaocConfig.Builder.create()
+            .backgroundMode(CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM)
+            .enabled(true)
+            .showErrorDetails(true)
+            .showRestartButton(false)
+            .logErrorOnRestart(true)
+            .trackActivities(true)
+            .minTimeBetweenCrashesMs(2000)
+            .errorDrawable(R.mipmap.ic_launcher_round)
+            .restartActivity(null)
+            .errorActivity(org.teslasoft.core.CrashHandlerActivity::class.java)
+            .eventListener(null)
+            .customCrashDataCollector(null)
+            .apply()
     }
 }

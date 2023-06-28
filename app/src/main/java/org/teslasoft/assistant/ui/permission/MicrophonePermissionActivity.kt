@@ -20,10 +20,13 @@ import android.Manifest
 import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.os.Bundle
+
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+
 import org.teslasoft.assistant.R
 
 class MicrophonePermissionActivity : FragmentActivity() {

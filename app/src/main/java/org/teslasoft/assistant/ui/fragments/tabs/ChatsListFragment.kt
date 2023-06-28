@@ -29,14 +29,18 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ListView
 import android.widget.Toast
+
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ChatPreferences
 import org.teslasoft.assistant.preferences.Preferences
@@ -45,9 +49,9 @@ import org.teslasoft.assistant.ui.SettingsActivity
 import org.teslasoft.assistant.ui.adapters.ChatListAdapter
 import org.teslasoft.assistant.ui.fragments.dialogs.AddChatDialogFragment
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
+
 import java.io.BufferedReader
 import java.io.InputStreamReader
-
 
 class ChatsListFragment : Fragment() {
 

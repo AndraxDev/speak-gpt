@@ -18,8 +18,11 @@ package org.teslasoft.assistant.ui.onboarding
 
 import android.content.Intent
 import android.os.Bundle
+
 import androidx.fragment.app.FragmentActivity
+
 import com.google.android.material.button.MaterialButton
+
 import org.teslasoft.assistant.R
 
 class WelcomeActivity : FragmentActivity() {

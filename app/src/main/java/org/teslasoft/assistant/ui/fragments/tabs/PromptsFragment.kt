@@ -30,22 +30,27 @@ import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.Toast
+
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+
 import org.teslasoft.assistant.Api
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.ui.adapters.PromptAdapter
 import org.teslasoft.assistant.ui.fragments.dialogs.PostPromptDialogFragment
 import org.teslasoft.core.api.network.RequestNetwork
+
 import java.net.URLEncoder
 
 class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {

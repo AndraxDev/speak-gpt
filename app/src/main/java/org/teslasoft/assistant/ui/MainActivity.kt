@@ -23,13 +23,16 @@ import android.os.Handler
 import android.os.Looper
 import android.view.MenuItem
 import android.view.View
+
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.navigation.NavigationBarView
+
 import org.teslasoft.assistant.R
 
 class MainActivity : FragmentActivity() {

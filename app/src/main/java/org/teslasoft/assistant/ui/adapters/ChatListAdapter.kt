@@ -26,11 +26,14 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
+
 import com.google.android.material.elevation.SurfaceColors
+
 import org.teslasoft.assistant.ui.ChatActivity
 import org.teslasoft.assistant.ui.fragments.tabs.ChatsListFragment
 import org.teslasoft.assistant.R
@@ -79,9 +82,11 @@ class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragme
         textModel.text = when (model) {
             "gpt-4" -> "GPT 4"
             "gpt-4-0314" -> "GPT 4"
+            "gpt-4-0613" -> "GPT 4"
             "gpt-4-32k" -> "GPT 4"
             "gpt-4-32k-0314" -> "GPT 4"
             "gpt-3.5-turbo" -> "GPT 3.5"
+            "gpt-3.5-turbo-0613" -> "GPT 3.5"
             "gpt-3.5-turbo-0301" -> "GPT 3.5"
             "text-davinci-003" -> "DAVINCI"
             "text-davinci-002" -> "DAVINCI"

@@ -21,8 +21,11 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.Voice
 import android.widget.EditText
 import android.widget.TextView
+
 import androidx.fragment.app.FragmentActivity
+
 import com.google.android.material.button.MaterialButton
+
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.util.LocaleParser

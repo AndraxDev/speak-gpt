@@ -17,16 +17,21 @@
 package org.teslasoft.core.api.network
 
 import com.google.gson.Gson
+
 import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
+
 import okio.IOException
+import org.teslasoft.assistant.Config
+
 import java.lang.String.valueOf
 import java.security.KeyStore
 import java.security.SecureRandom
 import java.util.*
 import java.util.concurrent.TimeUnit
+
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSocketFactory
 import javax.net.ssl.TrustManagerFactory
@@ -72,13 +77,13 @@ open class RequestNetworkController {
                 val sslContext: SSLContext = SSLContext.getInstance("TLSv1.3")
                 sslContext.init(null, null, SecureRandom())
                 val sslSocketFactory: SSLSocketFactory = sslContext.socketFactory
+
                 builder.sslSocketFactory(sslSocketFactory, trustManager)
                 builder.connectTimeout(SOCKET_TIMEOUT, TimeUnit.MILLISECONDS)
                 builder.readTimeout(READ_TIMEOUT, TimeUnit.MILLISECONDS)
                 builder.writeTimeout(READ_TIMEOUT, TimeUnit.MILLISECONDS)
-                builder.hostnameVerifier { name, _ -> name.contains("teslasoft.org") || name.contains("travel.teslasoft.org") }
-            } catch (ignored: java.lang.Exception) { /* unused */
-            }
+                builder.hostnameVerifier { name, _ -> name.contains(Config.DOMAIN) || name.contains(Config.API_SERVER_NAME) }
+            } catch (ignored: java.lang.Exception) { /* unused */ }
 
             client = builder.build()
         }
