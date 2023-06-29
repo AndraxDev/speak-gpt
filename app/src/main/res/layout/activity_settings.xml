@@ -405,6 +405,94 @@
                     app:layout_constraintTop_toBottomOf="@+id/btn_manage_language" />
 
                 <LinearLayout
+                    android:id="@+id/btn_manage_voices"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginEnd="1dp"
+                    android:background="@drawable/t_menu_center_item_background_noclick"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider3">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <LinearLayout
+                            android:id="@+id/linearLayout14"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:layout_marginEnd="16dp"
+                            android:background="@drawable/ic_go"
+                            android:orientation="vertical"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/assistant_voices_desc"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="16dp"
+                            android:text="Customize assistant voice"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/linearLayout14"
+                            app:layout_constraintStart_toEndOf="@+id/icon_manage_voices"
+                            app:layout_constraintTop_toBottomOf="@+id/assistant_voices_title" />
+
+                        <TextView
+                            android:id="@+id/assistant_voices_title"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="12dp"
+                            android:text="Assistant voice"
+                            android:textColor="@color/accent_900"
+                            android:textSize="18sp"
+                            app:layout_constraintEnd_toStartOf="@+id/linearLayout14"
+                            app:layout_constraintStart_toEndOf="@+id/icon_manage_voices"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <LinearLayout
+                            android:id="@+id/icon_manage_voices"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_marginStart="16dp"
+                            android:background="@drawable/btn_accent_icon_large"
+                            android:orientation="vertical"
+                            android:padding="12dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/ic_voice"
+                                android:orientation="vertical" />
+                        </LinearLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/divider35"
+                    android:layout_width="0dp"
+                    android:layout_height="2dp"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginEnd="1dp"
+                    android:background="@color/transparent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_manage_voices" />
+
+                <LinearLayout
                     android:id="@+id/btn_dalle_resolution"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -415,7 +503,7 @@
                     android:orientation="vertical"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider3">
+                    app:layout_constraintTop_toBottomOf="@+id/divider35">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
@@ -1109,6 +1197,83 @@
                     app:layout_constraintTop_toBottomOf="@+id/btn_silence_mode" />
 
                 <LinearLayout
+                    android:id="@+id/btn_always_speak"
+                    android:layout_width="match_parent"
+                    android:layout_height="76dp"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginEnd="1dp"
+                    android:background="@drawable/t_menu_center_item_background_noclick"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider8">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/always_speak_title"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="12dp"
+                            android:text="Always speak"
+                            android:textColor="@color/accent_900"
+                            android:textSize="18sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/icon_always_speak"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/always_speak_switch"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="4dp"
+                            android:text="Always pronounce bot answers"
+                            android:textSize="12sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintStart_toEndOf="@+id/icon_always_speak" />
+
+                        <LinearLayout
+                            android:id="@+id/icon_always_speak"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_marginStart="16dp"
+                            android:background="@drawable/btn_accent_icon_large"
+                            android:orientation="vertical"
+                            android:padding="12dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/ic_volume_up"
+                                android:orientation="vertical" />
+                        </LinearLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/divider12"
+                    android:layout_width="0dp"
+                    android:layout_height="2dp"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginEnd="1dp"
+                    android:background="@color/transparent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_always_speak" />
+
+                <LinearLayout
                     android:id="@+id/btn_auto_lang_detect"
                     android:layout_width="match_parent"
                     android:layout_height="72dp"
@@ -1120,7 +1285,7 @@
                     android:orientation="vertical"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider8">
+                    app:layout_constraintTop_toBottomOf="@+id/divider12">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"

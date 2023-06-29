@@ -44,6 +44,7 @@ import org.teslasoft.assistant.ui.debug.DebugActivity
 import org.teslasoft.assistant.ui.fragments.dialogs.ActivationPromptDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.AdvancedSettingsDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.LanguageSelectorDialogFragment
+import org.teslasoft.assistant.ui.fragments.dialogs.VoiceSelectorDialogFragment
 import org.teslasoft.assistant.ui.onboarding.ActivationActivity
 import org.teslasoft.core.auth.client.TeslasoftIDClient
 
@@ -53,6 +54,7 @@ class SettingsActivity : FragmentActivity() {
     private var btnChangeAccount: LinearLayout? = null
     private var btnSetAssistant: LinearLayout? = null
     private var silenceSwitch: MaterialSwitch? = null
+    private var alwaysSpeak: MaterialSwitch? = null
     private var autoLangDetectSwitch: MaterialSwitch? = null
     private var btnClearChat: MaterialButton? = null
     private var btnDebugMenu: MaterialButton? = null
@@ -74,6 +76,7 @@ class SettingsActivity : FragmentActivity() {
     private var btnBubblesView: LinearLayout? = null
     private var assistantLanguage: LinearLayout? = null
     private var btnAutoLanguageDetect: LinearLayout? = null
+    private var btnVoiceSelector: LinearLayout? = null
 
     private var preferences: Preferences? = null
     private var chatId = ""
@@ -153,6 +156,7 @@ class SettingsActivity : FragmentActivity() {
         btnChangeAccount = findViewById(R.id.btn_manage_account)
         btnSetAssistant = findViewById(R.id.btn_manage_assistant)
         silenceSwitch = findViewById(R.id.silent_switch)
+        alwaysSpeak = findViewById(R.id.always_speak_switch)
         autoLangDetectSwitch = findViewById(R.id.autoLangDetect_switch)
         btnClearChat = findViewById(R.id.btn_clear_chat)
         btnDebugMenu = findViewById(R.id.btn_debug_menu)
@@ -174,6 +178,7 @@ class SettingsActivity : FragmentActivity() {
         assistantLanguage = findViewById(R.id.btn_manage_language)
         btnModelGroup = findViewById(R.id.btn_model_s_for)
         btnAutoLanguageDetect = findViewById(R.id.btn_auto_lang_detect)
+        btnVoiceSelector = findViewById(R.id.btn_manage_voices)
 
         btnChangeApi?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(this, R.drawable.t_menu_top_item_background)!!, this)
@@ -185,6 +190,9 @@ class SettingsActivity : FragmentActivity() {
             ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background)!!, this)
 
         assistantLanguage?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background)!!, this)
+
+        btnVoiceSelector?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background)!!, this)
 
         btnModel?.background = getDarkAccentDrawable(
@@ -214,6 +222,9 @@ class SettingsActivity : FragmentActivity() {
         findViewById<LinearLayout>(R.id.btn_silence_mode)!!.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background_noclick)!!, this)
 
+        findViewById<LinearLayout>(R.id.btn_always_speak)!!.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background_noclick)!!, this)
+
         btnAutoLanguageDetect?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background_noclick)!!, this)
 
@@ -239,6 +250,16 @@ class SettingsActivity : FragmentActivity() {
         }
 
         silenceSwitch?.isChecked = preferences?.getSilence() == true
+        alwaysSpeak?.isChecked = preferences?.getNotSilence() == true
+
+        if (preferences?.getSilence() == true) {
+            alwaysSpeak?.isEnabled = false
+        }
+
+        if (preferences?.getNotSilence() == true) {
+            silenceSwitch?.isEnabled = false
+        }
+
         autoLangDetectSwitch?.isChecked = preferences?.getAutoLangDetect() == true
 
         loadResolution()
@@ -311,9 +332,37 @@ class SettingsActivity : FragmentActivity() {
             promptDialog.show(supportFragmentManager.beginTransaction(), "PromptDialog")
         }
 
+        btnVoiceSelector?.setOnClickListener {
+            val voiceSelectorDialogFragment: VoiceSelectorDialogFragment = VoiceSelectorDialogFragment.newInstance("")
+            voiceSelectorDialogFragment.show(supportFragmentManager.beginTransaction(), "VoiceSelectorDialogFragment")
+        }
+
         btnDebugMenu?.setOnClickListener { startActivity(Intent(this, DebugActivity::class.java)) }
 
-        silenceSwitch?.setOnCheckedChangeListener { _, isChecked -> preferences?.setSilence(isChecked) }
+        silenceSwitch?.setOnCheckedChangeListener { _, isChecked -> run {
+            preferences?.setSilence(isChecked)
+
+            if (isChecked) {
+                preferences?.setNotSilence(false)
+                alwaysSpeak?.isChecked = false
+                alwaysSpeak?.isEnabled = false
+            } else {
+                alwaysSpeak?.isEnabled = true
+            }
+        } }
+
+        alwaysSpeak?.setOnCheckedChangeListener { _, isChecked -> run {
+            preferences?.setNotSilence(isChecked)
+
+            if (isChecked) {
+                preferences?.setSilence(false)
+                silenceSwitch?.isChecked = false
+                silenceSwitch?.isEnabled = false
+            } else {
+                silenceSwitch?.isEnabled = true
+            }
+        } }
+
         autoLangDetectSwitch?.setOnCheckedChangeListener { _, isChecked -> preferences?.setAutoLangDetect(isChecked) }
 
         r256?.setOnClickListener { saveResolution("256x256") }

@@ -35,7 +35,6 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:autofillHints="message"
                 android:id="@+id/message_input"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -43,7 +42,8 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="76dp"
                 android:layout_marginBottom="8dp"
-                android:background="@drawable/btn_accent_tonal_selector"
+                android:autofillHints="message"
+                android:background="@drawable/btn_accent_tonal_selector_v5"
                 android:ems="10"
                 android:hint="@string/hint_message"
                 android:inputType="text|textMultiLine"
@@ -113,9 +113,9 @@
         android:layout_height="48dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/btn_accent_tonal"
-        android:elevation="6.01dip"
+        android:background="@drawable/btn_accent_tonal_v4"
         android:contentDescription="@string/btn_settings"
+        android:elevation="6.01dip"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_settings" />
@@ -126,7 +126,7 @@
         android:layout_height="48dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/btn_accent_tonal"
+        android:background="@drawable/btn_accent_tonal_v4"
         android:contentDescription="@string/btn_export_chat"
         android:elevation="6.01dip"
         android:tooltipText="Export chat"

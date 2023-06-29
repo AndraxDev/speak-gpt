@@ -20,8 +20,10 @@ package org.teslasoft.assistant.ui
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Bundle
@@ -38,13 +40,16 @@ import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
 
 import com.aallam.openai.api.BetaOpenAI
@@ -53,6 +58,9 @@ import com.aallam.openai.api.chat.ChatCompletionChunk
 import com.aallam.openai.api.chat.ChatCompletionRequest
 import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatRole
+import com.aallam.openai.api.chat.FunctionMode
+import com.aallam.openai.api.chat.Parameters
+import com.aallam.openai.api.chat.chatCompletionRequest
 import com.aallam.openai.api.completion.CompletionRequest
 import com.aallam.openai.api.completion.TextCompletion
 import com.aallam.openai.api.file.FileSource
@@ -65,6 +73,7 @@ import com.aallam.openai.client.OpenAI
 import com.aallam.openai.client.OpenAIConfig
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.elevation.SurfaceColors
 import com.google.gson.Gson
 import com.google.mlkit.nl.languageid.LanguageIdentification
 import com.google.mlkit.nl.languageid.LanguageIdentifier
@@ -74,6 +83,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.add
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.put
+import kotlinx.serialization.json.putJsonArray
+import kotlinx.serialization.json.putJsonObject
 
 import okio.FileSystem
 import okio.Path.Companion.toPath
@@ -97,6 +111,7 @@ import java.net.URL
 
 import java.util.Base64
 import java.util.Locale
+import java.util.Objects
 
 class ChatActivity : FragmentActivity() {
 
@@ -212,34 +227,10 @@ class ChatActivity : FragmentActivity() {
 
             val voices: Set<Voice> = tts!!.voices
             for (v: Voice in voices) {
-                if (v.name.equals("en-us-x-iom-local") && Preferences.getPreferences(
-                        this@ChatActivity,
-                        chatId
-                    ).getLanguage() == "en"
-                ) {
+                if (v.name == Preferences.getPreferences(this@ChatActivity, chatId).getVoice()) {
                     tts!!.voice = v
                 }
             }
-
-            /*
-            * Voice models (english: en-us-x):
-            * sfg-local
-            * iob-network
-            * iom-local
-            * iog-network
-            * tpc-local
-            * tpf-local
-            * sfg-network
-            * iob-local
-            * tpd-network
-            * tpc-network
-            * iol-network
-            * iom-network
-            * tpd-local
-            * tpf-network
-            * iog-local
-            * iol-local
-            * */
         }
     }
 
@@ -272,8 +263,14 @@ class ChatActivity : FragmentActivity() {
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
-        window.statusBarColor = ContextCompat.getColor(this, R.color.accent_100)
-        window.navigationBarColor = ContextCompat.getColor(this, R.color.accent_100)
+        window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
+        window.navigationBarColor = SurfaceColors.SURFACE_4.getColor(this)
+
+        val chatActivityTitle: TextView = findViewById(R.id.chat_activity_title)
+        val keyboardInput: LinearLayout = findViewById(R.id.keyboard_input)
+
+        chatActivityTitle.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
+        keyboardInput.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
 
         initChatId()
 
@@ -362,10 +359,33 @@ class ChatActivity : FragmentActivity() {
         btnMicro?.setImageResource(R.drawable.ic_microphone)
         btnSettings?.setImageResource(R.drawable.ic_settings)
 
+        btnExport?.background = getDarkAccentDrawable(
+            AppCompatResources.getDrawable(
+                this,
+                R.drawable.btn_accent_tonal_v4
+            )!!, this
+        )
+
+        btnSettings?.background = getDarkAccentDrawable(
+            AppCompatResources.getDrawable(
+                this,
+                R.drawable.btn_accent_tonal_v4
+            )!!, this
+        )
+
         chat?.adapter = adapter
         chat?.dividerHeight = 0
 
         adapter?.notifyDataSetChanged()
+    }
+
+    private fun getDarkAccentDrawable(drawable: Drawable, context: Context) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getSurfaceColor(context))
+        return drawable
+    }
+
+    private fun getSurfaceColor(context: Context) : Int {
+        return SurfaceColors.SURFACE_4.getColor(context)
     }
 
     private fun initLogic() {
@@ -479,7 +499,7 @@ class ChatActivity : FragmentActivity() {
                     MaterialAlertDialogBuilder(this@ChatActivity, R.style.App_MaterialAlertDialog)
                         .setTitle("Audio error")
                         .setMessage("Failed to initialize microphone")
-                        .setPositiveButton("Close") { _, _, -> }
+                        .setPositiveButton("Close") { _, _ -> }
                         .show()
                 }
 
@@ -503,7 +523,7 @@ class ChatActivity : FragmentActivity() {
                     MaterialAlertDialogBuilder(this@ChatActivity, R.style.App_MaterialAlertDialog)
                         .setTitle("Audio error")
                         .setMessage("Failed to initialize microphone")
-                        .setPositiveButton("Close") { _, _, -> }
+                        .setPositiveButton("Close") { _, _ -> }
                         .show()
                 }
 
@@ -702,7 +722,7 @@ class ChatActivity : FragmentActivity() {
         MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
             .setTitle("Debug")
             .setMessage(string)
-            .setPositiveButton("Close") { _, _, -> }
+            .setPositiveButton("Close") { _, _ -> }
             .show()
     }
 
@@ -740,36 +760,13 @@ class ChatActivity : FragmentActivity() {
             btnSend?.isEnabled = false
             progress?.visibility = View.VISIBLE
 
-            if (m.lowercase().contains("/imagine") && m.length > 9) {
-                val x: String = m.substring(9)
+            chatMessages.add(ChatMessage(
+                role = ChatRole.User,
+                content = m
+            ))
 
-                sendImageRequest(x)
-            } else if (m.lowercase().contains("/imagine") && m.length <= 9) {
-                putMessage("Prompt can not be empty. Use /imagine &lt;PROMPT&gt;", true)
-
-                saveSettings()
-
-                btnMicro?.isEnabled = true
-                btnSend?.isEnabled = true
-                progress?.visibility = View.GONE
-            } else if (m.lowercase().contains("create an image") ||
-                m.lowercase().contains("generate an image") ||
-                m.lowercase().contains("create image") ||
-                m.lowercase().contains("generate image") ||
-                m.lowercase().contains("create a photo") ||
-                m.lowercase().contains("generate a photo") ||
-                m.lowercase().contains("create photo") ||
-                m.lowercase().contains("generate photo")) {
-                sendImageRequest(m)
-            } else {
-                chatMessages.add(ChatMessage(
-                    role = ChatRole.User,
-                    content = m
-                ))
-
-                CoroutineScope(Dispatchers.Main).launch {
-                    generateResponse(m, false)
-                }
+            CoroutineScope(Dispatchers.Main).launch {
+                generateResponse(m, false)
             }
         }
     }
@@ -803,16 +800,34 @@ class ChatActivity : FragmentActivity() {
         }
     }
 
+    private fun generateImages(prompt: String) {
+        sendImageRequest(prompt)
+    }
+
+    private fun searchInternet(prompt: String) {
+        putMessage("Searching at Google...", true)
+
+        saveSettings()
+
+        btnMicro?.isEnabled = true
+        btnSend?.isEnabled = true
+        progress?.visibility = View.GONE
+
+        val q = prompt.replace(" ", "+")
+
+        val intent = Intent()
+        intent.action = Intent.ACTION_VIEW
+        intent.data = Uri.parse("https://www.google.com/search?q=$q")
+        startActivity(intent)
+    }
+
     @OptIn(BetaOpenAI::class)
     private suspend fun generateResponse(request: String, shouldPronounce: Boolean) {
-        putMessage("", true)
-        var response = ""
-
         try {
-            if (model.contains("davinci") || model.contains("curie") || model.contains("babbage") || model.contains("ada") || model.contains(":ft-")) {
+            var response = ""
 
-                // val tokens = Preferences.getPreferences(this, chatId).getMaxTokens()
-
+            if (!model.contains("gpt") || model.contains(":ft-")) {
+                putMessage("", true)
                 val completionRequest = CompletionRequest(
                     model = ModelId(model),
                     prompt = request,
@@ -830,62 +845,104 @@ class ChatActivity : FragmentActivity() {
                         }
                     }
                 }
+
+                messages[messages.size - 1]["message"] = "$response\n"
+                adapter?.notifyDataSetChanged()
+
+                chatMessages.add(ChatMessage(
+                    role = ChatRole.Assistant,
+                    content = response
+                ))
+
+                pronounce(shouldPronounce, response)
+
+                saveSettings()
+
+                btnMicro?.isEnabled = true
+                btnSend?.isEnabled = true
+                progress?.visibility = View.GONE
             } else {
-                // val tokens = Preferences.getPreferences(this, chatId).getMaxTokens()
-
-                val chatCompletionRequest = ChatCompletionRequest(
-                    model = ModelId(model),
-                    messages = chatMessages
-                )
-
-                val completions: Flow<ChatCompletionChunk> = ai!!.chatCompletions(chatCompletionRequest)
-
-                completions.collect { v ->
-                    run {
-                        if (v.choices[0].delta!!.content != null) {
-                            response += v.choices[0].delta?.content
-                            messages[messages.size - 1]["message"] = "$response █"
-                            adapter?.notifyDataSetChanged()
+                val imageParams = Parameters.buildJsonObject {
+                    put("type", "object")
+                    putJsonObject("properties") {
+                        putJsonObject("prompt") {
+                            put("type", "string")
+                            put("description", "The prompt for image generation")
                         }
                     }
+                    putJsonArray("required") {
+                        add("prompt")
+                    }
                 }
-            }
 
-            messages[messages.size - 1]["message"] = "$response\n"
-            adapter?.notifyDataSetChanged()
-
-            chatMessages.add(ChatMessage(
-                role = ChatRole.Assistant,
-                content = response
-            ))
-
-            if (shouldPronounce && isTTSInitialized && !silenceMode) {
-                if (autoLangDetect) {
-                    languageIdentifier.identifyLanguage(response)
-                        .addOnSuccessListener { languageCode ->
-                            if (languageCode == "und") {
-                                Log.i("MLKit", "Can't identify language.")
-                            } else {
-                                Log.i("MLKit", "Language: $languageCode")
-                                tts!!.language = Locale.forLanguageTag(
-                                    languageCode
-                                )
-                            }
-
-                            tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
-                        }.addOnFailureListener {
-                            // Ignore auto language detection if an error is occurred
-                            autoLangDetect = false
-                            ttsPostInit()
-
-                            tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
+                val searchParams = Parameters.buildJsonObject {
+                    put("type", "object")
+                    putJsonObject("properties") {
+                        putJsonObject("prompt") {
+                            put("type", "string")
+                            put("description", "Search query")
                         }
+                    }
+                    putJsonArray("required") {
+                        add("prompt")
+                    }
+                }
+
+                val cm = mutableListOf(
+                    ChatMessage(
+                        role = ChatRole.User,
+                        content = request
+                    )
+                )
+
+                val functionRequest = chatCompletionRequest {
+                    model = ModelId(this@ChatActivity.model)
+                    messages = cm
+                    functions {
+                        function {
+                            name = "generateImages"
+                            description = "Generate an image based on the entered prompt"
+                            parameters = imageParams
+                        }
+
+                        function {
+                            name = "searchInternet"
+                            description = "Search the Internet"
+                            parameters = searchParams
+                        }
+                    }
+                    functionCall = FunctionMode.Auto
+                }
+
+                val response1 = ai?.chatCompletion(functionRequest)
+
+                val message = response1?.choices?.first()?.message
+
+                if (message?.functionCall != null) {
+                    val functionCall = message.functionCall!!
+                    val imageGenerationAvailable = mapOf("generateImages" to ::generateImages)
+                    val searchInternetAvailable = mapOf("searchInternet" to ::searchInternet)
+                    val imageGenerationAvailableToCall = imageGenerationAvailable[functionCall.name]
+                    val searchInternetAvailableToCall = searchInternetAvailable[functionCall.name]
+                    val imageGenerationAvailableArgs = functionCall.argumentsAsJson() ?: error("arguments field is missing")
+                    val searchInternetAvailableArgs = functionCall.argumentsAsJson() ?: error("arguments field is missing")
+                    if (imageGenerationAvailableToCall != null) {
+                        imageGenerationAvailableToCall(
+                            imageGenerationAvailableArgs.getValue("prompt").jsonPrimitive.content
+                        )
+                    } else if (searchInternetAvailableToCall != null) {
+                        searchInternetAvailableToCall(
+                            searchInternetAvailableArgs.getValue("prompt").jsonPrimitive.content
+                        )
+                    } else {
+                        regularGPTResponse(shouldPronounce)
+                    }
                 } else {
-                    tts!!.speak(response, TextToSpeech.QUEUE_FLUSH, null, "")
+                    regularGPTResponse(shouldPronounce)
                 }
             }
         } catch (e: Exception) {
-            response += if (e.stackTraceToString().contains("does not exist")) {
+            val response = if (e.stackTraceToString().contains("does not exist")) {
                 "Looks like this model (${model}) is not available to you right now. It can be because of high demand or this model is currently in limited beta."
             } else if (e.stackTraceToString().contains("Connect timeout has expired") || e.stackTraceToString().contains("SocketTimeoutException")) {
                 "Could not connect to OpenAI servers. It may happen when your Internet speed is slow or too many users are using this model at the same time. Try to switch to another model."
@@ -905,15 +962,84 @@ class ChatActivity : FragmentActivity() {
                 e.stackTraceToString()
             }
 
-            messages[messages.size - 1]["message"] = "${response}\n"
+            putMessage(response, true)
             adapter?.notifyDataSetChanged()
+
+            saveSettings()
+
+            btnMicro?.isEnabled = true
+            btnSend?.isEnabled = true
+            progress?.visibility = View.GONE
         }
+    }
+
+    @OptIn(BetaOpenAI::class)
+    private suspend fun regularGPTResponse(shouldPronounce: Boolean) {
+        var response = ""
+        putMessage("", true)
+        val chatCompletionRequest = ChatCompletionRequest(
+            model = ModelId(model),
+            messages = chatMessages
+        )
+
+        val completions: Flow<ChatCompletionChunk> =
+            ai!!.chatCompletions(chatCompletionRequest)
+
+        completions.collect { v ->
+            run {
+                if (v.choices[0].delta!!.content != null) {
+                    response += v.choices[0].delta?.content
+                    messages[messages.size - 1]["message"] = "$response █"
+                    adapter?.notifyDataSetChanged()
+                }
+            }
+        }
+
+        messages[messages.size - 1]["message"] = "$response\n"
+        adapter?.notifyDataSetChanged()
+
+        chatMessages.add(
+            ChatMessage(
+                role = ChatRole.Assistant,
+                content = response
+            )
+        )
+
+        pronounce(shouldPronounce, response)
 
         saveSettings()
 
         btnMicro?.isEnabled = true
         btnSend?.isEnabled = true
         progress?.visibility = View.GONE
+    }
+
+    private fun pronounce(st: Boolean, message: String) {
+        if ((st && isTTSInitialized && !silenceMode) || Preferences.getPreferences(this, "").getNotSilence()) {
+            if (autoLangDetect) {
+                languageIdentifier.identifyLanguage(message)
+                    .addOnSuccessListener { languageCode ->
+                        if (languageCode == "und") {
+                            Log.i("MLKit", "Can't identify language.")
+                        } else {
+                            Log.i("MLKit", "Language: $languageCode")
+                            tts!!.language = Locale.forLanguageTag(
+                                languageCode
+                            )
+                        }
+
+                        tts!!.speak(message, TextToSpeech.QUEUE_FLUSH, null, "")
+                    }.addOnFailureListener {
+                        // Ignore auto language detection if an error is occurred
+                        autoLangDetect = false
+                        ttsPostInit()
+
+                        tts!!.speak(message, TextToSpeech.QUEUE_FLUSH, null, "")
+                    }
+            } else {
+                tts!!.speak(message, TextToSpeech.QUEUE_FLUSH, null, "")
+            }
+        }
     }
 
     private fun writeImageToCache(bytes: ByteArray) {

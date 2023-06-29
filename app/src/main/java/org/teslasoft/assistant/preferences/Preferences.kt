@@ -153,18 +153,36 @@ class Preferences private constructor(private var preferences: SharedPreferences
     }
 
     /**
-     * Retrieves the auto language detection status from the shared preferences.
+     * Sets silence mode.
      *
-     * @return true if auto language detection is enabled, false otherwise.
+     * @param mode mode.
      */
     fun setSilence(mode: Boolean) {
         putBoolean("silence_mode", mode)
     }
 
     /**
-     * Sets the auto language detection status in the shared preferences.
+     * Retrieves the always speak mode status from the shared preferences.
      *
-     * @param mode The auto language detection status to be stored (true for enabled, false otherwise).
+     * @return The always speak mode status, true if enabled or false otherwise.
+     */
+    fun getNotSilence() : Boolean {
+        return getBoolean("always_speak_mode", false)
+    }
+
+    /**
+     * Sets always speak mode.
+     *
+     * @param mode mode.
+     */
+    fun setNotSilence(mode: Boolean) {
+        putBoolean("always_speak_mode", mode)
+    }
+
+    /**
+     * Retrieves the auto language detection status in the shared preferences.
+     *
+     * @return uto language detection status to be stored (true for enabled, false otherwise).
      */
     fun getAutoLangDetect() : Boolean {
         return getBoolean("autoLangDetect", false)
@@ -173,7 +191,7 @@ class Preferences private constructor(private var preferences: SharedPreferences
     /**
      * Sets the auto language detection status in the shared preferences.
      *
-     * @param mode The auto language detection status to be stored (true for enabled, false otherwise).
+     * @param mode - The auto language detection status to be stored (true for enabled, false otherwise).
      */
     fun setAutoLangDetect(mode: Boolean) {
         putBoolean("autoLangDetect", mode)
@@ -285,6 +303,24 @@ class Preferences private constructor(private var preferences: SharedPreferences
      */
     fun setLayout(layout: String) {
         putString("layout", layout)
+    }
+
+    /**
+     * Retrieves the voice model.
+     *
+     * @return voice model.
+     */
+    fun getVoice() : String {
+        return getString("voice", "en-us-x-iom-network")
+    }
+
+    /**
+     * Sets the voice model.
+     *
+     * @param model voice model.
+     */
+    fun setVoice(model: String) {
+        putString("voice", model)
     }
 
     /**
