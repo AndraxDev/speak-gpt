@@ -180,6 +180,42 @@ class Preferences private constructor(private var preferences: SharedPreferences
     }
 
     /**
+     * Retrieves the function calling status from the shared preferences.
+     *
+     * @return The function calling status, true if enabled or false otherwise.
+     */
+    fun getFunctionCalling() : Boolean {
+        return getBoolean("function_calling", false)
+    }
+
+    /**
+     * Sets function calling mode.
+     *
+     * @param mode mode.
+     */
+    fun setFunctionCalling(mode: Boolean) {
+        putBoolean("function_calling", mode)
+    }
+
+    /**
+     * Retrieves the imagine command status from the shared preferences.
+     *
+     * @return The imagine command status, true if enabled or false otherwise.
+     */
+    fun getImagineCommand() : Boolean {
+        return getBoolean("imagine_command", false)
+    }
+
+    /**
+     * Enable/disable imagine command.
+     *
+     * @param mode mode.
+     */
+    fun setImagineCommand(mode: Boolean) {
+        putBoolean("imagine_command", mode)
+    }
+
+    /**
      * Retrieves the auto language detection status in the shared preferences.
      *
      * @return uto language detection status to be stored (true for enabled, false otherwise).

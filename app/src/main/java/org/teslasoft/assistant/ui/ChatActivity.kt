@@ -760,13 +760,31 @@ class ChatActivity : FragmentActivity() {
             btnSend?.isEnabled = false
             progress?.visibility = View.VISIBLE
 
-            chatMessages.add(ChatMessage(
-                role = ChatRole.User,
-                content = m
-            ))
+            val imagineCommandEnabled: Boolean = Preferences.getPreferences(this, chatId).getImagineCommand()
 
-            CoroutineScope(Dispatchers.Main).launch {
-                generateResponse(m, false)
+            if (m.lowercase().contains("/imagine") && m.length > 9 && imagineCommandEnabled) {
+                val x: String = m.substring(9)
+
+                sendImageRequest(x)
+            } else if (m.lowercase().contains("/imagine") && m.length <= 9 && imagineCommandEnabled) {
+                putMessage("Prompt can not be empty. Use /imagine &lt;PROMPT&gt;", true)
+
+                saveSettings()
+
+                btnMicro?.isEnabled = true
+                btnSend?.isEnabled = true
+                progress?.visibility = View.GONE
+            } else {
+                chatMessages.add(
+                    ChatMessage(
+                        role = ChatRole.User,
+                        content = m
+                    )
+                )
+
+                CoroutineScope(Dispatchers.Main).launch {
+                    generateResponse(m, false)
+                }
             }
         }
     }
@@ -862,78 +880,88 @@ class ChatActivity : FragmentActivity() {
                 btnSend?.isEnabled = true
                 progress?.visibility = View.GONE
             } else {
-                val imageParams = Parameters.buildJsonObject {
-                    put("type", "object")
-                    putJsonObject("properties") {
-                        putJsonObject("prompt") {
-                            put("type", "string")
-                            put("description", "The prompt for image generation")
+                val functionCallingEnabled: Boolean = Preferences.getPreferences(this, chatId).getFunctionCalling()
+
+                if (functionCallingEnabled) {
+                    val imageParams = Parameters.buildJsonObject {
+                        put("type", "object")
+                        putJsonObject("properties") {
+                            putJsonObject("prompt") {
+                                put("type", "string")
+                                put("description", "The prompt for image generation")
+                            }
+                        }
+                        putJsonArray("required") {
+                            add("prompt")
                         }
                     }
-                    putJsonArray("required") {
-                        add("prompt")
-                    }
-                }
 
-                val searchParams = Parameters.buildJsonObject {
-                    put("type", "object")
-                    putJsonObject("properties") {
-                        putJsonObject("prompt") {
-                            put("type", "string")
-                            put("description", "Search query")
+                    val searchParams = Parameters.buildJsonObject {
+                        put("type", "object")
+                        putJsonObject("properties") {
+                            putJsonObject("prompt") {
+                                put("type", "string")
+                                put("description", "Search query")
+                            }
+                        }
+                        putJsonArray("required") {
+                            add("prompt")
                         }
                     }
-                    putJsonArray("required") {
-                        add("prompt")
-                    }
-                }
 
-                val cm = mutableListOf(
-                    ChatMessage(
-                        role = ChatRole.User,
-                        content = request
+                    val cm = mutableListOf(
+                        ChatMessage(
+                            role = ChatRole.User,
+                            content = request
+                        )
                     )
-                )
 
-                val functionRequest = chatCompletionRequest {
-                    model = ModelId(this@ChatActivity.model)
-                    messages = cm
-                    functions {
-                        function {
-                            name = "generateImages"
-                            description = "Generate an image based on the entered prompt"
-                            parameters = imageParams
-                        }
+                    val functionRequest = chatCompletionRequest {
+                        model = ModelId(this@ChatActivity.model)
+                        messages = cm
+                        functions {
+                            function {
+                                name = "generateImages"
+                                description = "Generate an image based on the entered prompt"
+                                parameters = imageParams
+                            }
 
-                        function {
-                            name = "searchInternet"
-                            description = "Search the Internet"
-                            parameters = searchParams
+                            function {
+                                name = "searchInternet"
+                                description = "Search the Internet"
+                                parameters = searchParams
+                            }
                         }
+                        functionCall = FunctionMode.Auto
                     }
-                    functionCall = FunctionMode.Auto
-                }
 
-                val response1 = ai?.chatCompletion(functionRequest)
+                    val response1 = ai?.chatCompletion(functionRequest)
 
-                val message = response1?.choices?.first()?.message
+                    val message = response1?.choices?.first()?.message
 
-                if (message?.functionCall != null) {
-                    val functionCall = message.functionCall!!
-                    val imageGenerationAvailable = mapOf("generateImages" to ::generateImages)
-                    val searchInternetAvailable = mapOf("searchInternet" to ::searchInternet)
-                    val imageGenerationAvailableToCall = imageGenerationAvailable[functionCall.name]
-                    val searchInternetAvailableToCall = searchInternetAvailable[functionCall.name]
-                    val imageGenerationAvailableArgs = functionCall.argumentsAsJson() ?: error("arguments field is missing")
-                    val searchInternetAvailableArgs = functionCall.argumentsAsJson() ?: error("arguments field is missing")
-                    if (imageGenerationAvailableToCall != null) {
-                        imageGenerationAvailableToCall(
-                            imageGenerationAvailableArgs.getValue("prompt").jsonPrimitive.content
-                        )
-                    } else if (searchInternetAvailableToCall != null) {
-                        searchInternetAvailableToCall(
-                            searchInternetAvailableArgs.getValue("prompt").jsonPrimitive.content
-                        )
+                    if (message?.functionCall != null) {
+                        val functionCall = message.functionCall!!
+                        val imageGenerationAvailable = mapOf("generateImages" to ::generateImages)
+                        val searchInternetAvailable = mapOf("searchInternet" to ::searchInternet)
+                        val imageGenerationAvailableToCall =
+                            imageGenerationAvailable[functionCall.name]
+                        val searchInternetAvailableToCall =
+                            searchInternetAvailable[functionCall.name]
+                        val imageGenerationAvailableArgs =
+                            functionCall.argumentsAsJson() ?: error("arguments field is missing")
+                        val searchInternetAvailableArgs =
+                            functionCall.argumentsAsJson() ?: error("arguments field is missing")
+                        if (imageGenerationAvailableToCall != null) {
+                            imageGenerationAvailableToCall(
+                                imageGenerationAvailableArgs.getValue("prompt").jsonPrimitive.content
+                            )
+                        } else if (searchInternetAvailableToCall != null) {
+                            searchInternetAvailableToCall(
+                                searchInternetAvailableArgs.getValue("prompt").jsonPrimitive.content
+                            )
+                        } else {
+                            regularGPTResponse(shouldPronounce)
+                        }
                     } else {
                         regularGPTResponse(shouldPronounce)
                     }

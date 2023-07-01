@@ -16,8 +16,8 @@ android {
         minSdk 28
         targetSdk 33
         // targetSdkPreview "UpsideDownCake"
-        versionCode 222
-        versionName "2.22"
+        versionCode 223
+        versionName "2.23"
         externalNativeBuild {
             cmake {
                 cppFlags ''
