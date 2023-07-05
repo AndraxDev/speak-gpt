@@ -69,7 +69,7 @@ class AboutActivity : FragmentActivity() {
 
         btnProjects?.setOnClickListener {
             val i = Intent()
-            i.data = Uri.parse("https://andrax.teslasoft.org/")
+            i.data = Uri.parse("https://andrax.dev/")
             i.action = Intent.ACTION_VIEW
             startActivity(i)
         }
