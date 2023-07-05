@@ -30,6 +30,7 @@ SpeakGPT is an advanced and highly intuitive voice assistant that utilizes the p
 - [x] Assistant
 - [x] SpeakGPT in context menu
 - [x] SpeakGPT in Share sheet
+- [x] Function calling features
 - [x] Prompts store
 - [x] Different chat layout
 - [x] Adaptive design
@@ -60,6 +61,7 @@ SpeakGPT is an advanced and highly intuitive voice assistant that utilizes the p
 - [x] DALL-e integration
 - [x] A lot of different models
 - [x] Add support of custom fine-tuned models
+- [o] Function calling features
 
 ### ❌ Planned to add (Share your ideas in Issues)
 
