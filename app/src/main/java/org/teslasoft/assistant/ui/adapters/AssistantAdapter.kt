@@ -21,6 +21,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.constraintlayout.widget.ConstraintLayout
 
 import androidx.fragment.app.FragmentActivity
 
@@ -37,10 +39,17 @@ class AssistantAdapter(data: ArrayList<HashMap<String, Any>>?, context: Fragment
             inflater.inflate(R.layout.view_assistant_user_message, null)
         }
 
+        if (dataArray?.get(position)?.get("isBot") == true) {
+            val bubbleBg: ConstraintLayout = mView!!.findViewById(R.id.bubble_bg)
+            bubbleBg.background = getSurface3Drawable(AppCompatResources.getDrawable(mContext, R.drawable.bubble_in)!!, mContext)
+        }
+
         icon = mView!!.findViewById(R.id.icon)
         message = mView.findViewById(R.id.message)
         dalleImage = mView.findViewById(R.id.dalle_image)
         btnCopy = mView.findViewById(R.id.btn_copy)
+
+        btnCopy?.background = getSurface3Drawable(AppCompatResources.getDrawable(mContext, R.drawable.btn_accent_tonal)!!, mContext)
 
         super.getView(position, mView, parent)
 

@@ -77,6 +77,11 @@ SpeakGPT is an advanced and highly intuitive voice assistant that utilizes the p
 - Support me :)
 - Request new features. Don't forget to mark issue with a tag
 
+
+### Buy me a coffee:
+
+<a href = "https://www.paypal.com/donate/?hosted_button_id=KR6BRY2BPEQTL"><img src = "https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"></a>
+
 ## License
 
 ```

@@ -22,6 +22,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.DisplayMetrics
 import android.view.View
@@ -33,6 +34,7 @@ import android.widget.TextView
 import android.widget.Toast
 
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
 
 import com.bumptech.glide.Glide
@@ -150,7 +152,17 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
     private fun convertDpToPixel(dp: Float, context: Context): Float {
         return dp * (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
     }
+
+    protected fun getSurface3Drawable(drawable: Drawable, context: Context) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), get3SurfaceColor(context))
+        return drawable
+    }
+
     protected fun getSurfaceColor(context: Context): Int {
         return SurfaceColors.SURFACE_2.getColor(context)
+    }
+
+    protected fun get3SurfaceColor(context: Context): Int {
+        return SurfaceColors.SURFACE_3.getColor(context)
     }
 }

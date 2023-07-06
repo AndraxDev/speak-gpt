@@ -22,6 +22,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.constraintlayout.widget.ConstraintLayout
 
 import androidx.fragment.app.FragmentActivity
 
@@ -46,6 +48,11 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActiv
             inflater.inflate(R.layout.view_message, null)
         }
 
+        if (dataArray?.get(position)?.get("isBot") == true && layout == "bubbles") {
+            val bubbleBg: ConstraintLayout = mView!!.findViewById(R.id.bubble_bg)
+            bubbleBg.background = getSurface3Drawable(AppCompatResources.getDrawable(mContext, R.drawable.bubble_in)!!, mContext)
+        }
+
         ui = mView!!.findViewById(R.id.ui)
         icon = mView.findViewById(R.id.icon)
         message = mView.findViewById(R.id.message)
@@ -53,6 +60,8 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActiv
         dalleImage = mView.findViewById(R.id.dalle_image)
         // imageFrame = mView.findViewById(R.id.dalle_image)
         btnCopy = mView.findViewById(R.id.btn_copy)
+
+        btnCopy?.background = getSurface3Drawable(AppCompatResources.getDrawable(mContext, R.drawable.btn_accent_tonal)!!, mContext)
 
         super.getView(position, mView, parent)
 
