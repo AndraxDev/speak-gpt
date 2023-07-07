@@ -22,6 +22,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 
 import androidx.fragment.app.FragmentActivity
@@ -38,6 +39,7 @@ class AboutActivity : FragmentActivity() {
     private var btnPrivacy: MaterialButton? = null
     private var btnFeedback: MaterialButton? = null
     private var appVer: TextView? = null
+    private var btnDonate: LinearLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +52,7 @@ class AboutActivity : FragmentActivity() {
         btnPrivacy = findViewById(R.id.btn_privacy)
         btnFeedback = findViewById(R.id.btn_feedback)
         appVer = findViewById(R.id.app_ver)
+        btnDonate = findViewById(R.id.btn_donate)
 
         appIcon?.setImageResource(R.drawable.assistant)
 
@@ -91,6 +94,13 @@ class AboutActivity : FragmentActivity() {
         btnFeedback?.setOnClickListener {
             val i = Intent()
             i.data = Uri.parse("mailto:dostapenko82@gmail.com")
+            i.action = Intent.ACTION_VIEW
+            startActivity(i)
+        }
+
+        btnDonate?.setOnClickListener {
+            val i = Intent()
+            i.data = Uri.parse("https://www.paypal.com/donate/?hosted_button_id=KR6BRY2BPEQTL")
             i.action = Intent.ACTION_VIEW
             startActivity(i)
         }

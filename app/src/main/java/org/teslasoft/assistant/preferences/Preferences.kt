@@ -22,11 +22,12 @@ import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 
-class Preferences private constructor(private var preferences: SharedPreferences, private var chatId: String) {
+class Preferences private constructor(private var preferences: SharedPreferences, private var gp: SharedPreferences, private var chatId: String) {
     companion object {
         private var preferences: Preferences? = null
         public fun getPreferences(context: Context, chatId: String) : Preferences {
-            if (preferences == null) preferences = Preferences(context.getSharedPreferences("settings.$chatId", Context.MODE_PRIVATE), chatId)
+            if (preferences == null) preferences = Preferences(context.getSharedPreferences("settings.$chatId", Context.MODE_PRIVATE), context.getSharedPreferences("settings", Context.MODE_PRIVATE), chatId)
+
             else {
                 if (preferences?.chatId != chatId) {
                     preferences?.setPreferences(chatId, context)
@@ -45,6 +46,27 @@ class Preferences private constructor(private var preferences: SharedPreferences
      */
     fun setPreferences(chatId: String, context: Context) {
         this.preferences = context.getSharedPreferences("settings.$chatId", Context.MODE_PRIVATE)
+    }
+
+    /**
+     * Retrieves a global String value from the shared preferences.
+     *
+     * @param param The key of the value to retrieve.
+     * @param default The default value to return if the key is not found.
+     * @return The value associated with the specified key or the default value if the key is not found.
+     */
+    private fun getGlobalString(param: String?, default: String?) : String {
+        return gp.getString(param, default).toString()
+    }
+
+    /**
+     * Puts a global String value in the shared preferences.
+     *
+     * @param param The key with which the value is to be associated.
+     * @param value The value to be stored.
+     */
+    private fun putGlobalString(param: String, value: String) {
+        gp.edit()?.putString(param, value)?.apply()
     }
 
     /**
@@ -231,6 +253,24 @@ class Preferences private constructor(private var preferences: SharedPreferences
      */
     fun setAutoLangDetect(mode: Boolean) {
         putBoolean("autoLangDetect", mode)
+    }
+
+    /**
+     * Retrieves the custom host URL for API requests.
+     *
+     * @return The custom host URL as a string. If no custom host URL is set, it returns the default value "https://api.openai.com".
+     */
+    fun getCustomHost() : String {
+        return getGlobalString("custom_host", "https://api.openai.com/v1/")
+    }
+
+    /**
+     * Sets the custom host URL for API requests.
+     *
+     * @param host The custom host URL to be set.
+     */
+    fun setCustomHost(host: String) {
+        putGlobalString("custom_host", host)
     }
 
     /**

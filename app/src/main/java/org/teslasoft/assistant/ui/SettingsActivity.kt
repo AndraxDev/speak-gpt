@@ -43,6 +43,7 @@ import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.debug.DebugActivity
 import org.teslasoft.assistant.ui.fragments.dialogs.ActivationPromptDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.AdvancedSettingsDialogFragment
+import org.teslasoft.assistant.ui.fragments.dialogs.HostnameEditorDialog
 import org.teslasoft.assistant.ui.fragments.dialogs.LanguageSelectorDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.VoiceSelectorDialogFragment
 import org.teslasoft.assistant.ui.onboarding.ActivationActivity
@@ -52,6 +53,7 @@ class SettingsActivity : FragmentActivity() {
 
     private var btnChangeApi: LinearLayout? = null
     private var btnChangeAccount: LinearLayout? = null
+    private var btnCustomHost: LinearLayout? = null
     private var btnSetAssistant: LinearLayout? = null
     private var silenceSwitch: MaterialSwitch? = null
     private var alwaysSpeak: MaterialSwitch? = null
@@ -142,6 +144,21 @@ class SettingsActivity : FragmentActivity() {
         }
     }
 
+    private var hostChangedListener: HostnameEditorDialog.StateChangesListener = object : HostnameEditorDialog.StateChangesListener {
+        override fun onFormError(name: String) {
+            runOnUiThread {
+                Toast.makeText(this@SettingsActivity, "Please fill all blanks", Toast.LENGTH_SHORT).show()
+            }
+            val hostnameEditorDialog: HostnameEditorDialog = HostnameEditorDialog.newInstance(name)
+            hostnameEditorDialog.setStateChangedListener(this)
+            hostnameEditorDialog.show(supportFragmentManager.beginTransaction(), "HostEditorDialog")
+        }
+
+        override fun onSelected(name: String) {
+            preferences?.setCustomHost(name)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -156,6 +173,7 @@ class SettingsActivity : FragmentActivity() {
 
         btnChangeApi = findViewById(R.id.btn_manage_api)
         btnChangeAccount = findViewById(R.id.btn_manage_account)
+        btnCustomHost = findViewById(R.id.btn_manage_host)
         btnSetAssistant = findViewById(R.id.btn_manage_assistant)
         silenceSwitch = findViewById(R.id.silent_switch)
         alwaysSpeak = findViewById(R.id.always_speak_switch)
@@ -188,6 +206,9 @@ class SettingsActivity : FragmentActivity() {
             ContextCompat.getDrawable(this, R.drawable.t_menu_top_item_background)!!, this)
 
         btnChangeAccount?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background)!!, this)
+
+        btnCustomHost?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background)!!, this)
 
         btnSetAssistant?.background = getDarkAccentDrawable(
@@ -343,6 +364,12 @@ class SettingsActivity : FragmentActivity() {
             val promptDialog: ActivationPromptDialogFragment = ActivationPromptDialogFragment.newInstance(activationPrompt)
             promptDialog.setStateChangedListener(promptChangedListener)
             promptDialog.show(supportFragmentManager.beginTransaction(), "PromptDialog")
+        }
+
+        btnCustomHost?.setOnClickListener {
+            val hostnameEditorDialog: HostnameEditorDialog = HostnameEditorDialog.newInstance(preferences?.getCustomHost()!!)
+            hostnameEditorDialog.setStateChangedListener(hostChangedListener)
+            hostnameEditorDialog.show(supportFragmentManager.beginTransaction(), "HostEditorDialog")
         }
 
         btnVoiceSelector?.setOnClickListener {

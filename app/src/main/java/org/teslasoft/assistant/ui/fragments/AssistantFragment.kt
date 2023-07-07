@@ -56,12 +56,17 @@ import com.aallam.openai.api.chat.chatCompletionRequest
 import com.aallam.openai.api.completion.CompletionRequest
 import com.aallam.openai.api.completion.TextCompletion
 import com.aallam.openai.api.file.FileSource
+import com.aallam.openai.api.http.Timeout
 import com.aallam.openai.api.image.ImageCreation
 import com.aallam.openai.api.image.ImageSize
 import com.aallam.openai.api.logging.LogLevel
+import com.aallam.openai.api.logging.Logger
 import com.aallam.openai.api.model.ModelId
+import com.aallam.openai.client.LoggingConfig
 import com.aallam.openai.client.OpenAI
 import com.aallam.openai.client.OpenAIConfig
+import com.aallam.openai.client.OpenAIHost
+import com.aallam.openai.client.RetryStrategy
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
@@ -99,6 +104,7 @@ import java.io.IOException
 import java.net.URL
 import java.util.Base64
 import java.util.Locale
+import kotlin.time.Duration.Companion.seconds
 
 class AssistantFragment : BottomSheetDialogFragment() {
 
@@ -522,8 +528,15 @@ class AssistantFragment : BottomSheetDialogFragment() {
         } else {
             val config = OpenAIConfig(
                 token = key!!,
-                logLevel = LogLevel.None,
+                logging = LoggingConfig(LogLevel.None, Logger.Simple),
+                timeout = Timeout(socket = 30.seconds),
+                organization = null,
+                headers = emptyMap(),
+                host = OpenAIHost(Preferences.getPreferences(requireActivity(), "").getCustomHost()),
+                proxy = null,
+                retry = RetryStrategy()
             )
+
             ai = OpenAI(config)
             loadModel()
             setup()

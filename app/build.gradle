@@ -34,13 +34,13 @@ android {
             multiDexEnabled true
         }
 
-//        debug {
-//            debuggable false
-//            minifyEnabled true
-//            shrinkResources true
-//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-//            multiDexEnabled true
-//        }
+        debug {
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            multiDexEnabled true
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
