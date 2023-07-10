@@ -45,6 +45,7 @@ import org.teslasoft.assistant.ui.fragments.dialogs.ActivationPromptDialogFragme
 import org.teslasoft.assistant.ui.fragments.dialogs.AdvancedSettingsDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.HostnameEditorDialog
 import org.teslasoft.assistant.ui.fragments.dialogs.LanguageSelectorDialogFragment
+import org.teslasoft.assistant.ui.fragments.dialogs.SystemMessageDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.VoiceSelectorDialogFragment
 import org.teslasoft.assistant.ui.onboarding.ActivationActivity
 import org.teslasoft.core.auth.client.TeslasoftIDClient
@@ -66,6 +67,7 @@ class SettingsActivity : FragmentActivity() {
     private var btnModelGroup: MaterialButtonToggleGroup? = null
     private var btnModel: LinearLayout? = null
     private var btnPrompt: LinearLayout? = null
+    private var btnSystem: LinearLayout? = null
     private var btnAbout: LinearLayout? = null
     private var r256: MaterialButton? = null
     private var r512: MaterialButton? = null
@@ -86,6 +88,7 @@ class SettingsActivity : FragmentActivity() {
     private var chatId = ""
     private var model = ""
     private var activationPrompt = ""
+    private var systemMessage = ""
     private var language = "en"
 
     private var teslasoftIDClient: TeslasoftIDClient? = null
@@ -130,19 +133,19 @@ class SettingsActivity : FragmentActivity() {
         }
     }
 
-    private var promptChangedListener: ActivationPromptDialogFragment.StateChangesListener = object : ActivationPromptDialogFragment.StateChangesListener {
-        override fun onEdit(prompt: String) {
+    private var promptChangedListener: ActivationPromptDialogFragment.StateChangesListener =
+        ActivationPromptDialogFragment.StateChangesListener { prompt ->
             activationPrompt = prompt
 
             preferences?.setPrompt(prompt)
-
-            if (activationPrompt != "") {
-                promptDesc?.text = activationPrompt
-            } else {
-                promptDesc?.text = resources.getString(R.string.activation_prompt_set_message)
-            }
         }
-    }
+
+    private var systemChangedListener: SystemMessageDialogFragment.StateChangesListener =
+        SystemMessageDialogFragment.StateChangesListener { prompt ->
+            systemMessage = prompt
+
+            preferences?.setSystemMessage(prompt)
+        }
 
     private var hostChangedListener: HostnameEditorDialog.StateChangesListener = object : HostnameEditorDialog.StateChangesListener {
         override fun onFormError(name: String) {
@@ -184,6 +187,7 @@ class SettingsActivity : FragmentActivity() {
         btnDebugMenu = findViewById(R.id.btn_debug_menu)
         btnModel = findViewById(R.id.btn_model)
         btnPrompt = findViewById(R.id.btn_prompt)
+        btnSystem = findViewById(R.id.btn_system)
         promptDesc = findViewById(R.id.prompt_desc)
         modelDesc = findViewById(R.id.model_desc)
         btnAbout = findViewById(R.id.btn_about)
@@ -226,6 +230,9 @@ class SettingsActivity : FragmentActivity() {
         btnPrompt?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background)!!, this)
 
+        btnSystem?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background)!!, this)
+
         btnBubblesView?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(this, R.drawable.btn_accent_tonal_selector_v3)!!, this)
 
@@ -266,18 +273,13 @@ class SettingsActivity : FragmentActivity() {
     private fun initSettings() {
         preferences = Preferences.getPreferences(this, chatId)
 
-        activationPrompt = preferences?.getPrompt().toString() // possible kotlin bug
+        activationPrompt = preferences?.getPrompt().toString()
+        systemMessage = preferences?.getSystemMessage().toString()
 
         if (preferences?.getLayout() == "bubbles") {
             switchUIToBubbles()
         } else {
             switchUIToClassic()
-        }
-
-        promptDesc?.text = if (activationPrompt != "") {
-            activationPrompt
-        } else {
-            resources.getString(R.string.activation_prompt_set_message)
         }
 
         silenceSwitch?.isChecked = preferences?.getSilence() == true
@@ -364,6 +366,12 @@ class SettingsActivity : FragmentActivity() {
             val promptDialog: ActivationPromptDialogFragment = ActivationPromptDialogFragment.newInstance(activationPrompt)
             promptDialog.setStateChangedListener(promptChangedListener)
             promptDialog.show(supportFragmentManager.beginTransaction(), "PromptDialog")
+        }
+
+        btnSystem?.setOnClickListener {
+            val promptDialog: SystemMessageDialogFragment = SystemMessageDialogFragment.newInstance(systemMessage)
+            promptDialog.setStateChangedListener(systemChangedListener)
+            promptDialog.show(supportFragmentManager.beginTransaction(), "SystemMessageDialog")
         }
 
         btnCustomHost?.setOnClickListener {

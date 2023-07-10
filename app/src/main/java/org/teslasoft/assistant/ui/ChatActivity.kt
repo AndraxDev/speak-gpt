@@ -1017,9 +1017,23 @@ class ChatActivity : FragmentActivity() {
     private suspend fun regularGPTResponse(shouldPronounce: Boolean) {
         var response = ""
         putMessage("", true)
+
+        val msgs: ArrayList<ChatMessage> = chatMessages.clone() as ArrayList<ChatMessage>
+
+        val systemMessage = Preferences.getPreferences(this, chatId).getSystemMessage()
+
+        if (systemMessage != "") {
+            msgs.add(
+                ChatMessage(
+                    role = ChatRole.User,
+                    content = systemMessage
+                )
+            )
+        }
+
         val chatCompletionRequest = ChatCompletionRequest(
             model = ModelId(model),
-            messages = chatMessages
+            messages = msgs
         )
 
         val completions: Flow<ChatCompletionChunk> =

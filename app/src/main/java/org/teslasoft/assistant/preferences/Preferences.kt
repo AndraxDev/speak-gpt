@@ -274,6 +274,24 @@ class Preferences private constructor(private var preferences: SharedPreferences
     }
 
     /**
+     * Retrieves system message. System messages allow you to make ChatGPT more reliable.
+     *
+     * @return System message.
+     */
+    fun getSystemMessage() : String {
+        return getString("system_message", "")
+    }
+
+    /**
+     * Sets system message. System messages allow you to make ChatGPT more reliable.
+     *
+     * @param message The system message.
+     */
+    fun setSystemMessage(message: String) {
+        putString("system_message", message)
+    }
+
+    /**
      * Retrieves the end separator from the shared preferences.
      *
      * @return The end separator value or an empty String if not found.

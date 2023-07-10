@@ -888,9 +888,22 @@ class AssistantFragment : BottomSheetDialogFragment() {
         var response = ""
         putMessage("", true)
 
+        val msgs: ArrayList<ChatMessage> = chatMessages.clone() as ArrayList<ChatMessage>
+
+        val systemMessage = Preferences.getPreferences(requireActivity(), "").getSystemMessage()
+
+        if (systemMessage != "") {
+            msgs.add(
+                ChatMessage(
+                    role = ChatRole.User,
+                    content = systemMessage
+                )
+            )
+        }
+
         val chatCompletionRequest = chatCompletionRequest {
             model = ModelId(this@AssistantFragment.model)
-            messages = chatMessages
+            messages = msgs
         }
 
         val completions: Flow<ChatCompletionChunk> =
