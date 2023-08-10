@@ -120,7 +120,7 @@ class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragme
             val i = Intent(
                     mContext.requireActivity(),
                     ChatActivity::class.java
-            )
+            ).setAction(Intent.ACTION_VIEW)
 
             i.putExtra("name", dataArray?.get(position)?.get("name").toString())
             i.putExtra("chatId", Hash.hash(dataArray?.get(position)?.get("name").toString()))

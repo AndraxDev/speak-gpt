@@ -228,13 +228,13 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
                 }
 
                 btnTry?.setOnClickListener {
-                    val i = Intent(this, AssistantActivity::class.java)
+                    val i = Intent(this, AssistantActivity::class.java).setAction(Intent.ACTION_VIEW)
                     i.putExtra("prompt", promptText?.text.toString())
                     startActivity(i)
                 }
 
                 btnFlag?.setOnClickListener {
-                    val i = Intent(this, ReportAbuseActivity::class.java)
+                    val i = Intent(this, ReportAbuseActivity::class.java).setAction(Intent.ACTION_VIEW)
                     i.putExtra("id", id)
                     startActivity(i)
                 }

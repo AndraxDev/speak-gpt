@@ -50,8 +50,6 @@ class LanguageSelectorDialogFragment : DialogFragment() {
 
     private var builder: AlertDialog.Builder? = null
 
-    private var context: Context? = null
-
     private var listener: StateChangesListener? = null
 
     private var language = "en"

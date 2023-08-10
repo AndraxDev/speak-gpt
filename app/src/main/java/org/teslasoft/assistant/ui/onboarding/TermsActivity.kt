@@ -83,7 +83,7 @@ class TermsActivity : FragmentActivity() {
         }
 
         btnNext?.setOnClickListener {
-            startActivity(Intent(this, ActivationActivity::class.java))
+            startActivity(Intent(this, ActivationActivity::class.java).setAction(Intent.ACTION_VIEW))
             finish()
         }
     }

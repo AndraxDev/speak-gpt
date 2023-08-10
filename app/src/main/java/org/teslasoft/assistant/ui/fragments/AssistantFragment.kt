@@ -220,7 +220,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
             isRecording = false
             btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
             val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-            if (matches != null && matches.size > 0) {
+            if (!matches.isNullOrEmpty()) {
                 val recognizedText = matches[0]
 
                 chatMessages.add(ChatMessage(
@@ -319,7 +319,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         loadResolution()
 
         if (key == null) {
-            startActivity(Intent(requireActivity(), WelcomeActivity::class.java))
+            startActivity(Intent(requireActivity(), WelcomeActivity::class.java).setAction(Intent.ACTION_VIEW))
             requireActivity().finishAndRemoveTask()
         } else {
             silenceMode = Preferences.getPreferences(requireActivity(), "").getSilence()
@@ -358,7 +358,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
             val i = Intent(
                 requireActivity(),
                 SettingsActivity::class.java
-            )
+            ).setAction(Intent.ACTION_VIEW)
 
             settingsLauncher.launch(
                 i
@@ -491,7 +491,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                     Intent(
                         requireActivity(),
                         MicrophonePermissionActivity::class.java
-                    )
+                    ).setAction(Intent.ACTION_VIEW)
                 )
             }
         }
@@ -516,7 +516,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                     Intent(
                         requireActivity(),
                         MicrophonePermissionActivity::class.java
-                    )
+                    ).setAction(Intent.ACTION_VIEW)
                 )
             }
 
@@ -535,7 +535,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     private fun initAI() {
         if (key == null) {
-            startActivity(Intent(requireActivity(), WelcomeActivity::class.java))
+            startActivity(Intent(requireActivity(), WelcomeActivity::class.java).setAction(Intent.ACTION_VIEW))
             requireActivity().finish()
         } else {
             val config = OpenAIConfig(

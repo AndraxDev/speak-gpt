@@ -36,7 +36,7 @@ class WelcomeActivity : FragmentActivity() {
         btnNext = findViewById(R.id.btn_next)
 
         btnNext?.setOnClickListener {
-            startActivity(Intent(this, TermsActivity::class.java))
+            startActivity(Intent(this, TermsActivity::class.java).setAction(Intent.ACTION_VIEW))
             finish()
         }
     }

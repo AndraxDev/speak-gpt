@@ -16,6 +16,7 @@
 
 package org.teslasoft.assistant.ui.fragments.dialogs
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
@@ -38,7 +39,7 @@ import org.teslasoft.assistant.util.Hash
 class AddChatDialogFragment : DialogFragment() {
 
     companion object {
-        public fun newInstance(name: String, fromFile: Boolean) : AddChatDialogFragment {
+        fun newInstance(name: String, fromFile: Boolean) : AddChatDialogFragment {
             val addChatDialogFragment = AddChatDialogFragment()
 
             val args = Bundle()
@@ -72,6 +73,7 @@ class AddChatDialogFragment : DialogFragment() {
         return inflater.inflate(R.layout.fragment_add_chat, container, false)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         builder = MaterialAlertDialogBuilder(this.requireContext())
 
@@ -96,7 +98,7 @@ class AddChatDialogFragment : DialogFragment() {
 
             isEdit = true
 
-            return builder!!.create()
+
         } else {
             dialogTitle.text = requireActivity().resources.getString(R.string.title_new_chat)
 
@@ -106,9 +108,9 @@ class AddChatDialogFragment : DialogFragment() {
                     .setCancelable(false)
                     .setPositiveButton("OK") { _, _ -> validateForm() }
                     .setNegativeButton("Cancel") { _, _: Int -> listener!!.onCanceled() }
-
-            return builder!!.create()
         }
+
+        return builder!!.create()
     }
 
     private fun validateForm() {

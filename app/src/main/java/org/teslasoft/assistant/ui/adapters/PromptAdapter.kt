@@ -52,7 +52,7 @@ class PromptAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragment
         return position.toLong()
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "InflateParams")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val inflater = mContext.requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
@@ -79,7 +79,7 @@ class PromptAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragment
         textFor.text = dataArray?.get(position)?.get("type")
 
         background.setOnClickListener {
-            val i = Intent(mContext.requireActivity(), PromptViewActivity::class.java)
+            val i = Intent(mContext.requireActivity(), PromptViewActivity::class.java).setAction(Intent.ACTION_VIEW)
             i.putExtra("id", dataArray?.get(position)?.get("id"))
             i.putExtra("title", dataArray?.get(position)?.get("name"))
             mContext.requireActivity().startActivity(i)

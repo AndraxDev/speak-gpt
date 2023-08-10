@@ -81,11 +81,10 @@ class MainActivity : FragmentActivity() {
                         menuTips()
                         return@OnItemSelectedListener true
                     }
-                    else -> {
-                        return@OnItemSelectedListener false
-                    }
                 }
-            } else return@OnItemSelectedListener false
+            }
+
+            return@OnItemSelectedListener false
         })
 
         if (savedInstanceState != null) {

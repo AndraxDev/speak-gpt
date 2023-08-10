@@ -48,7 +48,7 @@ class DebugActivity : FragmentActivity() {
 
                 val voices: Set<Voice> = tts!!.voices
                 for (v: Voice in voices) {
-                    if (v.name.equals("en-us-x-iom-local") && Preferences.getPreferences(this@DebugActivity, "").getLanguage() == "en") {
+                    if (v.name == "en-us-x-iom-local" && Preferences.getPreferences(this@DebugActivity, "").getLanguage() == "en") {
                         tts!!.voice = v
                     }
                 }

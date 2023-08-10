@@ -46,12 +46,10 @@ class CrashHandlerActivity : FragmentActivity() {
             error = CustomActivityOnCrash.getStackTraceFromIntent(intent)
 
             setContentView(R.layout.activity_crash)
-            overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
 
             onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     finishAndRemoveTask()
-                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
                 }
             })
 
@@ -61,17 +59,14 @@ class CrashHandlerActivity : FragmentActivity() {
 
             if (error == "") {
                 finishAndRemoveTask()
-                overridePendingTransition(0, 0)
             }
         } catch (_: Exception) {
             finishAndRemoveTask()
-            overridePendingTransition(0, 0)
         }
     }
 
     fun dismiss(v: View?) {
         finishAndRemoveTask()
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
     }
 
     fun copy(v: View?) {

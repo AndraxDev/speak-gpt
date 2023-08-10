@@ -33,7 +33,7 @@ import org.teslasoft.assistant.R
 
 class ActivationPromptDialogFragment : DialogFragment() {
     companion object {
-        public fun newInstance(prompt: String) : ActivationPromptDialogFragment {
+        fun newInstance(prompt: String) : ActivationPromptDialogFragment {
             val activationPromptDialogFragment = ActivationPromptDialogFragment()
 
             val args = Bundle()

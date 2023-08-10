@@ -33,7 +33,7 @@ import org.teslasoft.assistant.R
 
 class SystemMessageDialogFragment : DialogFragment() {
     companion object {
-        public fun newInstance(prompt: String) : SystemMessageDialogFragment {
+        fun newInstance(prompt: String) : SystemMessageDialogFragment {
             val activationPromptDialogFragment = SystemMessageDialogFragment()
 
             val args = Bundle()

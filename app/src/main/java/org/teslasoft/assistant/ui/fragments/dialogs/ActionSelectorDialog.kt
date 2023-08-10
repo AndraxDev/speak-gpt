@@ -24,7 +24,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
@@ -35,7 +34,7 @@ import org.teslasoft.assistant.R
 
 class ActionSelectorDialog : DialogFragment() {
     companion object {
-        public fun newInstance(prompt: String) : ActionSelectorDialog {
+        fun newInstance(prompt: String) : ActionSelectorDialog {
             val actionSelectorDialog = ActionSelectorDialog()
 
             val args = Bundle()

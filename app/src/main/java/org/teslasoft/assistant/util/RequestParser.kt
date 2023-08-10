@@ -20,7 +20,7 @@ package org.teslasoft.assistant.util
 * This class should parse static responses and do routines related to that responses
 * */
 
-@Deprecated("DODO: Migrate to GPT functions")
+@Deprecated("TODO: Migrate to GPT functions")
 class RequestParser {
     // TODO: implement
 }

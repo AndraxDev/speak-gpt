@@ -95,7 +95,7 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
                 val editor: SharedPreferences.Editor = sharedPreferences.edit()
                 editor.putString("tmp", dataArray?.get(position)?.get("message").toString())
                 editor.apply()
-                val intent = Intent(mContext, ImageBrowserActivity::class.java)
+                val intent = Intent(mContext, ImageBrowserActivity::class.java).setAction(Intent.ACTION_VIEW)
                 intent.putExtra("tmp", "1")
                 mContext.startActivity(intent)
             }
@@ -124,7 +124,7 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
                             val editor: SharedPreferences.Editor = sharedPreferences.edit()
                             editor.putString("tmp", m)
                             editor.apply()
-                            val intent = Intent(mContext, ImageBrowserActivity::class.java)
+                            val intent = Intent(mContext, ImageBrowserActivity::class.java).setAction(Intent.ACTION_VIEW)
                             intent.putExtra("tmp", "1")
                             mContext.startActivity(intent)
                         }

@@ -35,7 +35,7 @@ import org.teslasoft.assistant.R
 
 class PostPromptDialogFragment : DialogFragment() {
     companion object {
-        public fun newInstance(name: String, title: String, desc: String, prompt: String, type: String, category: String) : PostPromptDialogFragment {
+        fun newInstance(name: String, title: String, desc: String, prompt: String, type: String, category: String) : PostPromptDialogFragment {
             val postPromptDialogFragment = PostPromptDialogFragment()
 
             val args = Bundle()
@@ -184,10 +184,10 @@ class PostPromptDialogFragment : DialogFragment() {
         this.listener = listener
     }
 
-    public interface StateChangesListener {
-        public fun onFormFilled(name: String, title: String, desc: String, prompt: String, type: String, category: String)
+    interface StateChangesListener {
+        fun onFormFilled(name: String, title: String, desc: String, prompt: String, type: String, category: String)
 
-        public fun onFormError(name: String, title: String, desc: String, prompt: String, type: String, category: String)
-        public fun onCanceled()
+        fun onFormError(name: String, title: String, desc: String, prompt: String, type: String, category: String)
+        fun onCanceled()
     }
 }

@@ -116,7 +116,6 @@ import java.net.URL
 
 import java.util.Base64
 import java.util.Locale
-import java.util.Objects
 import kotlin.time.Duration.Companion.seconds
 
 class ChatActivity : FragmentActivity() {
@@ -304,7 +303,7 @@ class ChatActivity : FragmentActivity() {
         loadResolution()
 
         if (key == null) {
-            startActivity(Intent(this, WelcomeActivity::class.java))
+            startActivity(Intent(this, WelcomeActivity::class.java).setAction(Intent.ACTION_VIEW))
             finish()
         } else {
             silenceMode = Preferences.getPreferences(this, chatId).getSilence()
@@ -432,7 +431,7 @@ class ChatActivity : FragmentActivity() {
             val i = Intent(
                     this,
                     SettingsActivity::class.java
-            )
+            ).setAction(Intent.ACTION_VIEW)
 
             i.putExtra("chatId", chatId)
 
@@ -611,7 +610,7 @@ class ChatActivity : FragmentActivity() {
                     Intent(
                         this,
                         MicrophonePermissionActivity::class.java
-                    )
+                    ).setAction(Intent.ACTION_VIEW)
                 )
             }
         }
@@ -636,7 +635,7 @@ class ChatActivity : FragmentActivity() {
                     Intent(
                         this,
                         MicrophonePermissionActivity::class.java
-                    )
+                    ).setAction(Intent.ACTION_VIEW)
                 )
             }
 
@@ -655,7 +654,7 @@ class ChatActivity : FragmentActivity() {
 
     private fun initAI() {
         if (key == null) {
-            startActivity(Intent(this, WelcomeActivity::class.java))
+            startActivity(Intent(this, WelcomeActivity::class.java).setAction(Intent.ACTION_VIEW))
             finish()
         } else {
             val config = OpenAIConfig(

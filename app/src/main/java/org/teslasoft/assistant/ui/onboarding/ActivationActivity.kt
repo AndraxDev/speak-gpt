@@ -93,7 +93,7 @@ class ActivationActivity : FragmentActivity() {
                 Toast.makeText(this, "Please enter an API key", Toast.LENGTH_SHORT).show()
             } else {
                 Preferences.getPreferences(this, "").setApiKey(keyInput?.text.toString(), this)
-                startActivity(Intent(this, MainActivity::class.java))
+                startActivity(Intent(this, MainActivity::class.java).setAction(Intent.ACTION_VIEW))
                 finish()
             }
         }

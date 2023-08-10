@@ -84,7 +84,7 @@ class ChatsListFragment : Fragment() {
             val i = Intent(
                 requireActivity(),
                 ChatActivity::class.java
-            )
+            ).setAction(Intent.ACTION_VIEW)
 
             i.putExtra("name", name)
             i.putExtra("chatId", id)
@@ -146,7 +146,7 @@ class ChatsListFragment : Fragment() {
         btnSettings?.setImageResource(R.drawable.ic_settings)
 
         btnSettings?.setOnClickListener {
-            startActivity(Intent(requireActivity(), SettingsActivity::class.java))
+            startActivity(Intent(requireActivity(), SettingsActivity::class.java).setAction(Intent.ACTION_VIEW))
         }
 
         btnAdd = view.findViewById(R.id.btn_add)
@@ -239,7 +239,7 @@ class ChatsListFragment : Fragment() {
         if (Preferences.getPreferences(requireActivity(), "").getApiKey(requireActivity()) == "") {
             if (Preferences.getPreferences(requireActivity(), "").getOldApiKey() == "") {
                 requireActivity().getSharedPreferences("chat_list", Context.MODE_PRIVATE).edit().putString("data", "[]").apply()
-                startActivity(Intent(requireActivity(), WelcomeActivity::class.java))
+                startActivity(Intent(requireActivity(), WelcomeActivity::class.java).setAction(Intent.ACTION_VIEW))
                 requireActivity().finish()
             } else {
                 Preferences.getPreferences(requireActivity(), "").secureApiKey(requireActivity())
@@ -253,6 +253,7 @@ class ChatsListFragment : Fragment() {
     private fun initSettings() {
         chats = ChatPreferences.getChatPreferences().getChatList(requireActivity())
 
+        // R8 went fuck himself...
         if (chats == null) chats = arrayListOf()
 
         adapter = ChatListAdapter(chats, this)
