@@ -47,7 +47,6 @@ import androidx.fragment.app.FragmentActivity
 import com.aallam.openai.api.BetaOpenAI
 import com.aallam.openai.api.audio.TranscriptionRequest
 import com.aallam.openai.api.chat.ChatCompletionChunk
-import com.aallam.openai.api.chat.ChatCompletionRequest
 import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatRole
 import com.aallam.openai.api.chat.FunctionMode
@@ -81,7 +80,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 
 import okio.FileSystem
@@ -92,6 +90,7 @@ import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.AssistantAdapter
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
 import org.teslasoft.assistant.ui.SettingsActivity
+import org.teslasoft.assistant.ui.fragments.dialogs.ActionSelectorDialog
 import org.teslasoft.assistant.ui.permission.MicrophonePermissionActivity
 import org.teslasoft.assistant.ui.fragments.dialogs.AddChatDialogFragment
 import org.teslasoft.assistant.util.Hash
@@ -184,6 +183,19 @@ class AssistantFragment : BottomSheetDialogFragment() {
     // Init audio
     private var recognizer: SpeechRecognizer? = null
     private var recorder: MediaRecorder? = null
+
+    private var stateListener: ActionSelectorDialog.StateChangesListener = ActionSelectorDialog.StateChangesListener { type, text ->
+        run {
+
+            when (type) {
+                "prompt" -> run(prefix + text + endSeparator)
+                "explain" -> run(String.format(getString(R.string.prompt_explain), text))
+                "image" -> run("/imagine " + text)
+                "cancel" -> this@AssistantFragment.dismiss()
+                else -> this@AssistantFragment.dismiss()
+            }
+        }
+    }
 
     @OptIn(BetaOpenAI::class)
     private val speechListener = object : RecognitionListener {
@@ -565,7 +577,15 @@ class AssistantFragment : BottomSheetDialogFragment() {
         if (requireActivity().intent?.action == Intent.ACTION_SEND && requireActivity().intent.type == "text/plain") {
             val receivedText = requireActivity().intent.getStringExtra(Intent.EXTRA_TEXT)
             if (receivedText != null) {
-                run(prefix + receivedText + endSeparator)
+                CoroutineScope(Dispatchers.Main).launch {
+                    val actionSelectorDialog: ActionSelectorDialog =
+                        ActionSelectorDialog.newInstance(receivedText)
+                    actionSelectorDialog.setStateChangedListener(stateListener)
+                    actionSelectorDialog.show(
+                        parentFragmentManager.beginTransaction(),
+                        "ActionSelectorDialog\$runFromShareIntent()"
+                    )
+                }
             } else {
                 runFromContextMenu()
             }
@@ -578,7 +598,15 @@ class AssistantFragment : BottomSheetDialogFragment() {
         val tryPrompt = requireActivity().intent.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT).toString()
 
         if (tryPrompt != "" && tryPrompt != "null") {
-            run(prefix + tryPrompt + endSeparator)
+            CoroutineScope(Dispatchers.Main).launch {
+                val actionSelectorDialog: ActionSelectorDialog =
+                    ActionSelectorDialog.newInstance(tryPrompt)
+                actionSelectorDialog.setStateChangedListener(stateListener)
+                actionSelectorDialog.show(
+                    parentFragmentManager.beginTransaction(),
+                    "ActionSelectorDialog\$runFromContextMenu()"
+                )
+            }
         } else {
             runActivationPrompt()
         }
@@ -1124,20 +1152,22 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     @OptIn(BetaOpenAI::class)
     private fun run(prompt: String) {
-        putMessage(prompt, false)
-
-        hideKeyboard()
-        btnAssistantVoice?.isEnabled = false
-        btnAssistantSend?.isEnabled = false
-        assistantLoading?.visibility = View.VISIBLE
-
-        chatMessages.add(ChatMessage(
-            role = ChatRole.User,
-            content = prompt
-        ))
-
-        CoroutineScope(Dispatchers.Main).launch {
-            generateResponse(prompt, false)
-        }
+        parseMessage(prompt)
+        // @deprecated
+//        putMessage(prompt, false)
+//
+//        hideKeyboard()
+//        btnAssistantVoice?.isEnabled = false
+//        btnAssistantSend?.isEnabled = false
+//        assistantLoading?.visibility = View.VISIBLE
+//
+//        chatMessages.add(ChatMessage(
+//            role = ChatRole.User,
+//            content = prompt
+//        ))
+//
+//        CoroutineScope(Dispatchers.Main).launch {
+//            generateResponse(prompt, false)
+//        }
     }
 }

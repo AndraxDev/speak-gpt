@@ -133,4 +133,5 @@
     <string name="btn_copy">Kopírovať</string>
     <string name="user">Používateľ</string>
     <string name="title_edit_chat">Upraviť chat</string>
+    <string name="prompt_explain">Čo znamená "%s"?</string>
 </resources>

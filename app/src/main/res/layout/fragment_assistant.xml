@@ -44,7 +44,7 @@
             android:paddingTop="24sp"
             android:text="@string/app_name"
             android:textColor="@color/accent_900"
-            android:textSize="20sp"
+            android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

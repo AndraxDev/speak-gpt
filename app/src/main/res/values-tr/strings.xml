@@ -133,4 +133,5 @@
     <string name="btn_copy">Copy</string>
     <string name="user">User</string>
     <string name="title_edit_chat">Edit chat</string>
+    <string name="prompt_explain">"%s" ne anlama geliyor?</string>
 </resources>

@@ -133,4 +133,5 @@
     <string name="btn_copy">Copiar</string>
     <string name="user">Usuario</string>
     <string name="title_edit_chat">Editar chat</string>
+    <string name="prompt_explain">¿Qué significa "%s"?</string>
 </resources>

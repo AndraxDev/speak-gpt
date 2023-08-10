@@ -133,4 +133,5 @@
     <string name="btn_copy">Копировать</string>
     <string name="user">Пользователь</string>
     <string name="title_edit_chat">Редактировать чат</string>
+    <string name="prompt_explain">Что означает "%s"?</string>
 </resources>

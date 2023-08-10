@@ -7,7 +7,9 @@
           <value>
             <InsightsFilterSettings>
               <option name="connection">
-                <ConnectionSetting />
+                <ConnectionSetting>
+                  <option name="appId" value="org.teslasoft.assistant" />
+                </ConnectionSetting>
               </option>
               <option name="failureTypes">
                 <list>
