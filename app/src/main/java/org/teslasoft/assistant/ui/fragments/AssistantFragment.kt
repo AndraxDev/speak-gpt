@@ -93,6 +93,7 @@ import org.teslasoft.assistant.ui.SettingsActivity
 import org.teslasoft.assistant.ui.fragments.dialogs.ActionSelectorDialog
 import org.teslasoft.assistant.ui.permission.MicrophonePermissionActivity
 import org.teslasoft.assistant.ui.fragments.dialogs.AddChatDialogFragment
+import org.teslasoft.assistant.util.DefaultPromptsParser
 import org.teslasoft.assistant.util.Hash
 import org.teslasoft.assistant.util.LocaleParser
 
@@ -189,7 +190,15 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
             when (type) {
                 "prompt" -> run(prefix + text + endSeparator)
-                "explain" -> run(String.format(getString(R.string.prompt_explain), text))
+                "explain" -> {
+                    val parser = DefaultPromptsParser()
+                    parser.init()
+                    val prefs = Preferences.getPreferences(requireActivity(), "")
+                    val lang = prefs.getLanguage()
+                    val rawPrompt = parser.parse("explanationPrompt", lang)
+                    val prompt = String.format(rawPrompt, text)
+                    run(prompt)
+                }
                 "image" -> run("/imagine " + text)
                 "cancel" -> this@AssistantFragment.dismiss()
                 else -> this@AssistantFragment.dismiss()
@@ -879,24 +888,34 @@ class AssistantFragment : BottomSheetDialogFragment() {
             }
         } catch (e: Exception) {
             putMessage("", true)
-            val response = if (e.stackTraceToString().contains("does not exist")) {
-                "Looks like this model (${model}) is not available to you right now. It can be because of high demand or this model is currently in limited beta."
-            } else if (e.stackTraceToString().contains("Connect timeout has expired") || e.stackTraceToString().contains("SocketTimeoutException")) {
-                "Could not connect to OpenAI servers. It may happen when your Internet speed is slow or too many users are using this model at the same time. Try to switch to another model."
-            } else if (e.stackTraceToString().contains("This model's maximum")) {
-                "Too many tokens. It is an internal error, please report it. Also try to truncate your input. Sometimes it may help."
-            } else if (e.stackTraceToString().contains("No address associated with hostname")) {
-                "You are currently offline. Please check your connection and try again."
-            } else if (e.stackTraceToString().contains("Incorrect API key")) {
-                "Your API key is incorrect. Change it in Settings > Change OpenAI key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked."
-            } else if (e.stackTraceToString().contains("Software caused connection abort")) {
-                "\n\n[error] An error occurred while generating response. It may be due to a weak connection or high demand. Try to switch to another model or try again later."
-            } else if (e.stackTraceToString().contains("you must provide a model")) {
-                "No valid model is set in settings. Please change the model and try again."
-            } else if (e.stackTraceToString().contains("You exceeded your current quota")) {
-                "You exceeded your current quota. If you had free trial usage please add payment info. Also please check your usage limits. You can change your limits in Account settings."
-            } else {
-                e.stackTraceToString()
+            val response = when {
+                e.stackTraceToString().contains("does not exist") -> {
+                    "Looks like this model (${model}) is not available to you right now. It can be because of high demand or this model is currently in limited beta."
+                }
+                e.stackTraceToString().contains("Connect timeout has expired") || e.stackTraceToString().contains("SocketTimeoutException") -> {
+                    "Could not connect to OpenAI servers. It may happen when your Internet speed is slow or too many users are using this model at the same time. Try to switch to another model."
+                }
+                e.stackTraceToString().contains("This model's maximum") -> {
+                    "Too many tokens. It is an internal error, please report it. Also try to truncate your input. Sometimes it may help."
+                }
+                e.stackTraceToString().contains("No address associated with hostname") -> {
+                    "You are currently offline. Please check your connection and try again."
+                }
+                e.stackTraceToString().contains("Incorrect API key") -> {
+                    "Your API key is incorrect. Change it in Settings > Change OpenAI key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked."
+                }
+                e.stackTraceToString().contains("Software caused connection abort") -> {
+                    "\n\n[error] An error occurred while generating response. It may be due to a weak connection or high demand. Try to switch to another model or try again later."
+                }
+                e.stackTraceToString().contains("you must provide a model") -> {
+                    "No valid model is set in settings. Please change the model and try again."
+                }
+                e.stackTraceToString().contains("You exceeded your current quota") -> {
+                    "You exceeded your current quota. If you had free trial usage please add payment info. Also please check your usage limits. You can change your limits in Account settings."
+                }
+                else -> {
+                    e.stackTraceToString()
+                }
             }
 
             putMessage(response, true)
@@ -1037,18 +1056,25 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
             putMessage(path, true)
         } catch (e: Exception) {
-            if (e.stackTraceToString().contains("Your request was rejected")) {
-                putMessage("Your prompt contains inappropriate content and can not be processed. We strive to make AI safe and relevant for everyone.", true)
-            } else if (e.stackTraceToString().contains("No address associated with hostname")) {
-                putMessage("You are currently offline. Please check your connection and try again.", true);
-            } else if (e.stackTraceToString().contains("Incorrect API key")) {
-                putMessage("Your API key is incorrect. Change it in Settings > Change OpenAI key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked.", true);
-            } else if (e.stackTraceToString().contains("Software caused connection abort")) {
-                putMessage("An error occurred while generating response. It may be due to a weak connection or high demand. Try again later.", true);
-            } else if (e.stackTraceToString().contains("You exceeded your current quota")) {
-                putMessage("You exceeded your current quota. If you had free trial usage please add payment info. Also please check your usage limits. You can change your limits in Account settings.", true)
-            } else {
-                putMessage(e.stackTraceToString(), true)
+            when {
+                e.stackTraceToString().contains("Your request was rejected") -> {
+                    putMessage("Your prompt contains inappropriate content and can not be processed. We strive to make AI safe and relevant for everyone.", true)
+                }
+                e.stackTraceToString().contains("No address associated with hostname") -> {
+                    putMessage("You are currently offline. Please check your connection and try again.", true);
+                }
+                e.stackTraceToString().contains("Incorrect API key") -> {
+                    putMessage("Your API key is incorrect. Change it in Settings > Change OpenAI key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked.", true);
+                }
+                e.stackTraceToString().contains("Software caused connection abort") -> {
+                    putMessage("An error occurred while generating response. It may be due to a weak connection or high demand. Try again later.", true);
+                }
+                e.stackTraceToString().contains("You exceeded your current quota") -> {
+                    putMessage("You exceeded your current quota. If you had free trial usage please add payment info. Also please check your usage limits. You can change your limits in Account settings.", true)
+                }
+                else -> {
+                    putMessage(e.stackTraceToString(), true)
+                }
             }
         }
 

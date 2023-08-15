@@ -369,7 +369,7 @@ class Preferences private constructor(private var preferences: SharedPreferences
      * @return The language value or an english if not found.
      */
     fun getLanguage() : String {
-        return getString("lang", "en")
+        return getGlobalString("lang", "en")
     }
 
     /**
@@ -378,7 +378,7 @@ class Preferences private constructor(private var preferences: SharedPreferences
      * @param lang The language value to be stored.
      */
     fun setLanguage(lang: String) {
-        putString("lang", lang)
+        putGlobalString("lang", lang)
     }
 
     /**
