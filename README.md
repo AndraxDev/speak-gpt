@@ -21,8 +21,8 @@ SpeakGPT is an advanced and highly intuitive voice assistant that utilizes the p
 </div>
 <div align = "center">
 	<img src="https://gpt.teslasoft.org/s/4.png" width="200"/>
+	<img src="https://gpt.teslasoft.org/s/5.png" width="200"/>
 	<img src="https://gpt.teslasoft.org/s/6.png" width="200"/>
-	<img src="https://gpt.teslasoft.org/s/8.png" width="200"/>
 </div>
 
 ## Basic features
