@@ -110,6 +110,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:text="@string/duplicated_prompt_or_spam" />
+
+                    <RadioButton
+                        android:id="@+id/btn_cat_incorrect"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:text="@string/incorrect_category" />
                 </RadioGroup>
 
                 <com.google.android.material.textfield.TextInputLayout

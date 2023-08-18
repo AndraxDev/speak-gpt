@@ -24,6 +24,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AbsListView
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
@@ -84,20 +85,74 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private var progressbar: ProgressBar? = null
 
+    private var selectedCategory: String = "all"
+
+    private var catAll: LinearLayout? = null
+
+    private var catDevelopment: LinearLayout? = null
+
+    private var catMusic: LinearLayout? = null
+
+    private var catArt: LinearLayout? = null
+
+    private var catCulture: LinearLayout? = null
+
+    private var catBusiness: LinearLayout? = null
+
+    private var catGaming: LinearLayout? = null
+
+    private var catEducation: LinearLayout? = null
+
+    private var catHistory: LinearLayout? = null
+
+    private var catFood: LinearLayout? = null
+
+    private var catTourism: LinearLayout? = null
+
+    private var catProductivity: LinearLayout? = null
+
+    private var catTools: LinearLayout? = null
+
+    private var catEntertainment: LinearLayout? = null
+
+    private var catSport: LinearLayout? = null
+
+    private var catHealth: LinearLayout? = null
+
     private val postPromptListener: PostPromptDialogFragment.StateChangesListener = object : PostPromptDialogFragment.StateChangesListener {
-        override fun onFormFilled(name: String, title: String, desc: String, prompt: String, type: String, category: String) {
+        override fun onFormFilled(
+            name: String,
+            title: String,
+            desc: String,
+            prompt: String,
+            type: String,
+            category: String
+        ) {
             val mName: String = URLEncoder.encode(name, Charsets.UTF_8.name())
             val mTitle: String = URLEncoder.encode(title, Charsets.UTF_8.name())
             val mDesc: String = URLEncoder.encode(desc, Charsets.UTF_8.name())
             val mPrompt: String = URLEncoder.encode(prompt, Charsets.UTF_8.name())
 
-            requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/post.php?api_key=${Api.API_KEY}&name=$mName&title=$mTitle&desc=$mDesc&prompt=$mPrompt&type=$type&category=$category", "A", promptPostListener)
+            requestNetwork?.startRequestNetwork(
+                "GET",
+                "https://gpt.teslasoft.org/api/v1/post.php?api_key=${Api.API_KEY}&name=$mName&title=$mTitle&desc=$mDesc&prompt=$mPrompt&type=$type&category=$category",
+                "A",
+                promptPostListener
+            )
         }
 
-        override fun onFormError(name: String, title: String, desc: String, prompt: String, type: String, category: String) {
+        override fun onFormError(
+            name: String,
+            title: String,
+            desc: String,
+            prompt: String,
+            type: String,
+            category: String
+        ) {
             Toast.makeText(requireActivity(), "Please fill all blanks", Toast.LENGTH_SHORT).show()
 
-            val promptDialog: PostPromptDialogFragment = PostPromptDialogFragment.newInstance(name, title, desc, prompt, type, category)
+            val promptDialog: PostPromptDialogFragment =
+                PostPromptDialogFragment.newInstance(name, title, desc, prompt, type, category)
             promptDialog.setStateChangedListener(this)
             promptDialog.show(parentFragmentManager.beginTransaction(), "PromptDialog")
         }
@@ -114,15 +169,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                     message, TypeToken.getParameterized(ArrayList::class.java, HashMap::class.java).type
                 )
 
-                promptsAdapter = PromptAdapter(prompts, this@PromptsFragment)
-
-                promptsList?.adapter = promptsAdapter
-
-                promptsAdapter?.notifyDataSetChanged()
-
-                refreshLayout?.visibility = View.VISIBLE
-                noInternetLayout?.visibility = View.GONE
-                progressbar?.visibility = View.GONE
+                filter(prompts)
             } catch (e: Exception) {
                 MaterialAlertDialogBuilder(requireActivity(), R.style.App_MaterialAlertDialog)
                     .setTitle("Error")
@@ -133,8 +180,9 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }
 
         override fun onErrorResponse(tag: String, message: String) {
-            refreshLayout?.visibility = View.GONE
+//            refreshLayout?.visibility = View.GONE
             noInternetLayout?.visibility = View.VISIBLE
+            promptsList?.visibility = View.GONE
             progressbar?.visibility = View.GONE
         }
     }
@@ -153,6 +201,33 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }
     }
 
+    private fun filter(plist: ArrayList<HashMap<String, String>>) {
+
+        if (selectedCategory == "all") {
+            promptsAdapter = PromptAdapter(plist, this)
+
+            promptsList?.adapter = promptsAdapter
+
+            promptsAdapter?.notifyDataSetChanged()
+        } else {
+            val filtered = arrayListOf<HashMap<String, String>>()
+
+            for (map: HashMap<String, String> in plist) {
+                if (selectedCategory == map["category"]) {
+                    filtered.add(map)
+                }
+            }
+
+            promptsAdapter = PromptAdapter(filtered, this)
+            promptsList?.adapter = promptsAdapter
+            promptsAdapter?.notifyDataSetChanged()
+        }
+
+        noInternetLayout?.visibility = View.GONE
+        promptsList?.visibility = View.VISIBLE
+        progressbar?.visibility = View.GONE
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -164,11 +239,36 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         refreshButton = view.findViewById(R.id.btn_reconnect)
         noInternetLayout = view.findViewById(R.id.no_internet)
         progressbar = view.findViewById(R.id.progress_bar)
+        catAll = view.findViewById(R.id.cat_all)
+        catDevelopment = view.findViewById(R.id.cat_development)
+        catMusic = view.findViewById(R.id.cat_music)
+        catArt = view.findViewById(R.id.cat_art)
+        catCulture = view.findViewById(R.id.cat_culture)
+        catBusiness = view.findViewById(R.id.cat_business)
+        catGaming = view.findViewById(R.id.cat_gaming)
+        catEducation = view.findViewById(R.id.cat_education)
+        catHistory = view.findViewById(R.id.cat_history)
+        catFood = view.findViewById(R.id.cat_food)
+        catTourism = view.findViewById(R.id.cat_tourism)
+        catProductivity = view.findViewById(R.id.cat_productivity)
+        catTools = view.findViewById(R.id.cat_tools)
+        catEntertainment = view.findViewById(R.id.cat_entertainment)
+        catSport = view.findViewById(R.id.cat_sport)
+        catHealth = view.findViewById(R.id.cat_health)
 
+        initializeCat()
 
+        promptsList?.setOnScrollListener(object : AbsListView.OnScrollListener {
+                override fun onScrollStateChanged(view: AbsListView, scrollState: Int) {}
 
-        refreshLayout?.visibility = View.GONE
+                override fun onScroll(view: AbsListView, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
+                    val topRowVerticalPosition: Int = if (prompts.isEmpty() || promptsList == null || promptsList?.childCount == 0) 0 else promptsList?.getChildAt(0)!!.top
+                    refreshLayout?.isEnabled = firstVisibleItem == 0 && topRowVerticalPosition >= 0
+                }
+            })
+
         noInternetLayout?.visibility = View.GONE
+        promptsList?.visibility = View.GONE
         progressbar?.visibility = View.VISIBLE
 
         refreshButton?.setOnClickListener {
@@ -224,6 +324,25 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         loadData()
     }
 
+    private fun initializeCat() {
+        catAll?.setOnClickListener { selectedCategory = "all";filter(prompts) }
+        catDevelopment?.setOnClickListener { selectedCategory = "development";filter(prompts) }
+        catMusic?.setOnClickListener { selectedCategory = "music";filter(prompts) }
+        catArt?.setOnClickListener { selectedCategory = "art";filter(prompts) }
+        catCulture?.setOnClickListener { selectedCategory = "culture";filter(prompts) }
+        catBusiness?.setOnClickListener { selectedCategory = "business";filter(prompts) }
+        catGaming?.setOnClickListener { selectedCategory = "gaming";filter(prompts) }
+        catEducation?.setOnClickListener { selectedCategory = "education";filter(prompts) }
+        catHistory?.setOnClickListener { selectedCategory = "history";filter(prompts) }
+        catFood?.setOnClickListener { selectedCategory = "food";filter(prompts) }
+        catTourism?.setOnClickListener { selectedCategory = "tourism";filter(prompts) }
+        catProductivity?.setOnClickListener { selectedCategory = "productivity";filter(prompts) }
+        catTools?.setOnClickListener { selectedCategory = "tools";filter(prompts) }
+        catEntertainment?.setOnClickListener { selectedCategory = "entertainment";filter(prompts) }
+        catSport?.setOnClickListener { selectedCategory = "sport";filter(prompts) }
+        catHealth?.setOnClickListener { selectedCategory = "health";filter(prompts) }
+    }
+
     private fun getDarkAccentDrawable(drawable: Drawable, context: Context) : Drawable {
         DrawableCompat.setTint(DrawableCompat.wrap(drawable), getSurfaceColor(context))
         return drawable
@@ -236,8 +355,9 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private fun loadData() {
         requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/search.php?api_key=${Api.API_KEY}&query=$query", "A", searchDataListener)
 
-        refreshLayout?.visibility = View.GONE
+//        refreshLayout?.visibility = View.GONE
         noInternetLayout?.visibility = View.GONE
+        promptsList?.visibility = View.GONE
         progressbar?.visibility = View.VISIBLE
     }
 

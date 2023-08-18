@@ -97,12 +97,24 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
                 promptBy?.text = "By " + map["author"]
                 btnLike?.text = map["likes"]
 
-                textCat?.text = if (map["category"] == "") {
-                    "Category: uncategorized"
-                } else {
-                    "Category: " + map["category"]
+                textCat?.text = when (map["category"]) {
+                    "development" -> String.format(resources.getString(R.string.cat), resources.getString(R.string.cat_development))
+                    "music" -> String.format(resources.getString(R.string.cat), resources.getString(R.string.cat_music))
+                    "art" -> String.format(resources.getString(R.string.cat), resources.getString(R.string.cat_art))
+                    "culture" -> String.format(resources.getString(R.string.cat), resources.getString(R.string.cat_culture))
+                    "business" -> String.format(resources.getString(R.string.cat), resources.getString(R.string.cat_business))
+                    "gaming" -> String.format(resources.getString(R.string.cat), resources.getString(R.string.cat_gaming))
+                    "education" -> String.format(resources.getString(R.string.cat), resources.getString(R.string.cat_education))
+                    "history" -> String.format(resources.getString(R.string.cat), resources.getString(R.string.cat_history))
+                    "health" -> String.format(resources.getString(R.string.cat), resources.getString(R.string.cat_health))
+                    "food" -> String.format(resources.getString(R.string.cat), resources.getString(R.string.cat_food))
+                    "tourism" -> String.format(resources.getString(R.string.cat), resources.getString(R.string.cat_tourism))
+                    "productivity" -> String.format(resources.getString(R.string.cat), resources.getString(R.string.cat_productivity))
+                    "tools" -> String.format(resources.getString(R.string.cat), resources.getString(R.string.cat_tools))
+                    "entertainment" -> String.format(resources.getString(R.string.cat), resources.getString(R.string.cat_entertainment))
+                    "sport" -> String.format(resources.getString(R.string.cat), resources.getString(R.string.cat_sport))
+                    else -> String.format(resources.getString(R.string.cat), resources.getString(R.string.cat_uncat))
                 }
-
             } catch (e: Exception) {
                 MaterialAlertDialogBuilder(this@PromptViewActivity, R.style.App_MaterialAlertDialog)
                     .setTitle("Error")

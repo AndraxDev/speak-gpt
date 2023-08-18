@@ -193,11 +193,8 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 "explain" -> {
                     val parser = DefaultPromptsParser()
                     parser.init()
-                    val prefs = Preferences.getPreferences(requireActivity(), "")
-                    val lang = prefs.getLanguage()
-                    val rawPrompt = parser.parse("explanationPrompt", lang)
-                    val prompt = String.format(rawPrompt, text)
-                    run(prompt)
+                    parser.addOnCompletedListener { t -> run(t) }
+                    parser.parse("explanationPrompt", text, requireActivity())
                 }
                 "image" -> run("/imagine " + text)
                 "cancel" -> this@AssistantFragment.dismiss()

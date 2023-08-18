@@ -303,7 +303,7 @@
                     android:layout_marginTop="8dp"
                     android:background="@color/accent_250"
                     android:gravity="center_horizontal|center_vertical"
-                    android:text="Other params"
+                    android:text="@string/other_params"
                     android:textColor="@color/neutral_200"
                     android:textSize="18sp" />
 

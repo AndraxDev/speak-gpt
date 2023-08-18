@@ -1,0 +1,9 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="960"
+    android:viewportHeight="960">
+  <path
+      android:fillColor="@color/cat_sport"
+      android:pathData="m550,876 l-42,-42 142,-142 -382,-382 -142,142 -42,-42 56,-58 -56,-56 85,-85 -42,-42 42,-42 43,41 84,-84 56,56 58,-56 42,42 -142,142 382,382 142,-142 42,42 -56,58 56,56 -86,86 42,42 -42,42 -42,-42 -84,84 -56,-56 -58,56Z"/>
+</vector>

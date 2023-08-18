@@ -2,8 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/keyboard_input"
@@ -98,8 +97,11 @@
         android:layout_height="64dp"
         android:background="@color/accent_100"
         android:elevation="6dp"
-        android:gravity="center"
-        android:text="%s"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:paddingLeft="24dp"
+        android:paddingEnd="120dp"
         android:textColor="@color/text_title"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -115,6 +117,7 @@
         android:layout_marginEnd="8dp"
         android:background="@drawable/btn_accent_tonal_v4"
         android:contentDescription="@string/btn_settings"
+        android:tooltipText="@string/btn_settings"
         android:elevation="6.01dip"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -129,7 +132,7 @@
         android:background="@drawable/btn_accent_tonal_v4"
         android:contentDescription="@string/btn_export_chat"
         android:elevation="6.01dip"
-        android:tooltipText="Export chat"
+        android:tooltipText="@string/btn_export_chat"
         app:layout_constraintEnd_toStartOf="@id/btn_settings"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_upload" />

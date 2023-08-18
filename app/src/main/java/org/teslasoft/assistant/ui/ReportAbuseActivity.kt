@@ -48,6 +48,7 @@ class ReportAbuseActivity : FragmentActivity() {
     private var btnAdult: RadioButton? = null
     private var btnPolitical: RadioButton? = null
     private var btnDuplicated: RadioButton? = null
+    private var btnCatIncorrect: RadioButton? = null
 
     private var fieldDetails: EditText? = null
     private var btnSend: MaterialButton? = null
@@ -58,14 +59,14 @@ class ReportAbuseActivity : FragmentActivity() {
             reportForm?.visibility = View.VISIBLE
             loadingBar?.visibility = View.GONE
 
-            Toast.makeText(this@ReportAbuseActivity, "Objection sent. Thank you for feedback!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@ReportAbuseActivity, resources.getString(R.string.prompt_report_success), Toast.LENGTH_SHORT).show()
             finish()
         }
 
         override fun onErrorResponse(tag: String, message: String) {
             reportForm?.visibility = View.VISIBLE
             loadingBar?.visibility = View.GONE
-            Toast.makeText(this@ReportAbuseActivity, "Failed to send report", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@ReportAbuseActivity, resources.getString(R.string.prompt_report_failed), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -104,6 +105,7 @@ class ReportAbuseActivity : FragmentActivity() {
         btnDuplicated = findViewById(R.id.btn_duplicated)
         fieldDetails = findViewById(R.id.field_details)
         btnSend = findViewById(R.id.btn_send_report)
+        btnCatIncorrect = findViewById(R.id.btn_cat_incorrect)
 
         reportForm?.visibility = View.VISIBLE
         loadingBar?.visibility = View.GONE
@@ -159,6 +161,12 @@ class ReportAbuseActivity : FragmentActivity() {
         btnDuplicated?.setOnCheckedChangeListener { _, isChecked ->
             run {
                 if (isChecked) reason = "Duplicated prompt or spam"
+            }
+        }
+
+        btnCatIncorrect?.setOnCheckedChangeListener { _, isChecked ->
+            run {
+                if (isChecked) reason = "Incorrect category"
             }
         }
 

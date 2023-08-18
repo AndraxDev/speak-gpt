@@ -43,4 +43,38 @@
     <color name="system_bars">@color/accent_100</color>
     <color name="marker">#15000000</color>
     <color name="warn_bg">#33DB4437</color>
+
+    <color name="cat_development">#974E00</color>
+    <color name="cat_music">#730000</color>
+    <color name="cat_art">#000E55</color>
+    <color name="cat_culture">#00530A</color>
+    <color name="cat_business">#38006A</color>
+    <color name="cat_gaming">#1C6500</color>
+    <color name="cat_education">#005D63</color>
+    <color name="cat_history">#00602E</color>
+    <color name="cat_food">#60004B</color>
+    <color name="cat_tourism">#460016</color>
+    <color name="cat_productivity">#505900</color>
+    <color name="cat_tools">#001E5A</color>
+    <color name="cat_entertainment">#532A00</color>
+    <color name="cat_sport">#0C4700</color>
+    <color name="cat_health">#004923</color>
+    <color name="grey">#494949</color>
+
+    <color name="tint_cat_development">#25974E00</color>
+    <color name="tint_cat_music">#25730000</color>
+    <color name="tint_cat_art">#25000E55</color>
+    <color name="tint_cat_culture">#2500530A</color>
+    <color name="tint_cat_business">#2538006A</color>
+    <color name="tint_cat_gaming">#251C6500</color>
+    <color name="tint_cat_education">#25005D63</color>
+    <color name="tint_cat_history">#2500602E</color>
+    <color name="tint_cat_food">#2560004B</color>
+    <color name="tint_cat_tourism">#25460016</color>
+    <color name="tint_cat_productivity">#25505900</color>
+    <color name="tint_cat_tools">#25001E5A</color>
+    <color name="tint_cat_entertainment">#25532A00</color>
+    <color name="tint_cat_sport">#250C4700</color>
+    <color name="tint_cat_health">#25005329</color>
+    <color name="tint_grey">#25494949</color>
 </resources>

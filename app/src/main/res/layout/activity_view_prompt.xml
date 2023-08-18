@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,8 +10,11 @@
         android:layout_height="64dp"
         android:background="@color/accent_100"
         android:elevation="6dp"
-        android:gravity="center"
-        android:text="Title"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:paddingLeft="24dp"
+        android:paddingRight="56dp"
         android:textColor="@color/text_title"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -128,7 +130,7 @@
                                 style="@style/Widget.Material3.Button.TonalButton"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Try it"
+                                android:text="@string/btn_try_it"
                                 app:icon="@drawable/ic_play"
                                 app:iconGravity="textStart"
                                 app:layout_constraintBottom_toBottomOf="parent"
@@ -141,7 +143,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="16dp"
-                                android:text="Copy"
+                                android:text="@string/btn_copy"
                                 app:icon="@drawable/ic_copy"
                                 app:iconGravity="textStart"
                                 app:layout_constraintBottom_toBottomOf="parent"
@@ -189,7 +191,7 @@
                             android:paddingTop="6dp"
                             android:paddingEnd="12dp"
                             android:paddingBottom="6dp"
-                            android:text="Category:"
+                            android:text="@string/cat"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/prompt_text_frame" />
                     </androidx.constraintlayout.widget.ConstraintLayout>

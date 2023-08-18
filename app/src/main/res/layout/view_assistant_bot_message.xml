@@ -46,7 +46,6 @@
                 android:minWidth="50dp"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:text="Lorem ipsum"
                 android:textColor="@color/accent_900"
                 android:textIsSelectable="true"
                 android:textSize="16sp"

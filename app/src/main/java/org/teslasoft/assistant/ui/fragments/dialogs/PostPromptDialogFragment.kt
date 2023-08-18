@@ -80,6 +80,7 @@ class PostPromptDialogFragment : DialogFragment() {
     private var catProductivity: RadioButton? = null
     private var catTools: RadioButton? = null
     private var catEntertainment: RadioButton? = null
+    private var catSport: RadioButton? = null
 
     private var category: String = ""
     private var type: String = ""
@@ -118,6 +119,7 @@ class PostPromptDialogFragment : DialogFragment() {
         catProductivity = view.findViewById(R.id.cat_productivity)
         catTools = view.findViewById(R.id.cat_tools)
         catEntertainment = view.findViewById(R.id.cat_entertainment)
+        catSport = view.findViewById(R.id.cat_sport)
 
         gptButton?.setOnClickListener { type = "GPT" }
         dalleButton?.setOnClickListener { type = "DALL-e" }
@@ -136,6 +138,8 @@ class PostPromptDialogFragment : DialogFragment() {
         catProductivity?.setOnClickListener { category = "productivity" }
         catTools?.setOnClickListener { category = "tools" }
         catEntertainment?.setOnClickListener { category = "entertainment" }
+        catSport?.setOnClickListener { category = "sport" }
+        catHealth?.setOnClickListener { category = "health" }
 
         when (type) {
             "GPT" -> gptButton?.isChecked = true
@@ -157,6 +161,7 @@ class PostPromptDialogFragment : DialogFragment() {
             "productivity" -> catProductivity?.isChecked = true
             "tools" -> catTools?.isChecked = true
             "entertainment" -> catEntertainment?.isChecked = true
+            "sport" -> catSport?.isChecked = true
         }
 
         fieldName?.setText(requireArguments().getString("name"))

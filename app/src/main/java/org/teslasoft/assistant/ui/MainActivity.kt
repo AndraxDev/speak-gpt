@@ -255,20 +255,21 @@ class MainActivity : FragmentActivity() {
         selectedTab = targetTab
     }
 
-    private val switchChatsAnimation: AnimatorListenerAdapter = object : AnimatorListenerAdapter() {
-        override fun onAnimationEnd(animation: Animator) {
-            Handler(Looper.getMainLooper()).postDelayed({
-                animationListenerCallback(
-                    supportFragmentManager,
-                    fragmentPrompts!!,
-                    fragmentTips!!,
-                    fragmentChats!!,
-                    frameTips,
-                    framePrompts,
-                    frameChats
-                )
-            }, 10)
-        }
+    private val switchChatsAnimation: AnimatorListenerAdapter =
+        object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                Handler(Looper.getMainLooper()).postDelayed({
+                    animationListenerCallback(
+                        supportFragmentManager,
+                        fragmentPrompts!!,
+                        fragmentTips!!,
+                        fragmentChats!!,
+                        frameTips,
+                        framePrompts,
+                        frameChats
+                    )
+                }, 10)
+            }
     }
 
     private val switchPromptsAnimation: AnimatorListenerAdapter =

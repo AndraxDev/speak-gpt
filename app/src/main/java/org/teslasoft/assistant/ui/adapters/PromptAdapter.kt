@@ -52,6 +52,14 @@ class PromptAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragment
         return position.toLong()
     }
 
+    private var background: LinearLayout? = null
+    private var promptName: TextView? = null
+    private var promptDescription: TextView? = null
+    private var promptAuthor: TextView? = null
+    private var likesCounter: TextView? = null
+    private var textFor: TextView? = null
+    private var likeIcon: LinearLayout? = null
+
     @SuppressLint("SetTextI18n", "InflateParams")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val inflater = mContext.requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -62,23 +70,40 @@ class PromptAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragment
             mView = inflater.inflate(R.layout.view_prompt, null)
         }
 
-        val background: LinearLayout = mView!!.findViewById(R.id.bg)
-        val promptName: TextView = mView.findViewById(R.id.prompt_name)
-        val promptDescription: TextView = mView.findViewById(R.id.prompt_description)
-        val promptAuthor: TextView = mView.findViewById(R.id.prompt_author)
-        val likesCounter: TextView = mView.findViewById(R.id.likes_count)
-        val textFor: TextView = mView.findViewById(R.id.text_for)
+        background = mView!!.findViewById(R.id.bg)
+        promptName = mView.findViewById(R.id.prompt_name)
+        promptDescription = mView.findViewById(R.id.prompt_description)
+        promptAuthor = mView.findViewById(R.id.prompt_author)
+        likesCounter = mView.findViewById(R.id.likes_count)
+        textFor = mView.findViewById(R.id.text_for)
+        likeIcon = mView.findViewById(R.id.like_icon)
 
-        background.background = getDarkAccentDrawable(
-            ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_selector)!!, mContext.requireActivity())
+        when (dataArray?.get(position)?.get("category")) {
+            "development" -> applyColorToCard(ContextCompat.getColor(mContext.requireActivity(), R.color.tint_cat_development), ContextCompat.getColor(mContext.requireActivity(), R.color.cat_development))
+            "music" -> applyColorToCard(ContextCompat.getColor(mContext.requireActivity(), R.color.tint_cat_music), ContextCompat.getColor(mContext.requireActivity(), R.color.cat_music))
+            "art" -> applyColorToCard(ContextCompat.getColor(mContext.requireActivity(), R.color.tint_cat_art), ContextCompat.getColor(mContext.requireActivity(), R.color.cat_art))
+            "culture" -> applyColorToCard(ContextCompat.getColor(mContext.requireActivity(), R.color.tint_cat_culture), ContextCompat.getColor(mContext.requireActivity(), R.color.cat_culture))
+            "business" -> applyColorToCard(ContextCompat.getColor(mContext.requireActivity(), R.color.tint_cat_business), ContextCompat.getColor(mContext.requireActivity(), R.color.cat_business))
+            "gaming" -> applyColorToCard(ContextCompat.getColor(mContext.requireActivity(), R.color.tint_cat_gaming), ContextCompat.getColor(mContext.requireActivity(), R.color.cat_gaming))
+            "education" -> applyColorToCard(ContextCompat.getColor(mContext.requireActivity(), R.color.tint_cat_education), ContextCompat.getColor(mContext.requireActivity(), R.color.cat_education))
+            "history" -> applyColorToCard(ContextCompat.getColor(mContext.requireActivity(), R.color.tint_cat_history), ContextCompat.getColor(mContext.requireActivity(), R.color.cat_history))
+            "health" -> applyColorToCard(ContextCompat.getColor(mContext.requireActivity(), R.color.tint_cat_health), ContextCompat.getColor(mContext.requireActivity(), R.color.cat_health))
+            "food" -> applyColorToCard(ContextCompat.getColor(mContext.requireActivity(), R.color.tint_cat_food), ContextCompat.getColor(mContext.requireActivity(), R.color.cat_food))
+            "tourism" -> applyColorToCard(ContextCompat.getColor(mContext.requireActivity(), R.color.tint_cat_tourism), ContextCompat.getColor(mContext.requireActivity(), R.color.cat_tourism))
+            "productivity" -> applyColorToCard(ContextCompat.getColor(mContext.requireActivity(), R.color.tint_cat_productivity), ContextCompat.getColor(mContext.requireActivity(), R.color.cat_productivity))
+            "tools" -> applyColorToCard(ContextCompat.getColor(mContext.requireActivity(), R.color.tint_cat_tools), ContextCompat.getColor(mContext.requireActivity(), R.color.cat_tools))
+            "entertainment" -> applyColorToCard(ContextCompat.getColor(mContext.requireActivity(), R.color.tint_cat_entertainment), ContextCompat.getColor(mContext.requireActivity(), R.color.cat_entertainment))
+            "sport" -> applyColorToCard(ContextCompat.getColor(mContext.requireActivity(), R.color.tint_cat_sport), ContextCompat.getColor(mContext.requireActivity(), R.color.cat_sport))
+            else -> applyColorToCard(ContextCompat.getColor(mContext.requireActivity(), R.color.tint_grey), ContextCompat.getColor(mContext.requireActivity(), R.color.grey))
+        }
 
-        promptName.text = dataArray?.get(position)?.get("name")
-        promptDescription.text = dataArray?.get(position)?.get("desc")
-        promptAuthor.text = "By " + dataArray?.get(position)?.get("author")
-        likesCounter.text = dataArray?.get(position)?.get("likes")
-        textFor.text = dataArray?.get(position)?.get("type")
+        promptName?.text = dataArray?.get(position)?.get("name")
+        promptDescription?.text = dataArray?.get(position)?.get("desc")
+        promptAuthor?.text = "By " + dataArray?.get(position)?.get("author")
+        likesCounter?.text = dataArray?.get(position)?.get("likes")
+        textFor?.text = dataArray?.get(position)?.get("type")
 
-        background.setOnClickListener {
+        background?.setOnClickListener {
             val i = Intent(mContext.requireActivity(), PromptViewActivity::class.java).setAction(Intent.ACTION_VIEW)
             i.putExtra("id", dataArray?.get(position)?.get("id"))
             i.putExtra("title", dataArray?.get(position)?.get("name"))
@@ -88,12 +113,21 @@ class PromptAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragment
         return mView
     }
 
-    private fun getDarkAccentDrawable(drawable: Drawable, context: Context) : Drawable {
-        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getSurfaceColor(context))
-        return drawable
+    private fun applyColorToCard(tintColor: Int, color: Int) {
+        promptName?.setTextColor(color)
+        textFor?.setTextColor(color)
+        likesCounter?.setTextColor(color)
+        background?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(mContext.requireActivity(),
+                R.drawable.btn_accent_tonal_selector)!!, tintColor)
+
+        likeIcon?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(mContext.requireActivity(),
+                R.drawable.ic_like)!!, color)
     }
 
-    private fun getSurfaceColor(context: Context) : Int {
-        return SurfaceColors.SURFACE_2.getColor(context)
+    private fun getDarkAccentDrawable(drawable: Drawable, color: Int) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), color)
+        return drawable
     }
 }
