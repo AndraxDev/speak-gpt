@@ -180,10 +180,15 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }
 
         override fun onErrorResponse(tag: String, message: String) {
-//            refreshLayout?.visibility = View.GONE
             noInternetLayout?.visibility = View.VISIBLE
             promptsList?.visibility = View.GONE
             progressbar?.visibility = View.GONE
+
+//            MaterialAlertDialogBuilder(requireActivity(), R.style.App_MaterialAlertDialog)
+//                .setTitle("Error")
+//                .setMessage(message)
+//                .setPositiveButton("Close") { _, _ -> }
+//                .show()
         }
     }
 
@@ -259,13 +264,22 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         initializeCat()
 
         promptsList?.setOnScrollListener(object : AbsListView.OnScrollListener {
-                override fun onScrollStateChanged(view: AbsListView, scrollState: Int) {}
+                override fun onScrollStateChanged(view: AbsListView, scrollState: Int) { /* unused */ }
 
                 override fun onScroll(view: AbsListView, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
+
                     val topRowVerticalPosition: Int = if (prompts.isEmpty() || promptsList == null || promptsList?.childCount == 0) 0 else promptsList?.getChildAt(0)!!.top
+
+                    if (firstVisibleItem == 0 && topRowVerticalPosition >= 0) {
+                        btnPost?.extend()
+                    } else {
+                        btnPost?.shrink()
+                    }
+
                     refreshLayout?.isEnabled = firstVisibleItem == 0 && topRowVerticalPosition >= 0
                 }
             })
+
 
         noInternetLayout?.visibility = View.GONE
         promptsList?.visibility = View.GONE

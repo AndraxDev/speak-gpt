@@ -50,7 +50,9 @@ class TermsActivity : FragmentActivity() {
 
         val processName = getProcessName(this)
         try {
-            WebView.setDataDirectorySuffix(processName!!)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                WebView.setDataDirectorySuffix(processName!!)
+            }
         } catch (ignored: Exception) { /* unused */
         }
 

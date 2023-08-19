@@ -12,10 +12,10 @@ android {
 
     defaultConfig {
         applicationId "org.teslasoft.assistant"
-        minSdk 28
+        minSdk 24
         targetSdk 34
-        versionCode 229
-        versionName "2.29"
+        versionCode 230
+        versionName "2.30"
         externalNativeBuild {
             cmake {
                 cppFlags ''
@@ -80,4 +80,5 @@ dependencies {
     implementation 'androidx.security:security-crypto-ktx:1.1.0-alpha06'
     implementation 'com.google.mlkit:language-id:17.0.4'
     implementation 'cat.ereza:customactivityoncrash:2.4.0'
+    implementation 'org.conscrypt:conscrypt-android:2.2.1'
 }

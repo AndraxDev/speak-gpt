@@ -24,6 +24,7 @@
     <color name="text">#eeffffff</color>
     <color name="hint">#aaffffff</color>
     <color name="tip1">#ccfcb3</color>
+    <color name="tip">#20ccfcb3</color>
     <color name="marker">#15FFFFFF</color>
 
     <color name="cat_development">#ffddad</color>

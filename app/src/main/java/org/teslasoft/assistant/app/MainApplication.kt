@@ -21,8 +21,10 @@ import android.app.Application
 import cat.ereza.customactivityoncrash.config.CaocConfig
 
 import com.google.android.material.color.DynamicColors
+import org.conscrypt.Conscrypt
 
 import org.teslasoft.assistant.R
+import java.security.Security
 
 /**
  * Called when the application is starting up. This method is responsible for setting up
@@ -39,6 +41,10 @@ class MainApplication : Application() {
         super.onCreate()
 
         DynamicColors.applyToActivitiesIfAvailable(this)
+
+        if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.P) {
+            Security.insertProviderAt(Conscrypt.newProvider(), 1)
+        }
 
         CaocConfig.Builder.create()
             .backgroundMode(CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM)

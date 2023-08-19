@@ -79,7 +79,7 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActiv
             } else {
                 icon?.setImageResource(R.drawable.ic_user)
                 username.text = "User"
-                ui?.setBackgroundResource(R.color.window_background)
+                // ui?.setBackgroundResource(R.color.window_background)
                 btnCopy?.visibility = View.GONE
             }
         }

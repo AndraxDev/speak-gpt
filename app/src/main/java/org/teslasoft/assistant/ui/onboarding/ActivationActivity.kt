@@ -56,13 +56,13 @@ class ActivationActivity : FragmentActivity() {
 
         val processName = getProcessName(this)
         try {
-            WebView.setDataDirectorySuffix(processName!!)
-        } catch (ignored: Exception) { /* unused */
-        }
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                WebView.setDataDirectorySuffix(processName!!)
+            }
+        } catch (ignored: Exception) { /* unused */ }
 
         webView?.webViewClient = object : WebViewClient() {
-            override fun onPageFinished(view: WebView, url: String) { /* unused */
-            }
+            override fun onPageFinished(view: WebView, url: String) { /* unused */ }
 
             override fun shouldOverrideUrlLoading(
                 view: WebView, request: WebResourceRequest
