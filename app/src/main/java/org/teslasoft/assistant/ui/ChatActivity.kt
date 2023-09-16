@@ -53,6 +53,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
 
 import com.aallam.openai.api.BetaOpenAI
+import com.aallam.openai.api.LegacyOpenAI
 import com.aallam.openai.api.audio.TranscriptionRequest
 import com.aallam.openai.api.chat.ChatCompletionChunk
 import com.aallam.openai.api.chat.ChatCompletionRequest
@@ -850,7 +851,7 @@ class ChatActivity : FragmentActivity() {
         startActivity(intent)
     }
 
-    @OptIn(BetaOpenAI::class)
+    @OptIn(BetaOpenAI::class, LegacyOpenAI::class)
     private suspend fun generateResponse(request: String, shouldPronounce: Boolean) {
         try {
             var response = ""

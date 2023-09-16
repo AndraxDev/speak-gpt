@@ -45,6 +45,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 
 import com.aallam.openai.api.BetaOpenAI
+import com.aallam.openai.api.LegacyOpenAI
 import com.aallam.openai.api.audio.TranscriptionRequest
 import com.aallam.openai.api.chat.ChatCompletionChunk
 import com.aallam.openai.api.chat.ChatMessage
@@ -753,7 +754,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         startActivity(intent)
     }
 
-    @OptIn(BetaOpenAI::class)
+    @OptIn(BetaOpenAI::class, LegacyOpenAI::class)
     private suspend fun generateResponse(request: String, shouldPronounce: Boolean) {
         assistantConversation?.visibility = View.VISIBLE
         btnSaveToChat?.visibility = View.VISIBLE

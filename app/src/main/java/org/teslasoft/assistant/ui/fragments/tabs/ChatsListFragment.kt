@@ -22,10 +22,13 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.DocumentsContract
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ListView
 import android.widget.Toast
@@ -68,6 +71,10 @@ class ChatsListFragment : Fragment() {
     private var btnImport: FloatingActionButton? = null
 
     private var selectedFile: String = ""
+
+    private var fieldSearch: EditText? = null
+
+    private var searchTerm: String = ""
 
     var chatListUpdatedListener: AddChatDialogFragment.StateChangesListener = object : AddChatDialogFragment.StateChangesListener {
         override fun onAdd(name: String, id: String, fromFile: Boolean) {
@@ -137,11 +144,12 @@ class ChatsListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.e("T_DEBUG", "Fragment created")
+        // Log.e("T_DEBUG", "Fragment created")
 
         chatsList = view.findViewById(R.id.chats)
         btnSettings = view.findViewById(R.id.btn_settings_)
         btnImport = view.findViewById(R.id.btn_import)
+        fieldSearch = view.findViewById(R.id.field_search)
 
         btnSettings?.setImageResource(R.drawable.ic_settings)
 
@@ -169,6 +177,38 @@ class ChatsListFragment : Fragment() {
         chatsList?.adapter = adapter
 
         adapter?.notifyDataSetChanged()
+
+        fieldSearch?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                /* unused */
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                searchTerm = s.toString().trim()
+                if (s.toString().trim() == "") {
+                    adapter = ChatListAdapter(chats, this@ChatsListFragment)
+                    chatsList?.adapter = adapter
+                    adapter?.notifyDataSetChanged()
+                } else {
+                    val filtered: ArrayList<HashMap<String, String>> = arrayListOf()
+
+                    for (i in chats) {
+                        if (i["name"]?.contains(s.toString().trim()) == true || i["name"] == s.toString().trim()) {
+                            filtered.add(i)
+                        }
+                    }
+
+                    adapter = ChatListAdapter(filtered, this@ChatsListFragment)
+                    chatsList?.adapter = adapter
+                    adapter?.notifyDataSetChanged()
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                /* unused */
+            }
+
+        })
 
         preInit()
     }
@@ -256,8 +296,26 @@ class ChatsListFragment : Fragment() {
         // R8 went fuck himself...
         if (chats == null) chats = arrayListOf()
 
-        adapter = ChatListAdapter(chats, this)
-        chatsList?.adapter = adapter
-        adapter?.notifyDataSetChanged()
+        if (searchTerm.trim() == "") {
+            adapter = ChatListAdapter(chats, this@ChatsListFragment)
+            chatsList?.adapter = adapter
+            adapter?.notifyDataSetChanged()
+        } else {
+            val filtered: ArrayList<HashMap<String, String>> = arrayListOf()
+
+            for (i in chats) {
+                if (i["name"]?.contains(searchTerm.trim()) == true || i["name"] == searchTerm.trim()) {
+                    filtered.add(i)
+                }
+            }
+
+            adapter = ChatListAdapter(filtered, this@ChatsListFragment)
+            chatsList?.adapter = adapter
+            adapter?.notifyDataSetChanged()
+        }
+
+//        adapter = ChatListAdapter(chats, this)
+//        chatsList?.adapter = adapter
+//        adapter?.notifyDataSetChanged()
     }
 }
