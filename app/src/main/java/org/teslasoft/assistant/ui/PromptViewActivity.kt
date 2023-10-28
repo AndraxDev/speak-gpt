@@ -82,6 +82,8 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
 
     private var settings: SharedPreferences? = null
 
+    private var promptFor: String? = null
+
     private val dataListener: RequestNetwork.RequestListener = object : RequestNetwork.RequestListener {
         override fun onResponse(tag: String, message: String) {
             noInternetLayout?.visibility = View.GONE
@@ -96,6 +98,7 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
                 promptText?.setText(map["prompt"])
                 promptBy?.text = "By " + map["author"]
                 btnLike?.text = map["likes"]
+                promptFor = map["type"]
 
                 textCat?.text = when (map["category"]) {
                     "development" -> String.format(resources.getString(R.string.cat), resources.getString(R.string.cat_development))
@@ -240,9 +243,22 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
                 }
 
                 btnTry?.setOnClickListener {
-                    val i = Intent(this, AssistantActivity::class.java).setAction(Intent.ACTION_VIEW)
-                    i.putExtra("prompt", promptText?.text.toString())
-                    startActivity(i)
+                    if (promptFor == "GPT") {
+                        val i = Intent(
+                            this,
+                            AssistantActivity::class.java
+                        ).setAction(Intent.ACTION_VIEW)
+                        i.putExtra("prompt", promptText?.text.toString())
+                        startActivity(i)
+                    } else {
+                        val i = Intent(
+                            this,
+                            AssistantActivity::class.java
+                        ).setAction(Intent.ACTION_VIEW)
+                        i.putExtra("prompt", "/imagine " + promptText?.text.toString())
+                        i.putExtra("FORCE_SLASH_COMMANDS_ENABLED", true)
+                        startActivity(i)
+                    }
                 }
 
                 btnFlag?.setOnClickListener {

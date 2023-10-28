@@ -125,9 +125,9 @@ class AssistantFragment : BottomSheetDialogFragment() {
     // Init chat
     private var messages: ArrayList<HashMap<String, Any>> = arrayListOf()
     private var adapter: AssistantAdapter? = null
-    @OptIn(BetaOpenAI::class)
     private var chatMessages: ArrayList<ChatMessage> = arrayListOf()
     private lateinit var languageIdentifier: LanguageIdentifier
+    private var FORCE_SLASH_COMMANDS_ENABLED: Boolean = false
 
     // Init states
     private var isRecording = false
@@ -570,6 +570,8 @@ class AssistantFragment : BottomSheetDialogFragment() {
         if (extras != null) {
             val tryPrompt: String = extras.getString("prompt", "")
 
+            FORCE_SLASH_COMMANDS_ENABLED = extras.getBoolean("FORCE_SLASH_COMMANDS_ENABLED", false)
+
             if (tryPrompt != "") {
                 run(prefix + tryPrompt + endSeparator)
             } else {
@@ -667,7 +669,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
             val imagineCommandEnabled: Boolean = Preferences.getPreferences(requireActivity(), "").getImagineCommand()
 
-            if (m.lowercase().contains("/imagine") && m.length > 9 && imagineCommandEnabled) {
+            if (m.lowercase().contains("/imagine") && m.length > 9 && (imagineCommandEnabled || FORCE_SLASH_COMMANDS_ENABLED)) {
                 val x: String = m.substring(9)
 
                 sendImageRequest(x)
