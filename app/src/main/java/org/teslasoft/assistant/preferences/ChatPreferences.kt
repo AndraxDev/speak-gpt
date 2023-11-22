@@ -154,6 +154,34 @@ class ChatPreferences private constructor() {
     }
 
     /**
+     * Generates a unique chat ID for a new chat (autoname).
+     *
+     * @param context The context of the application.
+     * @return A unique chat ID as a String.
+     */
+    fun getAvailableChatIdForAutoname(context: Context) : String {
+        var x = 1
+
+        val list = getChatList(context)
+
+        while (true) {
+            var isFound = false
+            for (map: HashMap<String, String> in list) {
+                if (map["name"] == "_autoname_$x") {
+                    isFound = true
+                    break
+                }
+            }
+
+            if (!isFound) break
+
+            x++
+        }
+
+        return x.toString()
+    }
+
+    /**
      * Adds a new chat to the chat list.
      *
      * @param context The context of the application.
@@ -196,6 +224,20 @@ class ChatPreferences private constructor() {
         }
 
         return isFound
+    }
+
+    fun getChatName(context: Context, chatId: String) : String {
+        val list = getChatList(context)
+
+        var name = ""
+        for (map: HashMap<String, String> in list) {
+            if (map["id"] == chatId) {
+                name = map["name"].toString()
+                break
+            }
+        }
+
+        return name
     }
 
     /**

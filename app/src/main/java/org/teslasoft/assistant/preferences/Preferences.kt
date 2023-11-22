@@ -18,6 +18,7 @@ package org.teslasoft.assistant.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.widget.Toast
 
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
@@ -25,12 +26,14 @@ import androidx.security.crypto.MasterKey
 class Preferences private constructor(private var preferences: SharedPreferences, private var gp: SharedPreferences, private var chatId: String) {
     companion object {
         private var preferences: Preferences? = null
-        public fun getPreferences(context: Context, chatId: String) : Preferences {
-            if (preferences == null) preferences = Preferences(context.getSharedPreferences("settings.$chatId", Context.MODE_PRIVATE), context.getSharedPreferences("settings", Context.MODE_PRIVATE), chatId)
+        fun getPreferences(context: Context, xchatId: String) : Preferences {
+            // Toast.makeText(context, "Chat ID: $xchatId", Toast.LENGTH_SHORT).show()
+            if (preferences == null) preferences = Preferences(context.getSharedPreferences("settings.$xchatId", Context.MODE_PRIVATE), context.getSharedPreferences("settings", Context.MODE_PRIVATE), xchatId)
 
             else {
-                if (preferences?.chatId != chatId) {
-                    preferences?.setPreferences(chatId, context)
+                if (preferences?.chatId != xchatId) {
+                    // Toast.makeText(context, "Diff: $xchatId", Toast.LENGTH_SHORT).show()
+                    preferences?.setPreferences(xchatId, context)
                 }
             }
 
@@ -45,6 +48,7 @@ class Preferences private constructor(private var preferences: SharedPreferences
      * @param context The context in which the shared preferences will be accessed.
      */
     fun setPreferences(chatId: String, context: Context) {
+        this.chatId = chatId
         this.preferences = context.getSharedPreferences("settings.$chatId", Context.MODE_PRIVATE)
     }
 

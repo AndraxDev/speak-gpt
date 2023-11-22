@@ -169,9 +169,6 @@ class SettingsActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
 
         initUI()
-        initSettings()
-        initChatId()
-        initLogic()
     }
 
     private fun initUI() {
@@ -273,9 +270,12 @@ class SettingsActivity : FragmentActivity() {
 
         btnAbout?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(this, R.drawable.t_menu_bottom_item_background)!!, this)
+
+        initChatId()
     }
 
     private fun initSettings() {
+        // Toast.makeText(this, "Chat ID: $chatId", Toast.LENGTH_SHORT).show()
         preferences = Preferences.getPreferences(this, chatId)
 
         activationPrompt = preferences?.getPrompt().toString()
@@ -306,6 +306,8 @@ class SettingsActivity : FragmentActivity() {
         loadResolution()
         loadModel()
         loadLanguage()
+
+        initLogic()
     }
 
     private fun initLogic() {
@@ -501,6 +503,8 @@ class SettingsActivity : FragmentActivity() {
             activitySettingsTitle?.text = getString(R.string.global_settings_title)
             globalSettingsTip?.visibility = View.VISIBLE
         }
+
+        initSettings()
     }
 
     private fun loadModel() {

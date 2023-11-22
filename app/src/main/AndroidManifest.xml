@@ -48,8 +48,7 @@
         <activity
             android:name=".ui.ChatActivity"
             android:exported="false"
-            android:theme="@style/Theme.App"
-            android:launchMode="singleTask">
+            android:theme="@style/UI.Fade">
         </activity>
 
         <activity

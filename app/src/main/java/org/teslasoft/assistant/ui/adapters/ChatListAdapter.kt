@@ -74,7 +74,7 @@ class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragme
 
         icon.setImageResource(R.drawable.chatgpt_icon)
 
-        name.text = dataArray?.get(position)?.get("name").toString()
+        name.text = if (dataArray?.get(position)?.get("name").toString().trim().contains("_autoname_")) "Untitled chat" else dataArray?.get(position)?.get("name").toString()
 
         val model: String = Preferences.getPreferences(mContext.requireActivity(), Hash.hash(dataArray?.get(position)?.get("name").toString())).getModel()
 
@@ -133,7 +133,7 @@ class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragme
         }
 
         selector.setOnLongClickListener {
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(name.text.toString(), false)
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(dataArray?.get(position)?.get("name").toString(), false)
             chatDialogFragment.setStateChangedListener((mContext as ChatsListFragment).chatListUpdatedListener)
             chatDialogFragment.show(mContext.parentFragmentManager.beginTransaction(), "AddChatDialog")
 

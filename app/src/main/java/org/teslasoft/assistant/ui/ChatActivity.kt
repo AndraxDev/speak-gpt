@@ -55,6 +55,7 @@ import androidx.fragment.app.FragmentActivity
 import com.aallam.openai.api.BetaOpenAI
 import com.aallam.openai.api.LegacyOpenAI
 import com.aallam.openai.api.audio.TranscriptionRequest
+import com.aallam.openai.api.chat.ChatCompletion
 import com.aallam.openai.api.chat.ChatCompletionChunk
 import com.aallam.openai.api.chat.ChatCompletionRequest
 import com.aallam.openai.api.chat.ChatMessage
@@ -72,6 +73,7 @@ import com.aallam.openai.api.logging.LogLevel
 import com.aallam.openai.api.logging.Logger
 import com.aallam.openai.api.model.Model
 import com.aallam.openai.api.model.ModelId
+import com.aallam.openai.client.Chat
 import com.aallam.openai.client.LoggingConfig
 import com.aallam.openai.client.OpenAI
 import com.aallam.openai.client.OpenAIConfig
@@ -157,6 +159,8 @@ class ChatActivity : FragmentActivity() {
 
     // Init DALL-e
     private var resolution = "512x152"
+
+    private var messageCounter = 0
 
     // Init audio
     private var recognizer: SpeechRecognizer? = null
@@ -370,7 +374,7 @@ class ChatActivity : FragmentActivity() {
 
         btnExport?.setImageResource(R.drawable.ic_upload)
 
-        activityTitle?.text = chatName
+        activityTitle?.text = if (chatName.trim().contains("_autoname_")) "Untitled chat" else chatName
 
         progress?.visibility = View.GONE
 
@@ -906,7 +910,7 @@ class ChatActivity : FragmentActivity() {
         startActivity(intent)
     }
 
-    @OptIn(BetaOpenAI::class, LegacyOpenAI::class)
+    @OptIn(LegacyOpenAI::class)
     private suspend fun generateResponse(request: String, shouldPronounce: Boolean) {
         try {
             var response = ""
@@ -1068,7 +1072,6 @@ class ChatActivity : FragmentActivity() {
         }
     }
 
-    @OptIn(BetaOpenAI::class)
     private suspend fun regularGPTResponse(shouldPronounce: Boolean) {
         var response = ""
         putMessage("", true)
@@ -1121,6 +1124,79 @@ class ChatActivity : FragmentActivity() {
         btnMicro?.isEnabled = true
         btnSend?.isEnabled = true
         progress?.visibility = View.GONE
+
+        if (messageCounter == 0) {
+            btnMicro?.isEnabled = false
+            btnSend?.isEnabled = false
+            progress?.visibility = View.GONE
+            val chatName = ChatPreferences.getChatPreferences().getChatName(this, chatId)
+
+            if (chatName.trim().contains("_autoname_")) {
+                val m = msgs
+                m.add(
+                    ChatMessage(
+                        role = ChatRole.User,
+                        content = "Create a short name for this chat according to the messages provided. Enter just short name and nothing else. Don't add word 'chat' or 'bot' to the name."
+                    )
+                )
+
+                val chatCompletionRequest2 = ChatCompletionRequest(
+                    model = ModelId(model),
+                    messages = m
+                )
+
+                val completion: ChatCompletion = ai!!.chatCompletion(chatCompletionRequest2)
+
+                val newChatName = completion.choices[0].message.content
+
+                // Toast.makeText(this, "New chat name: $newChatName", Toast.LENGTH_SHORT).show()
+
+                ChatPreferences.getChatPreferences().editChat(this, newChatName.toString(), chatName)
+                chatId = Hash.hash(newChatName.toString())
+
+                val preferences = Preferences.getPreferences(this, Hash.hash(chatName))
+
+                // Write settings
+                val resolution = preferences.getResolution()
+                val speech = preferences.getAudioModel()
+                val model = preferences.getModel()
+                val maxTokens = preferences.getMaxTokens()
+                val prefix = preferences.getPrefix()
+                val endSeparator = preferences.getEndSeparator()
+                val activationPrompt = preferences.getPrompt()
+                val layout = preferences.getLayout()
+                val silent = preferences.getSilence()
+                val systemMessage1 = preferences.getSystemMessage()
+                val alwaysSpeak = preferences.getNotSilence()
+                val autoLanguageDetect = preferences.getAutoLangDetect()
+                val functionCalling = preferences.getFunctionCalling()
+                val slashCommands = preferences.getImagineCommand()
+
+                preferences.setPreferences(Hash.hash(newChatName.toString()), this)
+                preferences.setResolution(resolution)
+                preferences.setAudioModel(speech)
+                preferences.setModel(model)
+                preferences.setMaxTokens(maxTokens)
+                preferences.setPrefix(prefix)
+                preferences.setEndSeparator(endSeparator)
+                preferences.setPrompt(activationPrompt)
+                preferences.setLayout(layout)
+                preferences.setSilence(silent)
+                preferences.setSystemMessage(systemMessage1)
+                preferences.setNotSilence(alwaysSpeak)
+                preferences.setAutoLangDetect(autoLanguageDetect)
+                preferences.setFunctionCalling(functionCalling)
+                preferences.setImagineCommand(slashCommands)
+
+                activityTitle?.text = newChatName.toString()
+
+                val i = Intent(this, ChatActivity::class.java).setAction(Intent.ACTION_VIEW).putExtra("chatId", Hash.hash(newChatName.toString())).putExtra("name", newChatName.toString())
+                startActivity(i)
+                finish()
+            }
+        }
+
+        messageCounter++
     }
 
     private fun pronounce(st: Boolean, message: String) {
