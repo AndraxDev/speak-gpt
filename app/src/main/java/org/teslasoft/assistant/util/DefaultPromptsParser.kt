@@ -72,6 +72,9 @@ class DefaultPromptsParser {
                 }?.addOnFailureListener {
                     listener!!.onCompleted(String.format(explanationPrompt.getValue("en"), text))
                 }
+        } else if (type == "summarizationPrompt") {
+            var prompt = String.format("Summarize the following text\"%s\". Write your answer in the same language of the text.", text)
+            listener!!.onCompleted(prompt)
         } else {
             throw IllegalArgumentException("Unsupported prompt type at org.teslasoft.assistant.util.DefaultPromptsParser.kt")
         }

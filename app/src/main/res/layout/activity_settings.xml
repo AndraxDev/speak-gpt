@@ -23,7 +23,7 @@
             tools:layout="@layout/widget_teslasoft_id_circle" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/activity_settings_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -40,12 +40,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="24dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView5">
+            app:layout_constraintTop_toBottomOf="@+id/global_settings_tip">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -1220,13 +1220,13 @@
                             android:layout_marginTop="16dp"
                             android:layout_marginEnd="16dp"
                             android:layout_marginBottom="16dp"
+                            android:baselineAligned="false"
                             android:orientation="horizontal"
                             android:weightSum="2"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/layout_title"
-                            android:baselineAligned="false">
+                            app:layout_constraintTop_toBottomOf="@+id/layout_title">
 
                             <LinearLayout
                                 android:id="@+id/btn_classic_chat"
@@ -1243,7 +1243,7 @@
                                     android:layout_height="140dp"
                                     android:layout_marginTop="16dp"
                                     android:background="@drawable/chat_layout_classic"
-                                    android:orientation="vertical"/>
+                                    android:orientation="vertical" />
 
                                 <TextView
                                     android:id="@+id/textView14"
@@ -1271,7 +1271,7 @@
                                     android:layout_height="140dp"
                                     android:layout_marginTop="16dp"
                                     android:background="@drawable/chat_layout_bubbles"
-                                    android:orientation="vertical"/>
+                                    android:orientation="vertical" />
 
                                 <TextView
                                     android:id="@+id/textView15"
@@ -1786,6 +1786,31 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btn_clear_chat" />
+
+        <LinearLayout
+            android:id="@+id/global_settings_tip"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/btn_tip2"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_settings_title">
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/global_settings_tip"
+                android:textColor="@color/error" />
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

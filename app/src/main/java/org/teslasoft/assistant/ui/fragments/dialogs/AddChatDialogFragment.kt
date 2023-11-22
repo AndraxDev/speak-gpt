@@ -142,6 +142,11 @@ class AddChatDialogFragment : DialogFragment() {
                 val activationPrompt = preferences.getPrompt()
                 val layout = preferences.getLayout()
                 val silent = preferences.getSilence()
+                val systemMessage = preferences.getSystemMessage()
+                val alwaysSpeak = preferences.getNotSilence()
+                val autoLanguageDetect = preferences.getAutoLangDetect()
+                val functionCalling = preferences.getFunctionCalling()
+                val slashCommands = preferences.getImagineCommand()
 
                 preferences.setPreferences(Hash.hash(nameInput?.text.toString()), requireActivity())
                 preferences.setResolution(resolution)
@@ -153,6 +158,11 @@ class AddChatDialogFragment : DialogFragment() {
                 preferences.setPrompt(activationPrompt)
                 preferences.setLayout(layout)
                 preferences.setSilence(silent)
+                preferences.setSystemMessage(systemMessage)
+                preferences.setNotSilence(alwaysSpeak)
+                preferences.setAutoLangDetect(autoLanguageDetect)
+                preferences.setFunctionCalling(functionCalling)
+                preferences.setImagineCommand(slashCommands)
             } else {
                 listener!!.onDuplicate()
             }

@@ -130,7 +130,7 @@
     <string name="tip6">Sometimes some weird or useless features may appear. It because this app is in beta test.</string>
     <string name="tip7">Select text in any app and tap \"SpeakGPT\" to start conversation with assistant. This feature is available even if default assistant app feature is off. Also you can share text with SpeakGPT using default share option if SpeakGPT option is not available.</string>
     <string name="tip8">You can save your conversation with assistant. Once save button is clicked all future messages will also be saved.</string>
-    <string name="tip9">SpeakGPT is too slow? Try to reduce max tokens per output. You can do it in model settings.</string>
+    <string name="tip9">SpeakGPT is too slow? Try to reduce max tokens per output. You can do it in the model settings.</string>
     <string name="tip10">Voice input by Google may not be supported on all devices (especially devices with no Google Services). You can switch to Whisper model in this case. Please note that Whisper is a paid API and it requires Internet connection.</string>
     <string name="btn_copy">Copy</string>
     <string name="user">User</string>
@@ -164,4 +164,9 @@
     <string name="setting_system_message_hint">Putting a system message at the end of conversation can improve answers quality and avoid \"forgetting\" information.</string>
     <string name="prompt_report_success">Objection sent. Thank you for feedback!</string>
     <string name="prompt_report_failed">Failed to send report</string>
+    <string name="option_summarize">Summarize</string>
+    <string name="tip_11">Long press stop recording button to cancel speech recognition and prevent generating response.</string>
+    <string name="global_settings_tip">WARNING:\n\nYou are editing global settings. This is a template for new chats and settings for assistant. These settings don\'t apply to existing chats. To edit settings for existing chat, open the chat and click the settings icon. If this message has disappeared then you did all correct!</string>
+    <string name="global_settings_title">Global settings</string>
+    <string name="chat_settings_title">Chat settings</string>
 </resources>

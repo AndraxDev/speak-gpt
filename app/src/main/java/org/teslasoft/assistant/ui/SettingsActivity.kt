@@ -49,6 +49,7 @@ import org.teslasoft.assistant.ui.fragments.dialogs.SystemMessageDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.VoiceSelectorDialogFragment
 import org.teslasoft.assistant.ui.onboarding.ActivationActivity
 import org.teslasoft.core.auth.client.TeslasoftIDClient
+import org.w3c.dom.Text
 
 class SettingsActivity : FragmentActivity() {
 
@@ -83,6 +84,8 @@ class SettingsActivity : FragmentActivity() {
     private var assistantLanguage: LinearLayout? = null
     private var btnAutoLanguageDetect: LinearLayout? = null
     private var btnVoiceSelector: LinearLayout? = null
+    private var activitySettingsTitle: TextView? = null
+    private var globalSettingsTip: LinearLayout? = null
 
     private var preferences: Preferences? = null
     private var chatId = ""
@@ -174,6 +177,8 @@ class SettingsActivity : FragmentActivity() {
     private fun initUI() {
         setContentView(R.layout.activity_settings)
 
+        activitySettingsTitle = findViewById(R.id.activity_settings_title)
+        globalSettingsTip = findViewById(R.id.global_settings_tip)
         btnChangeApi = findViewById(R.id.btn_manage_api)
         btnChangeAccount = findViewById(R.id.btn_manage_account)
         btnCustomHost = findViewById(R.id.btn_manage_host)
@@ -485,9 +490,16 @@ class SettingsActivity : FragmentActivity() {
 
             if (chatId == "") {
                 btnClearChat?.visibility = View.GONE
+                activitySettingsTitle?.text = getString(R.string.global_settings_title)
+                globalSettingsTip?.visibility = View.VISIBLE
+            } else {
+                activitySettingsTitle?.text = getString(R.string.chat_settings_title)
+                globalSettingsTip?.visibility = View.GONE
             }
         } else {
             btnClearChat?.visibility = View.GONE
+            activitySettingsTitle?.text = getString(R.string.global_settings_title)
+            globalSettingsTip?.visibility = View.VISIBLE
         }
     }
 

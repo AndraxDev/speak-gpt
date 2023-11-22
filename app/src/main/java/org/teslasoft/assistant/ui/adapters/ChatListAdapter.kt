@@ -70,6 +70,7 @@ class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragme
         val name: TextView = mView!!.findViewById(R.id.name)
         val selector: ConstraintLayout = mView.findViewById(R.id.chat_selector)
         val icon: ImageView = mView.findViewById(R.id.chat_icon)
+        val modelName: TextView = mView.findViewById(R.id.model_name)
 
         icon.setImageResource(R.drawable.chatgpt_icon)
 
@@ -79,8 +80,11 @@ class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragme
 
         val textModel: TextView = mView.findViewById(R.id.textModel)
 
+        modelName.text = model
+
         textModel.text = when (model) {
             "gpt-4" -> "GPT 4"
+            "gpt-4-1106-preview" -> "GPT 4 Turbo"
             "gpt-4-0314" -> "GPT 4"
             "gpt-4-0613" -> "GPT 4"
             "gpt-4-32k" -> "GPT 4"

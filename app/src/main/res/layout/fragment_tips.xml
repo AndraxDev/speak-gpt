@@ -248,7 +248,6 @@
                     android:background="@drawable/btn_tip1"
                     android:orientation="vertical"
                     android:padding="24dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tip_9">
@@ -258,6 +257,30 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/tip10"
+                        android:textColor="@color/tip1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tip_11"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginBottom="24dp"
+                    android:background="@drawable/btn_tip1"
+                    android:orientation="vertical"
+                    android:padding="24dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tip_10">
+
+                    <TextView
+                        android:id="@+id/tip11_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tip_11"
                         android:textColor="@color/tip1" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>

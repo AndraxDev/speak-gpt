@@ -52,6 +52,22 @@
         app:layout_constraintTop_toBottomOf="@+id/btnPrompt" />
 
     <Button
+        android:id="@+id/btnSummarize"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/btn_accent_center"
+        android:elevation="0dp"
+        android:text="@string/option_summarize"
+        android:textAllCaps="false"
+        android:textColor="@color/window_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnImage" />
+
+    <Button
         android:id="@+id/btnImage"
         android:layout_width="0dp"
         android:layout_height="56dp"
@@ -83,7 +99,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnImage" />
+        app:layout_constraintTop_toBottomOf="@+id/btnSummarize" />
 
     <TextView
         android:id="@+id/textView26"

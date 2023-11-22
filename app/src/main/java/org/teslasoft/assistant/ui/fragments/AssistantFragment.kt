@@ -136,6 +136,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private var silenceMode = false
     private var chatID = ""
     private var autoLangDetect = false
+    private var cancelState = false
 
     // init AI
     private var ai: OpenAI? = null
@@ -197,14 +198,19 @@ class AssistantFragment : BottomSheetDialogFragment() {
                     parser.addOnCompletedListener { t -> run(t) }
                     parser.parse("explanationPrompt", text, requireActivity())
                 }
-                "image" -> run("/imagine " + text)
+                "summarize" -> {
+                    val parser = DefaultPromptsParser()
+                    parser.init()
+                    parser.addOnCompletedListener { t -> run(t) }
+                    parser.parse("summarizationPrompt", text, requireActivity())
+                }
+                "image" -> run("/imagine $text")
                 "cancel" -> this@AssistantFragment.dismiss()
                 else -> this@AssistantFragment.dismiss()
             }
         }
     }
 
-    @OptIn(BetaOpenAI::class)
     private val speechListener = object : RecognitionListener {
         override fun onReadyForSpeech(params: Bundle?) { /* unused */ }
         override fun onBeginningOfSpeech() { /* unused */ }
@@ -224,28 +230,40 @@ class AssistantFragment : BottomSheetDialogFragment() {
         }
 
         override fun onResults(results: Bundle?) {
-            isRecording = false
-            btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
-            val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-            if (!matches.isNullOrEmpty()) {
-                val recognizedText = matches[0]
+            if (cancelState) {
+                cancelState = false
 
-                chatMessages.add(ChatMessage(
-                    role = ChatRole.User,
-                    content = prefix + recognizedText + endSeparator
-                ))
+                btnAssistantVoice?.isEnabled = true
+                btnAssistantSend?.isEnabled = true
+                assistantLoading?.visibility = View.GONE
+                isRecording = false
+                btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+            } else {
+                isRecording = false
+                btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+                val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                if (!matches.isNullOrEmpty()) {
+                    val recognizedText = matches[0]
 
-                saveSettings()
+                    chatMessages.add(
+                        ChatMessage(
+                            role = ChatRole.User,
+                            content = prefix + recognizedText + endSeparator
+                        )
+                    )
 
-                putMessage(prefix + recognizedText + endSeparator, false)
+                    saveSettings()
 
-                hideKeyboard()
-                btnAssistantVoice?.isEnabled = false
-                btnAssistantSend?.isEnabled = false
-                assistantLoading?.visibility = View.VISIBLE
+                    putMessage(prefix + recognizedText + endSeparator, false)
 
-                CoroutineScope(Dispatchers.Main).launch {
-                    generateResponse(prefix + recognizedText + endSeparator, true)
+                    hideKeyboard()
+                    btnAssistantVoice?.isEnabled = false
+                    btnAssistantSend?.isEnabled = false
+                    assistantLoading?.visibility = View.VISIBLE
+
+                    CoroutineScope(Dispatchers.Main).launch {
+                        generateResponse(prefix + recognizedText + endSeparator, true)
+                    }
                 }
             }
         }
@@ -357,6 +375,18 @@ class AssistantFragment : BottomSheetDialogFragment() {
             }
         }
 
+        btnAssistantVoice?.setOnLongClickListener {
+            if (isRecording) {
+                cancelState = true
+                tts!!.stop()
+                btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+                if (Preferences.getPreferences(requireActivity(), "").getAudioModel() == "google") recognizer?.stopListening()
+                isRecording = false
+            }
+
+            return@setOnLongClickListener true
+        }
+
         btnAssistantSend?.setOnClickListener {
             parseMessage(assistantMessage?.text.toString())
         }
@@ -384,19 +414,28 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 setAudioEncodingBitRate(96000)
                 setOutputFile("${requireActivity().externalCacheDir?.absolutePath}/tmp.m4a")
 
-                try {
-                    prepare()
-                } catch (e: IOException) {
+                if (!cancelState) {
+                    try {
+                        prepare()
+                    } catch (e: IOException) {
+                        btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+                        isRecording = false
+                        MaterialAlertDialogBuilder(
+                            requireActivity(),
+                            R.style.App_MaterialAlertDialog
+                        )
+                            .setTitle("Audio error")
+                            .setMessage("Failed to initialize microphone")
+                            .setPositiveButton("Close") { _, _, -> }
+                            .show()
+                    }
+
+                    start()
+                } else {
+                    cancelState = false
                     btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
                     isRecording = false
-                    MaterialAlertDialogBuilder(requireActivity(), R.style.App_MaterialAlertDialog)
-                        .setTitle("Audio error")
-                        .setMessage("Failed to initialize microphone")
-                        .setPositiveButton("Close") { _, _, -> }
-                        .show()
                 }
-
-                start()
             }
         } else {
             recorder = MediaRecorder().apply {
@@ -408,19 +447,25 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 setAudioEncodingBitRate(96000)
                 setOutputFile("${requireActivity().externalCacheDir?.absolutePath}/tmp.m4a")
 
-                try {
-                    prepare()
-                } catch (e: IOException) {
+                if (!cancelState) {
+                    try {
+                        prepare()
+                    } catch (e: IOException) {
+                        btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+                        isRecording = false
+                        MaterialAlertDialogBuilder(requireActivity(), R.style.App_MaterialAlertDialog)
+                            .setTitle("Audio error")
+                            .setMessage("Failed to initialize microphone")
+                            .setPositiveButton("Close") { _, _, -> }
+                            .show()
+                    }
+
+                    start()
+                } else {
+                    cancelState = false
                     btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
                     isRecording = false
-                    MaterialAlertDialogBuilder(requireActivity(), R.style.App_MaterialAlertDialog)
-                        .setTitle("Audio error")
-                        .setMessage("Failed to initialize microphone")
-                        .setPositiveButton("Close") { _, _, -> }
-                        .show()
                 }
-
-                start()
             }
         }
     }
@@ -436,12 +481,17 @@ class AssistantFragment : BottomSheetDialogFragment() {
         btnAssistantSend?.isEnabled = false
         assistantLoading?.visibility = View.VISIBLE
 
-        CoroutineScope(Dispatchers.Main).launch {
-            processRecording()
+        if (!cancelState) {
+            CoroutineScope(Dispatchers.Main).launch {
+                processRecording()
+            }
+        } else {
+            cancelState = false
+            btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+            isRecording = false
         }
     }
 
-    @OptIn(BetaOpenAI::class)
     private suspend fun processRecording() {
         try {
             val transcriptionRequest = TranscriptionRequest(
@@ -453,23 +503,31 @@ class AssistantFragment : BottomSheetDialogFragment() {
             )
             val transcription = ai?.transcription(transcriptionRequest)!!.text
 
-            putMessage(prefix + transcription + endSeparator, false)
+            if (transcription.trim() == "") {
+                isRecording = false
+                btnAssistantVoice?.isEnabled = true
+                btnAssistantSend?.isEnabled = true
+                assistantLoading?.visibility = View.GONE
+                btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+            } else {
+                putMessage(prefix + transcription + endSeparator, false)
 
-            chatMessages.add(
-                ChatMessage(
-                    role = ChatRole.User,
-                    content = prefix + transcription + endSeparator
+                chatMessages.add(
+                    ChatMessage(
+                        role = ChatRole.User,
+                        content = prefix + transcription + endSeparator
+                    )
                 )
-            )
 
-            saveSettings()
+                saveSettings()
 
-            btnAssistantVoice?.isEnabled = false
-            btnAssistantSend?.isEnabled = false
-            assistantLoading?.visibility = View.VISIBLE
+                btnAssistantVoice?.isEnabled = false
+                btnAssistantSend?.isEnabled = false
+                assistantLoading?.visibility = View.VISIBLE
 
-            CoroutineScope(Dispatchers.Main).launch {
-                generateResponse(prefix + transcription + endSeparator, true)
+                CoroutineScope(Dispatchers.Main).launch {
+                    generateResponse(prefix + transcription + endSeparator, true)
+                }
             }
         } catch (e: Exception) {
             Toast.makeText(requireActivity(), "Failed to record audio", Toast.LENGTH_SHORT).show()
@@ -942,7 +1000,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         if (systemMessage != "") {
             msgs.add(
                 ChatMessage(
-                    role = ChatRole.User,
+                    role = ChatRole.System,
                     content = systemMessage
                 )
             )

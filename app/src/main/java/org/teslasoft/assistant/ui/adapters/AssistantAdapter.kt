@@ -49,6 +49,8 @@ class AssistantAdapter(data: ArrayList<HashMap<String, Any>>?, context: Fragment
         dalleImage = mView.findViewById(R.id.dalle_image)
         btnCopy = mView.findViewById(R.id.btn_copy)
 
+        message?.setTextIsSelectable(true)
+
         btnCopy?.background = getSurface3Drawable(AppCompatResources.getDrawable(mContext, R.drawable.btn_accent_tonal)!!, mContext)
 
         super.getView(position, mView, parent)

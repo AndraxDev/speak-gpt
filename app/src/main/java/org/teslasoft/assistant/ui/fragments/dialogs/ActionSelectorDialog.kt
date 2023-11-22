@@ -60,6 +60,8 @@ class ActionSelectorDialog : DialogFragment() {
 
     private var btnCancel: Button? = null
 
+    private var btnSummarize: Button? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context = this.activity
@@ -78,6 +80,7 @@ class ActionSelectorDialog : DialogFragment() {
         btnExplain = view.findViewById(R.id.btnExplain)
         btnImage = view.findViewById(R.id.btnImage)
         btnCancel = view.findViewById(R.id.btnCancel)
+        btnSummarize = view.findViewById(R.id.btnSummarize)
 
         btnPrompt?.setOnClickListener {
             listener!!.onSelected("prompt", arguments?.getString("text")?:"")
@@ -96,6 +99,11 @@ class ActionSelectorDialog : DialogFragment() {
 
         btnCancel?.setOnClickListener {
             listener!!.onSelected("cancel", arguments?.getString("text")?:"")
+            this.dismiss()
+        }
+
+        btnSummarize?.setOnClickListener {
+            listener!!.onSelected("summarize", arguments?.getString("text")?:"")
             this.dismiss()
         }
 

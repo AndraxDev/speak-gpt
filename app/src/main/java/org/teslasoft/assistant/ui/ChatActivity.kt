@@ -135,7 +135,6 @@ class ChatActivity : FragmentActivity() {
     // Init chat
     private var messages: ArrayList<HashMap<String, Any>> = arrayListOf()
     private var adapter: ChatAdapter? = null
-    @OptIn(BetaOpenAI::class)
     private var chatMessages: ArrayList<ChatMessage> = arrayListOf()
     private var chatId = ""
     private var chatName = ""
@@ -147,6 +146,7 @@ class ChatActivity : FragmentActivity() {
     private var isTTSInitialized = false
     private var silenceMode = false
     private var autoLangDetect = false
+    private var cancelState = false
 
     // init AI
     private var ai: OpenAI? = null
@@ -162,7 +162,6 @@ class ChatActivity : FragmentActivity() {
     private var recognizer: SpeechRecognizer? = null
     private var recorder: MediaRecorder? = null
 
-    @OptIn(BetaOpenAI::class)
     private val speechListener = object : RecognitionListener {
         override fun onReadyForSpeech(params: Bundle?) { /* unused */ }
         override fun onBeginningOfSpeech() { /* unused */ }
@@ -182,27 +181,40 @@ class ChatActivity : FragmentActivity() {
         }
 
         override fun onResults(results: Bundle?) {
-            isRecording = false
-            btnMicro?.setImageResource(R.drawable.ic_microphone)
-            val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-            if (matches != null && matches.size > 0) {
-                val recognizedText = matches[0]
+            if (cancelState) {
+                cancelState = false
 
-                putMessage(prefix + recognizedText + endSeparator, false)
+                btnMicro?.isEnabled = true
+                btnSend?.isEnabled = true
+                progress?.visibility = View.GONE
+                isRecording = false
+                btnMicro?.setImageResource(R.drawable.ic_microphone)
+            } else {
+                isRecording = false
+                btnMicro?.setImageResource(R.drawable.ic_microphone)
 
-                chatMessages.add(ChatMessage(
-                    role = ChatRole.User,
-                    content = prefix + recognizedText + endSeparator
-                ))
+                val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                if (matches != null && matches.size > 0) {
+                    val recognizedText = matches[0]
 
-                saveSettings()
+                    putMessage(prefix + recognizedText + endSeparator, false)
 
-                btnMicro?.isEnabled = false
-                btnSend?.isEnabled = false
-                progress?.visibility = View.VISIBLE
+                    chatMessages.add(
+                        ChatMessage(
+                            role = ChatRole.User,
+                            content = prefix + recognizedText + endSeparator
+                        )
+                    )
 
-                CoroutineScope(Dispatchers.Main).launch {
-                    generateResponse(prefix + recognizedText + endSeparator, true)
+                    saveSettings()
+
+                    btnMicro?.isEnabled = false
+                    btnSend?.isEnabled = false
+                    progress?.visibility = View.VISIBLE
+
+                    CoroutineScope(Dispatchers.Main).launch {
+                        generateResponse(prefix + recognizedText + endSeparator, true)
+                    }
                 }
             }
         }
@@ -403,6 +415,18 @@ class ChatActivity : FragmentActivity() {
             }
         }
 
+        btnMicro?.setOnLongClickListener {
+            if (isRecording) {
+                cancelState = true
+                tts!!.stop()
+                btnMicro?.setImageResource(R.drawable.ic_microphone)
+                if (Preferences.getPreferences(this, chatId).getAudioModel() == "google") recognizer?.stopListening()
+                isRecording = false
+            }
+
+            return@setOnLongClickListener true
+        }
+
         messageInput?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 /* unused */
@@ -497,19 +521,28 @@ class ChatActivity : FragmentActivity() {
                 setAudioEncodingBitRate(96000)
                 setOutputFile("${externalCacheDir?.absolutePath}/tmp.m4a")
 
-                try {
-                    prepare()
-                } catch (e: IOException) {
+                if (!cancelState) {
+                    try {
+                        prepare()
+                    } catch (e: IOException) {
+                        btnMicro?.setImageResource(R.drawable.ic_microphone)
+                        isRecording = false
+                        MaterialAlertDialogBuilder(
+                            this@ChatActivity,
+                            R.style.App_MaterialAlertDialog
+                        )
+                            .setTitle("Audio error")
+                            .setMessage("Failed to initialize microphone")
+                            .setPositiveButton("Close") { _, _ -> }
+                            .show()
+                    }
+
+                    start()
+                } else {
+                    cancelState = false
                     btnMicro?.setImageResource(R.drawable.ic_microphone)
                     isRecording = false
-                    MaterialAlertDialogBuilder(this@ChatActivity, R.style.App_MaterialAlertDialog)
-                        .setTitle("Audio error")
-                        .setMessage("Failed to initialize microphone")
-                        .setPositiveButton("Close") { _, _ -> }
-                        .show()
                 }
-
-                start()
             }
         } else {
             recorder = MediaRecorder().apply {
@@ -521,19 +554,28 @@ class ChatActivity : FragmentActivity() {
                 setAudioEncodingBitRate(96000)
                 setOutputFile("${externalCacheDir?.absolutePath}/tmp.m4a")
 
-                try {
-                    prepare()
-                } catch (e: IOException) {
+                if (!cancelState) {
+                    try {
+                        prepare()
+                    } catch (e: IOException) {
+                        btnMicro?.setImageResource(R.drawable.ic_microphone)
+                        isRecording = false
+                        MaterialAlertDialogBuilder(
+                            this@ChatActivity,
+                            R.style.App_MaterialAlertDialog
+                        )
+                            .setTitle("Audio error")
+                            .setMessage("Failed to initialize microphone")
+                            .setPositiveButton("Close") { _, _ -> }
+                            .show()
+                    }
+
+                    start()
+                } else {
+                    cancelState = false
                     btnMicro?.setImageResource(R.drawable.ic_microphone)
                     isRecording = false
-                    MaterialAlertDialogBuilder(this@ChatActivity, R.style.App_MaterialAlertDialog)
-                        .setTitle("Audio error")
-                        .setMessage("Failed to initialize microphone")
-                        .setPositiveButton("Close") { _, _ -> }
-                        .show()
                 }
-
-                start()
             }
         }
     }
@@ -549,12 +591,17 @@ class ChatActivity : FragmentActivity() {
         btnSend?.isEnabled = false
         progress?.visibility = View.VISIBLE
 
-        CoroutineScope(Dispatchers.Main).launch {
-            processRecording()
+        if (!cancelState) {
+            CoroutineScope(Dispatchers.Main).launch {
+                processRecording()
+            }
+        } else {
+            cancelState = false
+            btnMicro?.setImageResource(R.drawable.ic_microphone)
+            isRecording = false
         }
     }
 
-    @OptIn(BetaOpenAI::class)
     private suspend fun processRecording() {
         try {
             val transcriptionRequest = TranscriptionRequest(
@@ -566,23 +613,31 @@ class ChatActivity : FragmentActivity() {
             )
             val transcription = ai?.transcription(transcriptionRequest)!!.text
 
-            putMessage(prefix + transcription + endSeparator, false)
+            if (transcription.trim() == "") {
+                isRecording = false
+                btnMicro?.isEnabled = true
+                btnSend?.isEnabled = true
+                progress?.visibility = View.GONE
+                btnMicro?.setImageResource(R.drawable.ic_microphone)
+            } else {
+                putMessage(prefix + transcription + endSeparator, false)
 
-            chatMessages.add(
-                ChatMessage(
-                    role = ChatRole.User,
-                    content = prefix + transcription + endSeparator
+                chatMessages.add(
+                    ChatMessage(
+                        role = ChatRole.User,
+                        content = prefix + transcription + endSeparator
+                    )
                 )
-            )
 
-            saveSettings()
+                saveSettings()
 
-            btnMicro?.isEnabled = false
-            btnSend?.isEnabled = false
-            progress?.visibility = View.VISIBLE
+                btnMicro?.isEnabled = false
+                btnSend?.isEnabled = false
+                progress?.visibility = View.VISIBLE
 
-            CoroutineScope(Dispatchers.Main).launch {
-                generateResponse(prefix + transcription + endSeparator, true)
+                CoroutineScope(Dispatchers.Main).launch {
+                    generateResponse(prefix + transcription + endSeparator, true)
+                }
             }
         } catch (e: Exception) {
             Toast.makeText(this, "Failed to record audio", Toast.LENGTH_SHORT).show()
@@ -1025,7 +1080,7 @@ class ChatActivity : FragmentActivity() {
         if (systemMessage != "") {
             msgs.add(
                 ChatMessage(
-                    role = ChatRole.User,
+                    role = ChatRole.System,
                     content = systemMessage
                 )
             )
