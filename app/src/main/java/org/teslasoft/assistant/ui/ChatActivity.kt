@@ -1027,9 +1027,9 @@ class ChatActivity : FragmentActivity() {
                         val searchInternetAvailableToCall =
                             searchInternetAvailable[functionCall.name]
                         val imageGenerationAvailableArgs =
-                            functionCall.argumentsAsJson() ?: error("arguments field is missing")
+                            functionCall.argumentsAsJson()
                         val searchInternetAvailableArgs =
-                            functionCall.argumentsAsJson() ?: error("arguments field is missing")
+                            functionCall.argumentsAsJson()
                         if (imageGenerationAvailableToCall != null) {
                             imageGenerationAvailableToCall(
                                 imageGenerationAvailableArgs.getValue("prompt").jsonPrimitive.content

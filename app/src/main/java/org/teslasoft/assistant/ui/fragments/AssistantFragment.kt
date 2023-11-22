@@ -935,9 +935,9 @@ class AssistantFragment : BottomSheetDialogFragment() {
                         val searchInternetAvailableToCall =
                             searchInternetAvailable[functionCall.name]
                         val imageGenerationAvailableArgs =
-                            functionCall.argumentsAsJson() ?: error("arguments field is missing")
+                            functionCall.argumentsAsJson()
                         val searchInternetAvailableArgs =
-                            functionCall.argumentsAsJson() ?: error("arguments field is missing")
+                            functionCall.argumentsAsJson()
                         if (imageGenerationAvailableToCall != null) {
                             imageGenerationAvailableToCall(
                                 imageGenerationAvailableArgs.getValue("prompt").jsonPrimitive.content
@@ -1030,8 +1030,8 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
         completions.collect { v ->
             run {
-                if (v.choices[0].delta!!.content != null) {
-                    response += v.choices[0].delta?.content
+                if (v.choices[0].delta.content != null) {
+                    response += v.choices[0].delta.content
                     messages[messages.size - 1]["message"] = "$response █"
                     adapter?.notifyDataSetChanged()
                 }
