@@ -53,7 +53,7 @@ class MainApplication : Application() {
             .showRestartButton(false)
             .logErrorOnRestart(true)
             .trackActivities(true)
-            .minTimeBetweenCrashesMs(2000)
+            .minTimeBetweenCrashesMs(3000)
             .errorDrawable(R.mipmap.ic_launcher_round)
             .restartActivity(null)
             .errorActivity(org.teslasoft.core.CrashHandlerActivity::class.java)

@@ -37,6 +37,7 @@ import android.speech.tts.Voice
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
@@ -52,7 +53,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
 
-import com.aallam.openai.api.BetaOpenAI
 import com.aallam.openai.api.LegacyOpenAI
 import com.aallam.openai.api.audio.TranscriptionRequest
 import com.aallam.openai.api.chat.ChatCompletion
@@ -73,7 +73,6 @@ import com.aallam.openai.api.logging.LogLevel
 import com.aallam.openai.api.logging.Logger
 import com.aallam.openai.api.model.Model
 import com.aallam.openai.api.model.ModelId
-import com.aallam.openai.client.Chat
 import com.aallam.openai.client.LoggingConfig
 import com.aallam.openai.client.OpenAI
 import com.aallam.openai.client.OpenAIConfig
@@ -149,6 +148,7 @@ class ChatActivity : FragmentActivity() {
     private var silenceMode = false
     private var autoLangDetect = false
     private var cancelState = false
+    private var disableAutoScroll = false
 
     // init AI
     private var ai: OpenAI? = null
@@ -308,8 +308,6 @@ class ChatActivity : FragmentActivity() {
     }
 
     /** SYSTEM INITIALIZATION START **/
-
-    @OptIn(BetaOpenAI::class)
     @Suppress("unchecked")
     private fun initSettings() {
         key = Preferences.getPreferences(this, chatId).getApiKey(this)
@@ -361,7 +359,7 @@ class ChatActivity : FragmentActivity() {
         }
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
     private fun initUI() {
         btnMicro = findViewById(R.id.btn_micro)
         btnSettings = findViewById(R.id.btn_settings)
@@ -399,6 +397,14 @@ class ChatActivity : FragmentActivity() {
         chat?.dividerHeight = 0
 
         adapter?.notifyDataSetChanged()
+
+        chat?.setOnTouchListener { _, event -> run {
+            if (event.action == MotionEvent.ACTION_SCROLL || event.action == MotionEvent.ACTION_UP) {
+                chat?.transcriptMode = ListView.TRANSCRIPT_MODE_DISABLED
+                disableAutoScroll = true
+            }
+            return@setOnTouchListener false
+        }}
     }
 
     private fun getDarkAccentDrawable(drawable: Drawable, context: Context) : Drawable {
@@ -746,7 +752,6 @@ class ChatActivity : FragmentActivity() {
     /*
     * Setup SpeakGPT with activation prompt.
     * */
-    @OptIn(BetaOpenAI::class)
     private fun setup() {
         if (messages.isEmpty()) {
             val prompt: String = Preferences.getPreferences(this, chatId).getPrompt()
@@ -814,7 +819,6 @@ class ChatActivity : FragmentActivity() {
         editor.apply()
     }
 
-    @OptIn(BetaOpenAI::class)
     private fun parseMessage(message: String) {
         tts!!.stop()
         if (message != "") {
@@ -884,8 +888,10 @@ class ChatActivity : FragmentActivity() {
         messages.add(map)
         adapter?.notifyDataSetChanged()
 
-        chat?.post {
-            chat?.setSelection(adapter?.count!! - 1)
+        if (!disableAutoScroll) {
+            chat?.post {
+                chat?.setSelection(adapter?.count!! - 1)
+            }
         }
     }
 
@@ -912,6 +918,8 @@ class ChatActivity : FragmentActivity() {
 
     @OptIn(LegacyOpenAI::class)
     private suspend fun generateResponse(request: String, shouldPronounce: Boolean) {
+        disableAutoScroll = false
+        chat?.transcriptMode = ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL
         try {
             var response = ""
 
@@ -1073,6 +1081,8 @@ class ChatActivity : FragmentActivity() {
     }
 
     private suspend fun regularGPTResponse(shouldPronounce: Boolean) {
+        disableAutoScroll = false
+        chat?.transcriptMode = ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL
         var response = ""
         putMessage("", true)
 
@@ -1099,8 +1109,8 @@ class ChatActivity : FragmentActivity() {
 
         completions.collect { v ->
             run {
-                if (v.choices[0].delta!!.content != null) {
-                    response += v.choices[0].delta?.content
+                if (v.choices[0].delta.content != null) {
+                    response += v.choices[0].delta.content
                     messages[messages.size - 1]["message"] = "$response █"
                     adapter?.notifyDataSetChanged()
                 }
@@ -1126,12 +1136,12 @@ class ChatActivity : FragmentActivity() {
         progress?.visibility = View.GONE
 
         if (messageCounter == 0) {
-            btnMicro?.isEnabled = false
-            btnSend?.isEnabled = false
-            progress?.visibility = View.GONE
             val chatName = ChatPreferences.getChatPreferences().getChatName(this, chatId)
 
             if (chatName.trim().contains("_autoname_")) {
+                btnMicro?.isEnabled = false
+                btnSend?.isEnabled = false
+                progress?.visibility = View.GONE
                 val m = msgs
                 m.add(
                     ChatMessage(
@@ -1243,8 +1253,9 @@ class ChatActivity : FragmentActivity() {
         }
     }
 
-    @OptIn(BetaOpenAI::class)
     private suspend fun generateImage(p: String) {
+        disableAutoScroll = false
+        chat?.transcriptMode = ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL
         try {
             val images = ai?.imageURL(
                 creation = ImageCreation(

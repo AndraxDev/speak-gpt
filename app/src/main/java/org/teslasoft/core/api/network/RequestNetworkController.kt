@@ -82,7 +82,7 @@ open class RequestNetworkController {
                 builder.connectTimeout(SOCKET_TIMEOUT, TimeUnit.MILLISECONDS)
                 builder.readTimeout(READ_TIMEOUT, TimeUnit.MILLISECONDS)
                 builder.writeTimeout(READ_TIMEOUT, TimeUnit.MILLISECONDS)
-                builder.hostnameVerifier { name, _ -> name.contains(Config.DOMAIN) || name.contains(Config.API_SERVER_NAME) }
+                builder.hostnameVerifier { name, _ -> name.contains(Config.DOMAIN) || name.contains(Config.API_SERVER_NAME) || name.contains(Config.AUTH_SERVER_NAME) }
             } catch (ignored: java.lang.Exception) { /* unused */ }
 
             client = builder.build()

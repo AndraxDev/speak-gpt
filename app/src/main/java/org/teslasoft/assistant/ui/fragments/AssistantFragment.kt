@@ -17,6 +17,7 @@
 package org.teslasoft.assistant.ui.fragments
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
@@ -31,6 +32,7 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.Voice
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
@@ -44,7 +46,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 
-import com.aallam.openai.api.BetaOpenAI
 import com.aallam.openai.api.LegacyOpenAI
 import com.aallam.openai.api.audio.TranscriptionRequest
 import com.aallam.openai.api.chat.ChatCompletionChunk
@@ -137,6 +138,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private var chatID = ""
     private var autoLangDetect = false
     private var cancelState = false
+    private var disableAutoScroll = false
 
     // init AI
     private var ai: OpenAI? = null
@@ -334,6 +336,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         requireActivity().finishAndRemoveTask()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Suppress("unchecked")
     private fun initSettings() {
         key = Preferences.getPreferences(requireActivity(), "").getApiKey(requireActivity())
@@ -358,6 +361,14 @@ class AssistantFragment : BottomSheetDialogFragment() {
             assistantConversation?.dividerHeight = 0
 
             adapter?.notifyDataSetChanged()
+
+            assistantConversation?.setOnTouchListener { _, event -> run {
+                if (event.action == MotionEvent.ACTION_SCROLL || event.action == MotionEvent.ACTION_UP) {
+                    assistantConversation?.transcriptMode = ListView.TRANSCRIPT_MODE_DISABLED
+                    disableAutoScroll = true
+                }
+                return@setOnTouchListener false
+            } }
 
             initSpeechListener()
             initTTS()
@@ -679,7 +690,6 @@ class AssistantFragment : BottomSheetDialogFragment() {
         }
     }
 
-    @OptIn(BetaOpenAI::class)
     private fun runActivationPrompt() {
         if (messages.isEmpty()) {
             val prompt: String = Preferences.getPreferences(requireActivity(), "").getPrompt()
@@ -706,7 +716,6 @@ class AssistantFragment : BottomSheetDialogFragment() {
         }
     }
 
-    @OptIn(BetaOpenAI::class)
     private fun parseMessage(message: String) {
         tts!!.stop()
         if (message != "") {
@@ -814,10 +823,13 @@ class AssistantFragment : BottomSheetDialogFragment() {
         startActivity(intent)
     }
 
-    @OptIn(BetaOpenAI::class, LegacyOpenAI::class)
+    @OptIn(LegacyOpenAI::class)
     private suspend fun generateResponse(request: String, shouldPronounce: Boolean) {
         assistantConversation?.visibility = View.VISIBLE
         btnSaveToChat?.visibility = View.VISIBLE
+
+        disableAutoScroll = false
+        assistantConversation?.transcriptMode = ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL
 
         try {
             var response = ""
@@ -988,8 +1000,10 @@ class AssistantFragment : BottomSheetDialogFragment() {
         }
     }
 
-    @OptIn(BetaOpenAI::class)
     private suspend fun regularGPTResponse(shouldPronounce: Boolean) {
+        disableAutoScroll = false
+        assistantConversation?.transcriptMode = ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL
+
         var response = ""
         putMessage("", true)
 
@@ -1085,10 +1099,12 @@ class AssistantFragment : BottomSheetDialogFragment() {
         }
     }
 
-    @OptIn(BetaOpenAI::class)
     private suspend fun generateImage(p: String) {
         assistantConversation?.visibility = View.VISIBLE
         btnSaveToChat?.visibility = View.VISIBLE
+
+        disableAutoScroll = false
+        assistantConversation?.transcriptMode = ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL
 
         try {
             val images = ai?.imageURL(
@@ -1234,24 +1250,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         btnAssistantVoice?.visibility = View.GONE
     }
 
-    @OptIn(BetaOpenAI::class)
     private fun run(prompt: String) {
         parseMessage(prompt)
-        // @deprecated
-//        putMessage(prompt, false)
-//
-//        hideKeyboard()
-//        btnAssistantVoice?.isEnabled = false
-//        btnAssistantSend?.isEnabled = false
-//        assistantLoading?.visibility = View.VISIBLE
-//
-//        chatMessages.add(ChatMessage(
-//            role = ChatRole.User,
-//            content = prompt
-//        ))
-//
-//        CoroutineScope(Dispatchers.Main).launch {
-//            generateResponse(prompt, false)
-//        }
     }
 }
