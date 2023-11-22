@@ -1151,7 +1151,7 @@ class ChatActivity : FragmentActivity() {
                 )
 
                 val chatCompletionRequest2 = ChatCompletionRequest(
-                    model = ModelId(model),
+                    model = ModelId("gpt-3.5-turbo"),
                     messages = m
                 )
 
