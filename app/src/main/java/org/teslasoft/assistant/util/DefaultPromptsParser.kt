@@ -17,7 +17,8 @@ class DefaultPromptsParser {
         "ru",
         "sk",
         "tr",
-        "uk"
+        "uk",
+        "de"
     )
 
     private var languageIdentifier: LanguageIdentifier? = null
@@ -30,6 +31,7 @@ class DefaultPromptsParser {
         explanationPrompt["sk"] = "Čo znamená \"%s\"?"
         explanationPrompt["tr"] = "\"%s\" ne anlama geliyor?"
         explanationPrompt["uk"] = "Що означає \"%s\"?"
+        explanationPrompt["de"] = "Was bedeutet \"%s\"?"
     }
 
     private var listener: OnCompletedListener? = null
@@ -55,7 +57,8 @@ class DefaultPromptsParser {
                         "ru",
                         "sk",
                         "tr",
-                        "uk"
+                        "uk",
+                        "de"
                     )
 
                     for (lang: String in languagesSupported) {
