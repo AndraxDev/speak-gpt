@@ -59,7 +59,12 @@ class VoiceSelectorDialogFragment : DialogFragment() {
         VoiceListAdapter.OnItemClickListener { model ->
             run {
                 val preferences = Preferences.getPreferences(requireActivity(), "")
-                preferences.setVoice(model)
+
+                if (preferences.getTtsEngine() == "google") {
+                    preferences.setVoice(model)
+                } else {
+                    preferences.setOpenAIVoice(model)
+                }
                 voiceListAdapter?.notifyDataSetChanged()
                 listener?.onVoiceSelected(model)
                 dismiss()
@@ -100,7 +105,28 @@ class VoiceSelectorDialogFragment : DialogFragment() {
 
         voiceList = view.findViewById(R.id.voices_list)
 
-        tts = android.speech.tts.TextToSpeech(requireContext(), ttsListener, "com.google.android.tts")
+        if (Preferences.getPreferences(requireActivity(), "").getTtsEngine() == "google") {
+            tts = android.speech.tts.TextToSpeech(
+                requireContext(),
+                ttsListener,
+                "com.google.android.tts"
+            )
+        } else {
+            availableVoices.add("alloy")
+            availableVoices.add("echo")
+            availableVoices.add("fable")
+            availableVoices.add("onyx")
+            availableVoices.add("nova")
+            availableVoices.add("shimmer")
+
+            availableVoices.sort()
+
+            voiceListAdapter = VoiceListAdapter(this.requireContext(), availableVoices)
+            voiceListAdapter?.setOnItemClickListener(voiceSelectedListener)
+            voiceList?.divider = null
+            voiceList?.adapter = voiceListAdapter
+            voiceListAdapter?.notifyDataSetChanged()
+        }
 
         builder!!.setView(view)
             .setCancelable(false)

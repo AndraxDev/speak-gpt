@@ -86,6 +86,8 @@ class SettingsActivity : FragmentActivity() {
     private var btnVoiceSelector: LinearLayout? = null
     private var activitySettingsTitle: TextView? = null
     private var globalSettingsTip: LinearLayout? = null
+    private var btnGoogleTTS: MaterialButton? = null
+    private var btnOpenAITTS: MaterialButton? = null
 
     private var preferences: Preferences? = null
     private var chatId = ""
@@ -207,6 +209,8 @@ class SettingsActivity : FragmentActivity() {
         btnModelGroup = findViewById(R.id.btn_model_s_for)
         btnAutoLanguageDetect = findViewById(R.id.btn_auto_lang_detect)
         btnVoiceSelector = findViewById(R.id.btn_manage_voices)
+        btnGoogleTTS = findViewById(R.id.tts_google)
+        btnOpenAITTS = findViewById(R.id.tts_openai)
 
         btnChangeApi?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(this, R.drawable.t_menu_top_item_background)!!, this)
@@ -245,6 +249,9 @@ class SettingsActivity : FragmentActivity() {
             ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background_noclick)!!, this)
 
         findViewById<LinearLayout>(R.id.btn_audio_source)!!.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background_noclick)!!, this)
+
+        findViewById<LinearLayout>(R.id.btn_tts_source)!!.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background_noclick)!!, this)
 
         findViewById<LinearLayout>(R.id.btn_model_s)!!.background = getDarkAccentDrawable(
@@ -292,6 +299,9 @@ class SettingsActivity : FragmentActivity() {
 
         functionCallingSwitch?.isChecked = preferences?.getFunctionCalling() == true
         imagineSwitch?.isChecked = preferences?.getImagineCommand() == true
+
+        btnGoogleTTS?.isChecked = preferences?.getTtsEngine() == "google"
+        btnOpenAITTS?.isChecked = preferences?.getTtsEngine() == "openai"
 
         if (preferences?.getSilence() == true) {
             alwaysSpeak?.isEnabled = false
@@ -430,6 +440,14 @@ class SettingsActivity : FragmentActivity() {
 
         audioGoogle?.setOnClickListener { preferences?.setAudioModel("google") }
         audioWhisper?.setOnClickListener { preferences?.setAudioModel("whisper") }
+
+        btnGoogleTTS?.setOnClickListener {
+            preferences?.setTtsEngine("google")
+        }
+
+        btnOpenAITTS?.setOnClickListener {
+            preferences?.setTtsEngine("openai")
+        }
 
         gpt30?.setOnClickListener {
             model = "gpt-3.5-turbo"

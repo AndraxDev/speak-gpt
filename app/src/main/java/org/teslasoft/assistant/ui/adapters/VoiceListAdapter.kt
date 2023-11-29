@@ -65,7 +65,7 @@ class VoiceListAdapter(private val context: Context, private val items: ArrayLis
         val item = getItem(position) as String
         viewHolder.textView.text = item
 
-        if (Preferences.getPreferences(context, "").getVoice() == item) {
+        if (Preferences.getPreferences(context, "").getVoice() == item || Preferences.getPreferences(context, "").getOpenAIVoice() == item) {
             viewHolder.voiceBg.background = getDarkAccentDrawableV2(
                 ContextCompat.getDrawable(context, R.drawable.btn_accent_tonal_selector_v4)!!, context)
 

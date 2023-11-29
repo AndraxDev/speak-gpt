@@ -167,6 +167,7 @@ class AddChatDialogFragment : DialogFragment() {
             val autoLanguageDetect = preferences.getAutoLangDetect()
             val functionCalling = preferences.getFunctionCalling()
             val slashCommands = preferences.getImagineCommand()
+            val ttsEngine = preferences.getTtsEngine()
 
             preferences.setPreferences(Hash.hash(chatName), requireActivity())
             preferences.setResolution(resolution)
@@ -183,6 +184,7 @@ class AddChatDialogFragment : DialogFragment() {
             preferences.setAutoLangDetect(autoLanguageDetect)
             preferences.setFunctionCalling(functionCalling)
             preferences.setImagineCommand(slashCommands)
+            preferences.setTtsEngine(ttsEngine)
         } else {
             listener!!.onDuplicate()
         }

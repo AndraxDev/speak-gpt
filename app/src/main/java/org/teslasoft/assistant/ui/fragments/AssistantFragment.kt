@@ -22,6 +22,7 @@ import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Bundle
@@ -46,7 +47,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 
-import com.aallam.openai.api.LegacyOpenAI
+import com.aallam.openai.api.audio.SpeechRequest
 import com.aallam.openai.api.audio.TranscriptionRequest
 import com.aallam.openai.api.chat.ChatCompletionChunk
 import com.aallam.openai.api.chat.ChatMessage
@@ -100,6 +101,7 @@ import org.teslasoft.assistant.util.Hash
 import org.teslasoft.assistant.util.LocaleParser
 
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
@@ -149,6 +151,9 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     // Init DALL-e
     private var resolution = "512x152"
+
+    // Media player for OpenAI TTS
+    private var mediaPlayer: MediaPlayer? = null
 
     // Init chat save feature
     private var chatListUpdatedListener: AddChatDialogFragment.StateChangesListener = object : AddChatDialogFragment.StateChangesListener {
@@ -333,6 +338,11 @@ class AssistantFragment : BottomSheetDialogFragment() {
             tts!!.shutdown()
         }
 
+        if (mediaPlayer!!.isPlaying) {
+            mediaPlayer!!.stop()
+            mediaPlayer!!.reset()
+        }
+
         requireActivity().finishAndRemoveTask()
     }
 
@@ -389,7 +399,13 @@ class AssistantFragment : BottomSheetDialogFragment() {
         btnAssistantVoice?.setOnLongClickListener {
             if (isRecording) {
                 cancelState = true
-                tts!!.stop()
+                try {
+                    if (mediaPlayer!!.isPlaying) {
+                        mediaPlayer!!.stop()
+                        mediaPlayer!!.reset()
+                    }
+                    tts!!.stop()
+                } catch (_: java.lang.Exception) {/**/}
                 btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
                 if (Preferences.getPreferences(requireActivity(), "").getAudioModel() == "google") recognizer?.stopListening()
                 isRecording = false
@@ -575,12 +591,24 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     private fun handleGoogleSpeechRecognition() {
         if (isRecording) {
-            tts!!.stop()
+            try {
+                if (mediaPlayer!!.isPlaying) {
+                    mediaPlayer!!.stop()
+                    mediaPlayer!!.reset()
+                }
+                tts!!.stop()
+            } catch (_: java.lang.Exception) {/**/}
             btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
             recognizer?.stopListening()
             isRecording = false
         } else {
-            tts!!.stop()
+            try {
+                if (mediaPlayer!!.isPlaying) {
+                    mediaPlayer!!.stop()
+                    mediaPlayer!!.reset()
+                }
+                tts!!.stop()
+            } catch (_: java.lang.Exception) {/**/}
             btnAssistantVoice?.setImageResource(R.drawable.ic_stop_recording)
             if (ContextCompat.checkSelfPermission(
                     requireActivity(), Manifest.permission.RECORD_AUDIO
@@ -717,7 +745,13 @@ class AssistantFragment : BottomSheetDialogFragment() {
     }
 
     private fun parseMessage(message: String) {
-        tts!!.stop()
+        try {
+            if (mediaPlayer!!.isPlaying) {
+                mediaPlayer!!.stop()
+                mediaPlayer!!.reset()
+            }
+            tts!!.stop()
+        } catch (_: java.lang.Exception) {/**/}
         if (message != "") {
             assistantMessage?.setText("")
 
@@ -823,7 +857,6 @@ class AssistantFragment : BottomSheetDialogFragment() {
         startActivity(intent)
     }
 
-    @OptIn(LegacyOpenAI::class)
     private suspend fun generateResponse(request: String, shouldPronounce: Boolean) {
         assistantConversation?.visibility = View.VISIBLE
         btnSaveToChat?.visibility = View.VISIBLE
@@ -1069,16 +1102,66 @@ class AssistantFragment : BottomSheetDialogFragment() {
                             )
                         }
 
-                        tts!!.speak(message, TextToSpeech.QUEUE_FLUSH, null, "")
+                        speak(message)
                     }.addOnFailureListener {
                         // Ignore auto language detection if an error is occurred
                         autoLangDetect = false
                         ttsPostInit()
 
-                        tts!!.speak(message, TextToSpeech.QUEUE_FLUSH, null, "")
+                        speak(message)
                     }
             } else {
-                tts!!.speak(message, TextToSpeech.QUEUE_FLUSH, null, "")
+                speak(message)
+            }
+        }
+    }
+
+    private fun speak(message: String) {
+        val preferences = Preferences.getPreferences(requireActivity(), "")
+
+        if (preferences.getTtsEngine() == "google") {
+            tts!!.speak(message, TextToSpeech.QUEUE_FLUSH, null, "")
+        } else {
+            CoroutineScope(Dispatchers.Main).launch {
+                val rawAudio = ai!!.speech(
+                    request = SpeechRequest(
+                        model = ModelId("tts-1"),
+                        input = message,
+                        // TODO: Replace with voice setting
+                        voice = com.aallam.openai.api.audio.Voice(preferences.getOpenAIVoice()),
+                    )
+                )
+
+                requireActivity().runOnUiThread {
+                    try {
+                        // create temp file that will hold byte array
+                        val tempMp3 = File.createTempFile("audio", "mp3", requireActivity().cacheDir)
+                        tempMp3.deleteOnExit()
+                        val fos = FileOutputStream(tempMp3)
+                        fos.write(rawAudio)
+                        fos.close()
+
+                        // resetting mediaplayer instance to evade problems
+                        mediaPlayer?.reset()
+
+                        // In case you run into issues with threading consider new instance like:
+                        // MediaPlayer mediaPlayer = new MediaPlayer();
+
+                        // Tried passing path directly, but kept getting
+                        // "Prepare failed.: status=0x1"
+                        // so using file descriptor instead
+                        val fis = FileInputStream(tempMp3)
+                        mediaPlayer?.setDataSource(fis.getFD())
+                        mediaPlayer?.prepare()
+                        mediaPlayer?.start()
+                    } catch (ex: IOException) {
+                        MaterialAlertDialogBuilder(requireActivity(), R.style.App_MaterialAlertDialog)
+                            .setTitle("Audio error")
+                            .setMessage(ex.stackTraceToString())
+                            .setPositiveButton("Close") { _, _ -> }
+                            .show()
+                    }
+                }
             }
         }
     }
@@ -1186,6 +1269,8 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        mediaPlayer = MediaPlayer()
 
         languageIdentifier = LanguageIdentification.getClient()
 

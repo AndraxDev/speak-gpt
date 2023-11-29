@@ -422,6 +422,43 @@ class Preferences private constructor(private var preferences: SharedPreferences
     }
 
     /**
+     * Set TTS engine
+     *
+     * @param engine - TTS engine (google or openai)
+     * */
+    fun setTtsEngine(engine: String) {
+        putString("tts_engine", engine)
+    }
+
+    /**
+     * Get TTS engine
+     *
+     * @return TTS engine (google or openai)
+     * */
+    fun getTtsEngine() : String {
+        return getString("tts_engine", "google")
+    }
+
+    /**
+     * Set OpenAI voice
+     *
+     * @param voice - voice name
+     * */
+
+    fun setOpenAIVoice(voice: String) {
+        putString("openai_voice", voice)
+    }
+
+    /**
+     * Get OpenAI voice
+     *
+     * @return voice name
+     * */
+    fun getOpenAIVoice() : String {
+        return getString("openai_voice", "alloy")
+    }
+
+    /**
      * Retrieves the encrypted API key from the shared preferences.
      *
      * @param context The context to access the encrypted shared preferences.
