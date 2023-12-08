@@ -14,7 +14,7 @@
  * limitations under the License.
  **************************************************************************/
 
-package org.teslasoft.assistant.ui
+package org.teslasoft.assistant.ui.activities
 
 import android.os.Bundle
 import android.view.View

@@ -46,7 +46,7 @@ import com.google.android.material.elevation.SurfaceColors
 import io.noties.markwon.Markwon
 
 import org.teslasoft.assistant.R
-import org.teslasoft.assistant.ui.ImageBrowserActivity
+import org.teslasoft.assistant.ui.activities.ImageBrowserActivity
 
 import java.io.File
 import java.io.FileInputStream

@@ -14,7 +14,7 @@
  * limitations under the License.
  **************************************************************************/
 
-package org.teslasoft.assistant.ui
+package org.teslasoft.assistant.ui.activities
 
 import android.content.Context
 import android.content.Intent
@@ -49,7 +49,6 @@ import org.teslasoft.assistant.ui.fragments.dialogs.SystemMessageDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.VoiceSelectorDialogFragment
 import org.teslasoft.assistant.ui.onboarding.ActivationActivity
 import org.teslasoft.core.auth.client.TeslasoftIDClient
-import org.w3c.dom.Text
 
 class SettingsActivity : FragmentActivity() {
 
@@ -70,6 +69,8 @@ class SettingsActivity : FragmentActivity() {
     private var btnPrompt: LinearLayout? = null
     private var btnSystem: LinearLayout? = null
     private var btnAbout: LinearLayout? = null
+    private var btnDalle2: MaterialButton? = null
+    private var btnDalle3: MaterialButton? = null
     private var r256: MaterialButton? = null
     private var r512: MaterialButton? = null
     private var r1024: MaterialButton? = null
@@ -198,6 +199,8 @@ class SettingsActivity : FragmentActivity() {
         btnClassicView = findViewById(R.id.btn_classic_chat)
         btnBubblesView = findViewById(R.id.btn_bubbles_chat)
         dalleResolutions = findViewById(R.id.model_for)
+        btnDalle2 = findViewById(R.id.dalle2)
+        btnDalle3 = findViewById(R.id.dalle3)
         r256 = findViewById(R.id.r256)
         r512 = findViewById(R.id.r512)
         r1024 = findViewById(R.id.r1024)
@@ -244,6 +247,9 @@ class SettingsActivity : FragmentActivity() {
 
         btnClassicView?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(this, R.drawable.btn_accent_tonal_selector_v3)!!, this)
+
+        findViewById<LinearLayout>(R.id.btn_dalle_version)!!.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background_noclick)!!, this)
 
         findViewById<LinearLayout>(R.id.btn_dalle_resolution)!!.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background_noclick)!!, this)
@@ -329,6 +335,12 @@ class SettingsActivity : FragmentActivity() {
         btnBubblesView?.setOnClickListener {
             preferences?.setLayout("bubbles")
             switchUIToBubbles()
+        }
+
+        if (preferences?.getDalleVersion() == "2") {
+            btnDalle2?.isChecked = true
+        } else {
+            btnDalle3?.isChecked = true
         }
 
         btnChangeApi?.setOnClickListener {
@@ -440,6 +452,14 @@ class SettingsActivity : FragmentActivity() {
 
         audioGoogle?.setOnClickListener { preferences?.setAudioModel("google") }
         audioWhisper?.setOnClickListener { preferences?.setAudioModel("whisper") }
+
+        btnDalle2?.setOnClickListener {
+            preferences?.setDalleVersion("2")
+        }
+
+        btnDalle3?.setOnClickListener {
+            preferences?.setDalleVersion("3")
+        }
 
         btnGoogleTTS?.setOnClickListener {
             preferences?.setTtsEngine("google")

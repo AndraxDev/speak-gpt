@@ -34,7 +34,7 @@ import androidx.fragment.app.FragmentActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-import org.teslasoft.assistant.ui.MainActivity
+import org.teslasoft.assistant.ui.activities.MainActivity
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 

@@ -168,6 +168,7 @@ class AddChatDialogFragment : DialogFragment() {
             val functionCalling = preferences.getFunctionCalling()
             val slashCommands = preferences.getImagineCommand()
             val ttsEngine = preferences.getTtsEngine()
+            val dalleVersion = preferences.getDalleVersion()
 
             preferences.setPreferences(Hash.hash(chatName), requireActivity())
             preferences.setResolution(resolution)
@@ -185,6 +186,7 @@ class AddChatDialogFragment : DialogFragment() {
             preferences.setFunctionCalling(functionCalling)
             preferences.setImagineCommand(slashCommands)
             preferences.setTtsEngine(ttsEngine)
+            preferences.setDalleVersion(dalleVersion)
         } else {
             listener!!.onDuplicate()
         }

@@ -459,6 +459,24 @@ class Preferences private constructor(private var preferences: SharedPreferences
     }
 
     /**
+     * Get dalle version (2 or 3, 2 is default)
+     *
+     * @return dalle version
+     * */
+    fun getDalleVersion() : String {
+        return getString("dalle_version", "2")
+    }
+
+    /**
+     * Set dalle version (2 or 3, 2 is default)
+     *
+     * @param version dalle version
+     * */
+    fun setDalleVersion(version: String) {
+        putString("dalle_version", version)
+    }
+
+    /**
      * Retrieves the encrypted API key from the shared preferences.
      *
      * @param context The context to access the encrypted shared preferences.

@@ -80,7 +80,7 @@
     <string name="custom_fine_tuned_model"> Custom fine-tuned model</string>
     <string name="max_tokens_desc">WARNING: We recommend to set max_tokens parameter for classifiers to avoid useless usage. Lower value will make generating process faster but may cut off output.</string>
     <string name="hint_max_tokens">Max tokens</string>
-    <string name="end_separator_desc">Some models work best if end separator is set. OpenAI recommend use \"\\n\\n###\\n\\n\" separator.</string>
+    <string name="end_separator_desc">Some models work best if end separator is set. OpenAI recommends to use \"\\n\\n###\\n\\n\" separator.</string>
     <string name="hint_prefix">Prefix</string>
     <string name="hint_end_separator">End separator</string>
     <string name="gpt_beta_warn">Note: ChatGPT 4 is currently in limited beta. Join wait-list to get API access. If you\'ve got an error switch to another model. If you have slow performance on specified model it means that too many users use it at the same time. Some of models are deprecated and will be removed in future. See the documentation for more info.</string>

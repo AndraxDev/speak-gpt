@@ -92,9 +92,7 @@
         android:id="@+id/refresh_search"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -133,7 +131,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
@@ -155,16 +153,16 @@
                     android:layout_height="56dp"
                     android:background="@drawable/cat_all"
                     android:clickable="true"
+                    android:contentDescription="@string/cat_all"
                     android:orientation="vertical"
                     android:padding="12dp"
-                    android:contentDescription="@string/cat_all"
                     android:tooltipText="@string/cat_all">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@drawable/ic_all"
-                        android:orientation="vertical"/>
+                        android:orientation="vertical" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -174,9 +172,9 @@
                     android:layout_marginLeft="12dp"
                     android:background="@drawable/cat_development"
                     android:clickable="true"
+                    android:contentDescription="@string/cat_development"
                     android:orientation="vertical"
                     android:padding="12dp"
-                    android:contentDescription="@string/cat_development"
                     android:tooltipText="@string/cat_development">
 
                     <LinearLayout
@@ -193,9 +191,9 @@
                     android:layout_marginLeft="12dp"
                     android:background="@drawable/cat_music"
                     android:clickable="true"
+                    android:contentDescription="@string/cat_music"
                     android:orientation="vertical"
                     android:padding="12dp"
-                    android:contentDescription="@string/cat_music"
                     android:tooltipText="@string/cat_music">
 
                     <LinearLayout
@@ -212,9 +210,9 @@
                     android:layout_marginLeft="12dp"
                     android:background="@drawable/cat_art"
                     android:clickable="true"
+                    android:contentDescription="@string/cat_art"
                     android:orientation="vertical"
                     android:padding="12dp"
-                    android:contentDescription="@string/cat_art"
                     android:tooltipText="@string/cat_art">
 
                     <LinearLayout
@@ -231,9 +229,9 @@
                     android:layout_marginLeft="12dp"
                     android:background="@drawable/cat_culture"
                     android:clickable="true"
+                    android:contentDescription="@string/cat_culture"
                     android:orientation="vertical"
                     android:padding="12dp"
-                    android:contentDescription="@string/cat_culture"
                     android:tooltipText="@string/cat_culture">
 
                     <LinearLayout
@@ -250,9 +248,9 @@
                     android:layout_marginLeft="12dp"
                     android:background="@drawable/cat_business"
                     android:clickable="true"
+                    android:contentDescription="@string/cat_business"
                     android:orientation="vertical"
                     android:padding="12dp"
-                    android:contentDescription="@string/cat_business"
                     android:tooltipText="@string/cat_business">
 
                     <LinearLayout
@@ -269,9 +267,9 @@
                     android:layout_marginLeft="12dp"
                     android:background="@drawable/cat_gaming"
                     android:clickable="true"
+                    android:contentDescription="@string/cat_gaming"
                     android:orientation="vertical"
                     android:padding="12dp"
-                    android:contentDescription="@string/cat_gaming"
                     android:tooltipText="@string/cat_gaming">
 
                     <LinearLayout
@@ -288,9 +286,9 @@
                     android:layout_marginLeft="12dp"
                     android:background="@drawable/cat_education"
                     android:clickable="true"
+                    android:contentDescription="@string/cat_education"
                     android:orientation="vertical"
                     android:padding="12dp"
-                    android:contentDescription="@string/cat_education"
                     android:tooltipText="@string/cat_education">
 
                     <LinearLayout
@@ -307,9 +305,9 @@
                     android:layout_marginLeft="12dp"
                     android:background="@drawable/cat_history"
                     android:clickable="true"
+                    android:contentDescription="@string/cat_history"
                     android:orientation="vertical"
                     android:padding="12dp"
-                    android:contentDescription="@string/cat_history"
                     android:tooltipText="@string/cat_history">
 
                     <LinearLayout
@@ -326,9 +324,9 @@
                     android:layout_marginLeft="12dp"
                     android:background="@drawable/cat_food"
                     android:clickable="true"
+                    android:contentDescription="@string/cat_food"
                     android:orientation="vertical"
                     android:padding="12dp"
-                    android:contentDescription="@string/cat_food"
                     android:tooltipText="@string/cat_food">
 
                     <LinearLayout
@@ -345,9 +343,9 @@
                     android:layout_marginLeft="12dp"
                     android:background="@drawable/cat_tourism"
                     android:clickable="true"
+                    android:contentDescription="@string/cat_tourism"
                     android:orientation="vertical"
                     android:padding="12dp"
-                    android:contentDescription="@string/cat_tourism"
                     android:tooltipText="@string/cat_tourism">
 
                     <LinearLayout
@@ -364,9 +362,9 @@
                     android:layout_marginLeft="12dp"
                     android:background="@drawable/cat_productivity"
                     android:clickable="true"
+                    android:contentDescription="@string/cat_productivity"
                     android:orientation="vertical"
                     android:padding="12dp"
-                    android:contentDescription="@string/cat_productivity"
                     android:tooltipText="@string/cat_productivity">
 
                     <LinearLayout
@@ -383,9 +381,9 @@
                     android:layout_marginLeft="12dp"
                     android:background="@drawable/cat_tools"
                     android:clickable="true"
+                    android:contentDescription="@string/cat_tools"
                     android:orientation="vertical"
                     android:padding="12dp"
-                    android:contentDescription="@string/cat_tools"
                     android:tooltipText="@string/cat_tools">
 
                     <LinearLayout
@@ -402,9 +400,9 @@
                     android:layout_marginLeft="12dp"
                     android:background="@drawable/cat_entertainment"
                     android:clickable="true"
+                    android:contentDescription="@string/cat_entertainment"
                     android:orientation="vertical"
                     android:padding="12dp"
-                    android:contentDescription="@string/cat_entertainment"
                     android:tooltipText="@string/cat_entertainment">
 
                     <LinearLayout
@@ -421,9 +419,9 @@
                     android:layout_marginLeft="12dp"
                     android:background="@drawable/cat_sport"
                     android:clickable="true"
+                    android:contentDescription="@string/cat_sport"
                     android:orientation="vertical"
                     android:padding="12dp"
-                    android:contentDescription="@string/cat_sport"
                     android:tooltipText="@string/cat_sport">
 
                     <LinearLayout
@@ -440,9 +438,9 @@
                     android:layout_marginLeft="12dp"
                     android:background="@drawable/cat_health"
                     android:clickable="true"
+                    android:contentDescription="@string/cat_health"
                     android:orientation="vertical"
                     android:padding="12dp"
-                    android:contentDescription="@string/cat_health"
                     android:tooltipText="@string/cat_health">
 
                     <LinearLayout

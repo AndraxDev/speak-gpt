@@ -24,7 +24,6 @@ import android.os.Bundle
 import android.provider.DocumentsContract
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,8 +47,8 @@ import com.google.gson.JsonSyntaxException
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ChatPreferences
 import org.teslasoft.assistant.preferences.Preferences
-import org.teslasoft.assistant.ui.ChatActivity
-import org.teslasoft.assistant.ui.SettingsActivity
+import org.teslasoft.assistant.ui.activities.ChatActivity
+import org.teslasoft.assistant.ui.activities.SettingsActivity
 import org.teslasoft.assistant.ui.adapters.ChatListAdapter
 import org.teslasoft.assistant.ui.fragments.dialogs.AddChatDialogFragment
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
@@ -315,20 +314,9 @@ class ChatsListFragment : Fragment() {
         }
 
         chatsList?.setOnScrollListener(object : AbsListView.OnScrollListener {
-            override fun onScrollStateChanged(view: AbsListView?, scrollState: Int) {
-                // Not used in this example
-            }
+            override fun onScrollStateChanged(view: AbsListView?, scrollState: Int) { /* unused */ }
 
             override fun onScroll(view: AbsListView?, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
-                // Check if the list is scrolled to the end
-                if (firstVisibleItem + visibleItemCount == totalItemCount && totalItemCount > 0) {
-                    // Add padding after the full list is scrolled
-                    chatsList?.setPadding(0, 0, 0, dpToPixels(requireActivity(), 24))
-                } else {
-                    // Remove padding if the list is not scrolled to the end
-                    chatsList?.setPadding(0, 0, 0, 0)
-                }
-
                 val topRowVerticalPosition: Int = if (chats.isEmpty() || chatsList == null || chatsList?.childCount == 0) 0 else chatsList?.getChildAt(0)!!.top
 
                 if (firstVisibleItem == 0 && topRowVerticalPosition >= 0) {
@@ -338,13 +326,5 @@ class ChatsListFragment : Fragment() {
                 }
             }
         })
-
-//        adapter = ChatListAdapter(chats, this)
-//        chatsList?.adapter = adapter
-//        adapter?.notifyDataSetChanged()
-    }
-
-    private fun dpToPixels(context: Context, dp: Int): Int {
-        return (dp * context.resources.displayMetrics.density).toInt()
     }
 }

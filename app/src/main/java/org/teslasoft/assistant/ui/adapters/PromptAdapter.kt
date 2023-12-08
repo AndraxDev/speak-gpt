@@ -31,9 +31,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 
-import com.google.android.material.elevation.SurfaceColors
-
-import org.teslasoft.assistant.ui.PromptViewActivity
+import org.teslasoft.assistant.ui.activities.PromptViewActivity
 import org.teslasoft.assistant.R
 
 class PromptAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragment) : BaseAdapter() {

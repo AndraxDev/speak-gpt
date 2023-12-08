@@ -78,4 +78,16 @@
     <color name="tint_cat_sport">#250C4700</color>
     <color name="tint_cat_health">#25005329</color>
     <color name="tint_grey">#25494949</color>
+
+    <color name="tint_red">#25730000</color>
+    <color name="gpt_icon_red">#730000</color>
+
+    <color name="tint_yellow">#25736000</color>
+    <color name="gpt_icon_yellow">#736000</color>
+
+    <color name="tint_green">#25736000</color>
+    <color name="gpt_icon_green">#4B7300</color>
+
+    <color name="tint_blue">#250B0073</color>
+    <color name="gpt_icon_blue">#220073</color>
 </resources>

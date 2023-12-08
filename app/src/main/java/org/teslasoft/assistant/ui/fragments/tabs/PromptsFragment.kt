@@ -294,9 +294,6 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             SurfaceColors.SURFACE_2.getColor(requireActivity())
         )
 
-        view.findViewById<ConstraintLayout>(R.id.search_bar).background = getDarkAccentDrawable(
-            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector)!!, requireActivity())
-
         refreshLayout?.setSize(SwipeRefreshLayout.LARGE)
 
         refreshLayout?.setOnRefreshListener(this)

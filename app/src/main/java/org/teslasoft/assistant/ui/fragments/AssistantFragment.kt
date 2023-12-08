@@ -92,7 +92,7 @@ import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.AssistantAdapter
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
-import org.teslasoft.assistant.ui.SettingsActivity
+import org.teslasoft.assistant.ui.activities.SettingsActivity
 import org.teslasoft.assistant.ui.fragments.dialogs.ActionSelectorDialog
 import org.teslasoft.assistant.ui.permission.MicrophonePermissionActivity
 import org.teslasoft.assistant.ui.fragments.dialogs.AddChatDialogFragment
@@ -1182,7 +1182,9 @@ class AssistantFragment : BottomSheetDialogFragment() {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private suspend fun generateImage(p: String) {
+        assistantConversation?.setOnTouchListener(null)
         assistantConversation?.visibility = View.VISIBLE
         btnSaveToChat?.visibility = View.VISIBLE
 
@@ -1194,6 +1196,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 creation = ImageCreation(
                     prompt = p,
                     n = 1,
+                    model = ModelId("dall-e-${Preferences.getPreferences(requireActivity(), "").getDalleVersion()}"),
                     size = ImageSize(resolution)
                 )
             )
@@ -1212,6 +1215,14 @@ class AssistantFragment : BottomSheetDialogFragment() {
             val path = "data:image/png;base64,$encoded"
 
             putMessage(path, true)
+
+            assistantConversation?.setOnTouchListener { _, event -> run {
+                if (event.action == MotionEvent.ACTION_SCROLL || event.action == MotionEvent.ACTION_UP) {
+                    assistantConversation?.transcriptMode = ListView.TRANSCRIPT_MODE_DISABLED
+                    disableAutoScroll = true
+                }
+                return@setOnTouchListener false
+            } }
         } catch (e: Exception) {
             when {
                 e.stackTraceToString().contains("Your request was rejected") -> {

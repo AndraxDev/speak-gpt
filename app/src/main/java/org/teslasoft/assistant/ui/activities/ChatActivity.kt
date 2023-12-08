@@ -15,7 +15,7 @@
  **************************************************************************/
 
 
-package org.teslasoft.assistant.ui
+package org.teslasoft.assistant.ui.activities
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -891,6 +891,7 @@ class ChatActivity : FragmentActivity() {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun sendImageRequest(str: String) {
         CoroutineScope(Dispatchers.Main).launch {
             generateImage(str)
@@ -1289,7 +1290,7 @@ class ChatActivity : FragmentActivity() {
                         fos.write(rawAudio)
                         fos.close()
 
-                        // resetting mediaplayer instance to evade problems
+                        // resetting media player instance to evade problems
                         mediaPlayer?.reset()
 
                         // In case you run into issues with threading consider new instance like:
@@ -1330,13 +1331,16 @@ class ChatActivity : FragmentActivity() {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private suspend fun generateImage(p: String) {
+        chat?.setOnTouchListener(null)
         disableAutoScroll = false
         chat?.transcriptMode = ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL
         try {
             val images = ai?.imageURL(
                 creation = ImageCreation(
                     prompt = p,
+                    model = ModelId("dall-e-${Preferences.getPreferences(this, chatId).getDalleVersion()}"),
                     n = 1,
                     size = ImageSize(resolution)
                 )
@@ -1355,6 +1359,14 @@ class ChatActivity : FragmentActivity() {
 
             val file = Hash.hash(encoded)
             putMessage("~file:$file", true)
+
+            chat?.setOnTouchListener { _, event -> run {
+                if (event.action == MotionEvent.ACTION_SCROLL || event.action == MotionEvent.ACTION_UP) {
+                    chat?.transcriptMode = ListView.TRANSCRIPT_MODE_DISABLED
+                    disableAutoScroll = true
+                }
+                return@setOnTouchListener false
+            }}
         } catch (e: Exception) {
             if (e.stackTraceToString().contains("Your request was rejected")) {
                 putMessage("Your prompt contains inappropriate content and can not be processed. We strive to make AI safe and relevant for everyone.", true)

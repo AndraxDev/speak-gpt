@@ -34,7 +34,7 @@ import androidx.fragment.app.Fragment
 
 import com.google.android.material.elevation.SurfaceColors
 
-import org.teslasoft.assistant.ui.ChatActivity
+import org.teslasoft.assistant.ui.activities.ChatActivity
 import org.teslasoft.assistant.ui.fragments.tabs.ChatsListFragment
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
@@ -104,20 +104,32 @@ class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragme
             else -> "FT"
         }
 
-        if (position % 2 == 0) {
-            selector.setBackgroundResource(R.drawable.btn_accent_selector_v2)
-            selector.background = getDarkAccentDrawable(
-                ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_selector_v2)!!, mContext.requireActivity())
-            icon.setBackgroundResource(R.drawable.btn_accent_tonal_v3)
+        selector.setBackgroundResource(R.drawable.btn_accent_tonal_selector_tint)
 
-            icon.background = getDarkAccentDrawableV2(
-                ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_v3)!!, mContext.requireActivity())
-        } else {
-            selector.setBackgroundResource(R.drawable.btn_accent_selector)
-            icon.setBackgroundResource(R.drawable.btn_accent_tonal_v3)
+        selector.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_selector_tint)!!, mContext.requireActivity())
+        icon.setBackgroundResource(R.drawable.btn_accent_tonal_v3)
 
-            icon.background = getDarkAccentDrawable(
-                ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_v3)!!, mContext.requireActivity())
+        icon.background = getDarkAccentDrawableV2(
+            ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_v3)!!, mContext.requireActivity())
+
+        when (textModel.text) {
+            "GPT 4" -> {
+                updateCard(selector, icon, R.color.tint_red, R.color.gpt_icon_red)
+            }
+            "GPT 3.5" -> {
+                updateCard(selector, icon, R.color.tint_yellow, R.color.gpt_icon_yellow)
+            }
+            "GPT 4 Turbo" -> {
+                updateCard(selector, icon, R.color.tint_green, R.color.gpt_icon_green)
+            }
+            "FT" -> {
+                updateCard(selector, icon, R.color.tint_blue, R.color.gpt_icon_blue)
+            }
+            else -> {
+                icon.setImageResource(R.drawable.chatgpt_icon)
+                DrawableCompat.setTint(icon.getDrawable(), ContextCompat.getColor(mContext.requireActivity(), R.color.accent_900))
+            }
         }
 
         selector.setOnClickListener {
@@ -143,8 +155,24 @@ class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragme
         return mView
     }
 
+    private fun updateCard(selector: ConstraintLayout, icon: ImageView, tintColor: Int, iconColor: Int) {
+        selector.background = getAccentDrawable(
+            ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_selector_tint)!!, mContext.requireActivity().getColor(tintColor))
+
+        icon.background = getAccentDrawable(
+            ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_v3)!!, mContext.requireActivity().getColor(tintColor))
+
+        icon.setImageResource(R.drawable.chatgpt_icon)
+        DrawableCompat.setTint(icon.getDrawable(), ContextCompat.getColor(mContext.requireActivity(), iconColor))
+    }
+
     private fun getDarkAccentDrawable(drawable: Drawable, context: Context) : Drawable {
         DrawableCompat.setTint(DrawableCompat.wrap(drawable), getSurfaceColor(context))
+        return drawable
+    }
+
+    private fun getAccentDrawable(drawable: Drawable, color: Int) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), color)
         return drawable
     }
 

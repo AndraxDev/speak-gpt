@@ -34,7 +34,7 @@
         tools:targetApi="31" >
 
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.activities.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.App"
             android:launchMode="singleTask">
@@ -46,20 +46,26 @@
         </activity>
 
         <activity
-            android:name=".ui.ChatActivity"
+            android:name=".ui.activities.ChatActivity"
             android:exported="false"
             android:theme="@style/UI.Fade">
         </activity>
 
         <activity
-            android:name=".ui.PromptViewActivity"
+            android:name="org.teslasoft.core.CrashHandlerActivity"
+            android:exported="false"
+            android:theme="@style/UI.Fade">
+        </activity>
+
+        <activity
+            android:name=".ui.activities.PromptViewActivity"
             android:exported="false"
             android:theme="@style/Theme.App"
             android:launchMode="singleTask">
         </activity>
 
         <activity
-            android:name=".ui.ReportAbuseActivity"
+            android:name=".ui.activities.ReportAbuseActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
             android:launchMode="singleTask">
@@ -98,7 +104,7 @@
         </activity>
 
         <activity
-            android:name=".ui.AboutActivity"
+            android:name=".ui.activities.AboutActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
             android:launchMode="singleTask">
@@ -119,7 +125,7 @@
         </activity>
 
         <activity
-            android:name=".ui.SettingsActivity"
+            android:name=".ui.activities.SettingsActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
             android:launchMode="singleTask">
@@ -140,7 +146,7 @@
         </activity>
 
         <activity
-            android:name=".ui.ImageBrowserActivity"
+            android:name=".ui.activities.ImageBrowserActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
             android:launchMode="singleTask">
