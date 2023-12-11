@@ -4,9 +4,10 @@ SpeakGPT is an advanced and highly intuitive voice assistant that utilizes the p
 
 ![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgpt.teslasoft.org%2Fstatistics.php&query=download_count&label=downloads&color=green)
 
-## Web app (very early access)
+[//]: # (## Web app &#40;very early access&#41;)
 
-<a href = "https://gpt.teslasoft.org/">https://gpt.teslasoft.org/</a>
+[//]: # ()
+[//]: # (<a href = "https://gpt.teslasoft.org/">https://gpt.teslasoft.org/</a>)
 
 ## Download
 

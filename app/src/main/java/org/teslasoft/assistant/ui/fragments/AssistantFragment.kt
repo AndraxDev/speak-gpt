@@ -993,7 +993,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
             putMessage("", true)
             val response = when {
                 e.stackTraceToString().contains("does not exist") -> {
-                    "Looks like this model (${model}) is not available to you right now. It can be because of high demand or this model is currently in limited beta."
+                    "Looks like this model (${model}) is not available to you right now. It can be because of high demand or this model is currently in limited beta. If you are using a fine-tuned model, please make sure you entered correct model name. Usually model starts with 'model_name:ft-' and contains original model name, organization name and timestamp. Example: ada:ft-organization_name:model_name-YYYY-MM-DD-hh-mm-ss."
                 }
                 e.stackTraceToString().contains("Connect timeout has expired") || e.stackTraceToString().contains("SocketTimeoutException") -> {
                     "Could not connect to OpenAI servers. It may happen when your Internet speed is slow or too many users are using this model at the same time. Try to switch to another model."
