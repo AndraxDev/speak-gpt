@@ -336,31 +336,121 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun initializeCat() {
-        catAll?.setOnClickListener { selectedCategory = "all";filter(prompts) }
-        catDevelopment?.setOnClickListener { selectedCategory = "development";filter(prompts) }
-        catMusic?.setOnClickListener { selectedCategory = "music";filter(prompts) }
-        catArt?.setOnClickListener { selectedCategory = "art";filter(prompts) }
-        catCulture?.setOnClickListener { selectedCategory = "culture";filter(prompts) }
-        catBusiness?.setOnClickListener { selectedCategory = "business";filter(prompts) }
-        catGaming?.setOnClickListener { selectedCategory = "gaming";filter(prompts) }
-        catEducation?.setOnClickListener { selectedCategory = "education";filter(prompts) }
-        catHistory?.setOnClickListener { selectedCategory = "history";filter(prompts) }
-        catFood?.setOnClickListener { selectedCategory = "food";filter(prompts) }
-        catTourism?.setOnClickListener { selectedCategory = "tourism";filter(prompts) }
-        catProductivity?.setOnClickListener { selectedCategory = "productivity";filter(prompts) }
-        catTools?.setOnClickListener { selectedCategory = "tools";filter(prompts) }
-        catEntertainment?.setOnClickListener { selectedCategory = "entertainment";filter(prompts) }
-        catSport?.setOnClickListener { selectedCategory = "sport";filter(prompts) }
-        catHealth?.setOnClickListener { selectedCategory = "health";filter(prompts) }
+        catAll?.setOnClickListener {
+            clearSelection()
+            catAll?.setBackgroundResource(R.drawable.cat_all_active)
+            selectedCategory = "all"
+            filter(prompts)
+        }
+        catDevelopment?.setOnClickListener {
+            clearSelection()
+            catDevelopment?.setBackgroundResource(R.drawable.cat_development_active)
+            selectedCategory = "development"
+            filter(prompts)
+        }
+        catMusic?.setOnClickListener {
+            clearSelection()
+            catMusic?.setBackgroundResource(R.drawable.cat_music_active)
+            selectedCategory = "music"
+            filter(prompts)
+        }
+        catArt?.setOnClickListener {
+            clearSelection()
+            catArt?.setBackgroundResource(R.drawable.cat_art_active)
+            selectedCategory = "art"
+            filter(prompts)
+        }
+        catCulture?.setOnClickListener {
+            clearSelection()
+            catCulture?.setBackgroundResource(R.drawable.cat_culture_active)
+            selectedCategory = "culture"
+            filter(prompts)
+        }
+        catBusiness?.setOnClickListener {
+            clearSelection()
+            catBusiness?.setBackgroundResource(R.drawable.cat_business_active)
+            selectedCategory = "business"
+            filter(prompts)
+        }
+        catGaming?.setOnClickListener {
+            clearSelection()
+            catGaming?.setBackgroundResource(R.drawable.cat_gaming_active)
+            selectedCategory = "gaming"
+            filter(prompts)
+        }
+        catEducation?.setOnClickListener {
+            clearSelection()
+            catEducation?.setBackgroundResource(R.drawable.cat_education_active)
+            selectedCategory = "education"
+            filter(prompts)
+        }
+        catHistory?.setOnClickListener {
+            clearSelection()
+            catHistory?.setBackgroundResource(R.drawable.cat_history_active)
+            selectedCategory = "history"
+            filter(prompts)
+        }
+        catFood?.setOnClickListener {
+            clearSelection()
+            catFood?.setBackgroundResource(R.drawable.cat_food_active)
+            selectedCategory = "food"
+            filter(prompts)
+        }
+        catTourism?.setOnClickListener {
+            clearSelection()
+            catTourism?.setBackgroundResource(R.drawable.cat_tourism_active)
+            selectedCategory = "tourism"
+            filter(prompts)
+        }
+        catProductivity?.setOnClickListener {
+            clearSelection()
+            catProductivity?.setBackgroundResource(R.drawable.cat_productivity_active)
+            selectedCategory = "productivity"
+            filter(prompts)
+        }
+        catTools?.setOnClickListener {
+            clearSelection()
+            catTools?.setBackgroundResource(R.drawable.cat_tools_active)
+            selectedCategory = "tools"
+            filter(prompts)
+        }
+        catEntertainment?.setOnClickListener {
+            clearSelection()
+            catEntertainment?.setBackgroundResource(R.drawable.cat_entertainment_active)
+            selectedCategory = "entertainment"
+            filter(prompts)
+        }
+        catSport?.setOnClickListener {
+            clearSelection()
+            catSport?.setBackgroundResource(R.drawable.cat_sport_active)
+            selectedCategory = "sport"
+            filter(prompts)
+        }
+        catHealth?.setOnClickListener {
+            clearSelection()
+            catHealth?.setBackgroundResource(R.drawable.cat_health_active)
+            selectedCategory = "health"
+            filter(prompts)
+        }
     }
 
-    private fun getDarkAccentDrawable(drawable: Drawable, context: Context) : Drawable {
-        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getSurfaceColor(context))
-        return drawable
-    }
-
-    private fun getSurfaceColor(context: Context) : Int {
-        return SurfaceColors.SURFACE_2.getColor(context)
+    private fun clearSelection () {
+        catAll?.setBackgroundResource(R.drawable.cat_all)
+        catDevelopment?.setBackgroundResource(R.drawable.cat_development)
+        catMusic?.setBackgroundResource(R.drawable.cat_music)
+        catArt?.setBackgroundResource(R.drawable.cat_art)
+        catCulture?.setBackgroundResource(R.drawable.cat_culture)
+        catBusiness?.setBackgroundResource(R.drawable.cat_business)
+        catGaming?.setBackgroundResource(R.drawable.cat_gaming)
+        catEducation?.setBackgroundResource(R.drawable.cat_education)
+        catHistory?.setBackgroundResource(R.drawable.cat_history)
+        catFood?.setBackgroundResource(R.drawable.cat_food)
+        catTourism?.setBackgroundResource(R.drawable.cat_tourism)
+        catProductivity?.setBackgroundResource(R.drawable.cat_productivity)
+        catTools?.setBackgroundResource(R.drawable.cat_tools)
+        catEntertainment?.setBackgroundResource(R.drawable.cat_entertainment)
+        catSport?.setBackgroundResource(R.drawable.cat_sport)
+        catHealth?.setBackgroundResource(R.drawable.cat_health)
     }
 
     private fun loadData() {

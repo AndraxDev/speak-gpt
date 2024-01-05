@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -85,51 +86,34 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/prompt_text_frame"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="24dp"
-                            android:layout_marginTop="16dp"
-                            android:layout_marginEnd="24dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/textView19">
 
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/prompt_text"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="Prompt" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
-
-                        <TextView
-                            android:id="@+id/prompt_by"
+                        <LinearLayout
+                            android:id="@+id/constraintLayout5"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="22dp"
-                            android:layout_marginEnd="24dp"
-                            android:text="by Unknown"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/prompt_text_frame" />
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/constraintLayout5"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
                             android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp"
                             android:layout_marginBottom="16dp"
+                            android:background="@drawable/btn_accent_24"
+                            android:paddingStart="6dp"
+                            android:paddingTop="12dp"
+                            android:paddingEnd="6dp"
+                            android:paddingBottom="12dp"
+                            android:weightSum="3"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/text_cat">
+                            app:layout_constraintTop_toBottomOf="@+id/constraintLayout4">
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/btn_try"
-                                style="@style/Widget.Material3.Button.TonalButton"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                style="@style/Widget.Material3.Button"
+                                android:layout_width="0dp"
+                                android:layout_height="56dp"
+                                android:layout_marginHorizontal="6dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/btn_accent_tonal"
                                 android:text="@string/btn_try_it"
                                 app:icon="@drawable/ic_play"
                                 app:iconGravity="textStart"
@@ -140,9 +124,11 @@
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/btn_copy"
                                 style="@style/Widget.Material3.Button.TonalButton"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="16dp"
+                                android:layout_width="0dp"
+                                android:layout_height="56dp"
+                                android:layout_marginHorizontal="6dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/btn_accent_tonal"
                                 android:text="@string/btn_copy"
                                 app:icon="@drawable/ic_copy"
                                 app:iconGravity="textStart"
@@ -153,9 +139,11 @@
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/btn_like"
                                 style="@style/Widget.Material3.Button.TonalButton"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="16dp"
+                                android:layout_width="0dp"
+                                android:layout_height="56dp"
+                                android:layout_marginHorizontal="6dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/btn_accent_tonal"
                                 android:text="0"
                                 app:icon="@drawable/ic_like_outline"
                                 app:iconGravity="textStart"
@@ -163,37 +151,95 @@
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toEndOf="@+id/btn_copy"
                                 app:layout_constraintTop_toTopOf="parent" />
-                        </androidx.constraintlayout.widget.ConstraintLayout>
+                        </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/textView19"
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/constraintLayout4"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="24dp"
+                            android:layout_marginStart="16dp"
                             android:layout_marginTop="16dp"
-                            android:layout_marginEnd="24dp"
-                            android:background="@drawable/btn_tip1"
-                            android:padding="16dp"
-                            android:text="@string/prompt_tip"
-                            android:textColor="@color/tip1"
+                            android:layout_marginEnd="16dp"
+                            android:background="@drawable/btn_accent_24"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent">
 
-                        <TextView
-                            android:id="@+id/text_cat"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="24dp"
-                            android:layout_marginTop="16dp"
-                            android:background="@drawable/btn_accent_tonal"
-                            android:paddingStart="12dp"
-                            android:paddingTop="6dp"
-                            android:paddingEnd="12dp"
-                            android:paddingBottom="6dp"
-                            android:text="@string/cat"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/prompt_text_frame" />
+                            <TextView
+                                android:id="@+id/prompt_by"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:layout_marginEnd="12dp"
+                                android:layout_marginBottom="12dp"
+                                android:background="@drawable/btn_accent_tonal_selector_v5"
+                                android:paddingStart="12dp"
+                                android:paddingTop="8dp"
+                                android:paddingEnd="12dp"
+                                android:paddingBottom="8dp"
+                                android:text="by Unknown"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/prompt_text_frame" />
+
+                            <TextView
+                                android:id="@+id/text_cat"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="12dp"
+                                android:layout_marginTop="12dp"
+                                android:layout_marginBottom="12dp"
+                                android:background="@drawable/btn_accent_tonal_selector_v5"
+                                android:paddingStart="12dp"
+                                android:paddingTop="8dp"
+                                android:paddingEnd="12dp"
+                                android:paddingBottom="8dp"
+                                android:text="@string/cat"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/prompt_text_frame" />
+
+                            <TextView
+                                android:id="@+id/textView19"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="12dp"
+                                android:layout_marginTop="12dp"
+                                android:layout_marginEnd="12dp"
+                                android:background="@drawable/btn_tip1"
+                                android:padding="12dp"
+                                android:text="@string/prompt_tip"
+                                android:textColor="@color/tip1"
+                                android:textSize="14sp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/prompt_text_frame"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="12dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginEnd="12dp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/textView19">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/prompt_text"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/btn_accent_tonal_selector_v5"
+                                    android:hint="Prompt (tap to edit)"
+                                    android:paddingStart="12dp"
+                                    android:paddingTop="12dp"
+                                    android:paddingEnd="12dp"
+                                    android:paddingBottom="12dp"
+                                    android:textColor="@color/accent_900"
+                                    android:textSize="14sp" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </LinearLayout>

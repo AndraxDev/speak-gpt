@@ -10,7 +10,7 @@
     <string name="about_send_feedback">Send feedback</string>
     <string name="about_terms">Terms</string>
     <string name="about_privacy">Privacy</string>
-    <string name="activation">Activation</string>
+    <string name="activation">API setup</string>
     <string name="activation_desc1">To use this software you need to provide your OpenAI API key. SpeakGPT uses paid OpenAI models.</string>
     <string name="activation_begin">Let\'s begin</string>
     <string name="activation_desc2">API usage is significantly cheaper than fixed subscription.</string>
@@ -116,7 +116,7 @@
     <string name="cat_sport">Sport</string>
     <string name="cat_uncat">Sport</string>
     <string name="cat">Category: %s</string>
-    <string name="safety_warning">Follow OpenAI\'s safety principles. Do not post any inappropriate or sensitive information. All prompts is being moderated. Inappropriate prompts will be removed without further notice.</string>
+    <string name="safety_warning">Follow OpenAI safety principles. Do not post any inappropriate or sensitive information. All prompts is being moderated. Inappropriate prompts will be removed without further notice.</string>
     <string name="btn_post_your_prompt">Post your prompt</string>
     <string name="title_prompts_store">Prompts store</string>
     <string name="hint_search">Search</string>

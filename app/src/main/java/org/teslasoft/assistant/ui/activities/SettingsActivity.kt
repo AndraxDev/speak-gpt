@@ -529,7 +529,7 @@ class SettingsActivity : FragmentActivity() {
             chatId = extras.getString("chatId", "")
 
             if (chatId == "") {
-                btnClearChat?.visibility = View.GONE
+                btnClearChat?.isEnabled = false
                 activitySettingsTitle?.text = getString(R.string.global_settings_title)
                 globalSettingsTip?.visibility = View.VISIBLE
             } else {
@@ -537,7 +537,7 @@ class SettingsActivity : FragmentActivity() {
                 globalSettingsTip?.visibility = View.GONE
             }
         } else {
-            btnClearChat?.visibility = View.GONE
+            btnClearChat?.isEnabled = false
             activitySettingsTitle?.text = getString(R.string.global_settings_title)
             globalSettingsTip?.visibility = View.VISIBLE
         }

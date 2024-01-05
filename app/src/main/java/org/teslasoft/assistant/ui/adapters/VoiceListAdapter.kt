@@ -95,7 +95,7 @@ class VoiceListAdapter(private val context: Context, private val items: ArrayLis
     }
 
     private fun getSurfaceColor(context: Context) : Int {
-        return SurfaceColors.SURFACE_3.getColor(context)
+        return context.getColor(android.R.color.transparent)
     }
 
     private fun getSurfaceColorV2(context: Context) : Int {

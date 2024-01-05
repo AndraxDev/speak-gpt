@@ -48,7 +48,7 @@
                 android:id="@+id/field_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
+                android:inputType="text|textCapSentences"
                 android:backgroundTint="@color/button"
                 android:textColor="@color/accent_900"
                 android:textColorHighlight="@color/accent_100"

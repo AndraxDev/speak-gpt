@@ -57,10 +57,11 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_next"
                 style="@style/Widget.Material3.Button"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
+                android:layout_width="200dp"
+                android:layout_height="64dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
+                android:background="@drawable/btn_accent_selector_v2"
                 android:text="@string/btn_next"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

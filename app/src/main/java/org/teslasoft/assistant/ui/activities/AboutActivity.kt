@@ -21,9 +21,12 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 
 import androidx.fragment.app.FragmentActivity
 
@@ -40,6 +43,9 @@ class AboutActivity : FragmentActivity() {
     private var btnFeedback: MaterialButton? = null
     private var appVer: TextView? = null
     private var btnDonate: LinearLayout? = null
+    private var btnGithub: LinearLayout? = null
+
+    private var activateEasterEggCounter: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,8 +59,25 @@ class AboutActivity : FragmentActivity() {
         btnFeedback = findViewById(R.id.btn_feedback)
         appVer = findViewById(R.id.app_ver)
         btnDonate = findViewById(R.id.btn_donate)
+        btnGithub = findViewById(R.id.btn_github)
 
         appIcon?.setImageResource(R.drawable.assistant)
+
+        appVer?.setOnClickListener {
+            if (activateEasterEggCounter == 0) {
+                Handler(Looper.getMainLooper()).postDelayed({
+                    activateEasterEggCounter = 0
+                }, 1500)
+            }
+
+            if (activateEasterEggCounter == 4) {
+                activateEasterEggCounter = 0
+                Toast.makeText(this, "Easter egg found!", Toast.LENGTH_SHORT).show()
+                /* TODO: Open easter egg */
+            }
+
+            activateEasterEggCounter++
+        }
 
         try {
             val pInfo: PackageInfo = if (android.os.Build.VERSION.SDK_INT >= 33) {
@@ -101,6 +124,13 @@ class AboutActivity : FragmentActivity() {
         btnDonate?.setOnClickListener {
             val i = Intent()
             i.data = Uri.parse("https://www.paypal.com/donate/?hosted_button_id=KR6BRY2BPEQTL")
+            i.action = Intent.ACTION_VIEW
+            startActivity(i)
+        }
+
+        btnGithub?.setOnClickListener {
+            val i = Intent()
+            i.data = Uri.parse("https://github.com/AndraxDev/speak-gpt")
             i.action = Intent.ACTION_VIEW
             startActivity(i)
         }

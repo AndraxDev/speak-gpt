@@ -1093,7 +1093,7 @@ class ChatActivity : FragmentActivity() {
             } else if (e.stackTraceToString().contains("You exceeded your current quota")) {
                 "You exceeded your current quota. If you had free trial usage please add payment info. Also please check your usage limits. You can change your limits in Account settings."
             } else {
-                e.stackTraceToString()
+                e.stackTraceToString() + "\n\n" + e.message
             }
 
             putMessage(response, true)
@@ -1169,16 +1169,18 @@ class ChatActivity : FragmentActivity() {
                 btnMicro?.isEnabled = false
                 btnSend?.isEnabled = false
                 progress?.visibility = View.GONE
+
                 val m = msgs
+
                 m.add(
                     ChatMessage(
-                        role = ChatRole.User,
+                        role = ChatRole.System,
                         content = "Create a short name for this chat according to the messages provided. Enter just short name and nothing else. Don't add word 'chat' or 'bot' to the name."
                     )
                 )
 
                 val chatCompletionRequest2 = ChatCompletionRequest(
-                    model = ModelId("gpt-3.5-turbo"),
+                    model = ModelId("gpt-3.5-turbo-1106"),
                     maxTokens = 5,
                     messages = m
                 )

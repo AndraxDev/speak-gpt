@@ -65,7 +65,7 @@
                     android:textSize="16sp" />
 
                 <RadioButton
-                    android:id="@+id/gpt_35_turbo_0613"
+                    android:id="@+id/gpt_35_turbo_1106"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
@@ -74,7 +74,7 @@
                     android:minHeight="56dp"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:text="GPT 3.5 (Enhanced)"
+                    android:text="GPT 3.5 (Long context)"
                     android:textSize="16sp" />
 
                 <RadioButton
@@ -151,7 +151,8 @@
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
                     android:text="GPT 4 (Enchanced)"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:visibility="gone" />
 
                 <RadioButton
                     android:id="@+id/gpt_4_32k_0314"
@@ -176,7 +177,8 @@
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
                     android:text="Text davinci v3"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:visibility="gone" />
 
                 <RadioButton
                     android:id="@+id/text_davinci_002"
@@ -189,7 +191,8 @@
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
                     android:text="Text davinci v2"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:visibility="gone" />
 
                 <RadioButton
                     android:id="@+id/text_curie_001"
@@ -202,7 +205,8 @@
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
                     android:text="Text curie"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:visibility="gone" />
 
                 <RadioButton
                     android:id="@+id/text_babbage_001"
@@ -215,7 +219,8 @@
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
                     android:text="Text babbage"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:visibility="gone" />
 
                 <RadioButton
                     android:id="@+id/text_ada_001"
@@ -228,7 +233,8 @@
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
                     android:text="Text ada"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:visibility="gone" />
 
                 <RadioButton
                     android:id="@+id/davinci"

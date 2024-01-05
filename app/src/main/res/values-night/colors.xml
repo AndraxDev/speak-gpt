@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <color name="accent_50">#26262A</color>
     <color name="accent_100">#302f36</color>
     <color name="accent_200">#424250</color>
     <color name="accent_250">#424250</color>
@@ -61,6 +62,22 @@
     <color name="tint_cat_health">#25CCFFE5</color>
     <color name="tint_grey">#25d4d4d4</color>
 
+    <color name="tint_cat_development_active">#50ffddad</color>
+    <color name="tint_cat_music_active">#50ffadad</color>
+    <color name="tint_cat_art_active">#50b5c1ff</color>
+    <color name="tint_cat_culture_active">#50b9fac1</color>
+    <color name="tint_cat_business_active">#50e0c3fa</color>
+    <color name="tint_cat_gaming_active">#50daffcc</color>
+    <color name="tint_cat_education_active">#50caf9fc</color>
+    <color name="tint_cat_history_active">#50cafce2</color>
+    <color name="tint_cat_food_active">#50fccaf1</color>
+    <color name="tint_cat_tourism_active">#50FFD6E3</color>
+    <color name="tint_cat_productivity_active">#50faffcc</color>
+    <color name="tint_cat_tools_active">#50ccddff</color>
+    <color name="tint_cat_entertainment_active">#50ffe6cc</color>
+    <color name="tint_cat_sport_active">#50d5ffcc</color>
+    <color name="tint_cat_health_active">#50CCFFE5</color>
+
     <color name="tint_red">#40824444</color>
     <color name="gpt_icon_red">#CCB4B4</color>
 
@@ -72,4 +89,9 @@
 
     <color name="tint_blue">#405F71A7</color>
     <color name="gpt_icon_blue">#B4B6CC</color>
+
+    <color name="tint_purple">#40855FA7</color>
+    <color name="gpt_icon_purple">#C2B4CC</color>
+
+    <color name="border">#38FFFFFF</color>
 </resources>

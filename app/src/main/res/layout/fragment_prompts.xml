@@ -151,7 +151,7 @@
                     android:id="@+id/cat_all"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:background="@drawable/cat_all"
+                    android:background="@drawable/cat_all_active"
                     android:clickable="true"
                     android:contentDescription="@string/cat_all"
                     android:orientation="vertical"
