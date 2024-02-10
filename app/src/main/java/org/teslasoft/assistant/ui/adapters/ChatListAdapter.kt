@@ -85,22 +85,10 @@ class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragme
         textModel.text = when (model) {
             "gpt-4" -> "GPT 4"
             "gpt-4-1106-preview" -> "GPT 4 Turbo"
-            "gpt-4-0314" -> "GPT 4"
-            "gpt-4-0613" -> "GPT 4"
             "gpt-4-32k" -> "GPT 4"
-            "gpt-4-32k-0314" -> "GPT 4"
             "gpt-3.5-turbo" -> "GPT 3.5"
-            "gpt-3.5-turbo-0613" -> "GPT 3.5"
-            "gpt-3.5-turbo-0301" -> "GPT 3.5"
-            "text-davinci-003" -> "DAVINCI"
-            "text-davinci-002" -> "DAVINCI"
-            "text-curie-001" -> "CURIE"
-            "text-babbage-001" -> "BABBAGE"
-            "text-ada-001" -> "ADA"
-            "davinci" -> "DAVINCI"
-            "curie" -> "CURIE"
-            "babbage" -> "BABBAGE"
-            "ada" -> "ADA"
+            "gpt-3.5-turbo-1106" -> "GPT 3.5"
+            "gpt-3.5-turbo-0125" -> "GPT 3.5 (0125)"
             else -> "FT"
         }
 
@@ -119,6 +107,9 @@ class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragme
             }
             "GPT 3.5" -> {
                 updateCard(selector, icon, R.color.tint_yellow, R.color.gpt_icon_yellow)
+            }
+            "GPT 3.5 (0125)" -> {
+                updateCard(selector, icon, R.color.tint_purple, R.color.gpt_icon_purple)
             }
             "GPT 4 Turbo" -> {
                 updateCard(selector, icon, R.color.tint_green, R.color.gpt_icon_green)

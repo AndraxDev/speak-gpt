@@ -1180,7 +1180,7 @@ class ChatActivity : FragmentActivity() {
                 )
 
                 val chatCompletionRequest2 = ChatCompletionRequest(
-                    model = ModelId("gpt-3.5-turbo-1106"),
+                    model = ModelId("gpt-3.5-turbo-0125"),
                     maxTokens = 5,
                     messages = m
                 )
@@ -1188,8 +1188,6 @@ class ChatActivity : FragmentActivity() {
                 val completion: ChatCompletion = ai!!.chatCompletion(chatCompletionRequest2)
 
                 val newChatName = completion.choices[0].message.content
-
-                // Toast.makeText(this, "New chat name: $newChatName", Toast.LENGTH_SHORT).show()
 
                 ChatPreferences.getChatPreferences().editChat(this, newChatName.toString(), chatName)
                 chatId = Hash.hash(newChatName.toString())

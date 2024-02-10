@@ -78,6 +78,19 @@
                     android:textSize="16sp" />
 
                 <RadioButton
+                    android:id="@+id/gpt_35_turbo_0125"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:button="@null"
+                    android:minHeight="56dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:text="GPT 3.5 (Cost effective)"
+                    android:textSize="16sp" />
+
+                <RadioButton
                     android:id="@+id/gpt_35_turbo_0301"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -314,6 +327,24 @@
                         android:imeOptions="actionDone"
                         android:singleLine="true" />
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginVertical="8dp"
+                    android:background="@drawable/btn_tip1"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/textView27"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Cost effective model (gpt-3.5-turbo-0125) has reduced pricing: input prices for the new model are reduced by 50% to $0.0005 /1K tokens and output prices are reduced by 25% to $0.0015 /1K tokens. On Friday, February 16 2024, gpt-3.5-turbo will be automatically switched to this model and you will receive lower pricing even if you forgot to update to this model."
+                        android:textColor="@color/tip1" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/textView25"
