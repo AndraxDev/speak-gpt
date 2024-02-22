@@ -104,6 +104,18 @@
         </activity>
 
         <activity
+            android:name=".ui.assistant.WindowsProxy"
+            android:exported="true"
+            android:theme="@style/UI.Fade"
+            android:launchMode="singleTask">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".ui.activities.AboutActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"

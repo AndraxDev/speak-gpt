@@ -45,6 +45,7 @@ import android.widget.Toast
 
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 
 import com.aallam.openai.api.audio.SpeechRequest
@@ -110,7 +111,7 @@ import java.util.Base64
 import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
 
-class AssistantFragment : BottomSheetDialogFragment() {
+class WindowsInstantAssistant : Fragment() {
 
     // Init UI
     private var btnAssistantVoice: ImageButton? = null
@@ -212,8 +213,8 @@ class AssistantFragment : BottomSheetDialogFragment() {
                     parser.parse("summarizationPrompt", text, requireActivity())
                 }
                 "image" -> run("/imagine $text")
-                "cancel" -> this@AssistantFragment.dismiss()
-                else -> this@AssistantFragment.dismiss()
+                "cancel" -> requireActivity().finish()
+                else -> requireActivity().finish()
             }
         }
     }
@@ -228,12 +229,12 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
         override fun onEndOfSpeech() {
             isRecording = false
-            btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+            btnAssistantVoice?.setImageResource(R.drawable.ic_microphone_v2)
         }
 
         override fun onError(error: Int) {
             isRecording = false
-            btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+            btnAssistantVoice?.setImageResource(R.drawable.ic_microphone_v2)
         }
 
         override fun onResults(results: Bundle?) {
@@ -244,10 +245,10 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 btnAssistantSend?.isEnabled = true
                 assistantLoading?.visibility = View.GONE
                 isRecording = false
-                btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+                btnAssistantVoice?.setImageResource(R.drawable.ic_microphone_v2)
             } else {
                 isRecording = false
-                btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+                btnAssistantVoice?.setImageResource(R.drawable.ic_microphone_v2)
                 val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                 if (!matches.isNullOrEmpty()) {
                     val recognizedText = matches[0]
@@ -327,11 +328,11 @@ class AssistantFragment : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_assistant, container, false)
+        return inflater.inflate(R.layout.fragment_windows_instant_assistant, container, false)
     }
 
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
+    override fun onDestroy() {
+        super.onDestroy()
 
         if (tts != null) {
             tts!!.stop()
@@ -342,8 +343,6 @@ class AssistantFragment : BottomSheetDialogFragment() {
             mediaPlayer!!.stop()
             mediaPlayer!!.reset()
         }
-
-        requireActivity().finishAndRemoveTask()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -406,7 +405,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                     }
                     tts!!.stop()
                 } catch (_: java.lang.Exception) {/**/}
-                btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+                btnAssistantVoice?.setImageResource(R.drawable.ic_microphone_v2)
                 if (Preferences.getPreferences(requireActivity(), "").getAudioModel() == "google") recognizer?.stopListening()
                 isRecording = false
             }
@@ -445,7 +444,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                     try {
                         prepare()
                     } catch (e: IOException) {
-                        btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+                        btnAssistantVoice?.setImageResource(R.drawable.ic_microphone_v2)
                         isRecording = false
                         MaterialAlertDialogBuilder(
                             requireActivity(),
@@ -460,7 +459,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                     start()
                 } else {
                     cancelState = false
-                    btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+                    btnAssistantVoice?.setImageResource(R.drawable.ic_microphone_v2)
                     isRecording = false
                 }
             }
@@ -478,7 +477,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                     try {
                         prepare()
                     } catch (e: IOException) {
-                        btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+                        btnAssistantVoice?.setImageResource(R.drawable.ic_microphone_v2)
                         isRecording = false
                         MaterialAlertDialogBuilder(requireActivity(), R.style.App_MaterialAlertDialog)
                             .setTitle("Audio error")
@@ -490,7 +489,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                     start()
                 } else {
                     cancelState = false
-                    btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+                    btnAssistantVoice?.setImageResource(R.drawable.ic_microphone_v2)
                     isRecording = false
                 }
             }
@@ -514,7 +513,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
             }
         } else {
             cancelState = false
-            btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+            btnAssistantVoice?.setImageResource(R.drawable.ic_microphone_v2)
             isRecording = false
         }
     }
@@ -535,7 +534,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 btnAssistantVoice?.isEnabled = true
                 btnAssistantSend?.isEnabled = true
                 assistantLoading?.visibility = View.GONE
-                btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+                btnAssistantVoice?.setImageResource(R.drawable.ic_microphone_v2)
             } else {
                 putMessage(prefix + transcription + endSeparator, false)
 
@@ -566,11 +565,11 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     private fun handleWhisperSpeechRecognition() {
         if (isRecording) {
-            btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+            btnAssistantVoice?.setImageResource(R.drawable.ic_microphone_v2)
             isRecording = false
             stopWhisper()
         } else {
-            btnAssistantVoice?.setImageResource(R.drawable.ic_stop_recording)
+            btnAssistantVoice?.setImageResource(R.drawable.ic_stop_recording_v2)
             isRecording = true
 
             if (ContextCompat.checkSelfPermission(
@@ -598,7 +597,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 }
                 tts!!.stop()
             } catch (_: java.lang.Exception) {/**/}
-            btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+            btnAssistantVoice?.setImageResource(R.drawable.ic_microphone_v2)
             recognizer?.stopListening()
             isRecording = false
         } else {
@@ -609,7 +608,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 }
                 tts!!.stop()
             } catch (_: java.lang.Exception) {/**/}
-            btnAssistantVoice?.setImageResource(R.drawable.ic_stop_recording)
+            btnAssistantVoice?.setImageResource(R.drawable.ic_stop_recording_v2)
             if (ContextCompat.checkSelfPermission(
                     requireActivity(), Manifest.permission.RECORD_AUDIO
                 ) == PackageManager.PERMISSION_GRANTED
@@ -950,7 +949,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                     )
 
                     val functionRequest = chatCompletionRequest {
-                        model = ModelId(this@AssistantFragment.model)
+                        model = ModelId(this@WindowsInstantAssistant.model)
                         messages = cm
                         functions {
                             function {
@@ -1067,7 +1066,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         }
 
         val chatCompletionRequest = chatCompletionRequest {
-            model = ModelId(this@AssistantFragment.model)
+            model = ModelId(this@WindowsInstantAssistant.model)
             messages = msgs
         }
 
@@ -1298,7 +1297,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
         languageIdentifier = LanguageIdentification.getClient()
 
-        dialog?.window?.navigationBarColor = SurfaceColors.SURFACE_1.getColor(requireActivity())
+        requireActivity().window?.navigationBarColor = SurfaceColors.SURFACE_1.getColor(requireActivity())
 
         btnAssistantVoice = view.findViewById(R.id.btn_assistant_voice)
         btnAssistantSettings = view.findViewById(R.id.btn_assistant_settings)
@@ -1312,7 +1311,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         assistantConversation = view.findViewById(R.id.assistant_conversation)
         assistantLoading = view.findViewById(R.id.assistant_loading)
 
-        btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+        btnAssistantVoice?.setImageResource(R.drawable.ic_microphone_v2)
         btnAssistantSettings?.setImageResource(R.drawable.ic_settings)
         btnAssistantShowKeyboard?.setImageResource(R.drawable.ic_keyboard)
         btnAssistantHideKeyboard?.setImageResource(R.drawable.ic_keyboard_hide)
