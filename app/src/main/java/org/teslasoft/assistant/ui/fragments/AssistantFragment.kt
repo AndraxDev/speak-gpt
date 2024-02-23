@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1003,7 +1003,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 }
             }
         } catch (e: Exception) {
-            putMessage("", true)
+            // putMessage("", true)
             val response = when {
                 e.stackTraceToString().contains("does not exist") -> {
                     "Looks like this model (${model}) is not available to you right now. It can be because of high demand or this model is currently in limited beta. If you are using a fine-tuned model, please make sure you entered correct model name. Usually model starts with 'model_name:ft-' and contains original model name, organization name and timestamp. Example: ada:ft-organization_name:model_name-YYYY-MM-DD-hh-mm-ss."

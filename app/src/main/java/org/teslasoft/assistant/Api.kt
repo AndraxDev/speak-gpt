@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,6 @@ package org.teslasoft.assistant
 
 class Api {
     companion object {
-        const val API_KEY: String = "16790f7ac03237764a8a0ad36eede490"
+        const val TESLASOFT_API_KEY: String = "16790f7ac03237764a8a0ad36eede490"
     }
 }

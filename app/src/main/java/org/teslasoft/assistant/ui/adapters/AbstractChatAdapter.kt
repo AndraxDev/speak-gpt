@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -138,9 +138,13 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
                 message?.text = "<FILE NOT FOUND>"
             }
         } else {
-            val src = dataArray?.get(position)?.get("message").toString()
-            val markwon: Markwon = Markwon.create(mContext)
-            markwon.setMarkdown(message!!, src)
+            if (dataArray?.get(position)?.get("isBot") == true) {
+                val src = dataArray[position]["message"].toString()
+                val markwon: Markwon = Markwon.create(mContext)
+                markwon.setMarkdown(message!!, src)
+            } else {
+                message?.text = dataArray?.get(position)?.get("message").toString()
+            }
 
             dalleImage?.visibility = View.GONE
             message?.visibility = View.VISIBLE

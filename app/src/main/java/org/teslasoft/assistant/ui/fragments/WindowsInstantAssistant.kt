@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,10 +32,12 @@ import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
 import android.speech.tts.Voice
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
@@ -246,6 +248,7 @@ class WindowsInstantAssistant : Fragment() {
                 assistantLoading?.visibility = View.GONE
                 isRecording = false
                 btnAssistantVoice?.setImageResource(R.drawable.ic_microphone_v2)
+                showKeyboard()
             } else {
                 isRecording = false
                 btnAssistantVoice?.setImageResource(R.drawable.ic_microphone_v2)
@@ -794,6 +797,7 @@ class WindowsInstantAssistant : Fragment() {
                 btnAssistantVoice?.isEnabled = true
                 btnAssistantSend?.isEnabled = true
                 assistantLoading?.visibility = View.GONE
+                showKeyboard()
             } else {
                 chatMessages.add(
                     ChatMessage(
@@ -860,6 +864,7 @@ class WindowsInstantAssistant : Fragment() {
         btnAssistantVoice?.isEnabled = true
         btnAssistantSend?.isEnabled = true
         assistantLoading?.visibility = View.GONE
+        showKeyboard()
 
         val q = prompt.replace(" ", "+")
 
@@ -911,6 +916,7 @@ class WindowsInstantAssistant : Fragment() {
                 btnAssistantVoice?.isEnabled = true
                 btnAssistantSend?.isEnabled = true
                 assistantLoading?.visibility = View.GONE
+                showKeyboard()
             } else {
                 val functionCallingEnabled: Boolean = Preferences.getPreferences(requireActivity(), "").getFunctionCalling()
 
@@ -1002,7 +1008,7 @@ class WindowsInstantAssistant : Fragment() {
                 }
             }
         } catch (e: Exception) {
-            putMessage("", true)
+            // putMessage("", true)
             val response = when {
                 e.stackTraceToString().contains("does not exist") -> {
                     "Looks like this model (${model}) is not available to you right now. It can be because of high demand or this model is currently in limited beta. If you are using a fine-tuned model, please make sure you entered correct model name. Usually model starts with 'model_name:ft-' and contains original model name, organization name and timestamp. Example: ada:ft-organization_name:model_name-YYYY-MM-DD-hh-mm-ss."
@@ -1042,6 +1048,8 @@ class WindowsInstantAssistant : Fragment() {
             btnAssistantVoice?.isEnabled = true
             btnAssistantSend?.isEnabled = true
             assistantLoading?.visibility = View.GONE
+
+            showKeyboard()
         }
     }
 
@@ -1098,6 +1106,7 @@ class WindowsInstantAssistant : Fragment() {
         btnAssistantVoice?.isEnabled = true
         btnAssistantSend?.isEnabled = true
         assistantLoading?.visibility = View.GONE
+        showKeyboard()
     }
 
     private fun pronounce(st: Boolean, message: String) {
@@ -1263,6 +1272,7 @@ class WindowsInstantAssistant : Fragment() {
         btnAssistantVoice?.isEnabled = true
         btnAssistantSend?.isEnabled = true
         assistantLoading?.visibility = View.GONE
+        showKeyboard()
     }
 
     private fun saveSettings() {
@@ -1330,6 +1340,17 @@ class WindowsInstantAssistant : Fragment() {
             hideKeyboard()
         }
 
+        assistantMessage?.setOnKeyListener { v, keyCode, event -> run {
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER && event.isShiftPressed) {
+                (v as EditText).append("\n")
+                return@run true
+            } else if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                parseMessage((v as EditText).text.toString())
+                return@run true
+            }
+            return@run false
+        }}
+
         btnSaveToChat?.setOnClickListener {
             val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false)
             chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
@@ -1356,6 +1377,8 @@ class WindowsInstantAssistant : Fragment() {
         btnAssistantSend?.isEnabled = true
         btnAssistantHideKeyboard?.isEnabled = true
         btnAssistantVoice?.visibility = View.GONE
+
+        assistantMessage?.requestFocus()
     }
 
     private fun run(prompt: String) {

@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 
 package org.teslasoft.assistant.ui.fragments.tabs
 
-import android.content.Context
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -32,9 +30,6 @@ import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.Toast
 
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
@@ -135,7 +130,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
             requestNetwork?.startRequestNetwork(
                 "GET",
-                "https://gpt.teslasoft.org/api/v1/post.php?api_key=${Api.API_KEY}&name=$mName&title=$mTitle&desc=$mDesc&prompt=$mPrompt&type=$type&category=$category",
+                "https://gpt.teslasoft.org/api/v1/post.php?api_key=${Api.TESLASOFT_API_KEY}&name=$mName&title=$mTitle&desc=$mDesc&prompt=$mPrompt&type=$type&category=$category",
                 "A",
                 promptPostListener
             )
@@ -454,7 +449,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun loadData() {
-        requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/search.php?api_key=${Api.API_KEY}&query=$query", "A", searchDataListener)
+        requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/search.php?api_key=${Api.TESLASOFT_API_KEY}&query=$query", "A", searchDataListener)
 
 //        refreshLayout?.visibility = View.GONE
         noInternetLayout?.visibility = View.GONE

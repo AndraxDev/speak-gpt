@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -234,9 +234,9 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
 
                 btnLike?.setOnClickListener {
                     if (likeState) {
-                        requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/dislike.php?api_key=${Api.API_KEY}&id=$id", "A", dislikeListener)
+                        requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/dislike.php?api_key=${Api.TESLASOFT_API_KEY}&id=$id", "A", dislikeListener)
                     } else {
-                        requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/like.php?api_key=${Api.API_KEY}&id=$id", "A", likeListener)
+                        requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/like.php?api_key=${Api.TESLASOFT_API_KEY}&id=$id", "A", likeListener)
                     }
 
                     btnLike?.isEnabled = false
@@ -289,6 +289,6 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
         progressBar?.visibility = View.VISIBLE
         content?.visibility = View.GONE
 
-        requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/prompt.php?api_key=${Api.API_KEY}&id=$id", "A", dataListener)
+        requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/prompt.php?api_key=${Api.TESLASOFT_API_KEY}&id=$id", "A", dataListener)
     }
 }
