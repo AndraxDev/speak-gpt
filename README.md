@@ -90,7 +90,7 @@ SpeakGPT is an advanced and highly intuitive voice assistant that utilizes the p
 ## License
 
 ```
-Copyright (c) 2023 Dmytro Ostapenko. All rights reserved.
+Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
