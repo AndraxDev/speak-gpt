@@ -31,6 +31,9 @@
             android:id="@+id/field_hostname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="https://api.openai.com" />
+            android:focusedByDefault="true"
+            android:hint="https://api.openai.com"
+            android:imeOptions="actionDone"
+            android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

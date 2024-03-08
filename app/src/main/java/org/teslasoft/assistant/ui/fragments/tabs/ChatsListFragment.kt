@@ -106,7 +106,7 @@ class ChatsListFragment : Fragment() {
         override fun onError(fromFile: Boolean) {
             Toast.makeText(requireActivity(), "Please fill name field", Toast.LENGTH_SHORT).show()
 
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", fromFile)
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", fromFile, false, false)
             chatDialogFragment.setStateChangedListener(this)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -122,7 +122,7 @@ class ChatsListFragment : Fragment() {
         override fun onDuplicate() {
             Toast.makeText(requireActivity(), "Name must be unique", Toast.LENGTH_SHORT).show()
 
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false)
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false, false, false)
             chatDialogFragment.setStateChangedListener(this)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -160,7 +160,7 @@ class ChatsListFragment : Fragment() {
         btnAdd = view.findViewById(R.id.btn_add)
 
         btnAdd?.setOnClickListener {
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false)
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false, false, false)
             chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -221,7 +221,7 @@ class ChatsListFragment : Fragment() {
 
                     if (isValidJson(selectedFile)) {
                         val chatDialogFragment: AddChatDialogFragment =
-                            AddChatDialogFragment.newInstance("", true)
+                            AddChatDialogFragment.newInstance("", true, false, false)
                         chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
                         chatDialogFragment.show(
                             parentFragmentManager.beginTransaction(),

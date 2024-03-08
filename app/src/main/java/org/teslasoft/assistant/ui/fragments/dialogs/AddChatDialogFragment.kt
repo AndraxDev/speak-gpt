@@ -20,6 +20,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,12 +42,14 @@ import org.teslasoft.assistant.util.Hash
 class AddChatDialogFragment : DialogFragment() {
 
     companion object {
-        fun newInstance(name: String, fromFile: Boolean) : AddChatDialogFragment {
+        fun newInstance(name: String, fromFile: Boolean, disableAutoName: Boolean, saveChat: Boolean) : AddChatDialogFragment {
             val addChatDialogFragment = AddChatDialogFragment()
 
             val args = Bundle()
             args.putString("name", name)
             args.putBoolean("fromFile", fromFile)
+            args.putBoolean("disableAutoName", disableAutoName)
+            args.putBoolean("saveChat", saveChat)
 
             addChatDialogFragment.arguments = args
 
@@ -88,6 +91,10 @@ class AddChatDialogFragment : DialogFragment() {
         nameInput = view.findViewById(R.id.field_name)
         autoName = view.findViewById(R.id.auto_name)
 
+        if (arguments?.getBoolean("disableAutoName") == true) {
+            autoName?.isChecked = false
+        }
+
         val dialogTitle: TextView = view.findViewById(R.id.dialog_title)
 
         if (requireArguments().getString("name") != "") {
@@ -121,7 +128,29 @@ class AddChatDialogFragment : DialogFragment() {
             autoName?.visibility = View.VISIBLE
         }
 
-        if (arguments?.getBoolean("fromFile")!!) autoName?.visibility = View.GONE
+        if (arguments?.getBoolean("saveChat") == true) {
+            dialogTitle.text = requireActivity().resources.getString(R.string.title_save_chat)
+        }
+
+        nameInput?.requestFocus()
+
+        nameInput?.setOnKeyListener { v, keyCode, event -> run {
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                validateForm()
+                dismiss()
+                return@run true
+            } else if (event.action == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_ESCAPE)) {
+                listener!!.onCanceled()
+                dismiss()
+                return@run true
+            }
+            return@run false
+        }}
+
+        if (arguments?.getBoolean("fromFile")!!) {
+            autoName?.visibility = View.GONE
+            autoName?.isChecked = false
+        }
 
         return builder!!.create()
     }
@@ -136,7 +165,7 @@ class AddChatDialogFragment : DialogFragment() {
 
     private fun createChat() {
         if (chatPreferences?.checkDuplicate(requireActivity(), nameInput?.text.toString()) == false) {
-            val chatName = if (autoName?.isChecked!!) "_autoname_${chatPreferences?.getAvailableChatIdForAutoname(requireActivity())}" else nameInput?.text.toString()
+            val chatName = if (autoName?.isChecked!! && requireArguments().getString("name") == "") "_autoname_${chatPreferences?.getAvailableChatIdForAutoname(requireActivity())}" else nameInput?.text.toString()
 
             val preferences: Preferences = if (isEdit) {
                 chatPreferences?.editChat(requireActivity(), nameInput?.text.toString(), requireArguments().getString("name").toString())
@@ -170,23 +199,25 @@ class AddChatDialogFragment : DialogFragment() {
             val ttsEngine = preferences.getTtsEngine()
             val dalleVersion = preferences.getDalleVersion()
 
-            preferences.setPreferences(Hash.hash(chatName), requireActivity())
-            preferences.setResolution(resolution)
-            preferences.setAudioModel(speech)
-            preferences.setModel(model)
-            preferences.setMaxTokens(maxTokens)
-            preferences.setPrefix(prefix)
-            preferences.setEndSeparator(endSeparator)
-            preferences.setPrompt(activationPrompt)
-            preferences.setLayout(layout)
-            preferences.setSilence(silent)
-            preferences.setSystemMessage(systemMessage)
-            preferences.setNotSilence(alwaysSpeak)
-            preferences.setAutoLangDetect(autoLanguageDetect)
-            preferences.setFunctionCalling(functionCalling)
-            preferences.setImagineCommand(slashCommands)
-            preferences.setTtsEngine(ttsEngine)
-            preferences.setDalleVersion(dalleVersion)
+            val newPreferences: Preferences = Preferences.getPreferences(requireActivity(), Hash.hash(chatName))
+
+            newPreferences.setPreferences(Hash.hash(chatName), requireActivity())
+            newPreferences.setResolution(resolution)
+            newPreferences.setAudioModel(speech)
+            newPreferences.setModel(model)
+            newPreferences.setMaxTokens(maxTokens)
+            newPreferences.setPrefix(prefix)
+            newPreferences.setEndSeparator(endSeparator)
+            newPreferences.setPrompt(activationPrompt)
+            newPreferences.setLayout(layout)
+            newPreferences.setSilence(silent)
+            newPreferences.setSystemMessage(systemMessage)
+            newPreferences.setNotSilence(alwaysSpeak)
+            newPreferences.setAutoLangDetect(autoLanguageDetect)
+            newPreferences.setFunctionCalling(functionCalling)
+            newPreferences.setImagineCommand(slashCommands)
+            newPreferences.setTtsEngine(ttsEngine)
+            newPreferences.setDalleVersion(dalleVersion)
         } else {
             listener!!.onDuplicate()
         }

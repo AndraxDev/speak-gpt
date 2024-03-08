@@ -60,6 +60,7 @@ class SettingsActivity : FragmentActivity() {
     private var alwaysSpeak: MaterialSwitch? = null
     private var autoLangDetectSwitch: MaterialSwitch? = null
     private var functionCallingSwitch: MaterialSwitch? = null
+    private var desktopMode: MaterialSwitch? = null
     private var imagineSwitch: MaterialSwitch? = null
     private var btnClearChat: MaterialButton? = null
     private var btnDebugMenu: MaterialButton? = null
@@ -187,6 +188,7 @@ class SettingsActivity : FragmentActivity() {
         alwaysSpeak = findViewById(R.id.always_speak_switch)
         autoLangDetectSwitch = findViewById(R.id.autoLangDetect_switch)
         functionCallingSwitch = findViewById(R.id.function_calling_switch)
+        desktopMode = findViewById(R.id.desktop_switch)
         imagineSwitch = findViewById(R.id.imagine_switch)
         btnClearChat = findViewById(R.id.btn_clear_chat)
         btnDebugMenu = findViewById(R.id.btn_debug_menu)
@@ -278,6 +280,9 @@ class SettingsActivity : FragmentActivity() {
         findViewById<LinearLayout>(R.id.btn_imagine)!!.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background_noclick)!!, this)
 
+        findViewById<LinearLayout>(R.id.btn_desktop)!!.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background_noclick)!!, this)
+
         btnAutoLanguageDetect?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(this, R.drawable.t_menu_center_item_background_noclick)!!, this)
 
@@ -302,6 +307,8 @@ class SettingsActivity : FragmentActivity() {
 
         silenceSwitch?.isChecked = preferences?.getSilence() == true
         alwaysSpeak?.isChecked = preferences?.getNotSilence() == true
+
+        desktopMode?.isChecked = preferences?.getDesktopMode() == true
 
         functionCallingSwitch?.isChecked = preferences?.getFunctionCalling() == true
         imagineSwitch?.isChecked = preferences?.getImagineCommand() == true
@@ -443,6 +450,8 @@ class SettingsActivity : FragmentActivity() {
         autoLangDetectSwitch?.setOnCheckedChangeListener { _, isChecked -> preferences?.setAutoLangDetect(isChecked) }
 
         functionCallingSwitch?.setOnCheckedChangeListener { _, isChecked -> preferences?.setFunctionCalling(isChecked) }
+
+        desktopMode?.setOnCheckedChangeListener { _, isChecked -> preferences?.setDesktopMode(isChecked) }
 
         imagineSwitch?.setOnCheckedChangeListener { _, isChecked -> preferences?.setImagineCommand(isChecked) }
 

@@ -35,7 +35,8 @@
             android:layout_width="match_parent"
             android:layout_height="180dp"
             android:gravity="top|start"
-            android:hint="@string/hint_act_prompt" />
+            android:hint="@string/hint_act_prompt"
+            android:inputType="text|textCapSentences" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView

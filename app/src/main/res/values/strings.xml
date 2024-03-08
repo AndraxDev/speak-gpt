@@ -74,6 +74,7 @@
     <string name="hint_act_prompt">I want you act as...</string>
     <string name="act_prompt_desc">Note: This prompt will be sent on the start of each conversation. Please note that this feature may use additional tokens. Leave this blank empty to disable this feature. If it is not work just clear your chat history.</string>
     <string name="title_new_chat">New chat</string>
+    <string name="title_save_chat">Save chat</string>
     <string name="hint_chat_name">Chat name</string>
     <string name="title_advanced_settings">Advanced settings</string>
     <string name="select_ai_model">Select AI model</string>

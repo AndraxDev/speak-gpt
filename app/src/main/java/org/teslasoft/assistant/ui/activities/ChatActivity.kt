@@ -51,6 +51,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
@@ -128,6 +129,8 @@ class ChatActivity : FragmentActivity() {
     private var activityTitle: TextView? = null
     private var btnExport: ImageButton? = null
     private var fileContents: ByteArray? = null
+    private var actionBar: ConstraintLayout? = null
+    private var btnBack: ImageButton? = null
 
     // Init chat
     private var messages: ArrayList<HashMap<String, Any>> = arrayListOf()
@@ -374,8 +377,11 @@ class ChatActivity : FragmentActivity() {
         progress = findViewById(R.id.progress)
         activityTitle = findViewById(R.id.chat_activity_title)
         btnExport = findViewById(R.id.btn_export)
+        actionBar = findViewById(R.id.action_bar)
+        btnBack = findViewById(R.id.btn_back)
 
         btnExport?.setImageResource(R.drawable.ic_upload)
+        btnBack?.setImageResource(R.drawable.ic_back)
 
         activityTitle?.text = if (chatName.trim().contains("_autoname_")) "Untitled chat" else chatName
 
@@ -391,12 +397,30 @@ class ChatActivity : FragmentActivity() {
             )!!, this
         )
 
+        btnBack?.background = getDarkAccentDrawable(
+            AppCompatResources.getDrawable(
+                this,
+                R.drawable.btn_accent_tonal_v4
+            )!!, this
+        )
+
         btnSettings?.background = getDarkAccentDrawable(
             AppCompatResources.getDrawable(
                 this,
                 R.drawable.btn_accent_tonal_v4
             )!!, this
         )
+
+        actionBar?.background = getDarkAccentDrawable(
+            AppCompatResources.getDrawable(
+                this,
+                R.color.accent_100
+            )!!, this
+        )
+
+        btnBack?.setOnClickListener {
+            finish()
+        }
 
         chat?.adapter = adapter
         chat?.dividerHeight = 0
@@ -473,17 +497,22 @@ class ChatActivity : FragmentActivity() {
         }
 
         messageInput?.setOnKeyListener { v, keyCode, event -> run {
-            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER && event.isShiftPressed && isHardKB(this)) {
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER && event.isShiftPressed && isHardKB(this) && Preferences.getPreferences(this, chatId).getDesktopMode()) {
                 (v as EditText).append("\n")
                 return@run true
-            } else if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER && isHardKB(this)) {
+            } else if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER && isHardKB(this) && Preferences.getPreferences(this, chatId).getDesktopMode()) {
                 parseMessage((v as EditText).text.toString())
+                return@run true
+            } else if (event.action == KeyEvent.ACTION_DOWN && ((keyCode == KeyEvent.KEYCODE_ESCAPE && event.isShiftPressed) || keyCode == KeyEvent.KEYCODE_BACK) && Preferences.getPreferences(this, chatId).getDesktopMode()) {
+                finish()
                 return@run true
             }
             return@run false
         }}
 
-        messageInput?.requestFocus()
+        if (Preferences.getPreferences(this, chatId).getDesktopMode()) {
+            messageInput?.requestFocus()
+        }
 
         btnSettings?.setOnClickListener {
             val i = Intent(

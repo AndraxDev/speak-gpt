@@ -18,8 +18,10 @@ package org.teslasoft.assistant.ui.activities
 
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
@@ -27,9 +29,11 @@ import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.content.res.AppCompatResources
 
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
@@ -175,8 +179,6 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        window.statusBarColor = ContextCompat.getColor(this, R.color.accent_100)
-
         val extras: Bundle? = intent.extras
 
         if (extras == null) {
@@ -189,6 +191,9 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
                 finish()
             } else {
                 setContentView(R.layout.activity_view_prompt)
+
+                window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
+
                 activityTitle = findViewById(R.id.activity_view_title)
 
                 content = findViewById(R.id.view_content)
@@ -203,6 +208,20 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
                 btnLike = findViewById(R.id.btn_like)
                 btnTry = findViewById(R.id.btn_try)
                 textCat = findViewById(R.id.text_cat)
+
+                activityTitle?.background = getDarkAccentDrawable(
+                    AppCompatResources.getDrawable(
+                        this,
+                        R.color.accent_100
+                    )!!, this
+                )
+
+                btnFlag?.background = getDarkAccentDrawable(
+                    AppCompatResources.getDrawable(
+                        this,
+                        R.drawable.btn_accent_tonal_v4
+                    )!!, this
+                )
 
                 btnFlag?.setImageResource(R.drawable.ic_flag)
 
@@ -276,6 +295,15 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
                 loadData()
             }
         }
+    }
+
+    private fun getDarkAccentDrawable(drawable: Drawable, context: Context) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getSurfaceColor(context))
+        return drawable
+    }
+
+    private fun getSurfaceColor(context: Context) : Int {
+        return SurfaceColors.SURFACE_4.getColor(context)
     }
 
     override fun onRefresh() {

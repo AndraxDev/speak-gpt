@@ -28,6 +28,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.Api
 import org.teslasoft.assistant.R
 import org.teslasoft.core.api.network.RequestNetwork
@@ -73,8 +74,6 @@ class ReportAbuseActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        window.statusBarColor = ContextCompat.getColor(this, R.color.accent_100)
-
         val extras: Bundle? = intent.extras
 
         if (extras == null) {
@@ -92,6 +91,8 @@ class ReportAbuseActivity : FragmentActivity() {
 
     private fun initUI() {
         setContentView(R.layout.activity_report_prompt)
+
+        window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
 
         reportForm = findViewById(R.id.report_form)
         loadingBar = findViewById(R.id.loading_bar)

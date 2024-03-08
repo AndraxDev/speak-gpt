@@ -74,6 +74,26 @@ class Preferences private constructor(private var preferences: SharedPreferences
     }
 
     /**
+     * Get global boolean
+     *
+     * @param param The key of the value to retrieve.
+     * @param default The default value to return if the key is not found.
+     * */
+    private fun getGlobalBoolean(param: String?, default: Boolean) : Boolean {
+        return gp.getBoolean(param, default)
+    }
+
+    /**
+     * Set global boolean
+     *
+     * @param param The key with which the value is to be associated.
+     * @param value The value to be stored.
+     * */
+    private fun putGlobalBoolean(param: String, value: Boolean) {
+        gp.edit()?.putBoolean(param, value)?.apply()
+    }
+
+    /**
      * Retrieves a String value from the shared preferences.
      *
      * @param param The key of the value to retrieve.
@@ -257,6 +277,28 @@ class Preferences private constructor(private var preferences: SharedPreferences
      */
     fun setAutoLangDetect(mode: Boolean) {
         putBoolean("autoLangDetect", mode)
+    }
+
+    /**
+     * Desktop mode - automatically focus message input once chat is opened, press enter to send message, shift+enter to add new line
+     *
+     * This param is global and applies across all chats and activities in the app
+     *
+     * @return desktop mode status
+     * */
+    fun getDesktopMode() : Boolean {
+        return getGlobalBoolean("desktopMode", false)
+    }
+
+    /**
+     * Set desktop mode
+     *
+     * This param is global and applies across all chats and activities in the app
+     *
+     * @param mode desktop mode status
+     * */
+    fun setDesktopMode(mode: Boolean) {
+        putGlobalBoolean("desktopMode", mode)
     }
 
     /**

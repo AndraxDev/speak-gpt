@@ -168,7 +168,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         override fun onError(fromFile: Boolean) {
             Toast.makeText(requireActivity(), "Please fill name field", Toast.LENGTH_SHORT).show()
 
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false)
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false, false, true)
             chatDialogFragment.setStateChangedListener(this)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -184,7 +184,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         override fun onDuplicate() {
             Toast.makeText(requireActivity(), "Name must be unique", Toast.LENGTH_SHORT).show()
 
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false)
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false, false, true)
             chatDialogFragment.setStateChangedListener(this)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -1332,7 +1332,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         }
 
         btnSaveToChat?.setOnClickListener {
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false)
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false, false, true)
             chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -91,62 +92,81 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/chat_activity_title"
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/action_bar"
+        android:layout_width="match_parent"
         android:layout_height="64dp"
         android:background="@color/accent_100"
-        android:elevation="6dp"
-        android:ellipsize="end"
-        android:gravity="center_vertical"
-        android:maxLines="1"
-        android:paddingLeft="24dp"
-        android:paddingEnd="120dp"
-        android:textColor="@color/text_title"
-        android:textSize="20sp"
-        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <ImageButton
-        android:id="@+id/btn_settings"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/btn_accent_tonal_v4"
-        android:contentDescription="@string/btn_settings"
-        android:tooltipText="@string/btn_settings"
-        android:elevation="6.01dip"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_settings" />
+        <ImageButton
+            android:id="@+id/btn_settings"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/btn_accent_tonal_v4"
+            android:contentDescription="@string/btn_settings"
+            android:tooltipText="@string/btn_settings"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_settings" />
 
-    <ImageButton
-        android:id="@+id/btn_export"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/btn_accent_tonal_v4"
-        android:contentDescription="@string/btn_export_chat"
-        android:elevation="6.01dip"
-        android:tooltipText="@string/btn_export_chat"
-        app:layout_constraintEnd_toStartOf="@id/btn_settings"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_upload" />
+        <ImageButton
+            android:id="@+id/btn_export"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/btn_accent_tonal_v4"
+            android:contentDescription="@string/btn_export_chat"
+            android:tooltipText="@string/btn_export_chat"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_settings"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_upload" />
+
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/btn_accent_tonal_v4"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_back" />
+
+        <TextView
+            android:id="@+id/chat_activity_title"
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:paddingHorizontal="8dp"
+            android:text="debug.chat.name"
+            android:textColor="@color/text_title"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_export"
+            app:layout_constraintStart_toEndOf="@+id/btn_back"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ListView
         android:id="@+id/messages"
-        android:listSelector="@android:color/transparent"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:listSelector="@android:color/transparent"
         android:scrollbars="none"
         android:stackFromBottom="true"
         android:transcriptMode="alwaysScroll"
         app:layout_constraintBottom_toTopOf="@+id/keyboard_input"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chat_activity_title" />
+        app:layout_constraintTop_toBottomOf="@+id/action_bar" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

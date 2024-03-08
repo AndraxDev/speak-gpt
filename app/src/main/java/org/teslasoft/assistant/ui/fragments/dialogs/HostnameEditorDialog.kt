@@ -19,6 +19,7 @@ package org.teslasoft.assistant.ui.fragments.dialogs
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -67,6 +68,22 @@ class HostnameEditorDialog : DialogFragment() {
         hostname = view.findViewById(R.id.field_hostname)
 
         hostname?.setText(arguments?.getString("name") ?: "")
+
+        hostname?.requestFocus()
+
+        hostname?.setOnKeyListener { v, keyCode, event ->
+            run {
+                if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                    validateForm()
+                    dismiss()
+                    return@run true
+                } else if (event.action == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_ESCAPE)) {
+                    dismiss()
+                    return@run true
+                }
+                return@run false
+            }
+        }
 
         builder!!.setView(view)
             .setCancelable(false)
