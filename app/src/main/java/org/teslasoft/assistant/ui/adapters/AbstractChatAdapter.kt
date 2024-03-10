@@ -87,7 +87,7 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
             message?.visibility = View.GONE
             btnCopy?.visibility = View.GONE
 
-            val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(convertDpToPixel(24f, mContext).toInt()))
+            val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(convertDpToPixel(16f, mContext).toInt()))
             Glide.with(mContext).load(Uri.parse(dataArray?.get(position)?.get("message").toString())).apply(requestOptions).into(dalleImage!!)
 
             dalleImage?.setOnClickListener {
@@ -116,7 +116,7 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
                         val c: ByteArray = it.readBytes()
                         val m: String = "data:image/png;base64," + Base64.getEncoder().encodeToString(c)
 
-                        val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(convertDpToPixel(24f, mContext).toInt()))
+                        val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(convertDpToPixel(16f, mContext).toInt()))
                         Glide.with(mContext).load(Uri.parse(m)).apply(requestOptions).into(dalleImage!!)
 
                         dalleImage?.setOnClickListener {
@@ -166,7 +166,7 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
         return SurfaceColors.SURFACE_2.getColor(context)
     }
 
-    protected fun get3SurfaceColor(context: Context): Int {
+    private fun get3SurfaceColor(context: Context): Int {
         return SurfaceColors.SURFACE_3.getColor(context)
     }
 }

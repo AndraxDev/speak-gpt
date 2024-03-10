@@ -21,35 +21,39 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.DocumentsContract
+import android.util.DisplayMetrics
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
-
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentActivity
-
 import com.bumptech.glide.Glide
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
 import org.teslasoft.assistant.R
-
 import uk.co.senab.photoview.PhotoViewAttacher
-
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.Base64
+
 
 class ImageBrowserActivity : FragmentActivity() {
 
     private var image: ImageView? = null
     private var btnDownload: FloatingActionButton? = null
     private var fileContents: ByteArray? = null
+    private var attacher: PhotoViewAttacher? = null
+    private var layoutLoading: LinearLayout? = null
+    private var height: Int = 0
+    private var width: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,9 +65,18 @@ class ImageBrowserActivity : FragmentActivity() {
 
         image = findViewById(R.id.image)
         btnDownload = findViewById(R.id.btn_download)
+        layoutLoading = findViewById(R.id.layout_loading)
 
-        val attacher = PhotoViewAttacher(image)
-        attacher.update()
+        val displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        height = displayMetrics.heightPixels
+        width = displayMetrics.widthPixels
+
+        attacher = PhotoViewAttacher(image!!)
+        attacher?.scaleType = ImageView.ScaleType.FIT_CENTER
+        attacher?.scale = width / height.toFloat()
+        attacher?.maximumScale = 10.0f
+        attacher?.update()
 
         val b: Bundle? = intent.extras
 
@@ -82,6 +95,21 @@ class ImageBrowserActivity : FragmentActivity() {
 
         if (url != null) {
             Glide.with(this).load(Uri.parse(url)).into(image!!)
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                attacher?.update()
+                val fadeOut: Animation = AnimationUtils.loadAnimation(this, R.anim.fade_out)
+                layoutLoading?.startAnimation(fadeOut)
+
+                fadeOut.setAnimationListener(object : Animation.AnimationListener {
+                    override fun onAnimationStart(animation: Animation) { /* UNUSED */ }
+                    override fun onAnimationEnd(animation: Animation) {
+                        layoutLoading?.visibility = LinearLayout.GONE
+                    }
+
+                    override fun onAnimationRepeat(animation: Animation) { /* UNUSED */ }
+                })
+            }, 500)
 
             btnDownload?.setOnClickListener {
                 val fileEncoded = url.replace("data:image/png;base64,", "")

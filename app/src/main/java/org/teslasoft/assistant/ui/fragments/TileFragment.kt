@@ -196,6 +196,9 @@ class TileFragment : Fragment() {
         tileTitle?.text = tileText
         tileSubtitle?.text = tileDesc
 
+        tileIcon?.contentDescription = tileText
+        tileBg?.tooltipText = tileText
+
         if (checked) {
             tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.window_background)
             tileTitle?.setTextColor(requireActivity().getColor(R.color.text_title_inv))
@@ -229,7 +232,7 @@ class TileFragment : Fragment() {
                         tileSubtitle?.text = disabledDesc ?: enabledDesc
                         fadeOut.start()
                         fadeOut.setAnimationListener(object : Animation.AnimationListener {
-                            override fun onAnimationStart(animation: Animation?) {}
+                            override fun onAnimationStart(animation: Animation?) { /* UNUSED */ }
                             override fun onAnimationEnd(animation: Animation?) {
                                 tileBg?.background = getDisabledDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.tile_inactive)!!)
                                 tileBg?.animation = fadeIn
@@ -238,7 +241,7 @@ class TileFragment : Fragment() {
                                 isChecked = false
                                 onCheckedChangeListener?.onCheckedChange(false)
                             }
-                            override fun onAnimationRepeat(animation: Animation?) {}
+                            override fun onAnimationRepeat(animation: Animation?) { /* UNUSED */ }
                         })
                     } else {
                         val fadeOut: Animation = AnimationUtils.loadAnimation(requireActivity(), R.anim.fade_out_btn)

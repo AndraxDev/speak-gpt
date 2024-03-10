@@ -321,6 +321,7 @@ class SettingsActivity : FragmentActivity() {
 
         btnExperiments?.setOnClickListener {
             startActivity(Intent(this, SettingsV2Activity::class.java).setAction(Intent.ACTION_VIEW).putExtra("chatId", chatId))
+            finish()
         }
     }
 

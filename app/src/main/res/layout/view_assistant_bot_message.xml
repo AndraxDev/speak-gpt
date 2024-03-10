@@ -8,10 +8,10 @@
 
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
         android:background="@drawable/btn_accent_tonal"
         android:clickable="false"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,7 +23,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="36dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -55,14 +55,16 @@
 
             <ImageView
                 android:id="@+id/dalle_image"
-                android:layout_width="200dp"
+                android:layout_width="240dp"
                 android:layout_height="0dp"
                 android:descendantFocusability="blocksDescendants"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="H,1:1"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/message"
+                app:layout_constraintVertical_bias="0.0"
                 app:srcCompat="@drawable/assistant" />
 
             <LinearLayout

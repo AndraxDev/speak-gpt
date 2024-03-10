@@ -13,6 +13,7 @@
         android:layout_marginBottom="8dp"
         android:background="@drawable/btn_accent_tonal"
         android:contentDescription="Go back"
+        android:tooltipText="Go back"
         android:elevation="6.01dip"
         android:src="@drawable/ic_back"
         app:layout_constraintBottom_toBottomOf="@+id/activity_report_title"

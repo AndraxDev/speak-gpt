@@ -73,6 +73,13 @@
         </activity>
 
         <activity
+            android:name=".ui.activities.DocumentationActivity"
+            android:exported="false"
+            android:theme="@style/UI.Fade"
+            android:launchMode="singleTask">
+        </activity>
+
+        <activity
             android:name="org.teslasoft.assistant.ui.onboarding.WelcomeActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"

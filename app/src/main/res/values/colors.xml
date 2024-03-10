@@ -19,7 +19,7 @@
     <color name="accent_50">#F0EDF6</color>
     <color name="accent_100">#e3dfec</color>
     <color name="accent_200">#c7c4cf</color>
-    <color name="accent_250">#e4d9ff</color>
+    <color name="accent_250">#9C8EC2</color>
     <color name="accent_500">#361759</color>
     <color name="accent_900">#63488f</color>
     <color name="neutral_200">#312e36</color>
@@ -107,8 +107,8 @@
     <color name="tint_yellow">#25736000</color>
     <color name="gpt_icon_yellow">#736000</color>
 
-    <color name="tint_green">#25736000</color>
-    <color name="gpt_icon_green">#4B7300</color>
+    <color name="tint_green">#250C7300</color>
+    <color name="gpt_icon_green">#087300</color>
 
     <color name="tint_blue">#250B0073</color>
     <color name="gpt_icon_blue">#220073</color>

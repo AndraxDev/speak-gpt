@@ -375,7 +375,7 @@ class SettingsV2Activity : FragmentActivity() {
         tileActivationMessage = TileFragment.newInstance(
             false,
             false,
-            "Activation message",
+            "Activation prompt",
             null,
             "Tap to set",
             null,
@@ -397,7 +397,7 @@ class SettingsV2Activity : FragmentActivity() {
         tileLangDetect = TileFragment.newInstance(
             preferences?.getAutoLangDetect() == true,
             true,
-            "Language detection",
+            "Automatic language detection",
             null,
             "On",
             "Off",
@@ -712,11 +712,11 @@ class SettingsV2Activity : FragmentActivity() {
         }
 
         tileDocumentation?.setOnTileClickListener {
-
+            startActivity(Intent(this, DocumentationActivity::class.java))
         }
     }
 
-    fun isDefaultAssistantApp(context: Context): Boolean {
+    private fun isDefaultAssistantApp(context: Context): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val roleManager = context.getSystemService(Context.ROLE_SERVICE) as RoleManager
             roleManager.isRoleHeld(RoleManager.ROLE_ASSISTANT)
