@@ -168,8 +168,8 @@
                 android:id="@+id/linearLayout5"
                 android:layout_width="0dp"
                 android:layout_height="84dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
                 android:orientation="horizontal"
                 android:weightSum="2"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -180,14 +180,14 @@
                     android:id="@+id/tile_account"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginRight="4dp"
+                    android:layout_marginHorizontal="4dp"
                     android:layout_weight="1" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/tile_assistant"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginHorizontal="4dp"
                     android:layout_weight="1">
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -197,9 +197,9 @@
                 android:id="@+id/linearLayout66"
                 android:layout_width="0dp"
                 android:layout_height="84dp"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="12dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="12dp"
                 android:orientation="horizontal"
                 android:weightSum="2"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -210,14 +210,14 @@
                     android:id="@+id/tile_api"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginRight="4dp"
+                    android:layout_marginHorizontal="4dp"
                     android:layout_weight="1" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/tile_host"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginHorizontal="4dp"
                     android:layout_weight="1">
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -238,8 +238,8 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="84dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
                 android:orientation="horizontal"
                 android:weightSum="2"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -250,7 +250,7 @@
                     android:id="@+id/tile_image_model"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginRight="4dp"
+                    android:layout_marginHorizontal="4dp"
                     android:layout_weight="1">
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -259,7 +259,7 @@
                     android:id="@+id/tile_image_resolution"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginHorizontal="4dp"
                     android:layout_weight="1">
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -279,8 +279,8 @@
                 android:id="@+id/linearLayout7"
                 android:layout_width="0dp"
                 android:layout_height="84dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
                 android:orientation="horizontal"
                 android:weightSum="2"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -291,14 +291,14 @@
                     android:id="@+id/tile_voice"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginRight="4dp"
+                    android:layout_marginHorizontal="4dp"
                     android:layout_weight="1" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/tile_voice_language"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginHorizontal="4dp"
                     android:layout_weight="1">
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -309,9 +309,9 @@
                 android:id="@+id/linearLayout13"
                 android:layout_width="0dp"
                 android:layout_height="84dp"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="12dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="12dp"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -321,14 +321,14 @@
                     android:id="@+id/tile_tts"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginRight="4dp"
+                    android:layout_marginHorizontal="4dp"
                     android:layout_weight="1" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/tile_stt"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginHorizontal="4dp"
                     android:layout_weight="1">
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -338,9 +338,9 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="84dp"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="12dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="12dp"
                 android:orientation="horizontal"
                 android:weightSum="2"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -351,14 +351,14 @@
                     android:id="@+id/tile_silent_mode"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginRight="4dp"
+                    android:layout_marginHorizontal="4dp"
                     android:layout_weight="1" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/tile_always_speak"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginHorizontal="4dp"
                     android:layout_weight="1">
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -379,8 +379,8 @@
                 android:id="@+id/linearLayout8"
                 android:layout_width="0dp"
                 android:layout_height="84dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
                 android:orientation="horizontal"
                 android:weightSum="2"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -391,14 +391,14 @@
                     android:id="@+id/tile_text_model"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginRight="4dp"
+                    android:layout_marginHorizontal="4dp"
                     android:layout_weight="1" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/tile_activation_prompt"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginHorizontal="4dp"
                     android:layout_weight="1">
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -409,9 +409,9 @@
                 android:id="@+id/linearLayout14"
                 android:layout_width="0dp"
                 android:layout_height="84dp"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="12dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="12dp"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -421,14 +421,14 @@
                     android:id="@+id/tile_system_message"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginRight="4dp"
+                    android:layout_marginHorizontal="4dp"
                     android:layout_weight="1" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/tile_auto_language_detection"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginHorizontal="4dp"
                     android:layout_weight="1">
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -450,8 +450,8 @@
                 android:id="@+id/linearLayout9"
                 android:layout_width="0dp"
                 android:layout_height="84dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
                 android:orientation="horizontal"
                 android:weightSum="2"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -462,14 +462,14 @@
                     android:id="@+id/tile_chat_layout"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginRight="4dp"
+                    android:layout_marginHorizontal="4dp"
                     android:layout_weight="1" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/tile_empty_1"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginHorizontal="4dp"
                     android:layout_weight="1">
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -491,8 +491,8 @@
                 android:id="@+id/linearLayout10"
                 android:layout_width="0dp"
                 android:layout_height="84dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
                 android:orientation="horizontal"
                 android:weightSum="2"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -503,14 +503,14 @@
                     android:id="@+id/tile_function_calling"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginRight="4dp"
+                    android:layout_marginHorizontal="4dp"
                     android:layout_weight="1" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/tile_slash_commands"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginHorizontal="4dp"
                     android:layout_weight="1">
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -521,9 +521,9 @@
                 android:id="@+id/linearLayout11"
                 android:layout_width="0dp"
                 android:layout_height="84dp"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="12dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="12dp"
                 android:orientation="horizontal"
                 android:weightSum="2"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -534,14 +534,14 @@
                     android:id="@+id/tile_desktop_mode"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginRight="4dp"
+                    android:layout_marginHorizontal="4dp"
                     android:layout_weight="1" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/tile_new_look"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginHorizontal="4dp"
                     android:layout_weight="1">
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -565,8 +565,8 @@
                 android:id="@+id/linearLayout17"
                 android:layout_width="0dp"
                 android:layout_height="84dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
                 android:orientation="horizontal"
                 android:weightSum="2"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -577,14 +577,14 @@
                     android:id="@+id/tile_about_app"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginRight="4dp"
+                    android:layout_marginHorizontal="4dp"
                     android:layout_weight="1" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/tile_clear_chat"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginHorizontal="4dp"
                     android:layout_weight="1">
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -595,9 +595,9 @@
                 android:id="@+id/linearLayout18"
                 android:layout_width="0dp"
                 android:layout_height="84dp"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="12dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="12dp"
                 android:orientation="horizontal"
                 android:weightSum="2"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -608,14 +608,14 @@
                     android:id="@+id/tile_documentation"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginRight="4dp"
+                    android:layout_marginHorizontal="4dp"
                     android:layout_weight="1" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/tile_empty_2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginHorizontal="4dp"
                     android:layout_weight="1">
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

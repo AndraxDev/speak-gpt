@@ -88,6 +88,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="4dp"
+                            android:layout_marginEnd="8dp"
                             android:layout_marginBottom="16dp"
                             android:text="@string/restart_warning"
                             android:textSize="14sp"
@@ -102,6 +103,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="12dp"
+                            android:layout_marginEnd="8dp"
                             android:text="@string/setting_change_openai_api_key"
                             android:textColor="@color/accent_900"
                             android:textSize="18sp"
@@ -176,6 +178,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="4dp"
+                            android:layout_marginEnd="8dp"
                             android:layout_marginBottom="16dp"
                             android:text="@string/setting_manage_account_desc"
                             android:textSize="14sp"
@@ -190,6 +193,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="12dp"
+                            android:layout_marginEnd="8dp"
                             android:text="@string/setting_account"
                             android:textColor="@color/accent_900"
                             android:textSize="18sp"
@@ -264,6 +268,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="4dp"
+                            android:layout_marginEnd="8dp"
                             android:layout_marginBottom="16dp"
                             android:text="@string/setting_custom_host_desc"
                             android:textSize="14sp"
@@ -278,6 +283,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="12dp"
+                            android:layout_marginEnd="8dp"
                             android:text="@string/setting_custom_host"
                             android:textColor="@color/accent_900"
                             android:textSize="18sp"
@@ -352,6 +358,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="4dp"
+                            android:layout_marginEnd="8dp"
                             android:layout_marginBottom="16dp"
                             android:text="@string/setting_default_desc"
                             android:textSize="14sp"
@@ -366,6 +373,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="12dp"
+                            android:layout_marginEnd="8dp"
                             android:text="@string/setting_default"
                             android:textColor="@color/accent_900"
                             android:textSize="18sp"
@@ -440,6 +448,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="4dp"
+                            android:layout_marginEnd="8dp"
                             android:layout_marginBottom="16dp"
                             android:text="@string/setting_lang_desc"
                             android:textSize="14sp"
@@ -454,6 +463,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="12dp"
+                            android:layout_marginEnd="8dp"
                             android:text="@string/setting_lang"
                             android:textColor="@color/accent_900"
                             android:textSize="18sp"
@@ -528,6 +538,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="4dp"
+                            android:layout_marginEnd="8dp"
                             android:layout_marginBottom="16dp"
                             android:text="@string/setting_assistant_voice_desc"
                             android:textSize="14sp"
@@ -542,6 +553,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="12dp"
+                            android:layout_marginEnd="8dp"
                             android:text="@string/setting_assistant_voice"
                             android:textColor="@color/accent_900"
                             android:textSize="18sp"
@@ -624,6 +636,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
                             android:text="DALL-E version"
                             android:textColor="@color/accent_900"
                             android:textSize="18sp"
@@ -736,6 +749,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
                             android:text="@string/setting_resolution_desc"
                             android:textColor="@color/accent_900"
                             android:textSize="18sp"
@@ -857,6 +871,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
                             android:text="@string/setting_voice"
                             android:textColor="@color/accent_900"
                             android:textSize="18sp"
@@ -970,6 +985,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
                             android:text="TTS engine"
                             android:textColor="@color/accent_900"
                             android:textSize="18sp"
@@ -1083,6 +1099,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
                             android:text="@string/setting_model"
                             android:textColor="@color/accent_900"
                             android:textSize="18sp"
@@ -1173,6 +1190,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="4dp"
+                            android:layout_marginEnd="8dp"
                             android:layout_marginBottom="16dp"
                             android:text="@string/setting_advanced_desc"
                             android:textSize="14sp"
@@ -1187,6 +1205,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="12dp"
+                            android:layout_marginEnd="8dp"
                             android:text="@string/setting_advanced"
                             android:textColor="@color/accent_900"
                             android:textSize="18sp"
@@ -1263,6 +1282,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="4dp"
+                            android:layout_marginEnd="8dp"
                             android:layout_marginBottom="16dp"
                             android:text="@string/activation_prompt_set_message"
                             android:textSize="14sp"
@@ -1277,6 +1297,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="12dp"
+                            android:layout_marginEnd="8dp"
                             android:text="@string/setting_act_prompt"
                             android:textColor="@color/accent_900"
                             android:textSize="18sp"
@@ -1353,6 +1374,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="4dp"
+                            android:layout_marginEnd="8dp"
                             android:layout_marginBottom="16dp"
                             android:text="@string/setting_system_message_desc"
                             android:textSize="14sp"
@@ -1367,6 +1389,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="12dp"
+                            android:layout_marginEnd="8dp"
                             android:text="@string/setting_system_message"
                             android:textColor="@color/accent_900"
                             android:textSize="18sp"
@@ -1528,7 +1551,7 @@
                 <LinearLayout
                     android:id="@+id/btn_silence_mode"
                     android:layout_width="match_parent"
-                    android:layout_height="76dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@drawable/t_menu_center_item_background_noclick"
@@ -1548,6 +1571,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="12dp"
+                            android:layout_marginEnd="16dp"
                             android:text="@string/setting_silent"
                             android:textColor="@color/accent_900"
                             android:textSize="18sp"
@@ -1568,7 +1592,8 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
-                            app:layout_constraintStart_toEndOf="@+id/icon_silence" />
+                            app:layout_constraintStart_toEndOf="@+id/icon_silence"
+                            app:layout_constraintTop_toBottomOf="@+id/silent_settings_title" />
 
                         <LinearLayout
                             android:id="@+id/icon_silence"
@@ -1605,7 +1630,7 @@
                 <LinearLayout
                     android:id="@+id/btn_always_speak"
                     android:layout_width="match_parent"
-                    android:layout_height="76dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@drawable/t_menu_center_item_background_noclick"
@@ -1625,6 +1650,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="12dp"
+                            android:layout_marginEnd="16dp"
                             android:text="@string/setting_always_speak"
                             android:textColor="@color/accent_900"
                             android:textSize="18sp"
@@ -1645,7 +1671,8 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
-                            app:layout_constraintStart_toEndOf="@+id/icon_always_speak" />
+                            app:layout_constraintStart_toEndOf="@+id/icon_always_speak"
+                            app:layout_constraintTop_toBottomOf="@+id/always_speak_title" />
 
                         <LinearLayout
                             android:id="@+id/icon_always_speak"
@@ -1682,7 +1709,7 @@
                 <LinearLayout
                     android:id="@+id/btn_auto_lang_detect"
                     android:layout_width="match_parent"
-                    android:layout_height="84dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@drawable/t_menu_center_item_background"
@@ -1702,6 +1729,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="6dp"
+                            android:layout_marginEnd="16dp"
                             android:text="@string/setting_auto_language_detect"
                             android:textColor="@color/accent_900"
                             android:textSize="18sp"
@@ -1722,7 +1750,8 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
-                            app:layout_constraintStart_toEndOf="@+id/icon_autoLangDetect" />
+                            app:layout_constraintStart_toEndOf="@+id/icon_autoLangDetect"
+                            app:layout_constraintTop_toBottomOf="@+id/autoLangDetect_settings_title" />
 
                         <LinearLayout
                             android:id="@+id/icon_autoLangDetect"
@@ -1759,7 +1788,7 @@
                 <LinearLayout
                     android:id="@+id/btn_function_calling"
                     android:layout_width="match_parent"
-                    android:layout_height="84dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@drawable/t_menu_center_item_background"
@@ -1779,6 +1808,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="6dp"
+                            android:layout_marginEnd="16dp"
                             android:text="@string/setting_function_calling"
                             android:textColor="@color/accent_900"
                             android:textSize="18sp"
@@ -1799,7 +1829,8 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
-                            app:layout_constraintStart_toEndOf="@+id/icon_function_calling" />
+                            app:layout_constraintStart_toEndOf="@+id/icon_function_calling"
+                            app:layout_constraintTop_toBottomOf="@+id/btn_function_calling_settings_title" />
 
                         <LinearLayout
                             android:id="@+id/icon_function_calling"
@@ -1836,7 +1867,7 @@
                 <LinearLayout
                     android:id="@+id/btn_imagine"
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@drawable/t_menu_center_item_background"
@@ -1856,6 +1887,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="6dp"
+                            android:layout_marginEnd="16dp"
                             android:text="@string/setting_cmd"
                             android:textColor="@color/accent_900"
                             android:textSize="18sp"
@@ -1876,7 +1908,8 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
-                            app:layout_constraintStart_toEndOf="@+id/icon_imagine" />
+                            app:layout_constraintStart_toEndOf="@+id/icon_imagine"
+                            app:layout_constraintTop_toBottomOf="@+id/imagine_settings_title" />
 
                         <LinearLayout
                             android:id="@+id/icon_imagine"
@@ -1913,10 +1946,9 @@
                 <LinearLayout
                     android:id="@+id/btn_desktop"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
-                    android:layout_marginBottom="1dp"
                     android:background="@drawable/t_menu_center_item_background"
                     android:clickable="true"
                     android:orientation="vertical"
@@ -1934,6 +1966,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="6dp"
+                            android:layout_marginEnd="16dp"
                             android:text="Desktop mode"
                             android:textColor="@color/accent_900"
                             android:textSize="18sp"
@@ -1954,7 +1987,8 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
-                            app:layout_constraintStart_toEndOf="@+id/icon_desktop" />
+                            app:layout_constraintStart_toEndOf="@+id/icon_desktop"
+                            app:layout_constraintTop_toBottomOf="@+id/desktop_mode_title" />
 
                         <LinearLayout
                             android:id="@+id/icon_desktop"
@@ -2024,6 +2058,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="4dp"
+                            android:layout_marginEnd="8dp"
                             android:text="@string/setting_about_desc"
                             android:textSize="14sp"
                             app:layout_constraintEnd_toStartOf="@+id/linearLayout12"
@@ -2036,6 +2071,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="12dp"
+                            android:layout_marginEnd="8dp"
                             android:text="@string/setting_about"
                             android:textColor="@color/accent_900"
                             android:textSize="18sp"
