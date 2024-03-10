@@ -15,7 +15,7 @@
     <string name="activation_begin">Let\'s begin</string>
     <string name="activation_desc2">API usage is significantly cheaper than fixed subscription.</string>
     <string name="activation_openai_api_key">OpenAI API key</string>
-    <string name="activation_warning">Enter the key only if you downloaded this app from official Store or Github page or compilied from sources. We are not responsible for apps from third-party sources. Builds from third-party sources may be insecure.</string>
+    <string name="activation_warning">Enter the key only if you downloaded this app from official Store or Github page or compiled from sources. We are not responsible for apps from third-party sources. Builds from third-party sources may be insecure.</string>
     <string name="btn_send">Send</string>
     <string name="hint_message">Message</string>
     <string name="btn_speak">Speak</string>
@@ -45,7 +45,7 @@
     <string name="setting_lang_desc">Set a language for voice output</string>
     <string name="setting_lang">Assistant language</string>
     <string name="setting_resolution_desc">Resolution of generated images</string>
-    <string name="setting_resolution_note">Note: All images are squared. Higher resolution is more expensive and it loads slower. You can see prices on the official OpenAI page. Averrage price is $0.018/image.</string>
+    <string name="setting_resolution_note">Note: All images are squared. Higher resolution is more expensive and it loads slower. You can see prices on the official OpenAI page. Average price is $0.018/image.</string>
     <string name="setting_voice">Speech recognition system</string>
     <string name="setting_voice_note">Note: Some ROMs may not support speech recognition by Google. Whisper API is a paid API by OpenAI that requires Internet.</string>
     <string name="setting_model">AI model</string>
@@ -116,7 +116,7 @@
     <string name="cat_sport">Sport</string>
     <string name="cat_uncat">Sport</string>
     <string name="cat">Category: %s</string>
-    <string name="safety_warning">Follow OpenAI safety principles. Do not post any inappropriate or sensitive information. All prompts is being moderated. Inappropriate prompts will be removed without further notice.</string>
+    <string name="safety_warning">Follow OpenAI safety principles. Do not post any inappropriate or sensitive information. All prompts are being moderated. Inappropriate prompts will be removed without further notice.</string>
     <string name="btn_post_your_prompt">Post your prompt</string>
     <string name="title_prompts_store">Prompts store</string>
     <string name="hint_search">Search</string>

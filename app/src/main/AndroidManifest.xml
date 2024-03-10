@@ -7,6 +7,7 @@
 
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.REQUEST_ROLE" />
 
     <uses-sdk tools:overrideLibrary="org.teslasoft.core.auth"/>
 
@@ -138,6 +139,13 @@
 
         <activity
             android:name=".ui.activities.SettingsActivity"
+            android:exported="false"
+            android:theme="@style/UI.Fade"
+            android:launchMode="singleTask">
+        </activity>
+
+        <activity
+            android:name=".ui.activities.SettingsV2Activity"
             android:exported="false"
             android:theme="@style/UI.Fade"
             android:launchMode="singleTask">

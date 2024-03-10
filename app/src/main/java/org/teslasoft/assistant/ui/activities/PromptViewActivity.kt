@@ -88,6 +88,8 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
 
     private var promptFor: String? = null
 
+    private var btnBack: ImageButton? = null
+
     private val dataListener: RequestNetwork.RequestListener = object : RequestNetwork.RequestListener {
         override fun onResponse(tag: String, message: String) {
             noInternetLayout?.visibility = View.GONE
@@ -208,6 +210,9 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
                 btnLike = findViewById(R.id.btn_like)
                 btnTry = findViewById(R.id.btn_try)
                 textCat = findViewById(R.id.text_cat)
+                btnBack = findViewById(R.id.btn_back)
+
+                activityTitle?.isSelected = true
 
                 activityTitle?.background = getDarkAccentDrawable(
                     AppCompatResources.getDrawable(
@@ -223,7 +228,18 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
                     )!!, this
                 )
 
+                btnBack?.background = getDarkAccentDrawable(
+                    AppCompatResources.getDrawable(
+                        this,
+                        R.drawable.btn_accent_tonal_v4
+                    )!!, this
+                )
+
                 btnFlag?.setImageResource(R.drawable.ic_flag)
+
+                btnBack?.setOnClickListener {
+                    finish()
+                }
 
                 settings = getSharedPreferences("likes", MODE_PRIVATE)
 

@@ -20,7 +20,6 @@
     <color name="button">@android:color/system_accent1_600</color>
     <color name="window_background">@android:color/system_neutral1_10</color>
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@android:color/system_accent1_900</color>
-    <color name="text_title">#FF000000</color>
     <color name="ripple">#4D000000</color>
     <color name="success">#136005</color>
     <color name="text">@android:color/system_accent2_800</color>

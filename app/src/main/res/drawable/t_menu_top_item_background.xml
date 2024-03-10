@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape>
-            <corners android:topLeftRadius="16dp" android:topRightRadius="16dp" android:bottomRightRadius="8dp" android:bottomLeftRadius="8dp"/>
+            <corners android:topLeftRadius="24dp" android:topRightRadius="24dp" android:bottomRightRadius="8dp" android:bottomLeftRadius="8dp"/>
             <gradient android:type="linear" android:angle="315" android:startColor="@color/accent_100" android:centerColor="@color/accent_100" android:endColor="@color/accent_100" android:useLevel="true"/>
         </shape>
     </item>

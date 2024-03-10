@@ -23,6 +23,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -43,6 +44,7 @@ import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.debug.DebugActivity
 import org.teslasoft.assistant.ui.fragments.dialogs.ActivationPromptDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.AdvancedSettingsDialogFragment
+import org.teslasoft.assistant.ui.fragments.dialogs.ApiKeyDialog
 import org.teslasoft.assistant.ui.fragments.dialogs.HostnameEditorDialog
 import org.teslasoft.assistant.ui.fragments.dialogs.LanguageSelectorDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.SystemMessageDialogFragment
@@ -90,6 +92,8 @@ class SettingsActivity : FragmentActivity() {
     private var globalSettingsTip: LinearLayout? = null
     private var btnGoogleTTS: MaterialButton? = null
     private var btnOpenAITTS: MaterialButton? = null
+    private var btnExperiments: ImageButton? = null
+    private var btnBack: ImageButton? = null
 
     private var preferences: Preferences? = null
     private var chatId = ""
@@ -157,7 +161,7 @@ class SettingsActivity : FragmentActivity() {
     private var hostChangedListener: HostnameEditorDialog.StateChangesListener = object : HostnameEditorDialog.StateChangesListener {
         override fun onFormError(name: String) {
             runOnUiThread {
-                Toast.makeText(this@SettingsActivity, "Please fill all blanks", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@SettingsActivity, "Please enter hostname", Toast.LENGTH_SHORT).show()
             }
             val hostnameEditorDialog: HostnameEditorDialog = HostnameEditorDialog.newInstance(name)
             hostnameEditorDialog.setStateChangedListener(this)
@@ -166,6 +170,19 @@ class SettingsActivity : FragmentActivity() {
 
         override fun onSelected(name: String) {
             preferences?.setCustomHost(name)
+        }
+    }
+
+    private var apiChangedListener: ApiKeyDialog.StateChangesListener = object : ApiKeyDialog.StateChangesListener {
+        override fun onSelected(name: String) {
+            preferences?.setApiKey(name, this@SettingsActivity)
+        }
+
+        override fun onFormError(name: String) {
+            Toast.makeText(this@SettingsActivity, "Please enter API key", Toast.LENGTH_SHORT).show()
+            val apiKeyDialog: ApiKeyDialog = ApiKeyDialog.newInstance(name)
+            apiKeyDialog.setStateChangedListener(this)
+            apiKeyDialog.show(supportFragmentManager.beginTransaction(), "ApiKeyDialog")
         }
     }
 
@@ -216,6 +233,8 @@ class SettingsActivity : FragmentActivity() {
         btnVoiceSelector = findViewById(R.id.btn_manage_voices)
         btnGoogleTTS = findViewById(R.id.tts_google)
         btnOpenAITTS = findViewById(R.id.tts_openai)
+        btnExperiments = findViewById(R.id.btnExperiments)
+        btnBack = findViewById(R.id.btn_back)
 
         btnChangeApi?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(this, R.drawable.t_menu_top_item_background)!!, this)
@@ -289,12 +308,29 @@ class SettingsActivity : FragmentActivity() {
         btnAbout?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(this, R.drawable.t_menu_bottom_item_background)!!, this)
 
+        btnExperiments?.background = getDarkAccentDrawableV2(btnExperiments?.background!!)
+        btnBack?.background = getDarkAccentDrawableV2(btnBack?.background!!)
+
         initChatId()
+
+        btnBack?.setOnClickListener {
+            finish()
+        }
+
+        /* EXPERIMENTAL PART */
+
+        btnExperiments?.setOnClickListener {
+            startActivity(Intent(this, SettingsV2Activity::class.java).setAction(Intent.ACTION_VIEW).putExtra("chatId", chatId))
+        }
     }
 
     private fun initSettings() {
-        // Toast.makeText(this, "Chat ID: $chatId", Toast.LENGTH_SHORT).show()
         preferences = Preferences.getPreferences(this, chatId)
+
+        if (preferences?.getExperimentalUI() == true) {
+            startActivity(Intent(this, SettingsV2Activity::class.java).setAction(Intent.ACTION_VIEW).putExtra("chatId", chatId))
+            finish()
+        }
 
         activationPrompt = preferences?.getPrompt().toString()
         systemMessage = preferences?.getSystemMessage().toString()
@@ -351,8 +387,9 @@ class SettingsActivity : FragmentActivity() {
         }
 
         btnChangeApi?.setOnClickListener {
-            startActivity(Intent(this, ActivationActivity::class.java).setAction(Intent.ACTION_VIEW))
-            finish()
+            val apiKeyDialog: ApiKeyDialog = ApiKeyDialog.newInstance("")
+            apiKeyDialog.setStateChangedListener(apiChangedListener)
+            apiKeyDialog.show(supportFragmentManager.beginTransaction(), "ApiKeyDialog")
         }
 
         btnChangeAccount?.setOnClickListener {
@@ -501,12 +538,21 @@ class SettingsActivity : FragmentActivity() {
         return drawable
     }
 
+    private fun getDarkAccentDrawableV3(drawable: Drawable) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getSurfaceColorV3(this))
+        return drawable
+    }
+
     private fun getSurfaceColor(context: Context) : Int {
         return SurfaceColors.SURFACE_2.getColor(context)
     }
 
     private fun getSurfaceColorV2() : Int {
-        return getColor(R.color.accent_250)
+        return SurfaceColors.SURFACE_2.getColor(this)
+    }
+
+    private fun getSurfaceColorV3(context: Context) : Int {
+        return SurfaceColors.SURFACE_5.getColor(context)
     }
 
     private fun switchUIToClassic() {
@@ -516,7 +562,7 @@ class SettingsActivity : FragmentActivity() {
         btnBubblesView?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(this, R.drawable.btn_accent_tonal_selector_v3)!!, this)
 
-        btnClassicView?.background = getDarkAccentDrawableV2(
+        btnClassicView?.background = getDarkAccentDrawableV3(
             ContextCompat.getDrawable(this, R.drawable.btn_accent_tonal_selector_v2)!!)
     }
 
@@ -524,7 +570,7 @@ class SettingsActivity : FragmentActivity() {
         btnBubblesView?.setBackgroundResource(R.drawable.btn_accent_tonal_selector_v2)
         btnClassicView?.setBackgroundResource(R.drawable.btn_accent_tonal_selector_v3)
 
-        btnBubblesView?.background = getDarkAccentDrawableV2(
+        btnBubblesView?.background = getDarkAccentDrawableV3(
             ContextCompat.getDrawable(this, R.drawable.btn_accent_tonal_selector_v2)!!)
 
         btnClassicView?.background = getDarkAccentDrawable(

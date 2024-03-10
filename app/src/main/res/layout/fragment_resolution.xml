@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/dialog_resolution_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Select resolution"
+        android:textColor="@color/text_title"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dialog_resolution_title">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp">
+
+                <RadioButton
+                    android:button="@null"
+                    android:paddingEnd="16dp"
+                    android:paddingStart="16dp"
+                    android:id="@+id/r256"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="256x256"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:button="@null"
+                    android:paddingEnd="16dp"
+                    android:paddingStart="16dp"
+                    android:id="@+id/r512"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="512x512"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:button="@null"
+                    android:paddingEnd="16dp"
+                    android:paddingStart="16dp"
+                    android:id="@+id/r1024"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="1024x1024"
+                    android:textSize="16sp" />
+            </RadioGroup>
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

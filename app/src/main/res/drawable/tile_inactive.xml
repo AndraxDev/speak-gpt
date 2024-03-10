@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ripple android:color="@color/accent_250"
+<ripple android:color="@color/accent_100"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape>

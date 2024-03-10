@@ -302,6 +302,24 @@ class Preferences private constructor(private var preferences: SharedPreferences
     }
 
     /**
+     * Get experimental UI
+     *
+     * @return experimental UI mode
+     */
+    fun getExperimentalUI() : Boolean {
+        return getGlobalBoolean("experimentalUI", false)
+    }
+
+    /**
+     * Set experimental UI
+     *
+     * @param mode experimental UI mode
+     */
+    fun setExperimentalUI(mode: Boolean) {
+        putGlobalBoolean("experimentalUI", mode)
+    }
+
+    /**
      * Retrieves the custom host URL for API requests.
      *
      * @return The custom host URL as a string. If no custom host URL is set, it returns the default value "https://api.openai.com".

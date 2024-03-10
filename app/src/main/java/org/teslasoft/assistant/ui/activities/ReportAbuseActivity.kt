@@ -16,15 +16,19 @@
 
 package org.teslasoft.assistant.ui.activities
 
+import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.RadioButton
 import android.widget.ScrollView
 import android.widget.Toast
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.graphics.drawable.DrawableCompat
 
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 
 import com.google.android.material.button.MaterialButton
@@ -53,6 +57,8 @@ class ReportAbuseActivity : FragmentActivity() {
 
     private var fieldDetails: EditText? = null
     private var btnSend: MaterialButton? = null
+
+    private var btnBack: ImageButton? = null
 
     private var requestNetwork: RequestNetwork? = null
     private val reportListener: RequestNetwork.RequestListener = object : RequestNetwork.RequestListener {
@@ -107,6 +113,14 @@ class ReportAbuseActivity : FragmentActivity() {
         fieldDetails = findViewById(R.id.field_details)
         btnSend = findViewById(R.id.btn_send_report)
         btnCatIncorrect = findViewById(R.id.btn_cat_incorrect)
+        btnBack = findViewById(R.id.btn_back)
+
+        btnBack?.background = getDarkAccentDrawable(
+            AppCompatResources.getDrawable(
+                this,
+                R.drawable.btn_accent_tonal_v4
+            )!!, this
+        )
 
         reportForm?.visibility = View.VISIBLE
         loadingBar?.visibility = View.GONE
@@ -116,7 +130,21 @@ class ReportAbuseActivity : FragmentActivity() {
         initLogic()
     }
 
+    private fun getDarkAccentDrawable(drawable: Drawable, context: Context) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getSurfaceColor(context))
+        return drawable
+    }
+
+    private fun getSurfaceColor(context: Context) : Int {
+        return SurfaceColors.SURFACE_4.getColor(context)
+    }
+
     private fun initLogic() {
+
+        btnBack?.setOnClickListener {
+            finish()
+        }
+
         btnIllegal?.setOnCheckedChangeListener { _, isChecked ->
             run {
                 if (isChecked) reason = "Illegal activity"

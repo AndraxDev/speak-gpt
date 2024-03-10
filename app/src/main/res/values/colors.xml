@@ -40,11 +40,16 @@
     <color name="tip">#201C5500</color>
     <color name="light_blue">#9592E4</color>
     <color name="text_title">#FF000000</color>
+    <color name="text_title_inv">#FFFFFFFF</color>
+    <color name="text_subtitle">#AA000000</color>
+    <color name="text_subtitle_inv">#AAFFFFFF</color>
     <color name="ripple">#4D000000</color>
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/accent_900</color>
     <color name="system_bars">@color/accent_100</color>
     <color name="marker">#15000000</color>
     <color name="warn_bg">#33DB4437</color>
+    <color name="disabled_background">#66666666</color>
+    <color name="disabled_icon">#FF666666</color>
 
     <color name="cat_development">#974E00</color>
     <color name="cat_music">#730000</color>

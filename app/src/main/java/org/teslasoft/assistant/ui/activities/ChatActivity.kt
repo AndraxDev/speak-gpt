@@ -385,6 +385,8 @@ class ChatActivity : FragmentActivity() {
 
         activityTitle?.text = if (chatName.trim().contains("_autoname_")) "Untitled chat" else chatName
 
+        activityTitle?.isSelected = true
+
         progress?.visibility = View.GONE
 
         btnMicro?.setImageResource(R.drawable.ic_microphone)

@@ -5,12 +5,12 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/bg"
+        android:id="@+id/tile_bg"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/btn_accent_tonal"
         android:clickable="true"
         android:minHeight="120dp"

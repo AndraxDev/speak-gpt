@@ -16,7 +16,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="24dp"
+            android:layout_marginEnd="16dp"
             android:elevation="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -24,24 +24,26 @@
 
         <TextView
             android:id="@+id/activity_settings_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
+            android:layout_marginEnd="80dp"
             android:text="@string/settings"
             android:textColor="@color/text_title"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btnExperiments"
             app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:id="@+id/settings_block"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="24dp"
+            android:layout_marginEnd="16dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -132,7 +134,7 @@
                 <View
                     android:id="@+id/divider1"
                     android:layout_width="0dp"
-                    android:layout_height="2dp"
+                    android:layout_height="4dp"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@color/transparent"
@@ -220,7 +222,7 @@
                 <View
                     android:id="@+id/divider144"
                     android:layout_width="0dp"
-                    android:layout_height="2dp"
+                    android:layout_height="4dp"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@color/transparent"
@@ -308,7 +310,7 @@
                 <View
                     android:id="@+id/divider10"
                     android:layout_width="0dp"
-                    android:layout_height="2dp"
+                    android:layout_height="4dp"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@color/transparent"
@@ -396,7 +398,7 @@
                 <View
                     android:id="@+id/divider34"
                     android:layout_width="0dp"
-                    android:layout_height="2dp"
+                    android:layout_height="4dp"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@color/transparent"
@@ -484,7 +486,7 @@
                 <View
                     android:id="@+id/divider3"
                     android:layout_width="0dp"
-                    android:layout_height="2dp"
+                    android:layout_height="4dp"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@color/transparent"
@@ -572,7 +574,7 @@
                 <View
                     android:id="@+id/divider44"
                     android:layout_width="0dp"
-                    android:layout_height="2dp"
+                    android:layout_height="4dp"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@color/transparent"
@@ -684,7 +686,7 @@
                 <View
                     android:id="@+id/divider35"
                     android:layout_width="0dp"
-                    android:layout_height="2dp"
+                    android:layout_height="4dp"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@color/transparent"
@@ -805,7 +807,7 @@
                 <View
                     android:id="@+id/divider32"
                     android:layout_width="0dp"
-                    android:layout_height="2dp"
+                    android:layout_height="4dp"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@color/transparent"
@@ -918,7 +920,7 @@
                 <View
                     android:id="@+id/divider39"
                     android:layout_width="0dp"
-                    android:layout_height="2dp"
+                    android:layout_height="4dp"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@color/transparent"
@@ -1031,7 +1033,7 @@
                 <View
                     android:id="@+id/divider33"
                     android:layout_width="0dp"
-                    android:layout_height="2dp"
+                    android:layout_height="4dp"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@color/transparent"
@@ -1128,7 +1130,7 @@
                 <View
                     android:id="@+id/divider4"
                     android:layout_width="0dp"
-                    android:layout_height="2dp"
+                    android:layout_height="4dp"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@color/transparent"
@@ -1217,7 +1219,7 @@
                 <View
                     android:id="@+id/divider5"
                     android:layout_width="0dp"
-                    android:layout_height="2dp"
+                    android:layout_height="4dp"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@color/transparent"
@@ -1307,7 +1309,7 @@
                 <View
                     android:id="@+id/divider2"
                     android:layout_width="0dp"
-                    android:layout_height="2dp"
+                    android:layout_height="4dp"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@color/transparent"
@@ -1397,7 +1399,7 @@
                 <View
                     android:id="@+id/divider26"
                     android:layout_width="0dp"
-                    android:layout_height="2dp"
+                    android:layout_height="4dp"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@color/transparent"
@@ -1515,7 +1517,7 @@
                 <View
                     android:id="@+id/divider6"
                     android:layout_width="0dp"
-                    android:layout_height="2dp"
+                    android:layout_height="4dp"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@color/transparent"
@@ -1592,7 +1594,7 @@
                 <View
                     android:id="@+id/divider8"
                     android:layout_width="0dp"
-                    android:layout_height="2dp"
+                    android:layout_height="4dp"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@color/transparent"
@@ -1669,7 +1671,7 @@
                 <View
                     android:id="@+id/divider12"
                     android:layout_width="0dp"
-                    android:layout_height="2dp"
+                    android:layout_height="4dp"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@color/transparent"
@@ -1680,10 +1682,9 @@
                 <LinearLayout
                     android:id="@+id/btn_auto_lang_detect"
                     android:layout_width="match_parent"
-                    android:layout_height="72dp"
+                    android:layout_height="84dp"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
-                    android:layout_marginBottom="1dp"
                     android:background="@drawable/t_menu_center_item_background"
                     android:clickable="true"
                     android:orientation="vertical"
@@ -1715,6 +1716,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="8dp"
                             android:text="@string/setting_auto_language_detect_desc"
                             android:textSize="12sp"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -1746,7 +1748,7 @@
                 <View
                     android:id="@+id/divider9"
                     android:layout_width="0dp"
-                    android:layout_height="2dp"
+                    android:layout_height="4dp"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@color/transparent"
@@ -1757,10 +1759,9 @@
                 <LinearLayout
                     android:id="@+id/btn_function_calling"
                     android:layout_width="match_parent"
-                    android:layout_height="72dp"
+                    android:layout_height="84dp"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
-                    android:layout_marginBottom="1dp"
                     android:background="@drawable/t_menu_center_item_background"
                     android:clickable="true"
                     android:orientation="vertical"
@@ -1792,6 +1793,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="8dp"
                             android:text="@string/setting_function_calling_desc"
                             android:textSize="12sp"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -1823,7 +1825,7 @@
                 <View
                     android:id="@+id/divider13"
                     android:layout_width="0dp"
-                    android:layout_height="2dp"
+                    android:layout_height="4dp"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@color/transparent"
@@ -1834,10 +1836,9 @@
                 <LinearLayout
                     android:id="@+id/btn_imagine"
                     android:layout_width="match_parent"
-                    android:layout_height="72dp"
+                    android:layout_height="80dp"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
-                    android:layout_marginBottom="1dp"
                     android:background="@drawable/t_menu_center_item_background"
                     android:clickable="true"
                     android:orientation="vertical"
@@ -1869,6 +1870,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="8dp"
                             android:text="@string/setting_cmd_desc"
                             android:textSize="12sp"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -1900,7 +1902,7 @@
                 <View
                     android:id="@+id/divider157"
                     android:layout_width="0dp"
-                    android:layout_height="2dp"
+                    android:layout_height="4dp"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@color/transparent"
@@ -1946,12 +1948,13 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="8dp"
                             android:text="Force request focus on message input when chat is opened, press enter to send message, shift+enter to add new line."
                             android:textSize="12sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
-                            app:layout_constraintStart_toEndOf="@+id/icon_desktop"
-                            app:layout_constraintTop_toBottomOf="@+id/desktop_mode_title" />
+                            app:layout_constraintStart_toEndOf="@+id/icon_desktop" />
 
                         <LinearLayout
                             android:id="@+id/icon_desktop"
@@ -1977,7 +1980,7 @@
                 <View
                     android:id="@+id/divider15"
                     android:layout_width="0dp"
-                    android:layout_height="2dp"
+                    android:layout_height="4dp"
                     android:layout_marginStart="1dp"
                     android:layout_marginEnd="1dp"
                     android:background="@color/transparent"
@@ -2069,10 +2072,10 @@
             style="@style/Widget.Material3.Button"
             android:layout_width="0dp"
             android:layout_height="64dp"
-            android:layout_marginStart="25dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="25dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/btn_accent_tonal_selector"
             android:text="@string/setting_clear_chat"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -2096,9 +2099,9 @@
             android:id="@+id/global_settings_tip"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
-            android:layout_marginEnd="24dp"
+            android:layout_marginEnd="16dp"
             android:background="@drawable/btn_tip2"
             android:gravity="center"
             android:orientation="horizontal"
@@ -2116,6 +2119,34 @@
                 android:text="@string/global_settings_tip"
                 android:textColor="@color/error" />
         </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnExperiments"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/btn_accent_icon_large"
+            android:contentDescription="Experimental UI"
+            android:padding="12dp"
+            android:src="@drawable/ic_experiment"
+            app:layout_constraintStart_toEndOf="@+id/btn_back"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_experiment" />
+
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/btn_accent_icon_large"
+            android:contentDescription="Go back"
+            android:padding="12dp"
+            android:src="@drawable/ic_back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_back" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,0 +1,302 @@
+/**************************************************************************
+ * Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ **************************************************************************/
+
+package org.teslasoft.assistant.ui.fragments
+
+import android.content.Context
+import android.graphics.drawable.Drawable
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.fragment.app.Fragment
+import com.google.android.material.elevation.SurfaceColors
+import org.teslasoft.assistant.R
+
+
+class TileFragment : Fragment() {
+
+    companion object {
+        fun newInstance(checked: Boolean, checkable: Boolean, enabledText: String, disabledText: String?, enabledDesc: String, disabledDesc: String?, icon: Int, disabled: Boolean): TileFragment {
+
+            val tileFragment = TileFragment()
+
+            val args = Bundle()
+            args.putBoolean("checked", checked)
+            args.putBoolean("checkable", checkable)
+            args.putString("enabledText", enabledText)
+            args.putString("disabledText", disabledText)
+            args.putString("enabledDesc", enabledDesc)
+            args.putString("disabledDesc", disabledDesc)
+            args.putInt("icon", icon)
+            args.putBoolean("disabled", disabled)
+
+            tileFragment.arguments = args
+
+            return tileFragment
+        }
+    }
+
+    private var isChecked: Boolean = false
+
+    private var isEnabled: Boolean = true
+
+    private var onTileClickListener: OnTileClickListener? = null
+
+    private var onCheckedChangeListener: OnCheckedChangeListener? = null
+
+    private var tileBg: ConstraintLayout? = null
+    private var tileTitle: TextView? = null
+    private var tileSubtitle: TextView? = null
+    private var tileIcon: ImageView? = null
+
+    private var onAttachedToActivity: Boolean = false
+
+    fun setOnTileClickListener(onTileClickListener: OnTileClickListener) {
+        this.onTileClickListener = onTileClickListener
+    }
+
+    fun setOnCheckedChangeListener(onCheckedChangeListener: OnCheckedChangeListener) {
+        this.onCheckedChangeListener = onCheckedChangeListener
+    }
+
+    fun interface OnTileClickListener {
+        fun onTileClick()
+    }
+
+    fun interface OnCheckedChangeListener {
+        fun onCheckedChange(isChecked: Boolean)
+    }
+
+    fun setEnabled(isEnabled: Boolean) {
+        this.isEnabled = isEnabled
+
+        if (isEnabled) {
+            tileBg?.isClickable = true
+            tileBg?.isEnabled = true
+            if (isChecked) {
+                tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.window_background)
+                tileTitle?.setTextColor(requireActivity().getColor(R.color.text_title_inv))
+                tileSubtitle?.setTextColor(requireActivity().getColor(R.color.text_subtitle_inv))
+                tileBg?.background = getEnabledDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.tile_active)!!)
+            } else {
+                tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.accent_900)
+                tileTitle?.setTextColor(requireActivity().getColor(R.color.text_title))
+                tileSubtitle?.setTextColor(requireActivity().getColor(R.color.text_subtitle))
+                tileBg?.background = getDisabledDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.tile_inactive)!!)
+            }
+        } else {
+            tileBg?.isClickable = false
+            tileBg?.isEnabled = false
+            tileBg?.background = getDisDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.tile_disabled)!!)
+            tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.disabled_icon)
+        }
+    }
+
+    fun updateTitle(title: String) {
+        tileTitle?.text = title
+    }
+
+    fun updateSubtitle(subtitle: String) {
+        tileSubtitle?.text = subtitle
+    }
+
+    fun setChecked(isChecked: Boolean) {
+        this.isChecked = isChecked
+
+        if (isChecked) {
+            tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.window_background)
+            tileTitle?.setTextColor(requireActivity().getColor(R.color.text_title_inv))
+            tileSubtitle?.setTextColor(requireActivity().getColor(R.color.text_subtitle_inv))
+            tileBg?.background = ContextCompat.getDrawable(requireActivity(), R.drawable.tile_active)!!
+        } else {
+            tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.accent_900)
+            tileTitle?.setTextColor(requireActivity().getColor(R.color.text_title))
+            tileSubtitle?.setTextColor(requireActivity().getColor(R.color.text_subtitle))
+            tileBg?.background = ContextCompat.getDrawable(requireActivity(), R.drawable.tile_inactive)!!
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        onAttachedToActivity = true
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        onAttachedToActivity = false
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_tile, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val args = requireArguments()
+
+        val checked = args.getBoolean("checked")
+        val checkable = args.getBoolean("checkable")
+        val enabledText = args.getString("enabledText")
+        val disabledText = args.getString("disabledText")
+        val enabledDesc = args.getString("enabledDesc")
+        val disabledDesc = args.getString("disabledDesc")
+        val icon = args.getInt("icon")
+        val disabled = args.getBoolean("disabled")
+
+        isChecked = checked
+        isEnabled = !disabled
+
+        tileBg = view.findViewById(R.id.tile_bg)
+        tileTitle = view.findViewById(R.id.tile_title)
+        tileSubtitle = view.findViewById(R.id.tile_subtitle)
+        tileIcon = view.findViewById(R.id.tile_icon)
+
+        tileIcon?.setImageResource(icon)
+
+        val tileText: String = if (!checkable) {
+            enabledText.toString()
+        } else if (checked) {
+            enabledText.toString()
+        } else {
+            disabledText ?: enabledText.toString()
+        }
+
+        val tileDesc: String = if (checked) {
+            enabledDesc.toString()
+        } else {
+            disabledDesc ?: enabledDesc.toString()
+        }
+
+        tileTitle?.text = tileText
+        tileSubtitle?.text = tileDesc
+
+        if (checked) {
+            tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.window_background)
+            tileTitle?.setTextColor(requireActivity().getColor(R.color.text_title_inv))
+            tileSubtitle?.setTextColor(requireActivity().getColor(R.color.text_subtitle_inv))
+            tileBg?.background = getEnabledDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.tile_active)!!)
+        } else {
+            tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.accent_900)
+            tileTitle?.setTextColor(requireActivity().getColor(R.color.text_title))
+            tileSubtitle?.setTextColor(requireActivity().getColor(R.color.text_subtitle))
+            tileBg?.background = getDisabledDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.tile_inactive)!!)
+        }
+
+        if (!isEnabled) {
+            tileBg?.isClickable = false
+            tileBg?.isEnabled = false
+            tileBg?.background = getDisDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.tile_disabled)!!)
+            tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.disabled_icon)
+        }
+
+        tileBg?.setOnClickListener {
+            if (isEnabled) {
+                if (checkable) {
+                    if (isChecked) {
+                        val fadeOut: Animation = AnimationUtils.loadAnimation(requireActivity(), R.anim.fade_out_btn)
+                        val fadeIn: Animation = AnimationUtils.loadAnimation(requireActivity(), R.anim.fade_in_btn)
+                        tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.accent_900)
+                        tileTitle?.setTextColor(requireActivity().getColor(R.color.text_title))
+                        tileSubtitle?.setTextColor(requireActivity().getColor(R.color.text_subtitle))
+                        tileBg?.animation = fadeOut
+                        tileTitle?.text = disabledText ?: enabledText
+                        tileSubtitle?.text = disabledDesc ?: enabledDesc
+                        fadeOut.start()
+                        fadeOut.setAnimationListener(object : Animation.AnimationListener {
+                            override fun onAnimationStart(animation: Animation?) {}
+                            override fun onAnimationEnd(animation: Animation?) {
+                                tileBg?.background = getDisabledDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.tile_inactive)!!)
+                                tileBg?.animation = fadeIn
+                                fadeIn.start()
+
+                                isChecked = false
+                                onCheckedChangeListener?.onCheckedChange(false)
+                            }
+                            override fun onAnimationRepeat(animation: Animation?) {}
+                        })
+                    } else {
+                        val fadeOut: Animation = AnimationUtils.loadAnimation(requireActivity(), R.anim.fade_out_btn)
+                        val fadeIn: Animation = AnimationUtils.loadAnimation(requireActivity(), R.anim.fade_in_btn)
+                        tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.window_background)
+                        tileTitle?.setTextColor(requireActivity().getColor(R.color.text_title_inv))
+                        tileSubtitle?.setTextColor(requireActivity().getColor(R.color.text_subtitle_inv))
+                        tileBg?.animation = fadeOut
+                        tileTitle?.text = enabledText
+                        tileSubtitle?.text = enabledDesc
+                        fadeOut.start()
+                        fadeOut.setAnimationListener(object : Animation.AnimationListener {
+                            override fun onAnimationStart(animation: Animation?) {}
+                            override fun onAnimationEnd(animation: Animation?) {
+                                tileBg?.background = getEnabledDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.tile_active)!!)
+                                tileBg?.animation = fadeIn
+                                fadeIn.start()
+
+                                isChecked = true
+                                onCheckedChangeListener?.onCheckedChange(true)
+                            }
+                            override fun onAnimationRepeat(animation: Animation?) {}
+                        })
+                    }
+                }
+
+                onTileClickListener?.onTileClick()
+            }
+        }
+
+        tileTitle?.isSelected = true
+        tileSubtitle?.isSelected = true
+    }
+
+    private fun getDisabledDrawable(drawable: Drawable) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getDisabledColor())
+        return drawable
+    }
+
+    private fun getDisabledColor() : Int {
+        return SurfaceColors.SURFACE_2.getColor(requireActivity())
+    }
+
+    private fun getEnabledDrawable(drawable: Drawable) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getEnabledColor())
+        return drawable
+    }
+
+    private fun getEnabledColor() : Int {
+        return requireActivity().getColor(R.color.accent_900)
+    }
+
+    private fun getDisDrawable(drawable: Drawable) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getDisColor())
+        return drawable
+    }
+
+    private fun getDisColor() : Int {
+        return requireActivity().getColor(R.color.disabled_background)
+    }
+}

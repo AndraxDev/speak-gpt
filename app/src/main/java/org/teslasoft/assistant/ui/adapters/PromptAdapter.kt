@@ -68,7 +68,7 @@ class PromptAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragment
             mView = inflater.inflate(R.layout.view_prompt, null)
         }
 
-        background = mView!!.findViewById(R.id.bg)
+        background = mView!!.findViewById(R.id.tile_bg)
         promptName = mView.findViewById(R.id.prompt_name)
         promptDescription = mView.findViewById(R.id.prompt_description)
         promptAuthor = mView.findViewById(R.id.prompt_author)

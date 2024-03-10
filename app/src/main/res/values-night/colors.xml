@@ -20,6 +20,9 @@
     <color name="window_background">#1b1b1e</color>
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/accent_900</color>
     <color name="text_title">#FFFFFFFF</color>
+    <color name="text_title_inv">#FF000000</color>
+    <color name="text_subtitle">#99FFFFFF</color>
+    <color name="text_subtitle_inv">#99000000</color>
     <color name="ripple">#4DFFFFFF</color>
     <color name="success">#9CE38F</color>
     <color name="text">#eeffffff</color>
@@ -77,6 +80,8 @@
     <color name="tint_cat_entertainment_active">#50ffe6cc</color>
     <color name="tint_cat_sport_active">#50d5ffcc</color>
     <color name="tint_cat_health_active">#50CCFFE5</color>
+    <color name="disabled_background">#66999999</color>
+    <color name="disabled_icon">#FF999999</color>
 
     <color name="tint_red">#40824444</color>
     <color name="gpt_icon_red">#CCB4B4</color>
@@ -84,7 +89,7 @@
     <color name="tint_yellow">#40877249</color>
     <color name="gpt_icon_yellow">#D0C9BC</color>
 
-    <color name="tint_green">#40739753</color>
+    <color name="tint_green">#30739665</color>
     <color name="gpt_icon_green">#C2CCB4</color>
 
     <color name="tint_blue">#405F71A7</color>
