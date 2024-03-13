@@ -18,6 +18,7 @@ package org.teslasoft.assistant.ui.activities
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -25,6 +26,7 @@ import android.view.MenuItem
 import android.view.View
 
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -34,6 +36,9 @@ import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.navigation.NavigationBarView
 
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.Preferences
+import org.teslasoft.assistant.ui.fragments.tabs.ChatsListFragment
+import org.teslasoft.assistant.ui.fragments.tabs.PromptsFragment
 
 class MainActivity : FragmentActivity() {
     private var navigationBar: BottomNavigationView? = null
@@ -53,8 +58,6 @@ class MainActivity : FragmentActivity() {
 
         setContentView(R.layout.activity_main)
 
-        window.navigationBarColor = SurfaceColors.SURFACE_2.getColor(this)
-
         navigationBar = findViewById(R.id.navigation_bar)
 
         fragmentChats = findViewById(R.id.fragment_chats)
@@ -64,6 +67,8 @@ class MainActivity : FragmentActivity() {
         frameChats = supportFragmentManager.findFragmentById(R.id.fragment_chats_)
         framePrompts = supportFragmentManager.findFragmentById(R.id.fragment_prompts_)
         frameTips = supportFragmentManager.findFragmentById(R.id.fragment_tips_)
+
+        reloadAmoled()
 
         navigationBar!!.setOnItemSelectedListener(NavigationBarView.OnItemSelectedListener { item: MenuItem ->
             if (!isAnimating) {
@@ -91,6 +96,39 @@ class MainActivity : FragmentActivity() {
             onRestoredState(savedInstanceState)
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        reloadAmoled()
+    }
+
+    private fun reloadAmoled() {
+        if (isDarkThemeEnabled() &&  Preferences.getPreferences(this, "").getAmoledPitchBlack()) {
+            window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+            window.setBackgroundDrawableResource(R.color.amoled_window_background)
+            navigationBar!!.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme))
+        } else {
+            window.navigationBarColor = SurfaceColors.SURFACE_2.getColor(this)
+            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.window_background, theme)
+            window.setBackgroundDrawableResource(R.color.window_background)
+            navigationBar!!.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.accent_50, theme))
+        }
+
+        (frameChats as ChatsListFragment).reloadAmoled()
+        (framePrompts as PromptsFragment).reloadAmoled()
+    }
+
+    private fun isDarkThemeEnabled(): Boolean {
+        return when (resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> true
+            Configuration.UI_MODE_NIGHT_NO -> false
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> false
+            else -> false
+        }
+    }
+
 
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
         super.onSaveInstanceState(savedInstanceState)

@@ -23,10 +23,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.res.ResourcesCompat
 
 import androidx.fragment.app.FragmentActivity
 
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.Preferences
 
 class AssistantAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActivity) : AbstractChatAdapter(data, context) {
     @SuppressLint("InflateParams", "SetTextI18n")
@@ -39,17 +41,26 @@ class AssistantAdapter(data: ArrayList<HashMap<String, Any>>?, context: Fragment
             inflater.inflate(R.layout.view_assistant_user_message, null)
         }
 
-        if (dataArray?.get(position)?.get("isBot") == true) {
-            val bubbleBg: ConstraintLayout = mView!!.findViewById(R.id.bubble_bg)
-            bubbleBg.background = getSurface3Drawable(AppCompatResources.getDrawable(mContext, R.drawable.bubble_in)!!, mContext)
-        }
+        val bubbleBg: ConstraintLayout = mView!!.findViewById(R.id.bubble_bg)
 
-        icon = mView!!.findViewById(R.id.icon)
+        icon = mView.findViewById(R.id.icon)
         message = mView.findViewById(R.id.message)
         dalleImage = mView.findViewById(R.id.dalle_image)
         btnCopy = mView.findViewById(R.id.btn_copy)
 
         message?.setTextIsSelectable(true)
+
+        if (dataArray?.get(position)?.get("isBot") == true) {
+            if (isDarkThemeEnabled() && Preferences.getPreferences(mContext, "").getAmoledPitchBlack()) {
+                bubbleBg.setBackgroundResource(R.drawable.bubble_out_dark)
+                message?.setTextColor(ResourcesCompat.getColor(mContext.resources, R.color.white, null))
+            }
+        } else {
+            if (isDarkThemeEnabled() && Preferences.getPreferences(mContext, "").getAmoledPitchBlack()) {
+                bubbleBg.setBackgroundResource(R.drawable.bubble_in_dark)
+                message?.setTextColor(ResourcesCompat.getColor(mContext.resources, R.color.white, null))
+            }
+        }
 
         btnCopy?.background = getSurface3Drawable(AppCompatResources.getDrawable(mContext, R.drawable.btn_accent_tonal)!!, mContext)
 

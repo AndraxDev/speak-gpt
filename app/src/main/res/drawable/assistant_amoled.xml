@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple android:color="@color/transparent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <corners android:topLeftRadius="24dp" android:topRightRadius="24dp" android:bottomRightRadius="0dp" android:bottomLeftRadius="0dp"/>
+            <gradient android:type="linear" android:angle="315" android:startColor="@color/amoled_window_background" android:centerColor="@color/amoled_window_background" android:endColor="@color/amoled_window_background" android:useLevel="true"/>
+        </shape>
+    </item>
+</ripple>

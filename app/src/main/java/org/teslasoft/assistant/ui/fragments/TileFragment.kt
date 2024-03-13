@@ -17,6 +17,7 @@
 package org.teslasoft.assistant.ui.fragments
 
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -32,12 +33,13 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.Preferences
 
 
 class TileFragment : Fragment() {
 
     companion object {
-        fun newInstance(checked: Boolean, checkable: Boolean, enabledText: String, disabledText: String?, enabledDesc: String, disabledDesc: String?, icon: Int, disabled: Boolean): TileFragment {
+        fun newInstance(checked: Boolean, checkable: Boolean, enabledText: String, disabledText: String?, enabledDesc: String, disabledDesc: String?, icon: Int, disabled: Boolean, chatId: String): TileFragment {
 
             val tileFragment = TileFragment()
 
@@ -50,6 +52,7 @@ class TileFragment : Fragment() {
             args.putString("disabledDesc", disabledDesc)
             args.putInt("icon", icon)
             args.putBoolean("disabled", disabled)
+            args.putString("chatId", chatId)
 
             tileFragment.arguments = args
 
@@ -71,6 +74,8 @@ class TileFragment : Fragment() {
     private var tileIcon: ImageView? = null
 
     private var onAttachedToActivity: Boolean = false
+
+    private var preferences: Preferences? = null
 
     fun setOnTileClickListener(onTileClickListener: OnTileClickListener) {
         this.onTileClickListener = onTileClickListener
@@ -121,6 +126,16 @@ class TileFragment : Fragment() {
         tileSubtitle?.text = subtitle
     }
 
+    private fun isDarkThemeEnabled(): Boolean {
+        return when (resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> true
+            Configuration.UI_MODE_NIGHT_NO -> false
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> false
+            else -> false
+        }
+    }
+
     fun setChecked(isChecked: Boolean) {
         this.isChecked = isChecked
 
@@ -128,12 +143,16 @@ class TileFragment : Fragment() {
             tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.window_background)
             tileTitle?.setTextColor(requireActivity().getColor(R.color.text_title_inv))
             tileSubtitle?.setTextColor(requireActivity().getColor(R.color.text_subtitle_inv))
-            tileBg?.background = ContextCompat.getDrawable(requireActivity(), R.drawable.tile_active)!!
+            tileBg?.background = getEnabledDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.tile_active)!!)
+            tileTitle?.text = requireArguments().getString("enabledText").toString()
+            tileSubtitle?.text = requireArguments().getString("enabledDesc").toString()
         } else {
             tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.accent_900)
             tileTitle?.setTextColor(requireActivity().getColor(R.color.text_title))
             tileSubtitle?.setTextColor(requireActivity().getColor(R.color.text_subtitle))
-            tileBg?.background = ContextCompat.getDrawable(requireActivity(), R.drawable.tile_inactive)!!
+            tileBg?.background = getDisabledDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.tile_inactive)!!)
+            tileTitle?.text = requireArguments().getString("disabledText") ?: requireArguments().getString("enabledText").toString()
+            tileSubtitle?.text = requireArguments().getString("disabledDesc") ?: requireArguments().getString("enabledDesc").toString()
         }
     }
 
@@ -168,6 +187,9 @@ class TileFragment : Fragment() {
         val disabledDesc = args.getString("disabledDesc")
         val icon = args.getInt("icon")
         val disabled = args.getBoolean("disabled")
+        val chatId: String = args.getString("chatId").toString()
+
+        preferences = Preferences.getPreferences(requireActivity(), chatId)
 
         isChecked = checked
         isEnabled = !disabled
@@ -282,7 +304,11 @@ class TileFragment : Fragment() {
     }
 
     private fun getDisabledColor() : Int {
-        return SurfaceColors.SURFACE_2.getColor(requireActivity())
+        return if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack() == true){
+            requireActivity().getColor(R.color.amoled_accent_50)
+        } else {
+            SurfaceColors.SURFACE_5.getColor(requireActivity())
+        }
     }
 
     private fun getEnabledDrawable(drawable: Drawable) : Drawable {
@@ -291,7 +317,11 @@ class TileFragment : Fragment() {
     }
 
     private fun getEnabledColor() : Int {
-        return requireActivity().getColor(R.color.accent_900)
+        return if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack() == true){
+            requireActivity().getColor(R.color.accent_500)
+        } else {
+            requireActivity().getColor(R.color.accent_900)
+        }
     }
 
     private fun getDisDrawable(drawable: Drawable) : Drawable {

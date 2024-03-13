@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ui"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -16,12 +16,12 @@
             android:layout_height="64dp"
             android:layout_marginBottom="24dp"
             android:background="@drawable/btn_accent_tonal_v2"
+            android:contentDescription="@string/btn_speak"
             android:elevation="6dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/ic_microphone"
-            android:contentDescription="@string/btn_speak" />
+            app:srcCompat="@drawable/ic_microphone" />
 
         <ProgressBar
             android:id="@+id/assistant_loading"
@@ -72,11 +72,11 @@
                     android:layout_height="36dp"
                     android:layout_marginStart="8dp"
                     android:background="@drawable/btn_accent_tonal"
+                    android:contentDescription="@string/btn_settings"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_settings"
-                    android:contentDescription="@string/btn_settings" />
+                    app:srcCompat="@drawable/ic_settings" />
 
                 <ImageButton
                     android:id="@+id/btn_assistant_show_keyboard"
@@ -84,11 +84,11 @@
                     android:layout_height="36dp"
                     android:layout_marginEnd="8dp"
                     android:background="@drawable/btn_accent_tonal"
+                    android:contentDescription="@string/btn_show_keyboard"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_keyboard"
-                    android:contentDescription="@string/btn_show_keyboard" />
+                    app:srcCompat="@drawable/ic_keyboard" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
 
@@ -117,11 +117,11 @@
                     android:layout_height="36dp"
                     android:layout_marginStart="8dp"
                     android:background="@drawable/btn_accent_tonal"
+                    android:contentDescription="@string/btn_hide_keyboard"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_keyboard_hide"
-                    android:contentDescription="@string/btn_hide_keyboard" />
+                    app:srcCompat="@drawable/ic_keyboard_hide" />
 
                 <ImageButton
                     android:id="@+id/btn_assistant_send"
@@ -129,11 +129,11 @@
                     android:layout_height="36dp"
                     android:layout_marginEnd="8dp"
                     android:background="@drawable/btn_accent_tonal"
+                    android:contentDescription="@string/btn_send"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_send"
-                    android:contentDescription="@string/btn_send" />
+                    app:srcCompat="@drawable/ic_send" />
 
                 <EditText
                     android:id="@+id/assistant_message"
@@ -173,8 +173,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="160dp"
-                android:scrollbars="none"
                 android:listSelector="@android:color/transparent"
+                android:scrollbars="none"
                 android:transcriptMode="alwaysScroll" />
         </LinearLayout>
 

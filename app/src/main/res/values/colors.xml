@@ -16,10 +16,22 @@
     <color name="white">#ffffffff</color>
     <color name="warning">#ffff3d00</color>
 
+    <color name="amoled_accent_50">#0a0a0a</color>
+    <color name="amoled_accent_100">#121212</color>
+    <color name="amoled_accent_200">#181818</color>
+    <color name="amoled_accent_250">#212121</color>
+    <color name="amoled_accent_400">#262626</color>
+    <color name="amoled_accent_300">#323232</color>
+    <color name="amoled_bottom_navbar">@color/accent_50</color>
+    <color name="amoled_button">@color/accent_100</color>
+    <color name="amoled_window_background">#000000</color>
+
     <color name="accent_50">#F0EDF6</color>
     <color name="accent_100">#e3dfec</color>
     <color name="accent_200">#c7c4cf</color>
     <color name="accent_250">#9C8EC2</color>
+    <color name="accent_300">#fdfbff</color>
+    <color name="accent_400">#c7c4cf</color>
     <color name="accent_500">#361759</color>
     <color name="accent_900">#63488f</color>
     <color name="neutral_200">#312e36</color>
@@ -42,6 +54,8 @@
     <color name="text_title">#FF000000</color>
     <color name="text_title_inv">#FFFFFFFF</color>
     <color name="text_subtitle">#AA000000</color>
+    <color name="text_field">#CC000000</color>
+    <color name="text_hint">#99000000</color>
     <color name="text_subtitle_inv">#AAFFFFFF</color>
     <color name="ripple">#4D000000</color>
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/accent_900</color>
@@ -110,8 +124,8 @@
     <color name="tint_green">#250C7300</color>
     <color name="gpt_icon_green">#087300</color>
 
-    <color name="tint_blue">#250B0073</color>
-    <color name="gpt_icon_blue">#220073</color>
+    <color name="tint_blue">#25003873</color>
+    <color name="gpt_icon_blue">#003D73</color>
 
     <color name="tint_purple">#25540073</color>
     <color name="gpt_icon_purple">#5A0073</color>

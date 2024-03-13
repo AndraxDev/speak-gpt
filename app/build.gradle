@@ -14,8 +14,8 @@ android {
         applicationId "org.teslasoft.assistant"
         minSdk 26
         targetSdk 34
-        versionCode 304
-        versionName "3.4"
+        versionCode 305
+        versionName "3.5"
         externalNativeBuild {
             cmake {
                 cppFlags ''
@@ -34,8 +34,8 @@ android {
 
         debug {
             debuggable true
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             multiDexEnabled true
         }

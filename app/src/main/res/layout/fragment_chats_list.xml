@@ -64,7 +64,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
+        app:layout_constraintTop_toBottomOf="@+id/bg_search" />
 
     <ImageButton
         android:id="@+id/btn_settings_"
@@ -80,7 +80,7 @@
         app:srcCompat="@drawable/ic_settings" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout2"
+        android:id="@+id/bg_search"
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:layout_marginStart="16dp"
@@ -98,9 +98,13 @@
             android:id="@+id/field_search"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:layout_marginEnd="4dp"
             android:background="@color/transparent"
+            android:autofillHints="Search"
+            android:textColorHint="@color/text_hint"
+            android:textColor="@color/text_field"
             android:ems="10"
             android:hint="@string/hint_search"
             android:inputType="text"
@@ -111,13 +115,16 @@
 
         <ImageButton
             android:id="@+id/btn_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/ic_search"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="4dp"
+            android:background="@color/transparent"
             android:contentDescription="@string/hint_search"
+            android:tooltipText="@string/hint_search"
+            android:src="@drawable/ic_search"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_search"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

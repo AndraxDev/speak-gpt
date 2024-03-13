@@ -22,6 +22,7 @@ import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.net.Uri
@@ -45,6 +46,7 @@ import android.widget.Toast
 
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentActivity
 
 import com.aallam.openai.api.audio.SpeechRequest
@@ -124,6 +126,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private var assistantActionsLayout: LinearLayout? = null
     private var assistantConversation: ListView? = null
     private var assistantLoading: ProgressBar? = null
+    private var ui: LinearLayout? = null
 
     // Init chat
     private var messages: ArrayList<HashMap<String, Any>> = arrayListOf()
@@ -151,6 +154,26 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     // Init DALL-e
     private var resolution = "512x152"
+
+    private fun isDarkThemeEnabled(): Boolean {
+        return when (resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> true
+            Configuration.UI_MODE_NIGHT_NO -> false
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> false
+            else -> false
+        }
+    }
+
+    private fun reloadAmoled() {
+        if (isDarkThemeEnabled() &&  Preferences.getPreferences(requireActivity(), "").getAmoledPitchBlack()) {
+            dialog?.window?.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, requireActivity().theme)
+            ui?.setBackgroundResource(R.drawable.assistant_amoled)
+        } else {
+            dialog?.window?.navigationBarColor = SurfaceColors.SURFACE_1.getColor(requireActivity())
+            ui?.setBackgroundColor(ResourcesCompat.getColor(resources, android.R.color.transparent, requireActivity().theme))
+        }
+    }
 
     // Media player for OpenAI TTS
     private var mediaPlayer: MediaPlayer? = null
@@ -1298,8 +1321,6 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
         languageIdentifier = LanguageIdentification.getClient()
 
-        dialog?.window?.navigationBarColor = SurfaceColors.SURFACE_1.getColor(requireActivity())
-
         btnAssistantVoice = view.findViewById(R.id.btn_assistant_voice)
         btnAssistantSettings = view.findViewById(R.id.btn_assistant_settings)
         btnAssistantShowKeyboard = view.findViewById(R.id.btn_assistant_show_keyboard)
@@ -1311,12 +1332,15 @@ class AssistantFragment : BottomSheetDialogFragment() {
         assistantActionsLayout = view.findViewById(R.id.assistant_actions)
         assistantConversation = view.findViewById(R.id.assistant_conversation)
         assistantLoading = view.findViewById(R.id.assistant_loading)
+        ui = view.findViewById(R.id.ui)
 
         btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
         btnAssistantSettings?.setImageResource(R.drawable.ic_settings)
         btnAssistantShowKeyboard?.setImageResource(R.drawable.ic_keyboard)
         btnAssistantHideKeyboard?.setImageResource(R.drawable.ic_keyboard_hide)
         btnAssistantSend?.setImageResource(R.drawable.ic_send)
+
+        reloadAmoled()
 
         assistantConversation?.isNestedScrollingEnabled = true
         assistantMessage?.isNestedScrollingEnabled = true

@@ -23,6 +23,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.content.res.Configuration.KEYBOARD_QWERTY
 import android.graphics.drawable.Drawable
 import android.media.MediaPlayer
@@ -53,6 +54,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
 import com.aallam.openai.api.audio.SpeechRequest
@@ -131,6 +133,7 @@ class ChatActivity : FragmentActivity() {
     private var fileContents: ByteArray? = null
     private var actionBar: ConstraintLayout? = null
     private var btnBack: ImageButton? = null
+    private var keyboardFrame: ConstraintLayout? = null
 
     // Init chat
     private var messages: ArrayList<HashMap<String, Any>> = arrayListOf()
@@ -226,6 +229,121 @@ class ChatActivity : FragmentActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        reloadAmoled()
+    }
+
+    private fun reloadAmoled() {
+        if (isDarkThemeEnabled() && Preferences.getPreferences(this, chatId).getAmoledPitchBlack()) {
+            window.setBackgroundDrawableResource(R.color.amoled_window_background)
+            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme)
+            window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme)
+            keyboardFrame?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme))
+            actionBar?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme))
+            activityTitle?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme))
+            btnBack?.background = getAmoledAccentDrawable(
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.btn_accent_tonal_v4_amoled
+                )!!, this
+            )
+
+            btnExport?.background = getAmoledAccentDrawable(
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.btn_accent_tonal_v4_amoled
+                )!!, this
+            )
+
+            btnSettings?.background = getAmoledAccentDrawable(
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.btn_accent_tonal_v4_amoled
+                )!!, this
+            )
+
+            messageInput?.background = getAmoledAccentDrawableV2(
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.btn_accent_tonal_selector_v6_amoled
+                )!!, this
+            )
+
+            btnMicro?.background = getAmoledAccentDrawableV2(
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.btn_accent_tonal_v5_amoled
+                )!!, this
+            )
+
+            btnSend?.background = getAmoledAccentDrawableV2(
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.btn_accent_tonal_v5_amoled
+                )!!, this
+            )
+        } else {
+            window.setBackgroundDrawableResource(R.color.window_background)
+            window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
+            window.navigationBarColor = SurfaceColors.SURFACE_5.getColor(this)
+            keyboardFrame?.setBackgroundColor(SurfaceColors.SURFACE_5.getColor(this))
+            actionBar?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
+            activityTitle?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
+            btnBack?.background = getDarkAccentDrawable(
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.btn_accent_tonal_v4
+                )!!, this
+            )
+
+            btnExport?.background = getDarkAccentDrawable(
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.btn_accent_tonal_v4
+                )!!, this
+            )
+
+            btnSettings?.background = getDarkAccentDrawable(
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.btn_accent_tonal_v4
+                )!!, this
+            )
+
+            messageInput?.background = getDarkAccentDrawable(
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.btn_accent_tonal_selector_v6
+                )!!, this
+            )
+
+            btnMicro?.background = getDarkAccentDrawable(
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.btn_accent_tonal_v5
+                )!!, this
+            )
+
+            btnSend?.background = getDarkAccentDrawable(
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.btn_accent_tonal_v5
+                )!!, this
+            )
+        }
+    }
+
+    private fun isDarkThemeEnabled(): Boolean {
+        return when (resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> true
+            Configuration.UI_MODE_NIGHT_NO -> false
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> false
+            else -> false
+        }
+    }
+
     // Init TTS
     private var tts: TextToSpeech? = null
     private val ttsListener: TextToSpeech.OnInitListener =
@@ -285,18 +403,16 @@ class ChatActivity : FragmentActivity() {
         setContentView(R.layout.activity_chat)
         languageIdentifier = LanguageIdentification.getClient()
 
+        reloadAmoled()
 
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
-
-        window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
-        window.navigationBarColor = SurfaceColors.SURFACE_4.getColor(this)
 
         val chatActivityTitle: TextView = findViewById(R.id.chat_activity_title)
         val keyboardInput: LinearLayout = findViewById(R.id.keyboard_input)
 
         chatActivityTitle.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
-        keyboardInput.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
+        keyboardInput.setBackgroundColor(SurfaceColors.SURFACE_5.getColor(this))
 
         initChatId()
 
@@ -379,6 +495,7 @@ class ChatActivity : FragmentActivity() {
         btnExport = findViewById(R.id.btn_export)
         actionBar = findViewById(R.id.action_bar)
         btnBack = findViewById(R.id.btn_back)
+        keyboardFrame = findViewById(R.id.keyboard_frame)
 
         btnExport?.setImageResource(R.drawable.ic_upload)
         btnBack?.setImageResource(R.drawable.ic_back)
@@ -413,13 +530,6 @@ class ChatActivity : FragmentActivity() {
             )!!, this
         )
 
-        actionBar?.background = getDarkAccentDrawable(
-            AppCompatResources.getDrawable(
-                this,
-                R.color.accent_100
-            )!!, this
-        )
-
         btnBack?.setOnClickListener {
             finish()
         }
@@ -443,8 +553,26 @@ class ChatActivity : FragmentActivity() {
         return drawable
     }
 
+    private fun getAmoledAccentDrawable(drawable: Drawable, context: Context) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getAmoledSurfaceColor(context))
+        return drawable
+    }
+
+    private fun getAmoledAccentDrawableV2(drawable: Drawable, context: Context) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getAmoledSurfaceColorV2(context))
+        return drawable
+    }
+
     private fun getSurfaceColor(context: Context) : Int {
         return SurfaceColors.SURFACE_4.getColor(context)
+    }
+
+    private fun getAmoledSurfaceColor(context: Context) : Int {
+        return ResourcesCompat.getColor(context.resources, R.color.amoled_accent_50, null)
+    }
+
+    private fun getAmoledSurfaceColorV2(context: Context) : Int {
+        return ResourcesCompat.getColor(context.resources, R.color.amoled_accent_300, null)
     }
 
     private fun initLogic() {
@@ -517,10 +645,11 @@ class ChatActivity : FragmentActivity() {
         }
 
         btnSettings?.setOnClickListener {
-            val i = Intent(
-                    this,
-                    SettingsActivity::class.java
-            ).setAction(Intent.ACTION_VIEW)
+            val i = if (Preferences.getPreferences(this, chatId).getExperimentalUI()) {
+                Intent(this, SettingsV2Activity::class.java).setAction(Intent.ACTION_VIEW)
+            } else {
+                Intent(this, SettingsActivity::class.java).setAction(Intent.ACTION_VIEW)
+            }
 
             i.putExtra("chatId", chatId)
 

@@ -22,8 +22,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.res.ResourcesCompat
 
 import androidx.fragment.app.FragmentActivity
 
@@ -48,10 +50,12 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActiv
             inflater.inflate(R.layout.view_message, null)
         }
 
-        if (dataArray?.get(position)?.get("isBot") == true && layout == "bubbles") {
-            val bubbleBg: ConstraintLayout = mView!!.findViewById(R.id.bubble_bg)
-            bubbleBg.background = getSurface3Drawable(AppCompatResources.getDrawable(mContext, R.drawable.bubble_in)!!, mContext)
-        }
+//        if (dataArray?.get(position)?.get("isBot") == true && layout == "bubbles") {
+//            val bubbleBg: ConstraintLayout = mView!!.findViewById(R.id.bubble_bg)
+//            bubbleBg.background = getSurface3Drawable(AppCompatResources.getDrawable(mContext, R.drawable.bubble_in)!!, mContext)
+//        }
+
+        val bubbleBg: ConstraintLayout? = mView?.findViewById(R.id.bubble_bg)
 
         ui = mView!!.findViewById(R.id.ui)
         icon = mView.findViewById(R.id.icon)
@@ -68,8 +72,18 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActiv
         if (layout == "bubbles") {
             if (dataArray?.get(position)?.get("isBot") == true) {
                 icon?.setImageResource(R.drawable.assistant)
+
+                if (isDarkThemeEnabled() && Preferences.getPreferences(mContext, chatID).getAmoledPitchBlack()) {
+                    bubbleBg?.setBackgroundResource(R.drawable.bubble_out_dark)
+                    message?.setTextColor(ResourcesCompat.getColor(mContext.resources, R.color.white, null))
+                }
             } else {
                 icon?.setImageResource(R.drawable.ic_user)
+
+                if (isDarkThemeEnabled() && Preferences.getPreferences(mContext, chatID).getAmoledPitchBlack()) {
+                    bubbleBg?.setBackgroundResource(R.drawable.bubble_in_dark)
+                    message?.setTextColor(ResourcesCompat.getColor(mContext.resources, R.color.white, null))
+                }
             }
         } else {
             if (dataArray?.get(position)?.get("isBot") == true) {

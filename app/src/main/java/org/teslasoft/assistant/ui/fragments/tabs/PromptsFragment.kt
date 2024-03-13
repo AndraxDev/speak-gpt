@@ -16,6 +16,8 @@
 
 package org.teslasoft.assistant.ui.fragments.tabs
 
+import android.content.res.Configuration
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -29,6 +31,9 @@ import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.DrawableCompat
 
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -43,6 +48,7 @@ import com.google.gson.reflect.TypeToken
 
 import org.teslasoft.assistant.Api
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.PromptAdapter
 import org.teslasoft.assistant.ui.fragments.dialogs.PostPromptDialogFragment
 import org.teslasoft.core.api.network.RequestNetwork
@@ -114,6 +120,8 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private var catHealth: LinearLayout? = null
 
+    private var searchBar: ConstraintLayout? = null
+
     private val postPromptListener: PostPromptDialogFragment.StateChangesListener = object : PostPromptDialogFragment.StateChangesListener {
         override fun onFormFilled(
             name: String,
@@ -178,12 +186,6 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             noInternetLayout?.visibility = View.VISIBLE
             promptsList?.visibility = View.GONE
             progressbar?.visibility = View.GONE
-
-//            MaterialAlertDialogBuilder(requireActivity(), R.style.App_MaterialAlertDialog)
-//                .setTitle("Error")
-//                .setMessage(message)
-//                .setPositiveButton("Close") { _, _ -> }
-//                .show()
         }
     }
 
@@ -255,6 +257,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         catEntertainment = view.findViewById(R.id.cat_entertainment)
         catSport = view.findViewById(R.id.cat_sport)
         catHealth = view.findViewById(R.id.cat_health)
+        searchBar = view.findViewById(R.id.search_bar)
 
         initializeCat()
 
@@ -275,6 +278,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 }
             })
 
+        reloadAmoled()
 
         noInternetLayout?.visibility = View.GONE
         promptsList?.visibility = View.GONE
@@ -327,7 +331,27 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             promptDialog.show(parentFragmentManager.beginTransaction(), "PromptDialog")
         }
 
+        fieldSearch?.background = getDisabledDrawable(fieldSearch?.background!!)
+
         loadData()
+    }
+
+    private fun isDarkThemeEnabled(): Boolean {
+        return when (resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> true
+            Configuration.UI_MODE_NIGHT_NO -> false
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> false
+            else -> false
+        }
+    }
+
+    fun reloadAmoled() {
+        if (isDarkThemeEnabled() && Preferences.getPreferences(requireActivity(), "").getAmoledPitchBlack()) {
+            searchBar?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, requireActivity().theme)!!
+        } else {
+            searchBar?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal, requireActivity().theme)!!)
+        }
     }
 
     private fun initializeCat() {
@@ -460,5 +484,14 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     override fun onRefresh() {
         refreshLayout?.isRefreshing = false
         loadData()
+    }
+
+    private fun getDisabledDrawable(drawable: Drawable) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getDisabledColor())
+        return drawable
+    }
+
+    private fun getDisabledColor() : Int {
+        return SurfaceColors.SURFACE_5.getColor(requireActivity())
     }
 }

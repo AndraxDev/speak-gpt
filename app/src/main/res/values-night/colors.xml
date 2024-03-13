@@ -4,6 +4,8 @@
     <color name="accent_100">#302f36</color>
     <color name="accent_200">#424250</color>
     <color name="accent_250">#424250</color>
+    <color name="accent_300">#424250</color>
+    <color name="accent_400">#424250</color>
     <color name="accent_500">#a895e9</color>
     <color name="accent_900">#c3b4ff</color>
     <color name="neutral_200">#ddd9e6</color>
@@ -22,13 +24,15 @@
     <color name="text_title">#FFFFFFFF</color>
     <color name="text_title_inv">#FF000000</color>
     <color name="text_subtitle">#99FFFFFF</color>
+    <color name="text_field">#DEFFFFFF</color>
+    <color name="text_hint">#66FFFFFF</color>
     <color name="text_subtitle_inv">#99000000</color>
     <color name="ripple">#4DFFFFFF</color>
     <color name="success">#9CE38F</color>
     <color name="text">#eeffffff</color>
     <color name="hint">#aaffffff</color>
     <color name="tip1">#ccfcb3</color>
-    <color name="tip">#20ccfcb3</color>
+    <color name="tip">#15D8FAC6</color>
     <color name="marker">#15FFFFFF</color>
 
     <color name="cat_development">#ffddad</color>
@@ -83,7 +87,7 @@
     <color name="disabled_background">#66999999</color>
     <color name="disabled_icon">#FF999999</color>
 
-    <color name="tint_red">#40824444</color>
+    <color name="tint_red">#40965050</color>
     <color name="gpt_icon_red">#CCB4B4</color>
 
     <color name="tint_yellow">#40877249</color>
@@ -92,10 +96,10 @@
     <color name="tint_green">#30739665</color>
     <color name="gpt_icon_green">#C2CCB4</color>
 
-    <color name="tint_blue">#405F71A7</color>
-    <color name="gpt_icon_blue">#B4B6CC</color>
+    <color name="tint_blue">#405F7CA7</color>
+    <color name="gpt_icon_blue">#B4BFCC</color>
 
-    <color name="tint_purple">#40855FA7</color>
+    <color name="tint_purple">#40795896</color>
     <color name="gpt_icon_purple">#C2B4CC</color>
 
     <color name="border">#38FFFFFF</color>

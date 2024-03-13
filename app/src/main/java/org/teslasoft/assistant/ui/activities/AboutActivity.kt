@@ -19,6 +19,7 @@ package org.teslasoft.assistant.ui.activities
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -27,12 +28,18 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.res.ResourcesCompat
 
 import androidx.fragment.app.FragmentActivity
 
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.elevation.SurfaceColors
 
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.Preferences
+import org.teslasoft.assistant.ui.fragments.tabs.ChatsListFragment
+import org.teslasoft.assistant.ui.fragments.tabs.PromptsFragment
 
 class AboutActivity : FragmentActivity() {
 
@@ -44,6 +51,10 @@ class AboutActivity : FragmentActivity() {
     private var appVer: TextView? = null
     private var btnDonate: LinearLayout? = null
     private var btnGithub: LinearLayout? = null
+
+    private var actions: ConstraintLayout? = null
+    private var system: ConstraintLayout? = null
+    private var links: LinearLayout? = null
 
     private var activateEasterEggCounter: Int = 0
 
@@ -61,7 +72,13 @@ class AboutActivity : FragmentActivity() {
         btnDonate = findViewById(R.id.btn_donate)
         btnGithub = findViewById(R.id.btn_github)
 
+        actions = findViewById(R.id.common_actions)
+        system = findViewById(R.id.system_info)
+        links = findViewById(R.id.links)
+
         appIcon?.setImageResource(R.drawable.assistant)
+
+        reloadAmoled()
 
         appVer?.setOnClickListener {
             if (activateEasterEggCounter == 0) {
@@ -133,6 +150,45 @@ class AboutActivity : FragmentActivity() {
             i.data = Uri.parse("https://github.com/AndraxDev/speak-gpt")
             i.action = Intent.ACTION_VIEW
             startActivity(i)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        reloadAmoled()
+    }
+
+    private fun reloadAmoled() {
+        if (isDarkThemeEnabled() &&  Preferences.getPreferences(this, "").getAmoledPitchBlack()) {
+            window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+            window.setBackgroundDrawableResource(R.color.amoled_window_background)
+
+            appIcon?.setBackgroundResource(R.drawable.btn_accent_50_amoled)
+
+            actions?.setBackgroundResource(R.drawable.btn_accent_24_amoled)
+            system?.setBackgroundResource(R.drawable.btn_accent_24_amoled)
+            links?.setBackgroundResource(R.drawable.btn_accent_24_amoled)
+        } else {
+            window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.window_background, theme)
+            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.window_background, theme)
+            window.setBackgroundDrawableResource(R.color.window_background)
+
+            appIcon?.setBackgroundResource(R.drawable.btn_accent_50)
+
+            actions?.setBackgroundResource(R.drawable.btn_accent_24)
+            system?.setBackgroundResource(R.drawable.btn_accent_24)
+            links?.setBackgroundResource(R.drawable.btn_accent_24)
+        }
+    }
+
+    private fun isDarkThemeEnabled(): Boolean {
+        return when (resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> true
+            Configuration.UI_MODE_NIGHT_NO -> false
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> false
+            else -> false
         }
     }
 }

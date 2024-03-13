@@ -17,6 +17,7 @@
 package org.teslasoft.assistant.ui.activities
 
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
@@ -25,8 +26,10 @@ import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.RadioButton
 import android.widget.ScrollView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 
 import androidx.fragment.app.FragmentActivity
@@ -35,6 +38,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.Api
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.core.api.network.RequestNetwork
 
 class ReportAbuseActivity : FragmentActivity() {
@@ -54,6 +58,7 @@ class ReportAbuseActivity : FragmentActivity() {
     private var btnPolitical: RadioButton? = null
     private var btnDuplicated: RadioButton? = null
     private var btnCatIncorrect: RadioButton? = null
+    private var reportActivityTitle: TextView? = null
 
     private var fieldDetails: EditText? = null
     private var btnSend: MaterialButton? = null
@@ -98,8 +103,6 @@ class ReportAbuseActivity : FragmentActivity() {
     private fun initUI() {
         setContentView(R.layout.activity_report_prompt)
 
-        window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
-
         reportForm = findViewById(R.id.report_form)
         loadingBar = findViewById(R.id.loading_bar)
         btnIllegal = findViewById(R.id.btn_illegal)
@@ -114,6 +117,7 @@ class ReportAbuseActivity : FragmentActivity() {
         btnSend = findViewById(R.id.btn_send_report)
         btnCatIncorrect = findViewById(R.id.btn_cat_incorrect)
         btnBack = findViewById(R.id.btn_back)
+        reportActivityTitle = findViewById(R.id.activity_report_title)
 
         btnBack?.background = getDarkAccentDrawable(
             AppCompatResources.getDrawable(
@@ -127,6 +131,8 @@ class ReportAbuseActivity : FragmentActivity() {
 
         requestNetwork = RequestNetwork(this)
 
+        reloadAmoled()
+
         initLogic()
     }
 
@@ -136,7 +142,11 @@ class ReportAbuseActivity : FragmentActivity() {
     }
 
     private fun getSurfaceColor(context: Context) : Int {
-        return SurfaceColors.SURFACE_4.getColor(context)
+        return if (isDarkThemeEnabled() && Preferences.getPreferences(context, "").getAmoledPitchBlack()) {
+            ResourcesCompat.getColor(context.resources, R.color.amoled_accent_50, context.theme)
+        } else {
+            SurfaceColors.SURFACE_4.getColor(context)
+        }
     }
 
     private fun initLogic() {
@@ -213,5 +223,50 @@ class ReportAbuseActivity : FragmentActivity() {
         loadingBar?.visibility = View.VISIBLE
 
         requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/report.php?api_key=${Api.TESLASOFT_API_KEY}&id=$id&reason=$reason&details=${fieldDetails?.text.toString()}", "A", reportListener)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        reloadAmoled()
+    }
+
+    private fun reloadAmoled() {
+        if (isDarkThemeEnabled() &&  Preferences.getPreferences(this, "").getAmoledPitchBlack()) {
+            window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme)
+            window.setBackgroundDrawableResource(R.color.amoled_window_background)
+
+            reportActivityTitle?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme))
+
+            btnBack?.background = getDarkAccentDrawable(
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.btn_accent_tonal_v4
+                )!!, this
+            )
+        } else {
+            window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.window_background, theme)
+            window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
+            window.setBackgroundDrawableResource(R.color.window_background)
+
+            reportActivityTitle?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
+
+            btnBack?.background = getDarkAccentDrawable(
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.btn_accent_tonal_v4
+                )!!, this
+            )
+        }
+    }
+
+    private fun isDarkThemeEnabled(): Boolean {
+        return when (resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> true
+            Configuration.UI_MODE_NIGHT_NO -> false
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> false
+            else -> false
+        }
     }
 }

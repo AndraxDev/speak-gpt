@@ -21,8 +21,10 @@
         <ProgressBar
             android:id="@+id/progressBar2"
             style="?android:attr/progressBarStyle"
-            android:layout_width="72dp"
-            android:layout_height="72dp" />
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:background="@drawable/btn_accent_tonal_v5"
+            android:padding="24dp" />
     </LinearLayout>
 
     <ImageView

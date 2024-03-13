@@ -31,7 +31,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/app_icon" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout3"
+                android:id="@+id/common_actions"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="36dp"
@@ -114,7 +114,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout"
+                android:id="@+id/links"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="36dp"
@@ -127,7 +127,7 @@
                 android:weightSum="2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout6">
+                app:layout_constraintTop_toBottomOf="@+id/system_info">
 
                 <LinearLayout
                     android:id="@+id/btn_github"
@@ -170,7 +170,7 @@
             </LinearLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout6"
+                android:id="@+id/system_info"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="36dp"
@@ -179,7 +179,7 @@
                 android:background="@drawable/btn_accent_24"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout3">
+                app:layout_constraintTop_toBottomOf="@+id/common_actions">
 
                 <TextView
                     android:id="@+id/textView8"
@@ -244,7 +244,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+                app:layout_constraintTop_toBottomOf="@+id/links">
 
                 <TextView
                     android:id="@+id/textView28"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.App" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.App" parent="Theme.Material3.DynamicColors.DayNight">
         <item name="colorPrimary">@color/accent_500</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorSecondary">@color/accent_100</item>

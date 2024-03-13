@@ -29,6 +29,7 @@ import android.widget.TextView
 import android.widget.Toast
 
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
 
@@ -545,15 +546,15 @@ class SettingsActivity : FragmentActivity() {
     }
 
     private fun getSurfaceColor(context: Context) : Int {
-        return SurfaceColors.SURFACE_2.getColor(context)
+        return SurfaceColors.SURFACE_5.getColor(context)
     }
 
     private fun getSurfaceColorV2() : Int {
-        return SurfaceColors.SURFACE_2.getColor(this)
+        return SurfaceColors.SURFACE_5.getColor(this)
     }
 
     private fun getSurfaceColorV3(context: Context) : Int {
-        return SurfaceColors.SURFACE_5.getColor(context)
+        return ResourcesCompat.getColor(context.resources, R.color.accent_250, context.theme)
     }
 
     private fun switchUIToClassic() {

@@ -244,6 +244,24 @@ class Preferences private constructor(private var preferences: SharedPreferences
     }
 
     /**
+     * Set amoled pitch black mode
+     *
+     * @param mode amoled pitch black mode
+     * */
+    fun setAmoledPitchBlack(mode: Boolean) {
+        putGlobalBoolean("amoled_pitch_black", mode)
+    }
+
+    /**
+     * Get amoled pitch black mode
+     *
+     * @return amoled pitch black mode
+     * */
+    fun getAmoledPitchBlack() : Boolean {
+        return getGlobalBoolean("amoled_pitch_black", false)
+    }
+
+    /**
      * Retrieves the imagine command status from the shared preferences.
      *
      * @return The imagine command status, true if enabled or false otherwise.

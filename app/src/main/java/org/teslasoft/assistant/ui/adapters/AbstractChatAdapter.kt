@@ -22,6 +22,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.DisplayMetrics
@@ -34,6 +35,7 @@ import android.widget.TextView
 import android.widget.Toast
 
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
 
@@ -46,6 +48,7 @@ import com.google.android.material.elevation.SurfaceColors
 import io.noties.markwon.Markwon
 
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.activities.ImageBrowserActivity
 
 import java.io.File
@@ -163,10 +166,28 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
     }
 
     protected fun getSurfaceColor(context: Context): Int {
-        return SurfaceColors.SURFACE_2.getColor(context)
+        return if (isDarkThemeEnabled() && Preferences.getPreferences(context, "").getAmoledPitchBlack()) {
+            ResourcesCompat.getColor(context.resources, R.color.amoled_accent_50, null)
+        } else {
+            SurfaceColors.SURFACE_2.getColor(context)
+        }
     }
 
     private fun get3SurfaceColor(context: Context): Int {
-        return SurfaceColors.SURFACE_3.getColor(context)
+        return if (isDarkThemeEnabled() && Preferences.getPreferences(context, "").getAmoledPitchBlack()) {
+            ResourcesCompat.getColor(context.resources, R.color.amoled_accent_100, null)
+        } else {
+            SurfaceColors.SURFACE_3.getColor(context)
+        }
+    }
+
+    protected fun isDarkThemeEnabled(): Boolean {
+        return when (mContext.resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> true
+            Configuration.UI_MODE_NIGHT_NO -> false
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> false
+            else -> false
+        }
     }
 }

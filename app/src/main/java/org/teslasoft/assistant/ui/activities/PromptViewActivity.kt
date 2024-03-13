@@ -21,11 +21,13 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -33,6 +35,7 @@ import androidx.appcompat.content.res.AppCompatResources
 
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -45,6 +48,7 @@ import com.google.gson.reflect.TypeToken
 
 import org.teslasoft.assistant.Api
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.assistant.AssistantActivity
 import org.teslasoft.core.api.network.RequestNetwork
 
@@ -77,6 +81,10 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
     private var btnTry: MaterialButton? = null
 
     private var btnFlag: ImageButton? = null
+
+    private var promptBg: ConstraintLayout? = null
+
+    private var promptActions: LinearLayout? = null
 
     private var id = ""
 
@@ -178,6 +186,73 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        reloadAmoled()
+    }
+
+    private fun reloadAmoled() {
+        if (isDarkThemeEnabled() &&  Preferences.getPreferences(this, "").getAmoledPitchBlack()) {
+            window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme)
+            window.setBackgroundDrawableResource(R.color.amoled_window_background)
+
+            activityTitle?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme))
+
+            promptBg?.setBackgroundResource(R.drawable.btn_accent_24_amoled)
+
+            promptActions?.setBackgroundResource(R.drawable.btn_accent_24_amoled)
+
+            btnBack?.background = getDarkAccentDrawable(
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.btn_accent_tonal_v4_amoled
+                )!!, this
+            )
+
+            btnFlag?.background = getDarkAccentDrawable(
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.btn_accent_tonal_v4_amoled
+                )!!, this
+            )
+        } else {
+            window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.window_background, theme)
+            window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
+            window.setBackgroundDrawableResource(R.color.window_background)
+
+            activityTitle?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
+
+            promptBg?.setBackgroundResource(R.drawable.btn_accent_24)
+
+            promptActions?.setBackgroundResource(R.drawable.btn_accent_24)
+
+            btnBack?.background = getDarkAccentDrawable(
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.btn_accent_tonal_v4
+                )!!, this
+            )
+
+            btnFlag?.background = getDarkAccentDrawable(
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.btn_accent_tonal_v4
+                )!!, this
+            )
+        }
+    }
+
+    private fun isDarkThemeEnabled(): Boolean {
+        return when (resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> true
+            Configuration.UI_MODE_NIGHT_NO -> false
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> false
+            else -> false
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -212,14 +287,12 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
                 textCat = findViewById(R.id.text_cat)
                 btnBack = findViewById(R.id.btn_back)
 
-                activityTitle?.isSelected = true
+                promptBg = findViewById(R.id.prompt_bg)
+                promptActions = findViewById(R.id.prompt_actions)
 
-                activityTitle?.background = getDarkAccentDrawable(
-                    AppCompatResources.getDrawable(
-                        this,
-                        R.color.accent_100
-                    )!!, this
-                )
+                reloadAmoled()
+
+                activityTitle?.isSelected = true
 
                 btnFlag?.background = getDarkAccentDrawable(
                     AppCompatResources.getDrawable(
@@ -319,7 +392,11 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     private fun getSurfaceColor(context: Context) : Int {
-        return SurfaceColors.SURFACE_4.getColor(context)
+        return if (isDarkThemeEnabled() &&  Preferences.getPreferences(context, "").getAmoledPitchBlack()) {
+            ResourcesCompat.getColor(context.resources, R.color.amoled_accent_50, context.theme)
+        } else {
+            SurfaceColors.SURFACE_4.getColor(context)
+        }
     }
 
     override fun onRefresh() {

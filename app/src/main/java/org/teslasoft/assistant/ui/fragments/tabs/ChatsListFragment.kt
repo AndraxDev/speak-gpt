@@ -19,6 +19,8 @@ package org.teslasoft.assistant.ui.fragments.tabs
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.DocumentsContract
@@ -34,10 +36,14 @@ import android.widget.ListView
 import android.widget.Toast
 
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -49,6 +55,7 @@ import org.teslasoft.assistant.preferences.ChatPreferences
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.activities.ChatActivity
 import org.teslasoft.assistant.ui.activities.SettingsActivity
+import org.teslasoft.assistant.ui.activities.SettingsV2Activity
 import org.teslasoft.assistant.ui.adapters.ChatListAdapter
 import org.teslasoft.assistant.ui.fragments.dialogs.AddChatDialogFragment
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
@@ -69,6 +76,8 @@ class ChatsListFragment : Fragment() {
     private var btnAdd: ExtendedFloatingActionButton? = null
 
     private var btnImport: FloatingActionButton? = null
+
+    private var bgSearch: ConstraintLayout? = null
 
     private var selectedFile: String = ""
 
@@ -141,20 +150,37 @@ class ChatsListFragment : Fragment() {
         initSettings()
     }
 
+    fun reloadAmoled() {
+        if (isDarkThemeEnabled() && Preferences.getPreferences(requireActivity(), "").getAmoledPitchBlack()) {
+            btnSettings?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, requireActivity().theme)!!
+            bgSearch?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, requireActivity().theme)!!
+            btnImport?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.amoled_accent_100, requireActivity().theme)
+            btnAdd?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_500, requireActivity().theme)
+        } else {
+            btnSettings?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal, requireActivity().theme)!!)
+            bgSearch?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal, requireActivity().theme)!!)
+            btnImport?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_100, requireActivity().theme)
+            btnAdd?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_900, requireActivity().theme)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // Log.e("T_DEBUG", "Fragment created")
 
         chatsList = view.findViewById(R.id.chats)
         btnSettings = view.findViewById(R.id.btn_settings_)
         btnImport = view.findViewById(R.id.btn_import)
         fieldSearch = view.findViewById(R.id.field_search)
+        bgSearch = view.findViewById(R.id.bg_search)
 
         btnSettings?.setImageResource(R.drawable.ic_settings)
 
         btnSettings?.setOnClickListener {
-            startActivity(Intent(requireActivity(), SettingsActivity::class.java).setAction(Intent.ACTION_VIEW))
+            if (Preferences.getPreferences(requireActivity(), "").getExperimentalUI()) {
+                startActivity(Intent(requireActivity(), SettingsV2Activity::class.java).setAction(Intent.ACTION_VIEW))
+            } else {
+                startActivity(Intent(requireActivity(), SettingsActivity::class.java).setAction(Intent.ACTION_VIEW))
+            }
         }
 
         btnAdd = view.findViewById(R.id.btn_add)
@@ -175,6 +201,8 @@ class ChatsListFragment : Fragment() {
         chatsList?.divider = null
 
         chatsList?.adapter = adapter
+
+        reloadAmoled()
 
         adapter?.notifyDataSetChanged()
 
@@ -326,5 +354,28 @@ class ChatsListFragment : Fragment() {
                 }
             }
         })
+    }
+
+    private fun getDisabledDrawable(drawable: Drawable) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getDisabledColor())
+        return drawable
+    }
+
+    private fun isDarkThemeEnabled(): Boolean {
+        return when (resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> true
+            Configuration.UI_MODE_NIGHT_NO -> false
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> false
+            else -> false
+        }
+    }
+
+    private fun getDisabledColor() : Int {
+        return if (isDarkThemeEnabled() && Preferences.getPreferences(requireActivity(), "").getAmoledPitchBlack()) {
+            ResourcesCompat.getColor(requireActivity().resources, R.color.amoled_accent_100, requireActivity().theme)
+        } else {
+            SurfaceColors.SURFACE_5.getColor(requireActivity())
+        }
     }
 }
