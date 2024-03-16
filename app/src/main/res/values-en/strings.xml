@@ -13,7 +13,7 @@
     <string name="activation">API setup</string>
     <string name="activation_desc1">To use this software you need to provide your OpenAI API key. SpeakGPT uses paid OpenAI models.</string>
     <string name="activation_begin">Let\'s begin</string>
-    <string name="activation_desc2">API usage is significantly cheaper than fixed subscription.</string>
+    <string name="activation_desc2">API usage is significantly cheaper than fixed subscription. API-key authentication is safer than username/password authentication. App can access only API but not account info. You can revoke API key anytime without losing your account. API key is encrypted and stored only on your device.</string>
     <string name="activation_openai_api_key">OpenAI API key</string>
     <string name="activation_warning">Enter the key only if you downloaded this app from official Store or Github page or compiled from sources. We are not responsible for apps from third-party sources. Builds from third-party sources may be insecure.</string>
     <string name="btn_send">Send</string>
@@ -164,4 +164,5 @@
     <string name="setting_system_message_hint">Putting a system message at the end of conversation can improve answers quality and avoid \"forgetting\" information.</string>
     <string name="prompt_report_success">Objection sent. Thank you for feedback!</string>
     <string name="prompt_report_failed">Failed to send report</string>
+    <string name="title_control_center">Control center</string>
 </resources>

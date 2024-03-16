@@ -31,6 +31,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
@@ -39,7 +40,7 @@ import org.teslasoft.assistant.preferences.Preferences
 class TileFragment : Fragment() {
 
     companion object {
-        fun newInstance(checked: Boolean, checkable: Boolean, enabledText: String, disabledText: String?, enabledDesc: String, disabledDesc: String?, icon: Int, disabled: Boolean, chatId: String): TileFragment {
+        fun newInstance(checked: Boolean, checkable: Boolean, enabledText: String, disabledText: String?, enabledDesc: String, disabledDesc: String?, icon: Int, disabled: Boolean, chatId: String, functionDesc: String): TileFragment {
 
             val tileFragment = TileFragment()
 
@@ -53,6 +54,7 @@ class TileFragment : Fragment() {
             args.putInt("icon", icon)
             args.putBoolean("disabled", disabled)
             args.putString("chatId", chatId)
+            args.putString("functionDesc", functionDesc)
 
             tileFragment.arguments = args
 
@@ -105,7 +107,11 @@ class TileFragment : Fragment() {
                 tileSubtitle?.setTextColor(requireActivity().getColor(R.color.text_subtitle_inv))
                 tileBg?.background = getEnabledDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.tile_active)!!)
             } else {
-                tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.accent_900)
+                if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack() == true){
+                    tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.accent_600)
+                } else {
+                    tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.accent_900)
+                }
                 tileTitle?.setTextColor(requireActivity().getColor(R.color.text_title))
                 tileSubtitle?.setTextColor(requireActivity().getColor(R.color.text_subtitle))
                 tileBg?.background = getDisabledDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.tile_inactive)!!)
@@ -147,7 +153,11 @@ class TileFragment : Fragment() {
             tileTitle?.text = requireArguments().getString("enabledText").toString()
             tileSubtitle?.text = requireArguments().getString("enabledDesc").toString()
         } else {
-            tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.accent_900)
+            if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack() == true){
+                tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.accent_600)
+            } else {
+                tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.accent_900)
+            }
             tileTitle?.setTextColor(requireActivity().getColor(R.color.text_title))
             tileSubtitle?.setTextColor(requireActivity().getColor(R.color.text_subtitle))
             tileBg?.background = getDisabledDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.tile_inactive)!!)
@@ -188,6 +198,7 @@ class TileFragment : Fragment() {
         val icon = args.getInt("icon")
         val disabled = args.getBoolean("disabled")
         val chatId: String = args.getString("chatId").toString()
+        val functionDesc: String = args.getString("functionDesc").toString()
 
         preferences = Preferences.getPreferences(requireActivity(), chatId)
 
@@ -227,7 +238,11 @@ class TileFragment : Fragment() {
             tileSubtitle?.setTextColor(requireActivity().getColor(R.color.text_subtitle_inv))
             tileBg?.background = getEnabledDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.tile_active)!!)
         } else {
-            tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.accent_900)
+            if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack() == true){
+                tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.accent_600)
+            } else {
+                tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.accent_900)
+            }
             tileTitle?.setTextColor(requireActivity().getColor(R.color.text_title))
             tileSubtitle?.setTextColor(requireActivity().getColor(R.color.text_subtitle))
             tileBg?.background = getDisabledDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.tile_inactive)!!)
@@ -240,13 +255,26 @@ class TileFragment : Fragment() {
             tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.disabled_icon)
         }
 
+        tileBg?.setOnLongClickListener {
+            MaterialAlertDialogBuilder(requireActivity())
+                .setTitle(tileText)
+                .setMessage(functionDesc)
+                .setPositiveButton("Close") { _, _ -> }
+                .show()
+            true
+        }
+
         tileBg?.setOnClickListener {
             if (isEnabled) {
                 if (checkable) {
                     if (isChecked) {
                         val fadeOut: Animation = AnimationUtils.loadAnimation(requireActivity(), R.anim.fade_out_btn)
                         val fadeIn: Animation = AnimationUtils.loadAnimation(requireActivity(), R.anim.fade_in_btn)
-                        tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.accent_900)
+                        if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack() == true){
+                            tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.accent_600)
+                        } else {
+                            tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.accent_900)
+                        }
                         tileTitle?.setTextColor(requireActivity().getColor(R.color.text_title))
                         tileSubtitle?.setTextColor(requireActivity().getColor(R.color.text_subtitle))
                         tileBg?.animation = fadeOut
@@ -318,7 +346,7 @@ class TileFragment : Fragment() {
 
     private fun getEnabledColor() : Int {
         return if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack() == true){
-            requireActivity().getColor(R.color.accent_500)
+            requireActivity().getColor(R.color.accent_600)
         } else {
             requireActivity().getColor(R.color.accent_900)
         }

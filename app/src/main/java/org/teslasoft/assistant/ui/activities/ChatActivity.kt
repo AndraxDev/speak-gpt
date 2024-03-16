@@ -134,6 +134,7 @@ class ChatActivity : FragmentActivity() {
     private var actionBar: ConstraintLayout? = null
     private var btnBack: ImageButton? = null
     private var keyboardFrame: ConstraintLayout? = null
+    private var root: ConstraintLayout? = null
 
     // Init chat
     private var messages: ArrayList<HashMap<String, Any>> = arrayListOf()
@@ -242,6 +243,7 @@ class ChatActivity : FragmentActivity() {
             keyboardFrame?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme))
             actionBar?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme))
             activityTitle?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme))
+            root?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
             btnBack?.background = getAmoledAccentDrawable(
                 AppCompatResources.getDrawable(
                     this,
@@ -286,10 +288,11 @@ class ChatActivity : FragmentActivity() {
         } else {
             window.setBackgroundDrawableResource(R.color.window_background)
             window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
-            window.navigationBarColor = SurfaceColors.SURFACE_5.getColor(this)
-            keyboardFrame?.setBackgroundColor(SurfaceColors.SURFACE_5.getColor(this))
+            window.navigationBarColor = SurfaceColors.SURFACE_2.getColor(this)
+            keyboardFrame?.setBackgroundColor(SurfaceColors.SURFACE_2.getColor(this))
             actionBar?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
             activityTitle?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
+            root?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
             btnBack?.background = getDarkAccentDrawable(
                 AppCompatResources.getDrawable(
                     this,
@@ -496,6 +499,7 @@ class ChatActivity : FragmentActivity() {
         actionBar = findViewById(R.id.action_bar)
         btnBack = findViewById(R.id.btn_back)
         keyboardFrame = findViewById(R.id.keyboard_frame)
+        root = findViewById(R.id.root)
 
         btnExport?.setImageResource(R.drawable.ic_upload)
         btnBack?.setImageResource(R.drawable.ic_back)
@@ -564,7 +568,7 @@ class ChatActivity : FragmentActivity() {
     }
 
     private fun getSurfaceColor(context: Context) : Int {
-        return SurfaceColors.SURFACE_4.getColor(context)
+        return SurfaceColors.SURFACE_5.getColor(context)
     }
 
     private fun getAmoledSurfaceColor(context: Context) : Int {
@@ -1459,7 +1463,7 @@ class ChatActivity : FragmentActivity() {
 
     private fun speak(message: String) {
         val preferences = Preferences.getPreferences(this, chatId)
-        val preferences2 = Preferences.getPreferences(this, "")
+        val preferences2 = Preferences.getPreferences(this, chatId)
 
         if (preferences.getTtsEngine() == "google") {
             tts!!.speak(message, TextToSpeech.QUEUE_FLUSH, null, "")

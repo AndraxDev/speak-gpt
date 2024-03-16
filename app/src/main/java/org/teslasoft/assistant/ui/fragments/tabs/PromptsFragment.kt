@@ -349,8 +349,10 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     fun reloadAmoled() {
         if (isDarkThemeEnabled() && Preferences.getPreferences(requireActivity(), "").getAmoledPitchBlack()) {
             searchBar?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, requireActivity().theme)!!
+            btnPost?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_600, requireActivity().theme)
         } else {
             searchBar?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal, requireActivity().theme)!!)
+            btnPost?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_900, requireActivity().theme)
         }
     }
 
@@ -474,8 +476,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private fun loadData() {
         requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/search.php?api_key=${Api.TESLASOFT_API_KEY}&query=$query", "A", searchDataListener)
-
-//        refreshLayout?.visibility = View.GONE
+        requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/search.php?api_key=${Api.TESLASOFT_API_KEY}&query=$query", "A", searchDataListener)
         noInternetLayout?.visibility = View.GONE
         promptsList?.visibility = View.GONE
         progressbar?.visibility = View.VISIBLE

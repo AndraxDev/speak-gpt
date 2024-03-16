@@ -94,6 +94,7 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActiv
                 icon?.setImageResource(R.drawable.ic_user)
                 username.text = "User"
                 btnCopy?.visibility = View.VISIBLE
+                ui?.setBackgroundColor(getSurface2Color(mContext))
             }
         }
 

@@ -27,12 +27,10 @@ class Preferences private constructor(private var preferences: SharedPreferences
     companion object {
         private var preferences: Preferences? = null
         fun getPreferences(context: Context, xchatId: String) : Preferences {
-            // Toast.makeText(context, "Chat ID: $xchatId", Toast.LENGTH_SHORT).show()
             if (preferences == null) preferences = Preferences(context.getSharedPreferences("settings.$xchatId", Context.MODE_PRIVATE), context.getSharedPreferences("settings", Context.MODE_PRIVATE), xchatId)
 
             else {
                 if (preferences?.chatId != xchatId) {
-                    // Toast.makeText(context, "Diff: $xchatId", Toast.LENGTH_SHORT).show()
                     preferences?.setPreferences(xchatId, context)
                 }
             }
@@ -187,6 +185,20 @@ class Preferences private constructor(private var preferences: SharedPreferences
      */
     fun setResolution(resolution: String) {
         putString("resolution", resolution)
+    }
+
+    /**
+     * Set lock assistant window
+     * */
+    fun setLockAssistantWindow(value: Boolean) {
+        putGlobalBoolean("lock_assistant_window", value)
+    }
+
+    /**
+     * Get lock assistant window
+     * */
+    fun getLockAssistantWindow() : Boolean {
+        return getGlobalBoolean("lock_assistant_window", false)
     }
 
     /**

@@ -14,7 +14,7 @@
     <string name="activation">Aktywacja</string>
     <string name="activation_desc1">Aby korzystać z tego oprogramowania, musisz podać swój klucz API OpenAI. SpeakGPT korzysta z płatnych modeli OpenAI.</string>
     <string name="activation_begin">Zaczynamy</string>
-    <string name="activation_desc2">Korzystanie z API jest znacznie tańsze niż stała subskrypcja.</string>
+    <string name="activation_desc2">Korzystanie z API jest znacznie tańsze niż stała subskrypcja. Uwierzytelnianie za pomocą klucza API jest bezpieczniejsze niż uwierzytelnianie za pomocą nazwy użytkownika/hasła. Aplikacja może uzyskać dostęp tylko do API, a nie do informacji o koncie. Klucz API możesz odwołać w dowolnym momencie, nie tracąc dostępu do konta. Klucz API jest zaszyfrowany i przechowywany tylko na Twoim urządzeniu.</string>
     <string name="activation_openai_api_key">Klucz API OpenAI</string>
     <string name="activation_warning">Wprowadź klucz tylko wtedy, gdy pobrałeś tę aplikację z oficjalnego sklepu lub strony Github lub skompilowałeś ją ze źródeł. Nie ponosimy odpowiedzialności za aplikacje ze źródeł innych niż te oficjalne. Kompilacje z nieoficjalnych źródeł mogą być niebezpieczne.</string>
     <string name="btn_send">Wyślij</string>

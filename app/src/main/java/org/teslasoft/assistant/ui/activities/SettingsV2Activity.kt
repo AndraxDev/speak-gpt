@@ -26,6 +26,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.ImageButton
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
@@ -45,7 +46,6 @@ import org.teslasoft.assistant.ui.fragments.dialogs.LanguageSelectorDialogFragme
 import org.teslasoft.assistant.ui.fragments.dialogs.SelectResolutionFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.SystemMessageDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.VoiceSelectorDialogFragment
-import org.teslasoft.assistant.ui.onboarding.ActivationActivity
 import org.teslasoft.core.auth.client.TeslasoftIDClient
 import java.util.Locale
 
@@ -86,6 +86,9 @@ class SettingsV2Activity : FragmentActivity() {
     private var tileClearChat: TileFragment? = null
     private var tileDocumentation: TileFragment? = null
     private var tileAmoledMode: TileFragment? = null
+    private var tileLockAssistantWindow: TileFragment? = null
+    private var root: ScrollView? = null
+    private var textGlobal: TextView? = null
 
     private var btnBack: ImageButton? = null
 
@@ -201,8 +204,8 @@ class SettingsV2Activity : FragmentActivity() {
         setContentView(R.layout.activity_settings_new)
 
         btnBack = findViewById(R.id.btn_back)
-
-        val activitySettingsTitle: TextView? = findViewById(R.id.activity_new_settings_title)
+        root = findViewById(R.id.root)
+        textGlobal = findViewById(R.id.text_global)
 
         val extras: Bundle? = intent.extras
 
@@ -211,20 +214,16 @@ class SettingsV2Activity : FragmentActivity() {
 
             if (chatId == "") {
                 tileClearChat?.setEnabled(false)
-                activitySettingsTitle?.text = getString(R.string.global_settings_title)
+                textGlobal?.visibility = TextView.VISIBLE
             } else {
-                activitySettingsTitle?.text = getString(R.string.chat_settings_title)
+                textGlobal?.visibility = TextView.GONE
             }
         } else {
             tileClearChat?.setEnabled(false)
-            activitySettingsTitle?.text = getString(R.string.global_settings_title)
+            textGlobal?.visibility = TextView.VISIBLE
         }
 
-        // Toast.makeText(this, chatId, Toast.LENGTH_SHORT).show()
-
         preferences = Preferences.getPreferences(this, chatId)
-
-        // Toast.makeText(this, preferences?.getLayout(), Toast.LENGTH_SHORT).show()
 
         model = preferences?.getModel() ?: "gpt-3.5-turbo"
         activationPrompt = preferences?.getPrompt() ?: ""
@@ -245,7 +244,8 @@ class SettingsV2Activity : FragmentActivity() {
             null,
             R.drawable.ic_user,
             false,
-            chatId
+            chatId,
+            "This feature allows you to manage your OpenAI account."
         )
 
         tileAssistant = TileFragment.newInstance(
@@ -257,7 +257,8 @@ class SettingsV2Activity : FragmentActivity() {
             "Off",
             R.drawable.ic_assistant,
             false,
-            chatId
+            chatId,
+            "This feature allows you to set SpeakGPT as your default assistant."
         )
 
         tileApiKey = TileFragment.newInstance(
@@ -269,7 +270,8 @@ class SettingsV2Activity : FragmentActivity() {
             null,
             R.drawable.ic_key,
             false,
-            chatId
+            chatId,
+            "This feature allows you to set your OpenAI API key."
         )
 
         tileCustomHost = TileFragment.newInstance(
@@ -281,7 +283,8 @@ class SettingsV2Activity : FragmentActivity() {
             null,
             R.drawable.ic_user,
             false,
-            chatId
+            chatId,
+            "This feature allows you to set custom OpenAI API host."
         )
 
         tileVoice = TileFragment.newInstance(
@@ -293,7 +296,8 @@ class SettingsV2Activity : FragmentActivity() {
             null,
             R.drawable.ic_voice,
             false,
-            chatId
+            chatId,
+            "This feature allows you to set your TTS voice."
         )
 
         tileVoiceLanguage = TileFragment.newInstance(
@@ -305,7 +309,8 @@ class SettingsV2Activity : FragmentActivity() {
             null,
             R.drawable.ic_language,
             false,
-            chatId
+            chatId,
+            "This feature allows you to set your TTS voice language."
         )
 
         tileImageModel = TileFragment.newInstance(
@@ -317,7 +322,8 @@ class SettingsV2Activity : FragmentActivity() {
             "DALL-e 2 is used",
             R.drawable.ic_image,
             false,
-            chatId
+            chatId,
+            "This feature allows you to set image generation model."
         )
 
         tileImageResolution = TileFragment.newInstance(
@@ -329,7 +335,8 @@ class SettingsV2Activity : FragmentActivity() {
             null,
             R.drawable.ic_image,
             false,
-            chatId
+            chatId,
+            "This feature allows you to set image resolution. Please note that DALL-e 3 supports only 1024x1024."
         )
 
         tileTTS = TileFragment.newInstance(
@@ -341,7 +348,8 @@ class SettingsV2Activity : FragmentActivity() {
             "Google TTS is used",
             R.drawable.ic_tts,
             false,
-            chatId
+            chatId,
+            "This feature allows you to set TTS engine. OpenAI TTS is paid."
         )
 
         tileSTT = TileFragment.newInstance(
@@ -353,7 +361,8 @@ class SettingsV2Activity : FragmentActivity() {
             "Google STT is used",
             R.drawable.ic_microphone,
             false,
-            chatId
+            chatId,
+            "This feature allows you to set STT engine. Whisper is paid."
         )
 
         tileSilentMode = TileFragment.newInstance(
@@ -365,7 +374,8 @@ class SettingsV2Activity : FragmentActivity() {
             "Off",
             R.drawable.ic_mute,
             preferences?.getNotSilence() == true,
-            chatId
+            chatId,
+            "This feature allows you let SpeakGPT never pronounce answers."
         )
 
         tileAlwaysSpeak = TileFragment.newInstance(
@@ -377,7 +387,8 @@ class SettingsV2Activity : FragmentActivity() {
             "Off",
             R.drawable.ic_volume_up,
             preferences?.getSilence() == true,
-            chatId
+            chatId,
+            "This feature allows you let SpeakGPT always pronounce answers."
         )
 
         tileTextModel = TileFragment.newInstance(
@@ -389,7 +400,8 @@ class SettingsV2Activity : FragmentActivity() {
             null,
             R.drawable.chatgpt_icon,
             false,
-            chatId
+            chatId,
+            "This feature allows you to set text generation model as well as model's params."
         )
 
         tileActivationMessage = TileFragment.newInstance(
@@ -401,7 +413,8 @@ class SettingsV2Activity : FragmentActivity() {
             null,
             R.drawable.ic_play,
             false,
-            chatId
+            chatId,
+            "This feature allows you to set activation prompt which will be sent as a first user message."
         )
 
         tileSystemMessage = TileFragment.newInstance(
@@ -413,7 +426,8 @@ class SettingsV2Activity : FragmentActivity() {
             null,
             R.drawable.ic_play,
             false,
-            chatId
+            chatId,
+            "This feature allows you to set system message which will be sent as a system message."
         )
 
         tileLangDetect = TileFragment.newInstance(
@@ -425,7 +439,8 @@ class SettingsV2Activity : FragmentActivity() {
             "Off",
             R.drawable.ic_language,
             false,
-            chatId
+            chatId,
+            "This feature allows you to enable automatic language detection of speech."
         )
 
         tileChatLayout = TileFragment.newInstance(
@@ -437,7 +452,8 @@ class SettingsV2Activity : FragmentActivity() {
             "Off",
             R.drawable.ic_chat,
             false,
-            chatId
+            chatId,
+            "This feature allows you to set classic chat layout."
         )
 
         tileFunctionCalling = TileFragment.newInstance(
@@ -449,7 +465,8 @@ class SettingsV2Activity : FragmentActivity() {
             "Off",
             R.drawable.ic_experiment,
             false,
-            chatId
+            chatId,
+            "This feature allows you to enable function calling. Please note that this feature is experimental and unstable."
         )
 
         tileSlashCommands = TileFragment.newInstance(
@@ -461,7 +478,8 @@ class SettingsV2Activity : FragmentActivity() {
             "Off",
             R.drawable.ic_experiment,
             false,
-            chatId
+            chatId,
+            "This feature allows you to enable slash commands. Please note that this feature is experimental and unstable. Example: /imagine a cat."
         )
 
         tileDesktopMode = TileFragment.newInstance(
@@ -473,7 +491,8 @@ class SettingsV2Activity : FragmentActivity() {
             "Off",
             R.drawable.ic_desktop,
             false,
-            chatId
+            chatId,
+            "This feature allows you to enable desktop mode. When desktop mode is enabled, SpeakGPT will use keyboard shortcuts and message input will be automatically focused. Press 'Enter' to send message, 'Shift + Enter' to add new line and 'Shift+Esc' to close chat. Not recommended to use on phones unless you want keyboard to be opened every time you open the chat."
         )
 
         tileNewLook = TileFragment.newInstance(
@@ -485,7 +504,8 @@ class SettingsV2Activity : FragmentActivity() {
             "Off",
             R.drawable.ic_experiment,
             false,
-            chatId
+            chatId,
+            "This feature allows you to enable new experimental UI. New UI is more compact and intuitive."
         )
 
         tileAboutApp = TileFragment.newInstance(
@@ -497,7 +517,8 @@ class SettingsV2Activity : FragmentActivity() {
             null,
             R.drawable.ic_info,
             false,
-            chatId
+            chatId,
+            "This feature allows you to open about SpeakGPT page."
         )
 
         tileClearChat = TileFragment.newInstance(
@@ -509,7 +530,8 @@ class SettingsV2Activity : FragmentActivity() {
             null,
             R.drawable.ic_close,
             chatId == "",
-            chatId
+            chatId,
+            "This feature allows you to clear chat history."
         )
 
         tileDocumentation = TileFragment.newInstance(
@@ -521,7 +543,8 @@ class SettingsV2Activity : FragmentActivity() {
             null,
             R.drawable.ic_book,
             false,
-            chatId
+            chatId,
+            "This feature allows you to open SpeakGPT documentation."
         )
 
         tileAmoledMode = TileFragment.newInstance(
@@ -533,7 +556,21 @@ class SettingsV2Activity : FragmentActivity() {
             "Off",
             R.drawable.ic_experiment,
             !isDarkThemeEnabled(),
-            chatId
+            chatId,
+            "This feature allows you to enable AMOLED mode for supported displays. It can significantly save battery. AMOLED mode is only available in dark theme."
+        )
+
+        tileLockAssistantWindow = TileFragment.newInstance(
+            preferences?.getLockAssistantWindow() == true,
+            true,
+            "Lock assistant window",
+            null,
+            "On",
+            "Off",
+            R.drawable.ic_lock,
+            false,
+            chatId,
+            "This feature allows you to lock assistant window. When assistant window is locked, it can not be closed by pressing back button or swiping window down. Nut you can use 'exit' button. This feature can prevent accidental closing of assistant window and losing unsaved conversation."
         )
 
         supportFragmentManager.beginTransaction().replace(R.id.tile_account, tileAccountFragment!!).commit()
@@ -566,6 +603,7 @@ class SettingsV2Activity : FragmentActivity() {
         supportFragmentManager.beginTransaction().replace(R.id.tile_desktop_mode, tileDesktopMode!!).commit()
         supportFragmentManager.beginTransaction().replace(R.id.tile_new_look, tileNewLook!!).commit()
         supportFragmentManager.beginTransaction().replace(R.id.tile_amoled_mode, tileAmoledMode!!).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.tile_lock_assistant, tileLockAssistantWindow!!).commit()
 
         supportFragmentManager.beginTransaction().replace(R.id.tile_about_app, tileAboutApp!!).commit()
         supportFragmentManager.beginTransaction().replace(R.id.tile_clear_chat, tileClearChat!!).commit()
@@ -576,9 +614,6 @@ class SettingsV2Activity : FragmentActivity() {
     }
 
     private fun initializeLogic() {
-
-        // Toast.makeText(this, preferences?.getLayout(), Toast.LENGTH_SHORT).show()
-
         btnBack?.setOnClickListener {
             finish()
         }
@@ -750,6 +785,14 @@ class SettingsV2Activity : FragmentActivity() {
             recreate()
         }}
 
+        tileLockAssistantWindow?.setOnCheckedChangeListener { ischecked -> run {
+            if (ischecked) {
+                preferences?.setLockAssistantWindow(true)
+            } else {
+                preferences?.setLockAssistantWindow(false)
+            }
+        }}
+
         tileAboutApp?.setOnTileClickListener {
             startActivity(Intent(this, AboutActivity::class.java))
         }
@@ -788,13 +831,13 @@ class SettingsV2Activity : FragmentActivity() {
             window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
             window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
-
+            root?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
             btnBack?.setBackgroundResource(R.drawable.btn_accent_icon_large_amoled)
         } else {
-            window.navigationBarColor = SurfaceColors.SURFACE_2.getColor(this)
-            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.window_background, theme)
+            window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
+            window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
             window.setBackgroundDrawableResource(R.color.window_background)
-
+            root?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
             btnBack?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_icon_large, theme)!!)
         }
     }

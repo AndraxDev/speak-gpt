@@ -64,6 +64,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="%sname"
+                android:textColor="@color/text_title"
                 android:textSize="18sp" />
 
             <TextView
@@ -71,7 +72,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:alpha="0.5"
-                android:text="%smodel_name" />
+                android:text="%smodel_name"
+                android:textColor="@color/text_subtitle" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,9 +10,9 @@
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:navigationBarColor">@color/window_background</item>
         <item name="android:windowBackground">@color/window_background</item>
-        <item name="android:windowSplashScreenBackground">@color/window_background</item>
+        <item name="android:windowSplashScreenBackground">@color/amoled_window_background</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
         <item name="android:windowSplashScreenAnimationDuration">1200</item>
-        <item name="android:windowSplashScreenIconBackgroundColor">@color/accent_100</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/transparent</item>
     </style>
 </resources>

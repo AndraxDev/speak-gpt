@@ -14,7 +14,7 @@
     <string name="activation">Aktivasyon</string>
     <string name="activation_desc1">Bu yazılımı kullanmak için OpenAI API anahtarınızı sağlamanız gerekir. SpeakGPT ücretli OpenAI modellerini kullanır.</string>
     <string name="activation_begin">Başlayalım</string>
-    <string name="activation_desc2">API kullanımı sabit abonelikten önemli ölçüde daha ucuzdur.</string>
+    <string name="activation_desc2">API kullanımı sabit abonelikten önemli ölçüde daha ucuzdur. API anahtarı kimlik doğrulaması, kullanıcı adı/şifre kimlik doğrulamasından daha güvenlidir. Uygulama sadece API\'ye erişebilir, hesap bilgilerine erişemez. API anahtarınızı hesabınızı kaybetmeden istediğiniz zaman iptal edebilirsiniz. API anahtarı şifrelenmiş ve sadece cihazınızda saklanmaktadır.</string>
     <string name="activation_openai_api_key">OpenAI API anahtarı</string>
     <string name="activation_warning">Anahtarı yalnızca bu uygulamayı resmi Mağaza veya Github sayfasından indirdiyseniz veya kaynaklardan derlediyseniz girin. Üçüncü taraf kaynaklardan gelen uygulamalardan sorumlu değiliz. Üçüncü taraf kaynaklardan gelen derlemeler güvensiz olabilir.</string>
     <string name="btn_send">Gönder</string>

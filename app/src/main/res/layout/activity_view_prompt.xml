@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -14,12 +16,12 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:freezesText="true"
-        android:marqueeRepeatLimit="marquee_forever"
-        android:scrollHorizontally="true"
-        android:singleLine="true"
         android:gravity="center_vertical"
+        android:marqueeRepeatLimit="marquee_forever"
         android:paddingLeft="64dp"
         android:paddingRight="64dp"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
         android:textColor="@color/text_title"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -49,9 +51,9 @@
         app:layout_constraintTop_toBottomOf="@+id/activity_view_title">
 
         <include
+            layout="@layout/fragment_network_error"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            layout="@layout/fragment_network_error"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -91,54 +93,69 @@
                         android:layout_height="match_parent">
 
 
-                        <LinearLayout
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/prompt_actions"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
+                            android:layout_marginStart="12dp"
                             android:layout_marginTop="16dp"
-                            android:layout_marginEnd="16dp"
+                            android:layout_marginEnd="12dp"
                             android:layout_marginBottom="16dp"
                             android:background="@drawable/btn_accent_24"
                             android:paddingStart="6dp"
                             android:paddingTop="12dp"
                             android:paddingEnd="6dp"
                             android:paddingBottom="12dp"
-                            android:weightSum="3"
+
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/prompt_bg">
+                            app:layout_constraintTop_toBottomOf="@+id/prompt_bg"
+                            app:layout_constraintVertical_bias="1.0">
 
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btn_try"
-                                style="@style/Widget.Material3.Button"
+                            <LinearLayout
+                                android:id="@+id/linearLayout"
                                 android:layout_width="0dp"
-                                android:layout_height="56dp"
-                                android:layout_marginHorizontal="6dp"
+                                android:layout_height="match_parent"
                                 android:layout_weight="1"
-                                android:background="@drawable/btn_accent_tonal"
-                                android:text="@string/btn_try_it"
-                                app:icon="@drawable/ic_play"
-                                app:iconGravity="textStart"
-                                app:layout_constraintBottom_toBottomOf="parent"
+                                android:orientation="horizontal"
+                                android:weightSum="2"
+                                app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                                app:layout_constraintTop_toTopOf="parent">
 
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btn_copy"
-                                style="@style/Widget.Material3.Button.TonalButton"
-                                android:layout_width="0dp"
-                                android:layout_height="56dp"
-                                android:layout_marginHorizontal="6dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/btn_accent_tonal_selector_v5"
-                                android:text="@string/btn_copy"
-                                app:icon="@drawable/ic_copy"
-                                app:iconGravity="textStart"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toEndOf="@id/btn_try"
-                                app:layout_constraintTop_toTopOf="parent" />
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btn_try"
+                                    style="@style/Widget.Material3.Button"
+                                    android:layout_width="0dp"
+                                    android:layout_height="56dp"
+                                    android:layout_marginHorizontal="6dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/btn_accent_tonal"
+                                    android:text="@string/btn_try_it"
+                                    app:icon="@drawable/ic_play"
+                                    app:iconGravity="textStart"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btn_copy"
+                                    style="@style/Widget.Material3.Button.TonalButton"
+                                    android:layout_width="0dp"
+                                    android:layout_height="56dp"
+                                    android:layout_marginHorizontal="6dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/btn_accent_tonal_selector_v5"
+                                    android:text="@string/btn_copy"
+                                    app:icon="@drawable/ic_copy"
+                                    app:iconGravity="textStart"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toEndOf="@id/btn_try"
+                                    app:layout_constraintTop_toTopOf="parent" />
+                            </LinearLayout>
+
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/btn_like"
@@ -146,6 +163,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="56dp"
                                 android:layout_marginHorizontal="6dp"
+                                android:layout_marginTop="12dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/btn_accent_tonal_selector_v5"
                                 android:text="0"
@@ -153,17 +171,17 @@
                                 app:iconGravity="textStart"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/btn_copy"
-                                app:layout_constraintTop_toTopOf="parent" />
-                        </LinearLayout>
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/prompt_bg"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
+                            android:layout_marginStart="12dp"
                             android:layout_marginTop="16dp"
-                            android:layout_marginEnd="16dp"
+                            android:layout_marginEnd="12dp"
                             android:background="@drawable/btn_accent_24"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -259,8 +277,8 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/btn_accent_tonal"
-        android:elevation="6.01dip"
         android:contentDescription="@string/btn_flag"
+        android:elevation="6.01dip"
         android:tooltipText="@string/btn_flag"
         app:layout_constraintBottom_toBottomOf="@+id/activity_view_title"
         app:layout_constraintEnd_toEndOf="parent"
@@ -276,9 +294,9 @@
         android:layout_marginBottom="8dp"
         android:background="@drawable/btn_accent_tonal"
         android:contentDescription="Go back"
-        android:tooltipText="Go back"
         android:elevation="6.01dip"
         android:src="@drawable/ic_back"
+        android:tooltipText="Go back"
         app:layout_constraintBottom_toBottomOf="@+id/activity_view_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

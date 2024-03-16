@@ -7,6 +7,7 @@
     <color name="accent_300">#424250</color>
     <color name="accent_400">#424250</color>
     <color name="accent_500">#a895e9</color>
+    <color name="accent_600">#a895e9</color>
     <color name="accent_900">#c3b4ff</color>
     <color name="neutral_200">#ddd9e6</color>
     <color name="icon_50">@color/purple_50</color>

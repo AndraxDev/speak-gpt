@@ -84,7 +84,7 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
 
     private var promptBg: ConstraintLayout? = null
 
-    private var promptActions: LinearLayout? = null
+    private var promptActions: ConstraintLayout? = null
 
     private var id = ""
 
@@ -97,6 +97,8 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
     private var promptFor: String? = null
 
     private var btnBack: ImageButton? = null
+
+    private var root: ConstraintLayout? = null
 
     private val dataListener: RequestNetwork.RequestListener = object : RequestNetwork.RequestListener {
         override fun onResponse(tag: String, message: String) {
@@ -197,6 +199,8 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
             window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme)
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
 
+            root?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
+
             activityTitle?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme))
 
             promptBg?.setBackgroundResource(R.drawable.btn_accent_24_amoled)
@@ -217,15 +221,27 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
                 )!!, this
             )
         } else {
-            window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.window_background, theme)
+            window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
             window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
             window.setBackgroundDrawableResource(R.color.window_background)
 
+            root?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
+
             activityTitle?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
 
-            promptBg?.setBackgroundResource(R.drawable.btn_accent_24)
+            promptBg?.background = getDarkDrawable(
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.btn_accent_24
+                )!!
+            )
 
-            promptActions?.setBackgroundResource(R.drawable.btn_accent_24)
+            promptActions?.background = getDarkDrawable(
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.btn_accent_24
+                )!!
+            )
 
             btnBack?.background = getDarkAccentDrawable(
                 AppCompatResources.getDrawable(
@@ -241,6 +257,11 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
                 )!!, this
             )
         }
+    }
+
+    private fun getDarkDrawable(drawable: Drawable) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), SurfaceColors.SURFACE_2.getColor(this))
+        return drawable
     }
 
     private fun isDarkThemeEnabled(): Boolean {
@@ -286,6 +307,7 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
                 btnTry = findViewById(R.id.btn_try)
                 textCat = findViewById(R.id.text_cat)
                 btnBack = findViewById(R.id.btn_back)
+                root = findViewById(R.id.root)
 
                 promptBg = findViewById(R.id.prompt_bg)
                 promptActions = findViewById(R.id.prompt_actions)

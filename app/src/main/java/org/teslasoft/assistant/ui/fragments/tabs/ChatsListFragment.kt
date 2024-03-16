@@ -155,11 +155,11 @@ class ChatsListFragment : Fragment() {
             btnSettings?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, requireActivity().theme)!!
             bgSearch?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, requireActivity().theme)!!
             btnImport?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.amoled_accent_100, requireActivity().theme)
-            btnAdd?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_500, requireActivity().theme)
+            btnAdd?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_600, requireActivity().theme)
         } else {
             btnSettings?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal, requireActivity().theme)!!)
             bgSearch?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal, requireActivity().theme)!!)
-            btnImport?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_100, requireActivity().theme)
+            btnImport?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_250, requireActivity().theme)
             btnAdd?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_900, requireActivity().theme)
         }
     }

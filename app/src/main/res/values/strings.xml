@@ -13,7 +13,7 @@
     <string name="activation">API setup</string>
     <string name="activation_desc1">To use this software you need to provide your OpenAI API key. SpeakGPT uses paid OpenAI models.</string>
     <string name="activation_begin">Let\'s begin</string>
-    <string name="activation_desc2">API usage is significantly cheaper than fixed subscription.</string>
+    <string name="activation_desc2">API usage is significantly cheaper than fixed subscription. API-key authentication is safer than username/password authentication. App can access only API but not account info. You can revoke API key anytime without losing your account. API key is encrypted and stored only on your device.</string>
     <string name="activation_openai_api_key">OpenAI API key</string>
     <string name="activation_warning">Enter the key only if you downloaded this app from official Store or Github page or compiled from sources. We are not responsible for apps from third-party sources. Builds from third-party sources may be insecure.</string>
     <string name="btn_send">Send</string>
@@ -167,7 +167,8 @@
     <string name="prompt_report_failed">Failed to send report</string>
     <string name="option_summarize">Summarize</string>
     <string name="tip_11">Long press stop recording button to cancel speech recognition and prevent generating response.</string>
-    <string name="global_settings_tip">WARNING:\n\nYou are editing global settings. This is a template for new chats and settings for assistant. These settings don\'t apply to existing chats. To edit settings for existing chat, open the chat and click the settings icon. If this message has disappeared then you did all correct!</string>
+    <string name="global_settings_tip">You are editing global settings. This is a template for new chats and settings for assistant. These settings don\'t apply to existing chats. To edit settings for existing chat, open the chat and click the settings icon.</string>
     <string name="global_settings_title">Global settings</string>
     <string name="chat_settings_title">Chat settings</string>
+    <string name="title_control_center">Control center</string>
 </resources>

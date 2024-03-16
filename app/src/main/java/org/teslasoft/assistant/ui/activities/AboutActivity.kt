@@ -20,6 +20,7 @@ import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -30,6 +31,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.DrawableCompat
 
 import androidx.fragment.app.FragmentActivity
 
@@ -56,6 +58,8 @@ class AboutActivity : FragmentActivity() {
     private var system: ConstraintLayout? = null
     private var links: LinearLayout? = null
 
+    private var root: ConstraintLayout? = null
+
     private var activateEasterEggCounter: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,6 +79,8 @@ class AboutActivity : FragmentActivity() {
         actions = findViewById(R.id.common_actions)
         system = findViewById(R.id.system_info)
         links = findViewById(R.id.links)
+
+        root = findViewById(R.id.root)
 
         appIcon?.setImageResource(R.drawable.assistant)
 
@@ -159,7 +165,7 @@ class AboutActivity : FragmentActivity() {
     }
 
     private fun reloadAmoled() {
-        if (isDarkThemeEnabled() &&  Preferences.getPreferences(this, "").getAmoledPitchBlack()) {
+        if (isDarkThemeEnabled() && Preferences.getPreferences(this, "").getAmoledPitchBlack()) {
             window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
             window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
@@ -169,17 +175,26 @@ class AboutActivity : FragmentActivity() {
             actions?.setBackgroundResource(R.drawable.btn_accent_24_amoled)
             system?.setBackgroundResource(R.drawable.btn_accent_24_amoled)
             links?.setBackgroundResource(R.drawable.btn_accent_24_amoled)
+
+            root?.setBackgroundResource(R.color.amoled_window_background)
         } else {
-            window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.window_background, theme)
-            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.window_background, theme)
+            window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
+            window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
             window.setBackgroundDrawableResource(R.color.window_background)
 
             appIcon?.setBackgroundResource(R.drawable.btn_accent_50)
 
-            actions?.setBackgroundResource(R.drawable.btn_accent_24)
-            system?.setBackgroundResource(R.drawable.btn_accent_24)
-            links?.setBackgroundResource(R.drawable.btn_accent_24)
+            actions?.background = getDarkDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_24, theme)!!)
+            system?.background = getDarkDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_24, theme)!!)
+            links?.background = getDarkDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_24, theme)!!)
+
+            root?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
         }
+    }
+
+    private fun getDarkDrawable(drawable: Drawable) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), SurfaceColors.SURFACE_2.getColor(this))
+        return drawable
     }
 
     private fun isDarkThemeEnabled(): Boolean {

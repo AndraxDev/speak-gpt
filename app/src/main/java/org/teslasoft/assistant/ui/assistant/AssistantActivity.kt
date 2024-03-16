@@ -22,6 +22,7 @@ import android.os.StrictMode
 import androidx.fragment.app.FragmentActivity
 
 import com.google.android.material.elevation.SurfaceColors
+import org.teslasoft.assistant.preferences.Preferences
 
 import org.teslasoft.assistant.ui.fragments.AssistantFragment
 
@@ -33,6 +34,7 @@ class AssistantActivity : FragmentActivity() {
         StrictMode.setThreadPolicy(policy)
 
         val assistantFragment = AssistantFragment()
+        assistantFragment.isCancelable = !Preferences.getPreferences(this, "").getLockAssistantWindow()
         assistantFragment.show(supportFragmentManager, "AssistantFragment")
 
         window.navigationBarColor = SurfaceColors.SURFACE_1.getColor(this)

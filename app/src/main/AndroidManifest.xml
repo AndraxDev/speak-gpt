@@ -31,8 +31,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.App"
         android:name=".app.MainApplication"
-        android:enableOnBackInvokedCallback="true"
-        tools:targetApi="31" >
+        android:enableOnBackInvokedCallback="true">
 
         <activity
             android:name=".ui.activities.MainActivity"

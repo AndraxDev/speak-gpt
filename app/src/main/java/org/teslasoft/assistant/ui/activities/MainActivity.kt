@@ -19,19 +19,24 @@ package org.teslasoft.assistant.ui.activities
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.MenuItem
 import android.view.View
+import android.window.OnBackInvokedDispatcher
+import androidx.activity.OnBackPressedCallback
 
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.os.BuildCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.navigation.NavigationBarView
 
@@ -53,6 +58,8 @@ class MainActivity : FragmentActivity() {
     private var framePrompts: Fragment? = null
     private var frameTips: Fragment? = null
 
+    private var root: ConstraintLayout? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -63,10 +70,39 @@ class MainActivity : FragmentActivity() {
         fragmentChats = findViewById(R.id.fragment_chats)
         fragmentPrompts = findViewById(R.id.fragment_prompts)
         fragmentTips = findViewById(R.id.fragment_tips)
+        root = findViewById(R.id.root)
 
         frameChats = supportFragmentManager.findFragmentById(R.id.fragment_chats_)
         framePrompts = supportFragmentManager.findFragmentById(R.id.fragment_prompts_)
         frameTips = supportFragmentManager.findFragmentById(R.id.fragment_tips_)
+
+        if (Build.VERSION.SDK_INT >= 33) {
+            onBackInvokedDispatcher.registerOnBackInvokedCallback(
+                OnBackInvokedDispatcher.PRIORITY_DEFAULT
+            ) {
+                MaterialAlertDialogBuilder(this)
+                    .setTitle("Confirm exit")
+                    .setMessage("Do you want to exit?")
+                    .setPositiveButton("Yes") { _, _ ->
+                        finish()
+                    }
+                    .setNegativeButton("No") { _, _ -> }
+                    .show()
+            }
+        } else {
+            onBackPressedDispatcher.addCallback(this /* lifecycle owner */, object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    MaterialAlertDialogBuilder(this@MainActivity)
+                        .setTitle("Confirm exit")
+                        .setMessage("Do you want to exit?")
+                        .setPositiveButton("Yes") { _, _ ->
+                            finish()
+                        }
+                        .setNegativeButton("No") { _, _ -> }
+                        .show()
+                }
+            })
+        }
 
         reloadAmoled()
 
@@ -104,15 +140,17 @@ class MainActivity : FragmentActivity() {
 
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() &&  Preferences.getPreferences(this, "").getAmoledPitchBlack()) {
-            window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+            window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
             window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
-            navigationBar!!.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme))
+            root?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
+            navigationBar!!.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
         } else {
-            window.navigationBarColor = SurfaceColors.SURFACE_2.getColor(this)
-            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.window_background, theme)
+            window.navigationBarColor = SurfaceColors.SURFACE_3.getColor(this)
+            window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
             window.setBackgroundDrawableResource(R.color.window_background)
-            navigationBar!!.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.accent_50, theme))
+            root?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
+            navigationBar!!.setBackgroundColor(SurfaceColors.SURFACE_3.getColor(this))
         }
 
         (frameChats as ChatsListFragment).reloadAmoled()

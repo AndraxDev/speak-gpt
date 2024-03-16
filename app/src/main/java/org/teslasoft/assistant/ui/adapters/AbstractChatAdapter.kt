@@ -169,7 +169,15 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
         return if (isDarkThemeEnabled() && Preferences.getPreferences(context, "").getAmoledPitchBlack()) {
             ResourcesCompat.getColor(context.resources, R.color.amoled_accent_50, null)
         } else {
-            SurfaceColors.SURFACE_2.getColor(context)
+            SurfaceColors.SURFACE_1.getColor(context)
+        }
+    }
+
+    protected fun getSurface2Color(context: Context): Int {
+        return if (isDarkThemeEnabled() && Preferences.getPreferences(context, "").getAmoledPitchBlack()) {
+            ResourcesCompat.getColor(context.resources, R.color.amoled_window_background, null)
+        } else {
+            SurfaceColors.SURFACE_0.getColor(context)
         }
     }
 

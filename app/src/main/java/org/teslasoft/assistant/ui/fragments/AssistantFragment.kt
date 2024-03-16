@@ -26,6 +26,7 @@ import android.content.res.Configuration
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
@@ -43,6 +44,8 @@ import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.Toast
+import android.window.OnBackInvokedDispatcher
+import androidx.activity.OnBackPressedCallback
 
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -120,6 +123,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private var btnAssistantShowKeyboard: ImageButton? = null
     private var btnAssistantHideKeyboard: ImageButton? = null
     private var btnSaveToChat: MaterialButton? = null
+    private var btnExit: MaterialButton? = null
     private var btnAssistantSend: ImageButton? = null
     private var assistantMessage: EditText? = null
     private var assistantInputLayout: LinearLayout? = null
@@ -1327,6 +1331,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         btnAssistantHideKeyboard = view.findViewById(R.id.btn_assistant_hide_keyboard)
         btnAssistantSend = view.findViewById(R.id.btn_assistant_send)
         btnSaveToChat = view.findViewById(R.id.btn_save)
+        btnExit = view.findViewById(R.id.btn_exit)
         assistantMessage = view.findViewById(R.id.assistant_message)
         assistantInputLayout = view.findViewById(R.id.input_layout)
         assistantActionsLayout = view.findViewById(R.id.assistant_actions)
@@ -1359,6 +1364,10 @@ class AssistantFragment : BottomSheetDialogFragment() {
             val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false, false, true)
             chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
+        }
+
+        btnExit?.setOnClickListener {
+            requireActivity().finishAndRemoveTask()
         }
 
         hideKeyboard()
