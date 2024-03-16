@@ -570,7 +570,7 @@ class SettingsV2Activity : FragmentActivity() {
             R.drawable.ic_lock,
             false,
             chatId,
-            "This feature allows you to lock assistant window. When assistant window is locked, it can not be closed by pressing back button or swiping window down. Nut you can use 'exit' button. This feature can prevent accidental closing of assistant window and losing unsaved conversation."
+            "This feature allows you to lock assistant window. When assistant window is locked, it can not be closed by pressing back button or swiping window down. But you can use 'exit' button. This feature can prevent accidental closing of assistant window and losing unsaved conversation."
         )
 
         supportFragmentManager.beginTransaction().replace(R.id.tile_account, tileAccountFragment!!).commit()
