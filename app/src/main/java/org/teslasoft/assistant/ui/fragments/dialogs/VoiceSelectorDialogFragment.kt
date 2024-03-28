@@ -97,7 +97,7 @@ class VoiceSelectorDialogFragment : DialogFragment() {
 
             availableVoices.sort()
 
-            voiceListAdapter = VoiceListAdapter(this.requireContext(), availableVoices)
+            voiceListAdapter = VoiceListAdapter(this.requireContext(), availableVoices, requireArguments().getString("chatId").toString())
             voiceListAdapter?.setOnItemClickListener(voiceSelectedListener)
             voiceList?.divider = null
             voiceList?.adapter = voiceListAdapter
@@ -131,7 +131,7 @@ class VoiceSelectorDialogFragment : DialogFragment() {
 
             availableVoices.sort()
 
-            voiceListAdapter = VoiceListAdapter(this.requireContext(), availableVoices)
+            voiceListAdapter = VoiceListAdapter(this.requireContext(), availableVoices, requireArguments().getString("chatId").toString())
             voiceListAdapter?.setOnItemClickListener(voiceSelectedListener)
             voiceList?.divider = null
             voiceList?.adapter = voiceListAdapter

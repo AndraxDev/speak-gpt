@@ -198,6 +198,8 @@ class AddChatDialogFragment : DialogFragment() {
             val slashCommands = preferences.getImagineCommand()
             val ttsEngine = preferences.getTtsEngine()
             val dalleVersion = preferences.getDalleVersion()
+            val opeAIVoice: String = preferences.getOpenAIVoice()
+            val voice: String = preferences.getVoice()
 
             val newPreferences: Preferences = Preferences.getPreferences(requireActivity(), Hash.hash(chatName))
 
@@ -218,6 +220,8 @@ class AddChatDialogFragment : DialogFragment() {
             newPreferences.setImagineCommand(slashCommands)
             newPreferences.setTtsEngine(ttsEngine)
             newPreferences.setDalleVersion(dalleVersion)
+            newPreferences.setOpenAIVoice(opeAIVoice)
+            newPreferences.setVoice(voice)
         } else {
             listener!!.onDuplicate()
         }

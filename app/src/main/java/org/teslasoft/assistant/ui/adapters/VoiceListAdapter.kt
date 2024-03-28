@@ -33,7 +33,7 @@ import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 
 /** ListView adapter to display list of voices */
-class VoiceListAdapter(private val context: Context, private val items: ArrayList<String>) : BaseAdapter() {
+class VoiceListAdapter(private val context: Context, private val items: ArrayList<String>, private var chatId: String) : BaseAdapter() {
 
     private var listener: OnItemClickListener? = null
 
@@ -65,7 +65,9 @@ class VoiceListAdapter(private val context: Context, private val items: ArrayLis
         val item = getItem(position) as String
         viewHolder.textView.text = item
 
-        if (Preferences.getPreferences(context, "").getVoice() == item || Preferences.getPreferences(context, "").getOpenAIVoice() == item) {
+        val preferences: Preferences = Preferences.getPreferences(context, chatId)
+
+        if (preferences.getVoice() == item || preferences.getOpenAIVoice() == item) {
             viewHolder.voiceBg.background = getDarkAccentDrawableV2(
                 ContextCompat.getDrawable(context, R.drawable.btn_accent_tonal_selector_v4)!!, context)
 

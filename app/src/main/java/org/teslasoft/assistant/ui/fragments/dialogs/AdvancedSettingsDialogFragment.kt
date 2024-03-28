@@ -100,9 +100,11 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
         endSeparator = view.findViewById(R.id.end_separator)
         prefix = view.findViewById(R.id.prefix)
 
-        maxTokens?.setText(Preferences.getPreferences(requireActivity(), arguments?.getString("chatId")!!).getMaxTokens().toString())
-        endSeparator?.setText(Preferences.getPreferences(requireActivity(), arguments?.getString("chatId")!!).getEndSeparator())
-        prefix?.setText(Preferences.getPreferences(requireActivity(), arguments?.getString("chatId")!!).getPrefix())
+        val preferences: Preferences = Preferences.getPreferences(requireActivity(), arguments?.getString("chatId")!!)
+
+        maxTokens?.setText(preferences.getMaxTokens().toString())
+        endSeparator?.setText(preferences.getEndSeparator())
+        prefix?.setText(preferences.getPrefix())
 
         gpt_35_turbo?.setOnClickListener {
             model = "gpt-3.5-turbo"

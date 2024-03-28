@@ -1348,6 +1348,8 @@ class AssistantFragment : BottomSheetDialogFragment() {
             val slashCommands = preferences.getImagineCommand()
             val ttsEngine = preferences.getTtsEngine()
             val dalleVersion = preferences.getDalleVersion()
+            val opeAIVoice: String = preferences.getOpenAIVoice()
+            val voice: String = preferences.getVoice()
 
             val newPreferences: Preferences = Preferences.getPreferences(requireActivity(), Hash.hash(chatName))
 
@@ -1368,6 +1370,8 @@ class AssistantFragment : BottomSheetDialogFragment() {
             newPreferences.setImagineCommand(slashCommands)
             newPreferences.setTtsEngine(ttsEngine)
             newPreferences.setDalleVersion(dalleVersion)
+            newPreferences.setOpenAIVoice(opeAIVoice)
+            newPreferences.setVoice(voice)
 
             saveSettings()
 
