@@ -20,6 +20,8 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.View
 import android.widget.ListView
+import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -30,11 +32,13 @@ import org.teslasoft.assistant.ui.adapters.VoiceListAdapter
 class VoiceSelectorDialogFragment : DialogFragment() {
 
     companion object {
-        fun newInstance(name: String) : VoiceSelectorDialogFragment {
+        fun newInstance(name: String, chatId: String, ttsEngine: String) : VoiceSelectorDialogFragment {
             val voiceSelectorDialogFragment = VoiceSelectorDialogFragment()
 
             val args = Bundle()
             args.putString("name", name)
+            args.putString("chatId", chatId)
+            args.putString("ttsEngine", ttsEngine)
 
             voiceSelectorDialogFragment.arguments = args
 
@@ -55,10 +59,12 @@ class VoiceSelectorDialogFragment : DialogFragment() {
 
     private var tts: android.speech.tts.TextToSpeech? = null
 
+    private var progressBar: ProgressBar? = null
+
     private var voiceSelectedListener: VoiceListAdapter.OnItemClickListener =
         VoiceListAdapter.OnItemClickListener { model ->
             run {
-                val preferences = Preferences.getPreferences(requireActivity(), "")
+                val preferences = Preferences.getPreferences(requireActivity(), requireArguments().getString("chatId").toString())
 
                 if (preferences.getTtsEngine() == "google") {
                     preferences.setVoice(model)
@@ -73,7 +79,7 @@ class VoiceSelectorDialogFragment : DialogFragment() {
 
     private val ttsListener: android.speech.tts.TextToSpeech.OnInitListener =
         android.speech.tts.TextToSpeech.OnInitListener { _ ->
-            var lng = Preferences.getPreferences(requireActivity(), "").getLanguage()
+            var lng = Preferences.getPreferences(requireActivity(), requireArguments().getString("chatId").toString()).getLanguage()
 
             if (lng.lowercase().contains("cn")) {
                 lng = "cn"
@@ -96,6 +102,7 @@ class VoiceSelectorDialogFragment : DialogFragment() {
             voiceList?.divider = null
             voiceList?.adapter = voiceListAdapter
             voiceListAdapter?.notifyDataSetChanged()
+            progressBar?.visibility = View.GONE
         }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -104,8 +111,11 @@ class VoiceSelectorDialogFragment : DialogFragment() {
         val view: View = this.layoutInflater.inflate(R.layout.fragment_select_voice, null)
 
         voiceList = view.findViewById(R.id.voices_list)
+        progressBar = view.findViewById(R.id.progressBar)
 
-        if (Preferences.getPreferences(requireActivity(), "").getTtsEngine() == "google") {
+        progressBar?.visibility = View.VISIBLE
+
+        if (requireArguments().getString("ttsEngine") == "google") {
             tts = android.speech.tts.TextToSpeech(
                 requireContext(),
                 ttsListener,
@@ -126,6 +136,7 @@ class VoiceSelectorDialogFragment : DialogFragment() {
             voiceList?.divider = null
             voiceList?.adapter = voiceListAdapter
             voiceListAdapter?.notifyDataSetChanged()
+            progressBar?.visibility = View.GONE
         }
 
         builder!!.setView(view)

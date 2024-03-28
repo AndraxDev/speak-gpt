@@ -74,6 +74,7 @@
     <string name="hint_act_prompt">I want you act as...</string>
     <string name="act_prompt_desc">Note: This prompt will be sent on the start of each conversation. Please note that this feature may use additional tokens. Leave this blank empty to disable this feature. If it is not work just clear your chat history.</string>
     <string name="title_new_chat">New chat</string>
+    <string name="title_save_chat">Save chat</string>
     <string name="hint_chat_name">Chat name</string>
     <string name="title_advanced_settings">Advanced settings</string>
     <string name="select_ai_model">Select AI model</string>
@@ -90,14 +91,14 @@
     <string name="btn_new_chat">New chat</string>
     <string name="btn_import_chat">Import chat</string>
     <string name="title_network_error">Network error</string>
-    <string name="network_error_desc">Please check your internet connection and try again</string>
+    <string name="network_error_desc">Something is wrong in your connection. Our servers might be unavailable or you don\'t have Internet connection.</string>
     <string name="btn_try_again">Try again</string>
     <string name="title_post_a_prompt">Post a prompt</string>
     <string name="hint_name">Your name</string>
     <string name="hint_prompt_title">Prompt title</string>
     <string name="hint_prompt_desc">Brief description</string>
     <string name="hint_prompt">Prompt</string>
-    <string name="prompt_for">Prompt for</string>
+    <string name="prompt_for">AI Model</string>
     <string name="category">Category</string>
     <string name="cat_development">Development</string>
     <string name="cat_music">Music</string>
@@ -130,7 +131,7 @@
     <string name="tip6">Sometimes some weird or useless features may appear. It because this app is in beta test.</string>
     <string name="tip7">Select text in any app and tap \"SpeakGPT\" to start conversation with assistant. This feature is available even if default assistant app feature is off. Also you can share text with SpeakGPT using default share option if SpeakGPT option is not available.</string>
     <string name="tip8">You can save your conversation with assistant. Once save button is clicked all future messages will also be saved.</string>
-    <string name="tip9">SpeakGPT is too slow? Try to reduce max tokens per output. You can do it in model settings.</string>
+    <string name="tip9">SpeakGPT is too slow? Try to reduce max tokens per output. You can do it in the model settings.</string>
     <string name="tip10">Voice input by Google may not be supported on all devices (especially devices with no Google Services). You can switch to Whisper model in this case. Please note that Whisper is a paid API and it requires Internet connection.</string>
     <string name="btn_copy">Copy</string>
     <string name="user">User</string>
@@ -164,6 +165,11 @@
     <string name="setting_system_message_hint">Putting a system message at the end of conversation can improve answers quality and avoid \"forgetting\" information.</string>
     <string name="prompt_report_success">Objection sent. Thank you for feedback!</string>
     <string name="prompt_report_failed">Failed to send report</string>
+    <string name="option_summarize">Summarize</string>
+    <string name="tip_11">Long press stop recording button to cancel speech recognition and prevent generating response.</string>
+    <string name="global_settings_tip">You are editing global settings. This is a template for new chats and settings for assistant. These settings don\'t apply to existing chats. To edit settings for existing chat, open the chat and click the settings icon.</string>
+    <string name="global_settings_title">Global settings</string>
+    <string name="chat_settings_title">Chat settings</string>
     <string name="title_control_center">Control center</string>
     <string name="tip_12">Long press on setting tile to show function description. Works only on new settings UI. You can access new settings UI (Control center) by pressing on the \'lab\' icon in the regular settings.</string>
 </resources>

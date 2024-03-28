@@ -75,6 +75,7 @@
         android:background="@drawable/btn_accent_tonal"
         android:contentDescription="@string/btn_settings"
         android:tooltipText="@string/btn_settings"
+        android:src="@drawable/ic_settings"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_settings" />

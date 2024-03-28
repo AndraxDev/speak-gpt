@@ -18,11 +18,11 @@ package org.teslasoft.assistant.ui.activities
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.MenuItem
 import android.view.View
 import android.window.OnBackInvokedDispatcher
@@ -30,7 +30,6 @@ import androidx.activity.OnBackPressedCallback
 
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.os.BuildCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -41,6 +40,7 @@ import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.navigation.NavigationBarView
 
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.DeviceInfoProvider
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.fragments.tabs.ChatsListFragment
 import org.teslasoft.assistant.ui.fragments.tabs.PromptsFragment
@@ -63,6 +63,13 @@ class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val consent: SharedPreferences = getSharedPreferences("consent", MODE_PRIVATE)
+
+        if (!consent.getBoolean("consent", false)) {
+            startActivity(Intent(this, DataSafety::class.java))
+            finish()
+        }
+
         setContentView(R.layout.activity_main)
 
         navigationBar = findViewById(R.id.navigation_bar)
@@ -76,23 +83,16 @@ class MainActivity : FragmentActivity() {
         framePrompts = supportFragmentManager.findFragmentById(R.id.fragment_prompts_)
         frameTips = supportFragmentManager.findFragmentById(R.id.fragment_tips_)
 
-        if (Build.VERSION.SDK_INT >= 33) {
-            onBackInvokedDispatcher.registerOnBackInvokedCallback(
-                OnBackInvokedDispatcher.PRIORITY_DEFAULT
-            ) {
-                MaterialAlertDialogBuilder(this)
-                    .setTitle("Confirm exit")
-                    .setMessage("Do you want to exit?")
-                    .setPositiveButton("Yes") { _, _ ->
-                        finish()
-                    }
-                    .setNegativeButton("No") { _, _ -> }
-                    .show()
-            }
-        } else {
-            onBackPressedDispatcher.addCallback(this /* lifecycle owner */, object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    MaterialAlertDialogBuilder(this@MainActivity)
+
+
+        Thread {
+            DeviceInfoProvider.assignInstallationId(this)
+
+            if (Build.VERSION.SDK_INT >= 33) {
+                onBackInvokedDispatcher.registerOnBackInvokedCallback(
+                    OnBackInvokedDispatcher.PRIORITY_DEFAULT
+                ) {
+                    MaterialAlertDialogBuilder(this)
                         .setTitle("Confirm exit")
                         .setMessage("Do you want to exit?")
                         .setPositiveButton("Yes") { _, _ ->
@@ -101,36 +101,51 @@ class MainActivity : FragmentActivity() {
                         .setNegativeButton("No") { _, _ -> }
                         .show()
                 }
-            })
-        }
-
-        reloadAmoled()
-
-        navigationBar!!.setOnItemSelectedListener(NavigationBarView.OnItemSelectedListener { item: MenuItem ->
-            if (!isAnimating) {
-                isAnimating = true
-                when (item.itemId) {
-                    R.id.menu_chat -> {
-                        menuChats()
-                        return@OnItemSelectedListener true
+            } else {
+                onBackPressedDispatcher.addCallback(this /* lifecycle owner */, object : OnBackPressedCallback(true) {
+                    override fun handleOnBackPressed() {
+                        MaterialAlertDialogBuilder(this@MainActivity)
+                            .setTitle("Confirm exit")
+                            .setMessage("Do you want to exit?")
+                            .setPositiveButton("Yes") { _, _ ->
+                                finish()
+                            }
+                            .setNegativeButton("No") { _, _ -> }
+                            .show()
                     }
-                    R.id.menu_prompts -> {
-                        menuPrompts()
-                        return@OnItemSelectedListener true
-                    }
-                    R.id.menu_tips -> {
-                        menuTips()
-                        return@OnItemSelectedListener true
-                    }
-                }
+                })
             }
 
-            return@OnItemSelectedListener false
-        })
+            runOnUiThread {
+                reloadAmoled()
 
-        if (savedInstanceState != null) {
-            onRestoredState(savedInstanceState)
-        }
+                navigationBar!!.setOnItemSelectedListener(NavigationBarView.OnItemSelectedListener { item: MenuItem ->
+                    if (!isAnimating) {
+                        isAnimating = true
+                        when (item.itemId) {
+                            R.id.menu_chat -> {
+                                menuChats()
+                                return@OnItemSelectedListener true
+                            }
+                            R.id.menu_prompts -> {
+                                menuPrompts()
+                                return@OnItemSelectedListener true
+                            }
+                            R.id.menu_tips -> {
+                                menuTips()
+                                return@OnItemSelectedListener true
+                            }
+                        }
+                    }
+
+                    return@OnItemSelectedListener false
+                })
+
+                if (savedInstanceState != null) {
+                    onRestoredState(savedInstanceState)
+                }
+            }
+        }.start()
     }
 
     override fun onResume() {
@@ -179,27 +194,33 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun menuChats() {
-        Handler(Looper.getMainLooper()).postDelayed({
-            openChats()
-        }, 50)
+        Thread {
+            runOnUiThread {
+                openChats()
+            }
+        }.start()
     }
 
     private fun menuPrompts() {
-        Handler(Looper.getMainLooper()).postDelayed({
-            openPrompts()
-        }, 50)
+        Thread {
+            runOnUiThread {
+                openPrompts()
+            }
+        }.start()
     }
 
     private fun menuTips() {
-        Handler(Looper.getMainLooper()).postDelayed({
-            openTips()
-        }, 50)
+        Thread {
+            runOnUiThread {
+                openTips()
+            }
+        }.start()
     }
 
     private fun openChats() {
         transition(
-            fragmentTips as ConstraintLayout,
             fragmentPrompts as ConstraintLayout,
+            fragmentTips as ConstraintLayout,
             switchChatsAnimation,
             2,
             3,
@@ -252,18 +273,26 @@ class MainActivity : FragmentActivity() {
         isAnimating = true
         target.visibility = View.VISIBLE
         target.alpha = 1f
-        target.animate().setDuration(150).alpha(0f).setListener(listener).start()
+        target.animate().setDuration(100).alpha(0f).setListener(listener).start()
     }
 
     private fun hideFragment(fragmentManager: FragmentManager, fragment: Fragment) {
         if (!isFinishing && !fragmentManager.isDestroyed) {
-            fragmentManager.beginTransaction().hide(fragment).commit()
+            Thread {
+                runOnUiThread {
+                    fragmentManager.beginTransaction().hide(fragment).commit()
+                }
+            }.start()
         }
     }
 
     private fun showFragment(fragmentManager: FragmentManager, fragment: Fragment) {
         if (!isFinishing && !fragmentManager.isDestroyed) {
-            fragmentManager.beginTransaction().show(fragment).commit()
+            Thread {
+                runOnUiThread {
+                    fragmentManager.beginTransaction().show(fragment).commit()
+                }
+            }.start()
         }
     }
 
@@ -294,11 +323,12 @@ class MainActivity : FragmentActivity() {
         layoutToShow.animate()?.setDuration(150)?.alpha(1f)
             ?.setListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        switchLayout(layout1, layout2, layoutToShow)
-
-                        isAnimating = false
-                    }, 10)
+                    Thread {
+                        this@MainActivity.runOnUiThread {
+                            switchLayout(layout1, layout2, layoutToShow)
+                            isAnimating = false
+                        }
+                    }.start()
                 }
             })?.start()
     }
@@ -334,51 +364,57 @@ class MainActivity : FragmentActivity() {
     private val switchChatsAnimation: AnimatorListenerAdapter =
         object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
-                Handler(Looper.getMainLooper()).postDelayed({
-                    animationListenerCallback(
-                        supportFragmentManager,
-                        fragmentPrompts!!,
-                        fragmentTips!!,
-                        fragmentChats!!,
-                        frameTips,
-                        framePrompts,
-                        frameChats
-                    )
-                }, 10)
+                Thread {
+                    runOnUiThread {
+                        animationListenerCallback(
+                            supportFragmentManager,
+                            fragmentPrompts!!,
+                            fragmentTips!!,
+                            fragmentChats!!,
+                            frameTips,
+                            framePrompts,
+                            frameChats
+                        )
+                    }
+                }.start()
             }
     }
 
     private val switchPromptsAnimation: AnimatorListenerAdapter =
         object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
-                Handler(Looper.getMainLooper()).postDelayed({
-                    animationListenerCallback(
-                        supportFragmentManager,
-                        fragmentTips!!,
-                        fragmentChats!!,
-                        fragmentPrompts!!,
-                        frameChats,
-                        frameTips,
-                        framePrompts
-                    )
-                }, 10)
+                Thread {
+                    runOnUiThread {
+                        animationListenerCallback(
+                            supportFragmentManager,
+                            fragmentTips!!,
+                            fragmentChats!!,
+                            fragmentPrompts!!,
+                            frameChats,
+                            frameTips,
+                            framePrompts
+                        )
+                    }
+                }.start()
             }
         }
 
     private val switchTipsAnimation: AnimatorListenerAdapter =
         object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
-                Handler(Looper.getMainLooper()).postDelayed({
-                    animationListenerCallback(
-                        supportFragmentManager,
-                        fragmentPrompts!!,
-                        fragmentChats!!,
-                        fragmentTips!!,
-                        framePrompts,
-                        frameChats,
-                        frameTips
-                    )
-                }, 10)
+                Thread {
+                    runOnUiThread {
+                        animationListenerCallback(
+                            supportFragmentManager,
+                            fragmentPrompts!!,
+                            fragmentChats!!,
+                            fragmentTips!!,
+                            framePrompts,
+                            frameChats,
+                            frameTips
+                        )
+                    }
+                }.start()
             }
         }
 }

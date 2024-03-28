@@ -30,6 +30,8 @@ import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.StrictMode
 import android.provider.DocumentsContract
 import android.speech.RecognitionListener
@@ -43,6 +45,8 @@ import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
@@ -135,6 +139,7 @@ class ChatActivity : FragmentActivity() {
     private var btnBack: ImageButton? = null
     private var keyboardFrame: ConstraintLayout? = null
     private var root: ConstraintLayout? = null
+    private var threadLoader: LinearLayout? = null
 
     // Init chat
     private var messages: ArrayList<HashMap<String, Any>> = arrayListOf()
@@ -204,7 +209,7 @@ class ChatActivity : FragmentActivity() {
                 btnMicro?.setImageResource(R.drawable.ic_microphone)
 
                 val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-                if (matches != null && matches.size > 0) {
+                if (!matches.isNullOrEmpty()) {
                     val recognizedText = matches[0]
 
                     putMessage(prefix + recognizedText + endSeparator, false)
@@ -232,7 +237,16 @@ class ChatActivity : FragmentActivity() {
 
     override fun onResume() {
         super.onResume()
+        preloadAmoled()
         reloadAmoled()
+    }
+
+    private fun preloadAmoled() {
+        if (isDarkThemeEnabled() && Preferences.getPreferences(this, chatId).getAmoledPitchBlack()) {
+            threadLoader?.background = ResourcesCompat.getDrawable(resources, R.color.amoled_accent_50, null)
+        } else {
+            threadLoader?.setBackgroundColor(SurfaceColors.SURFACE_2.getColor(this))
+        }
     }
 
     private fun reloadAmoled() {
@@ -404,22 +418,30 @@ class ChatActivity : FragmentActivity() {
         mediaPlayer = MediaPlayer()
 
         setContentView(R.layout.activity_chat)
-        languageIdentifier = LanguageIdentification.getClient()
 
-        reloadAmoled()
+        threadLoader = findViewById(R.id.thread_loader)
+        preloadAmoled()
+        threadLoader?.visibility = View.VISIBLE
 
-        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
-        StrictMode.setThreadPolicy(policy)
 
-        val chatActivityTitle: TextView = findViewById(R.id.chat_activity_title)
-        val keyboardInput: LinearLayout = findViewById(R.id.keyboard_input)
 
-        chatActivityTitle.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
-        keyboardInput.setBackgroundColor(SurfaceColors.SURFACE_5.getColor(this))
+        Thread {
+            languageIdentifier = LanguageIdentification.getClient()
 
-        initChatId()
+            val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+            StrictMode.setThreadPolicy(policy)
 
-        initSettings()
+            runOnUiThread {
+                val chatActivityTitle: TextView = findViewById(R.id.chat_activity_title)
+                val keyboardInput: LinearLayout = findViewById(R.id.keyboard_input)
+
+                chatActivityTitle.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
+                keyboardInput.setBackgroundColor(SurfaceColors.SURFACE_5.getColor(this))
+
+                initChatId()
+                initSettings()
+            }
+        }.start()
     }
 
     public override fun onDestroy() {
@@ -479,6 +501,7 @@ class ChatActivity : FragmentActivity() {
             adapter = ChatAdapter(messages, this, chatId)
 
             initUI()
+            reloadAmoled()
             initSpeechListener()
             initTTS()
             initLogic()
@@ -550,6 +573,23 @@ class ChatActivity : FragmentActivity() {
             }
             return@setOnTouchListener false
         }}
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            val fadeOut: Animation = AnimationUtils.loadAnimation(this, R.anim.fade_out)
+            threadLoader?.startAnimation(fadeOut)
+
+            fadeOut.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(animation: Animation) { /* UNUSED */ }
+                override fun onAnimationEnd(animation: Animation) {
+                    runOnUiThread {
+                        threadLoader?.visibility = View.GONE
+                        threadLoader?.elevation = 0.0f
+                    }
+                }
+
+                override fun onAnimationRepeat(animation: Animation) { /* UNUSED */ }
+            })
+        }, 50)
     }
 
     private fun getDarkAccentDrawable(drawable: Drawable, context: Context) : Drawable {
@@ -1370,7 +1410,7 @@ class ChatActivity : FragmentActivity() {
 
                 m.add(
                     ChatMessage(
-                        role = ChatRole.System,
+                        role = ChatRole.User,
                         content = "Create a short name for this chat according to the messages provided. Enter just short name and nothing else. Don't add word 'chat' or 'bot' to the name."
                     )
                 )
@@ -1434,7 +1474,7 @@ class ChatActivity : FragmentActivity() {
     }
 
     private fun pronounce(st: Boolean, message: String) {
-        if ((st && isTTSInitialized && !silenceMode) || Preferences.getPreferences(this, "").getNotSilence()) {
+        if ((st && isTTSInitialized && !silenceMode) || Preferences.getPreferences(this, chatId).getNotSilence()) {
             if (autoLangDetect) {
                 languageIdentifier.identifyLanguage(message)
                     .addOnSuccessListener { languageCode ->

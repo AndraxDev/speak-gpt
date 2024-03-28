@@ -47,7 +47,7 @@
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/global_settings_tip">
+            app:layout_constraintTop_toBottomOf="@+id/ad">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -2185,6 +2185,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_back" />
+
+        <LinearLayout
+            android:id="@+id/ad"
+            android:layout_width="320dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/accent_250"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/global_settings_tip"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

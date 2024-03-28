@@ -22,10 +22,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="org.teslasoft.assistant" />
+                  <option name="mobileSdkAppId" value="1:1083710434382:android:63b434e527a32cfd8f271f" />
+                  <option name="projectId" value="jarvis-a301b" />
+                  <option name="projectNumber" value="1083710434382" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

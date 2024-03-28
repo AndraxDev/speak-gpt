@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlinx-serialization'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -10,12 +11,14 @@ android {
 
     ndkVersion "23.1.7779620"
 
+
     defaultConfig {
         applicationId "org.teslasoft.assistant"
-        minSdk 26
+        minSdk 28
+        //noinspection ExpiredTargetSdkVersion
         targetSdk 34
-        versionCode 306
-        versionName "3.6"
+        versionCode 307
+        versionName "3.7"
         externalNativeBuild {
             cmake {
                 cppFlags ''
@@ -34,8 +37,8 @@ android {
 
         debug {
             debuggable false
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             multiDexEnabled true
         }
@@ -81,4 +84,16 @@ dependencies {
     implementation 'com.google.mlkit:language-id:17.0.5'
     implementation 'cat.ereza:customactivityoncrash:2.4.0'
     implementation 'org.conscrypt:conscrypt-android:2.5.2'
+    implementation ('com.google.android.gms:play-services-ads:23.0.0')
+
+    implementation platform('com.google.firebase:firebase-bom:32.8.0') {
+        exclude group: 'com.google.android.gms', module: 'play-services-ads-lite'
+    }
+
+//    implementation ('com.google.firebase:firebase-analytics') {
+//        exclude group: 'com.google.android.gms', module: 'play-services-ads'
+//    }
+
+    // VR SDK, remove before publishing to Google Play
+    // implementation 'com.tencent.tcr:vr-sdk-oculus:0.2.1'
 }

@@ -91,7 +91,7 @@
     <string name="btn_new_chat">New chat</string>
     <string name="btn_import_chat">Import chat</string>
     <string name="title_network_error">Network error</string>
-    <string name="network_error_desc">Please check your internet connection and try again</string>
+    <string name="network_error_desc">Something is wrong in your connection. Our servers might be unavailable or you don\'t have Internet connection.</string>
     <string name="btn_try_again">Try again</string>
     <string name="title_post_a_prompt">Post a prompt</string>
     <string name="hint_name">Your name</string>

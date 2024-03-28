@@ -94,6 +94,7 @@ import okio.FileSystem
 import okio.Path.Companion.toPath
 
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.ChatPreferences
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.AssistantAdapter
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
@@ -158,6 +159,9 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     // Init DALL-e
     private var resolution = "512x152"
+
+    // Autosave
+    private var chatPreferences: ChatPreferences? = null
 
     private fun isDarkThemeEnabled(): Boolean {
         return when (resources.configuration.uiMode and
@@ -1167,7 +1171,6 @@ class AssistantFragment : BottomSheetDialogFragment() {
                     request = SpeechRequest(
                         model = ModelId("tts-1"),
                         input = message,
-                        // TODO: Replace with voice setting
                         voice = com.aallam.openai.api.audio.Voice(preferences.getOpenAIVoice()),
                     )
                 )
@@ -1318,6 +1321,62 @@ class AssistantFragment : BottomSheetDialogFragment() {
         btnSaveToChat?.setIconResource(R.drawable.ic_done)
     }
 
+    private fun autosave() {
+        if (Preferences.getPreferences(requireActivity(), "").getChatsAutosave()) {
+            chatPreferences = ChatPreferences.getChatPreferences()
+
+            val chatName = "_autoname_${chatPreferences?.getAvailableChatIdForAutoname(requireActivity())}"
+
+            chatID = Hash.hash(chatName)
+
+            chatPreferences?.addChat(requireActivity(), chatName)
+
+            val preferences = Preferences.getPreferences(requireActivity(), "")
+            val resolution = preferences.getResolution()
+            val speech = preferences.getAudioModel()
+            val model = preferences.getModel()
+            val maxTokens = preferences.getMaxTokens()
+            val prefix = preferences.getPrefix()
+            val endSeparator = preferences.getEndSeparator()
+            val activationPrompt = preferences.getPrompt()
+            val layout = preferences.getLayout()
+            val silent = preferences.getSilence()
+            val systemMessage = preferences.getSystemMessage()
+            val alwaysSpeak = preferences.getNotSilence()
+            val autoLanguageDetect = preferences.getAutoLangDetect()
+            val functionCalling = preferences.getFunctionCalling()
+            val slashCommands = preferences.getImagineCommand()
+            val ttsEngine = preferences.getTtsEngine()
+            val dalleVersion = preferences.getDalleVersion()
+
+            val newPreferences: Preferences = Preferences.getPreferences(requireActivity(), Hash.hash(chatName))
+
+            newPreferences.setPreferences(Hash.hash(chatName), requireActivity())
+            newPreferences.setResolution(resolution)
+            newPreferences.setAudioModel(speech)
+            newPreferences.setModel(model)
+            newPreferences.setMaxTokens(maxTokens)
+            newPreferences.setPrefix(prefix)
+            newPreferences.setEndSeparator(endSeparator)
+            newPreferences.setPrompt(activationPrompt)
+            newPreferences.setLayout(layout)
+            newPreferences.setSilence(silent)
+            newPreferences.setSystemMessage(systemMessage)
+            newPreferences.setNotSilence(alwaysSpeak)
+            newPreferences.setAutoLangDetect(autoLanguageDetect)
+            newPreferences.setFunctionCalling(functionCalling)
+            newPreferences.setImagineCommand(slashCommands)
+            newPreferences.setTtsEngine(ttsEngine)
+            newPreferences.setDalleVersion(dalleVersion)
+
+            saveSettings()
+
+            btnSaveToChat?.text = "Autosaved"
+            btnSaveToChat?.isEnabled = false
+            btnSaveToChat?.setIconResource(R.drawable.ic_done)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -1369,6 +1428,8 @@ class AssistantFragment : BottomSheetDialogFragment() {
         btnExit?.setOnClickListener {
             requireActivity().finishAndRemoveTask()
         }
+
+        autosave()
 
         hideKeyboard()
     }

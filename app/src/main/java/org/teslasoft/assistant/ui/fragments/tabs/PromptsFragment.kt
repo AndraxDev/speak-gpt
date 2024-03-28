@@ -16,6 +16,7 @@
 
 package org.teslasoft.assistant.ui.fragments.tabs
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -82,11 +83,17 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private var refreshButton: MaterialButton? = null
 
+    private var btnDetails: MaterialButton? = null
+
     private var noInternetLayout: LinearLayout? = null
 
     private var progressbar: ProgressBar? = null
 
     private var selectedCategory: String = "all"
+
+    private var model: String = "all"
+
+    private var networkError = ""
 
     private var catAll: LinearLayout? = null
 
@@ -121,6 +128,14 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private var catHealth: LinearLayout? = null
 
     private var searchBar: ConstraintLayout? = null
+
+    private var btnAllModels: MaterialButton? = null
+
+    private var btnTextModel: MaterialButton? = null
+
+    private var btnImageModel: MaterialButton? = null
+
+    private var btnSearch: ImageButton? = null
 
     private val postPromptListener: PostPromptDialogFragment.StateChangesListener = object : PostPromptDialogFragment.StateChangesListener {
         override fun onFormFilled(
@@ -173,16 +188,21 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 )
 
                 filter(prompts)
+
+                networkError = ""
             } catch (e: Exception) {
-                MaterialAlertDialogBuilder(requireActivity(), R.style.App_MaterialAlertDialog)
-                    .setTitle("Error")
-                    .setMessage(e.stackTraceToString())
-                    .setPositiveButton("Close") { _, _ -> }
-                    .show()
+                networkError = e.stackTraceToString()
+
+                noInternetLayout?.visibility = View.VISIBLE
+                promptsList?.visibility = View.GONE
+                progressbar?.visibility = View.GONE
+                Toast.makeText(requireActivity(), "Server error. Please try again later.", Toast.LENGTH_SHORT).show()
             }
         }
 
         override fun onErrorResponse(tag: String, message: String) {
+            networkError = message
+
             noInternetLayout?.visibility = View.VISIBLE
             promptsList?.visibility = View.GONE
             progressbar?.visibility = View.GONE
@@ -204,7 +224,6 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun filter(plist: ArrayList<HashMap<String, String>>) {
-
         if (selectedCategory == "all") {
             promptsAdapter = PromptAdapter(plist, this)
 
@@ -230,15 +249,17 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         progressbar?.visibility = View.GONE
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val btnSearch: ImageButton = view.findViewById(R.id.btn_search)
+        btnSearch = view.findViewById(R.id.btn_search)
         fieldSearch = view.findViewById(R.id.field_search)
         btnPost = view.findViewById(R.id.btn_add_prompt)
         promptsList = view.findViewById(R.id.prompts)
         refreshLayout = view.findViewById(R.id.refresh_search)
         refreshButton = view.findViewById(R.id.btn_reconnect)
+        btnDetails = view.findViewById(R.id.btn_show_details)
         noInternetLayout = view.findViewById(R.id.no_internet)
         progressbar = view.findViewById(R.id.progress_bar)
         catAll = view.findViewById(R.id.cat_all)
@@ -259,24 +280,38 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         catHealth = view.findViewById(R.id.cat_health)
         searchBar = view.findViewById(R.id.search_bar)
 
+        btnAllModels = view.findViewById(R.id.btn_all_models)
+        btnTextModel = view.findViewById(R.id.btn_text_model)
+        btnImageModel = view.findViewById(R.id.btn_image_model)
+
+        Thread {
+            requireActivity().runOnUiThread {
+                initLogic()
+            }
+        }.start()
+    }
+
+    private fun initLogic() {
+        updateModelsPanel(R.color.accent_900, R.color.accent_100, R.color.accent_100, R.color.window_background, R.color.accent_900, R.color.accent_900)
+
         initializeCat()
 
         promptsList?.setOnScrollListener(object : AbsListView.OnScrollListener {
-                override fun onScrollStateChanged(view: AbsListView, scrollState: Int) { /* unused */ }
+            override fun onScrollStateChanged(view: AbsListView, scrollState: Int) { /* unused */ }
 
-                override fun onScroll(view: AbsListView, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
+            override fun onScroll(view: AbsListView, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
 
-                    val topRowVerticalPosition: Int = if (prompts.isEmpty() || promptsList == null || promptsList?.childCount == 0) 0 else promptsList?.getChildAt(0)!!.top
+                val topRowVerticalPosition: Int = if (prompts.isEmpty() || promptsList == null || promptsList?.childCount == 0) 0 else promptsList?.getChildAt(0)!!.top
 
-                    if (firstVisibleItem == 0 && topRowVerticalPosition >= 0) {
-                        btnPost?.extend()
-                    } else {
-                        btnPost?.shrink()
-                    }
-
-                    refreshLayout?.isEnabled = firstVisibleItem == 0 && topRowVerticalPosition >= 0
+                if (firstVisibleItem == 0 && topRowVerticalPosition >= 0) {
+                    btnPost?.extend()
+                } else {
+                    btnPost?.shrink()
                 }
-            })
+
+                refreshLayout?.isEnabled = firstVisibleItem == 0 && topRowVerticalPosition >= 0
+            }
+        })
 
         reloadAmoled()
 
@@ -307,7 +342,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         requestNetwork = RequestNetwork(requireActivity())
 
-        btnSearch.setImageResource(R.drawable.ic_search)
+        btnSearch?.setImageResource(R.drawable.ic_search)
 
         fieldSearch?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -316,6 +351,14 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 query = s.toString()
+
+                if (query.contains("type:gpt")) {
+                    updateModelsPanel(R.color.accent_100, R.color.accent_900, R.color.accent_100, R.color.accent_900, R.color.window_background, R.color.accent_900)
+                } else if (query.contains("type:dall-e")) {
+                    updateModelsPanel(R.color.accent_100, R.color.accent_100, R.color.accent_900, R.color.accent_900, R.color.accent_900, R.color.window_background)
+                } else {
+                    updateModelsPanel(R.color.accent_900, R.color.accent_100, R.color.accent_100, R.color.window_background, R.color.accent_900, R.color.accent_900)
+                }
 
                 loadData()
             }
@@ -333,7 +376,42 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         fieldSearch?.background = getDisabledDrawable(fieldSearch?.background!!)
 
+        btnAllModels?.setOnClickListener {
+            fieldSearch?.setText("")
+            model = "all"
+            updateModelsPanel(R.color.accent_900, R.color.accent_100, R.color.accent_100, R.color.window_background, R.color.accent_900, R.color.accent_900)
+        }
+
+        btnTextModel?.setOnClickListener {
+            fieldSearch?.setText("type:gpt")
+            model = "type:gpt"
+            updateModelsPanel(R.color.accent_100, R.color.accent_900, R.color.accent_100, R.color.accent_900, R.color.window_background, R.color.accent_900)
+        }
+
+        btnImageModel?.setOnClickListener {
+            fieldSearch?.setText("type:dall-e")
+            model = "type:dall-e"
+            updateModelsPanel(R.color.accent_100, R.color.accent_100, R.color.accent_900, R.color.accent_900, R.color.accent_900, R.color.window_background)
+        }
+
+        btnDetails?.setOnClickListener {
+            MaterialAlertDialogBuilder(requireActivity(), R.style.App_MaterialAlertDialog)
+                .setTitle("Error details")
+                .setMessage(networkError)
+                .setPositiveButton("Close") { _, _ -> }
+                .show()
+        }
+
         loadData()
+    }
+
+    private fun updateModelsPanel(btnAllBg: Int, btnTextBg: Int, btnImageBg: Int, btnAllText: Int, btnTextText: Int, btnImageText: Int) {
+        btnTextModel?.backgroundTintList = ResourcesCompat.getColorStateList(resources, btnTextBg, requireActivity().theme)
+        btnImageModel?.backgroundTintList = ResourcesCompat.getColorStateList(resources, btnImageBg, requireActivity().theme)
+        btnAllModels?.backgroundTintList = ResourcesCompat.getColorStateList(resources, btnAllBg, requireActivity().theme)
+        btnTextModel?.setTextColor(ResourcesCompat.getColor(resources, btnTextText, requireActivity().theme))
+        btnImageModel?.setTextColor(ResourcesCompat.getColor(resources, btnImageText, requireActivity().theme))
+        btnAllModels?.setTextColor(ResourcesCompat.getColor(resources, btnAllText, requireActivity().theme))
     }
 
     private fun isDarkThemeEnabled(): Boolean {
@@ -475,7 +553,6 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun loadData() {
-        requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/search.php?api_key=${Api.TESLASOFT_API_KEY}&query=$query", "A", searchDataListener)
         requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/search.php?api_key=${Api.TESLASOFT_API_KEY}&query=$query", "A", searchDataListener)
         noInternetLayout?.visibility = View.GONE
         promptsList?.visibility = View.GONE

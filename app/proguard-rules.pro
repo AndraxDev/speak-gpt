@@ -44,6 +44,8 @@
     *** Companion;
 }
 
+-keep class com.google.android.gms.ads.** { *; }
+-keep class com.google.ads.** { *; }
 -keep class com.teslasoft.assistant.** { *; }
 -keep class org.teslasoft.core.** { *; }
 -keep class com.didalgo.gpt3.** { *; }

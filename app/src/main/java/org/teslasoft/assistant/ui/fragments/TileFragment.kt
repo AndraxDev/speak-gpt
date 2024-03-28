@@ -23,6 +23,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewStub
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
@@ -78,6 +79,12 @@ class TileFragment : Fragment() {
     private var onAttachedToActivity: Boolean = false
 
     private var preferences: Preferences? = null
+
+    private var desc: String = ""
+
+    fun setFunctionDesc(desc: String) {
+        this.desc = desc
+    }
 
     fun setOnTileClickListener(onTileClickListener: OnTileClickListener) {
         this.onTileClickListener = onTileClickListener
@@ -185,7 +192,7 @@ class TileFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        // super.onViewCreated(view, savedInstanceState)
 
         val args = requireArguments()
 
@@ -199,6 +206,7 @@ class TileFragment : Fragment() {
         val disabled = args.getBoolean("disabled")
         val chatId: String = args.getString("chatId").toString()
         val functionDesc: String = args.getString("functionDesc").toString()
+        desc = functionDesc
 
         preferences = Preferences.getPreferences(requireActivity(), chatId)
 
@@ -258,7 +266,7 @@ class TileFragment : Fragment() {
         tileBg?.setOnLongClickListener {
             MaterialAlertDialogBuilder(requireActivity())
                 .setTitle(tileText)
-                .setMessage(functionDesc)
+                .setMessage(desc)
                 .setPositiveButton("Close") { _, _ -> }
                 .show()
             true

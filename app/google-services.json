@@ -1,0 +1,141 @@
+{
+  "project_info": {
+    "project_number": "1083710434382",
+    "firebase_url": "https://jarvis-a301b.firebaseio.com",
+    "project_id": "jarvis-a301b",
+    "storage_bucket": "jarvis-a301b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1083710434382:android:14e47ae56e04cb8b8f271f",
+        "android_client_info": {
+          "package_name": "antik.sk.smartcity"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0kxBxsN0YfcmndIpZlAIrSmTFnYTturc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1083710434382-9ij8jhfj4fg8p7l2ji9svjnb1l4bft4i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1083710434382:android:595a463af3e301088f271f",
+        "android_client_info": {
+          "package_name": "com.teslasoft.ivisit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1083710434382-7o45ddia1g2okji5s0r3h982o89foliu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.teslasoft.ivisit",
+            "certificate_hash": "c97e9a3911b1fc7ae51a7d6b7334e2bbd32c72e4"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0kxBxsN0YfcmndIpZlAIrSmTFnYTturc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1083710434382-9ij8jhfj4fg8p7l2ji9svjnb1l4bft4i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1083710434382:android:93b9fa558795875a8f271f",
+        "android_client_info": {
+          "package_name": "com.teslasoft.jarvis.pass"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0kxBxsN0YfcmndIpZlAIrSmTFnYTturc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1083710434382-9ij8jhfj4fg8p7l2ji9svjnb1l4bft4i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1083710434382:android:2c07c077a642bb928f271f",
+        "android_client_info": {
+          "package_name": "com.teslasoft.jarvis.permissions"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0kxBxsN0YfcmndIpZlAIrSmTFnYTturc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1083710434382-9ij8jhfj4fg8p7l2ji9svjnb1l4bft4i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1083710434382:android:63b434e527a32cfd8f271f",
+        "android_client_info": {
+          "package_name": "org.teslasoft.assistant"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0kxBxsN0YfcmndIpZlAIrSmTFnYTturc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1083710434382-9ij8jhfj4fg8p7l2ji9svjnb1l4bft4i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-7410382345282120~1202831991"
+    }
+  ],
+  "configuration_version": "1"
+}

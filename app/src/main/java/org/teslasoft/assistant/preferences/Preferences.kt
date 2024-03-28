@@ -534,7 +534,6 @@ class Preferences private constructor(private var preferences: SharedPreferences
      *
      * @param voice - voice name
      * */
-
     fun setOpenAIVoice(voice: String) {
         putString("openai_voice", voice)
     }
@@ -549,12 +548,40 @@ class Preferences private constructor(private var preferences: SharedPreferences
     }
 
     /**
+     * Get Chats autosave
+     * */
+    fun getChatsAutosave() : Boolean {
+        return getGlobalBoolean("chats_autosave", false)
+    }
+
+    /**
+     * Set Chats autosave
+     * */
+    fun setChatsAutosave(state: Boolean) {
+        putGlobalBoolean("chats_autosave", state)
+    }
+
+    /**
      * Get dalle version (2 or 3, 2 is default)
      *
      * @return dalle version
      * */
     fun getDalleVersion() : String {
         return getString("dalle_version", "2")
+    }
+
+    /**
+     * Get Skip chat name dialog
+     * */
+    fun getSkipChatNameDialog() : Boolean {
+        return getGlobalBoolean("skip_chat_name_dialog", false)
+    }
+
+    /**
+     * Set skip chat name dialog
+     * */
+    fun setSkipChatNameDialog(state: Boolean) {
+        putGlobalBoolean("skip_chat_name_dialog", state)
     }
 
     /**
@@ -567,25 +594,41 @@ class Preferences private constructor(private var preferences: SharedPreferences
     }
 
     /**
+     * Set debug test ads
+     * */
+    fun setDebugTestAds(state: Boolean) {
+        putGlobalBoolean("debug_test_ads", state)
+    }
+
+    /**
+     * Get debug test ads
+     * */
+    fun getDebugTestAds() : Boolean {
+        return getGlobalBoolean("debug_test_ads", false)
+    }
+
+    /**
+     * Get Premium license key
+     * */
+    fun getPremiumKey(context: Context) : String {
+        return EncryptedPreferences.getEncryptedPreference(context, "premium", "license_key")
+    }
+
+    /**
+     * Set Premium license key
+     * */
+    fun setPremiumKey(key: String, context: Context) {
+        EncryptedPreferences.setEncryptedPreference(context, "premium", "license_key", key)
+    }
+
+    /**
      * Retrieves the encrypted API key from the shared preferences.
      *
      * @param context The context to access the encrypted shared preferences.
      * @return The decrypted API key or an empty String if not found.
      */
     fun getApiKey(context: Context) : String {
-        val mainKey = MasterKey.Builder(context)
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build()
-
-        val sharedPreferences = EncryptedSharedPreferences.create(
-            context,
-            "api",
-            mainKey,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
-
-        return sharedPreferences.getString("api_key", "")!!
+        return EncryptedPreferences.getEncryptedPreference(context, "api", "api_key")
     }
 
     /**
@@ -595,22 +638,7 @@ class Preferences private constructor(private var preferences: SharedPreferences
      * @param context The context to access the encrypted shared preferences.
      */
     fun setApiKey(key: String, context: Context) {
-        val mainKey = MasterKey.Builder(context)
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build()
-
-        val sharedPreferences = EncryptedSharedPreferences.create(
-            context,
-            "api",
-            mainKey,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
-
-        with (sharedPreferences.edit()) {
-            putString("api_key", key)
-            apply()
-        }
+        EncryptedPreferences.setEncryptedPreference(context, "api", "api_key", key)
     }
 
     /**

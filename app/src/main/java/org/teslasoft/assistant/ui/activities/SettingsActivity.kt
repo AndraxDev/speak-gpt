@@ -32,6 +32,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
 
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.button.MaterialButtonToggleGroup
@@ -95,6 +100,7 @@ class SettingsActivity : FragmentActivity() {
     private var btnOpenAITTS: MaterialButton? = null
     private var btnExperiments: ImageButton? = null
     private var btnBack: ImageButton? = null
+    private var ad: LinearLayout? = null
 
     private var preferences: Preferences? = null
     private var chatId = ""
@@ -102,6 +108,7 @@ class SettingsActivity : FragmentActivity() {
     private var activationPrompt = ""
     private var systemMessage = ""
     private var language = "en"
+    private var ttsEngine = "google"
 
     private var teslasoftIDClient: TeslasoftIDClient? = null
 
@@ -190,12 +197,16 @@ class SettingsActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initUI()
+        setContentView(R.layout.activity_settings)
+
+        Thread {
+            runOnUiThread {
+                initUI()
+            }
+        }.start()
     }
 
     private fun initUI() {
-        setContentView(R.layout.activity_settings)
-
         activitySettingsTitle = findViewById(R.id.activity_settings_title)
         globalSettingsTip = findViewById(R.id.global_settings_tip)
         btnChangeApi = findViewById(R.id.btn_manage_api)
@@ -236,6 +247,8 @@ class SettingsActivity : FragmentActivity() {
         btnOpenAITTS = findViewById(R.id.tts_openai)
         btnExperiments = findViewById(R.id.btnExperiments)
         btnBack = findViewById(R.id.btn_back)
+
+        ad = findViewById(R.id.ad)
 
         btnChangeApi?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(this, R.drawable.t_menu_top_item_background)!!, this)
@@ -334,6 +347,28 @@ class SettingsActivity : FragmentActivity() {
             finish()
         }
 
+        MobileAds.initialize(this) { /* unused */ }
+
+        val adView = AdView(this)
+        adView.setAdSize(AdSize.LARGE_BANNER)
+        adView.adUnitId = if (preferences?.getDebugTestAds()!!) "ca-app-pub-3940256099942544/9214589741" else "ca-app-pub-7410382345282120/1474294730"
+
+        ad?.addView(adView)
+
+        val adRequest: AdRequest = AdRequest.Builder().build()
+
+        adView.loadAd(adRequest)
+
+        adView.adListener = object : com.google.android.gms.ads.AdListener() {
+            override fun onAdFailedToLoad(error: LoadAdError) {
+                ad?.visibility = View.GONE
+            }
+
+            override fun onAdLoaded() {
+                ad?.visibility = View.VISIBLE
+            }
+        }
+
         activationPrompt = preferences?.getPrompt().toString()
         systemMessage = preferences?.getSystemMessage().toString()
 
@@ -363,6 +398,8 @@ class SettingsActivity : FragmentActivity() {
         }
 
         autoLangDetectSwitch?.isChecked = preferences?.getAutoLangDetect() == true
+
+        ttsEngine = preferences?.getTtsEngine().toString()
 
         loadResolution()
         loadModel()
@@ -456,7 +493,7 @@ class SettingsActivity : FragmentActivity() {
         }
 
         btnVoiceSelector?.setOnClickListener {
-            val voiceSelectorDialogFragment: VoiceSelectorDialogFragment = VoiceSelectorDialogFragment.newInstance("")
+            val voiceSelectorDialogFragment: VoiceSelectorDialogFragment = VoiceSelectorDialogFragment.newInstance(if (preferences?.getTtsEngine() == "google") preferences?.getVoice() ?: "" else preferences?.getOpenAIVoice() ?: "", chatId, ttsEngine)
             voiceSelectorDialogFragment.show(supportFragmentManager.beginTransaction(), "VoiceSelectorDialogFragment")
         }
 

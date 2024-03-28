@@ -39,6 +39,11 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
 
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -63,6 +68,8 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
     private var noInternetLayout: ConstraintLayout? = null
 
     private var btnReconnect: MaterialButton? = null
+
+    private var btnShowDetails: MaterialButton? = null
 
     private var promptBy: TextView? = null
 
@@ -90,6 +97,8 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
 
     private var title = ""
 
+    private var networkError = ""
+
     private var likeState = false
 
     private var settings: SharedPreferences? = null
@@ -99,6 +108,8 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
     private var btnBack: ImageButton? = null
 
     private var root: ConstraintLayout? = null
+
+    private var ad: LinearLayout? = null
 
     private val dataListener: RequestNetwork.RequestListener = object : RequestNetwork.RequestListener {
         override fun onResponse(tag: String, message: String) {
@@ -134,16 +145,16 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
                     "sport" -> String.format(resources.getString(R.string.cat), resources.getString(R.string.cat_sport))
                     else -> String.format(resources.getString(R.string.cat), resources.getString(R.string.cat_uncat))
                 }
+
+                networkError = ""
             } catch (e: Exception) {
-                MaterialAlertDialogBuilder(this@PromptViewActivity, R.style.App_MaterialAlertDialog)
-                    .setTitle("Error")
-                    .setMessage(e.stackTraceToString())
-                    .setPositiveButton("Close") { _, _ -> }
-                    .show()
+                networkError = e.printStackTrace().toString()
             }
         }
 
         override fun onErrorResponse(tag: String, message: String) {
+            networkError = message
+
             noInternetLayout?.visibility = View.VISIBLE
             progressBar?.visibility = View.GONE
             content?.visibility = View.GONE
@@ -292,120 +303,167 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
 
                 window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
 
-                activityTitle = findViewById(R.id.activity_view_title)
 
-                content = findViewById(R.id.view_content)
-                progressBar = findViewById(R.id.progress_bar_view)
-                noInternetLayout = findViewById(R.id.no_internet)
-                btnReconnect = findViewById(R.id.btn_reconnect)
-                promptBy = findViewById(R.id.prompt_by)
-                promptText = findViewById(R.id.prompt_text)
-                refreshPage = findViewById(R.id.refresh_page)
-                btnFlag = findViewById(R.id.btn_flag)
-                btnCopy = findViewById(R.id.btn_copy)
-                btnLike = findViewById(R.id.btn_like)
-                btnTry = findViewById(R.id.btn_try)
-                textCat = findViewById(R.id.text_cat)
-                btnBack = findViewById(R.id.btn_back)
-                root = findViewById(R.id.root)
+                initUI()
 
-                promptBg = findViewById(R.id.prompt_bg)
-                promptActions = findViewById(R.id.prompt_actions)
-
-                reloadAmoled()
-
-                activityTitle?.isSelected = true
-
-                btnFlag?.background = getDarkAccentDrawable(
-                    AppCompatResources.getDrawable(
-                        this,
-                        R.drawable.btn_accent_tonal_v4
-                    )!!, this
-                )
-
-                btnBack?.background = getDarkAccentDrawable(
-                    AppCompatResources.getDrawable(
-                        this,
-                        R.drawable.btn_accent_tonal_v4
-                    )!!, this
-                )
-
-                btnFlag?.setImageResource(R.drawable.ic_flag)
-
-                btnBack?.setOnClickListener {
-                    finish()
-                }
-
-                settings = getSharedPreferences("likes", MODE_PRIVATE)
-
-                likeState = settings?.getBoolean(id, false) == true
-
-                refreshPage?.setColorSchemeResources(R.color.accent_900)
-                refreshPage?.setProgressBackgroundColorSchemeColor(
-                    SurfaceColors.SURFACE_2.getColor(this)
-                )
-                refreshPage?.setSize(SwipeRefreshLayout.LARGE)
-
-                refreshPage?.setOnRefreshListener(this)
-
-                if (likeState) {
-                    btnLike?.setIconResource(R.drawable.ic_like)
-                } else {
-                    btnLike?.setIconResource(R.drawable.ic_like_outline)
-                }
-
-                btnCopy?.setOnClickListener {
-                    val clipboard: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                    val clip = ClipData.newPlainText("prompt", promptText?.text.toString())
-                    clipboard.setPrimaryClip(clip)
-
-                    Toast.makeText(this, "Text copied to clipboard", Toast.LENGTH_SHORT).show()
-                }
-
-                btnLike?.setOnClickListener {
-                    if (likeState) {
-                        requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/dislike.php?api_key=${Api.TESLASOFT_API_KEY}&id=$id", "A", dislikeListener)
-                    } else {
-                        requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/like.php?api_key=${Api.TESLASOFT_API_KEY}&id=$id", "A", likeListener)
+                Thread {
+                    runOnUiThread {
+                        initLogic()
                     }
-
-                    btnLike?.isEnabled = false
-                }
-
-                btnTry?.setOnClickListener {
-                    if (promptFor == "GPT") {
-                        val i = Intent(
-                            this,
-                            AssistantActivity::class.java
-                        ).setAction(Intent.ACTION_VIEW)
-                        i.putExtra("prompt", promptText?.text.toString())
-                        startActivity(i)
-                    } else {
-                        val i = Intent(
-                            this,
-                            AssistantActivity::class.java
-                        ).setAction(Intent.ACTION_VIEW)
-                        i.putExtra("prompt", "/imagine " + promptText?.text.toString())
-                        i.putExtra("FORCE_SLASH_COMMANDS_ENABLED", true)
-                        startActivity(i)
-                    }
-                }
-
-                btnFlag?.setOnClickListener {
-                    val i = Intent(this, ReportAbuseActivity::class.java).setAction(Intent.ACTION_VIEW)
-                    i.putExtra("id", id)
-                    startActivity(i)
-                }
-
-                requestNetwork = RequestNetwork(this)
-
-                activityTitle?.text = title
-
-                btnReconnect?.setOnClickListener { loadData() }
-
-                loadData()
+                }.start()
             }
         }
+    }
+
+    private fun initUI() {
+        activityTitle = findViewById(R.id.activity_view_title)
+        content = findViewById(R.id.view_content)
+        progressBar = findViewById(R.id.progress_bar_view)
+        noInternetLayout = findViewById(R.id.no_internet)
+        btnReconnect = findViewById(R.id.btn_reconnect)
+        btnShowDetails = findViewById(R.id.btn_show_details)
+        promptBy = findViewById(R.id.prompt_by)
+        promptText = findViewById(R.id.prompt_text)
+        refreshPage = findViewById(R.id.refresh_page)
+        btnFlag = findViewById(R.id.btn_flag)
+        btnCopy = findViewById(R.id.btn_copy)
+        btnLike = findViewById(R.id.btn_like)
+        btnTry = findViewById(R.id.btn_try)
+        textCat = findViewById(R.id.text_cat)
+        btnBack = findViewById(R.id.btn_back)
+        root = findViewById(R.id.root)
+
+        promptBg = findViewById(R.id.prompt_bg)
+        promptActions = findViewById(R.id.prompt_actions)
+
+        reloadAmoled()
+    }
+
+    private fun initLogic() {
+        activityTitle?.isSelected = true
+
+        btnFlag?.background = getDarkAccentDrawable(
+            AppCompatResources.getDrawable(
+                this,
+                R.drawable.btn_accent_tonal_v4
+            )!!, this
+        )
+
+        btnBack?.background = getDarkAccentDrawable(
+            AppCompatResources.getDrawable(
+                this,
+                R.drawable.btn_accent_tonal_v4
+            )!!, this
+        )
+
+        btnFlag?.setImageResource(R.drawable.ic_flag)
+
+        btnBack?.setOnClickListener {
+            finish()
+        }
+
+        settings = getSharedPreferences("likes", MODE_PRIVATE)
+
+        likeState = settings?.getBoolean(id, false) == true
+
+        refreshPage?.setColorSchemeResources(R.color.accent_900)
+        refreshPage?.setProgressBackgroundColorSchemeColor(
+            SurfaceColors.SURFACE_2.getColor(this)
+        )
+        refreshPage?.setSize(SwipeRefreshLayout.LARGE)
+
+        refreshPage?.setOnRefreshListener(this)
+
+        if (likeState) {
+            btnLike?.setIconResource(R.drawable.ic_like)
+        } else {
+            btnLike?.setIconResource(R.drawable.ic_like_outline)
+        }
+
+        btnCopy?.setOnClickListener {
+            val clipboard: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("prompt", promptText?.text.toString())
+            clipboard.setPrimaryClip(clip)
+
+            Toast.makeText(this, "Text copied to clipboard", Toast.LENGTH_SHORT).show()
+        }
+
+        btnLike?.setOnClickListener {
+            if (likeState) {
+                requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/dislike.php?api_key=${Api.TESLASOFT_API_KEY}&id=$id", "A", dislikeListener)
+            } else {
+                requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/like.php?api_key=${Api.TESLASOFT_API_KEY}&id=$id", "A", likeListener)
+            }
+
+            btnLike?.isEnabled = false
+        }
+
+        btnTry?.setOnClickListener {
+            if (promptFor == "GPT") {
+                val i = Intent(
+                    this,
+                    AssistantActivity::class.java
+                ).setAction(Intent.ACTION_VIEW)
+                i.putExtra("prompt", promptText?.text.toString())
+                startActivity(i)
+            } else {
+                val i = Intent(
+                    this,
+                    AssistantActivity::class.java
+                ).setAction(Intent.ACTION_VIEW)
+                i.putExtra("prompt", "/imagine " + promptText?.text.toString())
+                i.putExtra("FORCE_SLASH_COMMANDS_ENABLED", true)
+                startActivity(i)
+            }
+        }
+
+        btnFlag?.setOnClickListener {
+            val i = Intent(this, ReportAbuseActivity::class.java).setAction(Intent.ACTION_VIEW)
+            i.putExtra("id", id)
+            startActivity(i)
+        }
+
+        requestNetwork = RequestNetwork(this)
+
+        activityTitle?.text = title
+
+        btnReconnect?.setOnClickListener { loadData() }
+
+        val preferences: Preferences = Preferences.getPreferences(this, "")
+
+        MobileAds.initialize(this) { /* unused */ }
+
+        ad = findViewById(R.id.ad)
+
+        val adView = AdView(this)
+        adView.setAdSize(AdSize.LARGE_BANNER)
+        adView.adUnitId = if (preferences.getDebugTestAds()) "ca-app-pub-3940256099942544/9214589741" else "ca-app-pub-7410382345282120/1474294730"
+
+        ad?.addView(adView)
+
+        val adRequest: AdRequest = AdRequest.Builder().build()
+
+        adView.loadAd(adRequest)
+
+        adView.adListener = object : com.google.android.gms.ads.AdListener() {
+            override fun onAdFailedToLoad(error: LoadAdError) {
+                ad?.visibility = View.GONE
+            }
+
+            override fun onAdLoaded() {
+                ad?.visibility = View.VISIBLE
+            }
+        }
+
+        btnShowDetails?.setOnClickListener {
+            MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
+                .setTitle("Error details")
+                .setMessage(networkError)
+                .setPositiveButton("Close") { _, _ -> }
+                .show()
+        }
+
+        loadData()
     }
 
     private fun getDarkAccentDrawable(drawable: Drawable, context: Context) : Drawable {

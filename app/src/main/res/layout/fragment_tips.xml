@@ -37,6 +37,19 @@
                 android:layout_height="match_parent">
 
                 <LinearLayout
+                    android:id="@+id/ad"
+                    android:layout_width="320dp"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@color/accent_250"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tip12_text" />
+
+                <LinearLayout
                     android:id="@+id/tip_1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -70,7 +83,7 @@
                     android:padding="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tip_1">
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
                         android:id="@+id/tip2_text"
@@ -285,12 +298,10 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="16dp"
                     android:background="@drawable/btn_tip1"
                     android:padding="16dp"
                     android:text="@string/tip_12"
                     android:textColor="@color/tip1"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tip_11" />

@@ -167,14 +167,36 @@ class ChatsListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        Thread {
+            requireActivity().runOnUiThread {
+                initUI(view)
+                initChatsList()
+                initLogics()
+                preInit()
+            }
+        }.start()
+    }
+
+    private fun initUI(view: View) {
         chatsList = view.findViewById(R.id.chats)
         btnSettings = view.findViewById(R.id.btn_settings_)
         btnImport = view.findViewById(R.id.btn_import)
         fieldSearch = view.findViewById(R.id.field_search)
         bgSearch = view.findViewById(R.id.bg_search)
+        btnAdd = view.findViewById(R.id.btn_add)
+        reloadAmoled()
+    }
 
-        btnSettings?.setImageResource(R.drawable.ic_settings)
+    private fun initChatsList() {
+        adapter = ChatListAdapter(chats, this)
+        chatsList?.dividerHeight = 0
+        chatsList?.divider = null
+        chatsList?.adapter = adapter
+        adapter?.notifyDataSetChanged()
+    }
 
+    private fun initLogics() {
         btnSettings?.setOnClickListener {
             if (Preferences.getPreferences(requireActivity(), "").getExperimentalUI()) {
                 startActivity(Intent(requireActivity(), SettingsV2Activity::class.java).setAction(Intent.ACTION_VIEW))
@@ -182,8 +204,6 @@ class ChatsListFragment : Fragment() {
                 startActivity(Intent(requireActivity(), SettingsActivity::class.java).setAction(Intent.ACTION_VIEW))
             }
         }
-
-        btnAdd = view.findViewById(R.id.btn_add)
 
         btnAdd?.setOnClickListener {
             val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false, false, false)
@@ -194,17 +214,6 @@ class ChatsListFragment : Fragment() {
         btnImport?.setOnClickListener {
             openFile(Uri.parse("/storage/emulated/0/chat.json"))
         }
-
-        adapter = ChatListAdapter(chats, this)
-
-        chatsList?.dividerHeight = 0
-        chatsList?.divider = null
-
-        chatsList?.adapter = adapter
-
-        reloadAmoled()
-
-        adapter?.notifyDataSetChanged()
 
         fieldSearch?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -237,8 +246,6 @@ class ChatsListFragment : Fragment() {
             }
 
         })
-
-        preInit()
     }
 
     private val fileIntentLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
