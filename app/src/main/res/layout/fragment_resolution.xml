@@ -64,6 +64,16 @@
                     android:layout_height="56dp"
                     android:text="1024x1024"
                     android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/textView46"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/btn_tip2"
+                    android:padding="16dp"
+                    android:text="Please note that DALL-E 3 supports only 1024x1024 images. If you select another resolution with DALL-E 3 you will receive an error."
+                    android:textColor="@color/error" />
             </RadioGroup>
         </LinearLayout>
     </ScrollView>

@@ -269,21 +269,33 @@ class SettingsV2Activity : FragmentActivity() {
 
     private var accountSyncListener: AccountSyncListener = object : AccountSyncListener {
         override fun onAuthFinished(name: String, email: String, isDev: Boolean, token: String) {
-            runOnUiThread {
-                if (isDev) {
-                    tileDebugTestAds?.setEnabled(true)
-                    testAdsReady = true
-                } else {
-                    tileDebugTestAds?.setEnabled(false)
-                    preferences?.setDebugTestAds(false)
-                    testAdsReady = false
+            Thread {
+                Thread.sleep(500)
+                runOnUiThread {
+                    if (isDev) {
+                        if (areFragmentsInitialized) {
+                            tileDebugTestAds?.setEnabled(true)
+                        }
+
+                        testAdsReady = true
+                    } else {
+                        if (areFragmentsInitialized) {
+                            tileDebugTestAds?.setEnabled(false)
+                        }
+
+                        preferences?.setDebugTestAds(false)
+                        testAdsReady = false
+                    }
                 }
-            }
+            }.start()
         }
 
         override fun onAuthFailed(state: String, message: String) {
             runOnUiThread {
-                tileDebugTestAds?.setEnabled(false)
+                if (areFragmentsInitialized) {
+                    tileDebugTestAds?.setEnabled(false)
+                }
+
                 preferences?.setDebugTestAds(false)
                 testAdsReady = false
             }
@@ -291,7 +303,10 @@ class SettingsV2Activity : FragmentActivity() {
 
         override fun onSignedOut() {
             runOnUiThread {
-                tileDebugTestAds?.setEnabled(false)
+                if (areFragmentsInitialized) {
+                    tileDebugTestAds?.setEnabled(false)
+                }
+
                 preferences?.setDebugTestAds(false)
                 testAdsReady = false
                 recreate()
@@ -368,8 +383,20 @@ class SettingsV2Activity : FragmentActivity() {
             val fragmentTransaction = placeFragments()
 
             runOnUiThread {
+                val t = Thread {
+                    runOnUiThread {
+                        fragmentTransaction.commit()
+                    }
+                }
 
-                fragmentTransaction.commit()
+                t.start()
+                t.join()
+
+                Thread {
+                    Thread.sleep(100)
+                    areFragmentsInitialized = true
+                }.start()
+
                 initAds()
                 initializeLogic()
 
@@ -906,7 +933,6 @@ class SettingsV2Activity : FragmentActivity() {
     }
 
     private fun placeFragments() : FragmentTransaction {
-
         val operation = supportFragmentManager.beginTransaction().replace(R.id.tile_account, tileAccountFragment!!)
             .replace(R.id.tile_assistant, tileAssistant!!)
             .replace(R.id.tile_api, tileApiKey!!)
@@ -943,7 +969,6 @@ class SettingsV2Activity : FragmentActivity() {
             .replace(R.id.tile_event_log, tileEventLog!!)
             .replace(R.id.tile_debug_test_ads, tileDebugTestAds!!)
 
-        areFragmentsInitialized = true
         return operation
     }
 
@@ -980,6 +1005,18 @@ class SettingsV2Activity : FragmentActivity() {
             }
         }
         crearEventoHilo.start()
+
+        Thread {
+            while (!areFragmentsInitialized) {
+                Thread.sleep(100)
+            }
+
+            runOnUiThread {
+                if (testAdsReady) {
+                    tileDebugTestAds?.setEnabled(true)
+                }
+            }
+        }.start()
 
         MobileAds.initialize(this) { /* unused */ }
 

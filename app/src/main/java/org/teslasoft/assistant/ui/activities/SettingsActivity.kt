@@ -37,6 +37,7 @@ import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.button.MaterialButtonToggleGroup
@@ -348,6 +349,19 @@ class SettingsActivity : FragmentActivity() {
         }
 
         MobileAds.initialize(this) { /* unused */ }
+
+        val testDevices: MutableList<String> = ArrayList()
+        testDevices.add(AdRequest.DEVICE_ID_EMULATOR)
+        testDevices.add("10e46e1d-ccaa-4909-85bf-83994b920a9c")
+        testDevices.add("c29eb9ca-6008-421f-b306-c559d96ea303")
+        testDevices.add("5e03e1ee-7eb9-4b51-9d21-10ca1ad1abe1")
+        testDevices.add("9AB1B18F59CF84AA")
+        testDevices.add("27583FCB662C9F6D")
+
+        val requestConfiguration = RequestConfiguration.Builder()
+            .setTestDeviceIds(testDevices)
+            .build()
+        MobileAds.setRequestConfiguration(requestConfiguration)
 
         val adView = AdView(this)
         adView.setAdSize(AdSize.LARGE_BANNER)

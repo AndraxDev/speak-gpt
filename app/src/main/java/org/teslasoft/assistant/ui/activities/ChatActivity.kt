@@ -245,7 +245,7 @@ class ChatActivity : FragmentActivity() {
         if (isDarkThemeEnabled() && Preferences.getPreferences(this, chatId).getAmoledPitchBlack()) {
             threadLoader?.background = ResourcesCompat.getDrawable(resources, R.color.amoled_accent_50, null)
         } else {
-            threadLoader?.setBackgroundColor(SurfaceColors.SURFACE_2.getColor(this))
+            threadLoader?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
         }
     }
 

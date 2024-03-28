@@ -23,7 +23,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewStub
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
@@ -103,40 +102,42 @@ class TileFragment : Fragment() {
     }
 
     fun setEnabled(isEnabled: Boolean) {
-        this.isEnabled = isEnabled
+        if (onAttachedToActivity) {
+            this.isEnabled = isEnabled
 
-        if (isEnabled) {
-            tileBg?.isClickable = true
-            tileBg?.isEnabled = true
-            if (isChecked) {
-                tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.window_background)
-                tileTitle?.setTextColor(requireActivity().getColor(R.color.text_title_inv))
-                tileSubtitle?.setTextColor(requireActivity().getColor(R.color.text_subtitle_inv))
-                tileBg?.background = getEnabledDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.tile_active)!!)
-            } else {
-                if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack() == true){
-                    tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.accent_600)
+            if (isEnabled) {
+                tileBg?.isClickable = true
+                tileBg?.isEnabled = true
+                if (isChecked) {
+                    tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.window_background)
+                    tileTitle?.setTextColor(requireActivity().getColor(R.color.text_title_inv))
+                    tileSubtitle?.setTextColor(requireActivity().getColor(R.color.text_subtitle_inv))
+                    tileBg?.background = getEnabledDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.tile_active)!!)
                 } else {
-                    tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.accent_900)
+                    if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack() == true){
+                        tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.accent_600)
+                    } else {
+                        tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.accent_900)
+                    }
+                    tileTitle?.setTextColor(requireActivity().getColor(R.color.text_title))
+                    tileSubtitle?.setTextColor(requireActivity().getColor(R.color.text_subtitle))
+                    tileBg?.background = getDisabledDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.tile_inactive)!!)
                 }
-                tileTitle?.setTextColor(requireActivity().getColor(R.color.text_title))
-                tileSubtitle?.setTextColor(requireActivity().getColor(R.color.text_subtitle))
-                tileBg?.background = getDisabledDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.tile_inactive)!!)
+            } else {
+                tileBg?.isClickable = false
+                tileBg?.isEnabled = false
+                tileBg?.background = getDisDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.tile_disabled)!!)
+                tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.disabled_icon)
             }
-        } else {
-            tileBg?.isClickable = false
-            tileBg?.isEnabled = false
-            tileBg?.background = getDisDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.tile_disabled)!!)
-            tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.disabled_icon)
         }
     }
 
     fun updateTitle(title: String) {
-        tileTitle?.text = title
+        if (onAttachedToActivity) tileTitle?.text = title
     }
 
     fun updateSubtitle(subtitle: String) {
-        tileSubtitle?.text = subtitle
+        if (onAttachedToActivity) tileSubtitle?.text = subtitle
     }
 
     private fun isDarkThemeEnabled(): Boolean {
@@ -150,37 +151,56 @@ class TileFragment : Fragment() {
     }
 
     fun setChecked(isChecked: Boolean) {
-        this.isChecked = isChecked
+        if (onAttachedToActivity) {
+            this.isChecked = isChecked
 
-        if (isChecked) {
-            tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.window_background)
-            tileTitle?.setTextColor(requireActivity().getColor(R.color.text_title_inv))
-            tileSubtitle?.setTextColor(requireActivity().getColor(R.color.text_subtitle_inv))
-            tileBg?.background = getEnabledDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.tile_active)!!)
-            tileTitle?.text = requireArguments().getString("enabledText").toString()
-            tileSubtitle?.text = requireArguments().getString("enabledDesc").toString()
-        } else {
-            if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack() == true){
-                tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.accent_600)
+            if (isChecked) {
+                tileIcon?.imageTintList =
+                    ContextCompat.getColorStateList(requireActivity(), R.color.window_background)
+                tileTitle?.setTextColor(requireActivity().getColor(R.color.text_title_inv))
+                tileSubtitle?.setTextColor(requireActivity().getColor(R.color.text_subtitle_inv))
+                tileBg?.background = getEnabledDrawable(
+                    ContextCompat.getDrawable(
+                        requireActivity(),
+                        R.drawable.tile_active
+                    )!!
+                )
+                tileTitle?.text = requireArguments().getString("enabledText").toString()
+                tileSubtitle?.text = requireArguments().getString("enabledDesc").toString()
             } else {
-                tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.accent_900)
+                if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack() == true) {
+                    tileIcon?.imageTintList =
+                        ContextCompat.getColorStateList(requireActivity(), R.color.accent_600)
+                } else {
+                    tileIcon?.imageTintList =
+                        ContextCompat.getColorStateList(requireActivity(), R.color.accent_900)
+                }
+                tileTitle?.setTextColor(requireActivity().getColor(R.color.text_title))
+                tileSubtitle?.setTextColor(requireActivity().getColor(R.color.text_subtitle))
+                tileBg?.background = getDisabledDrawable(
+                    ContextCompat.getDrawable(
+                        requireActivity(),
+                        R.drawable.tile_inactive
+                    )!!
+                )
+                tileTitle?.text = requireArguments().getString("disabledText")
+                    ?: requireArguments().getString("enabledText").toString()
+                tileSubtitle?.text = requireArguments().getString("disabledDesc")
+                    ?: requireArguments().getString("enabledDesc").toString()
             }
-            tileTitle?.setTextColor(requireActivity().getColor(R.color.text_title))
-            tileSubtitle?.setTextColor(requireActivity().getColor(R.color.text_subtitle))
-            tileBg?.background = getDisabledDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.tile_inactive)!!)
-            tileTitle?.text = requireArguments().getString("disabledText") ?: requireArguments().getString("enabledText").toString()
-            tileSubtitle?.text = requireArguments().getString("disabledDesc") ?: requireArguments().getString("enabledDesc").toString()
         }
     }
 
     override fun onAttach(context: Context) {
-        super.onAttach(context)
         onAttachedToActivity = true
+
+        super.onAttach(context)
     }
 
     override fun onDetach() {
-        super.onDetach()
         onAttachedToActivity = false
+
+        super.onDetach()
     }
 
     override fun onCreateView(
@@ -192,7 +212,7 @@ class TileFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        // super.onViewCreated(view, savedInstanceState)
+        super.onViewCreated(view, savedInstanceState)
 
         val args = requireArguments()
 
