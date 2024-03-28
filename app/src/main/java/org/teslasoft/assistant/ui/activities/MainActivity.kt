@@ -21,35 +21,40 @@ import android.animation.AnimatorListenerAdapter
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
+import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageButton
 import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
-
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.navigation.NavigationBarView
-
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.DeviceInfoProvider
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.fragments.tabs.ChatsListFragment
 import org.teslasoft.assistant.ui.fragments.tabs.PromptsFragment
 
+
 class MainActivity : FragmentActivity() {
     private var navigationBar: BottomNavigationView? = null
     private var fragmentChats: ConstraintLayout? = null
     private var fragmentPrompts: ConstraintLayout? = null
     private var fragmentTips: ConstraintLayout? = null
+    private var btnDebugger: MaterialButton? = null
+    private var debuggerWindow: ConstraintLayout? = null
+    private var btnCloseDebugger: ImageButton? = null
+    private var btnInitiateCrash: MaterialButton? = null
 
     private var selectedTab: Int = 1
     private var isAnimating = false
@@ -78,12 +83,17 @@ class MainActivity : FragmentActivity() {
         fragmentPrompts = findViewById(R.id.fragment_prompts)
         fragmentTips = findViewById(R.id.fragment_tips)
         root = findViewById(R.id.root)
+        btnDebugger = findViewById(R.id.btn_open_debugger)
+        debuggerWindow = findViewById(R.id.debugger_window)
+        btnCloseDebugger = findViewById(R.id.btn_close_debugger)
+        btnInitiateCrash = findViewById(R.id.btn_initiate_crash)
+
+        btnDebugger?.visibility = View.GONE
+        debuggerWindow?.visibility = View.GONE
 
         frameChats = supportFragmentManager.findFragmentById(R.id.fragment_chats_)
         framePrompts = supportFragmentManager.findFragmentById(R.id.fragment_prompts_)
         frameTips = supportFragmentManager.findFragmentById(R.id.fragment_tips_)
-
-
 
         Thread {
             DeviceInfoProvider.assignInstallationId(this)
@@ -144,6 +154,28 @@ class MainActivity : FragmentActivity() {
                 if (savedInstanceState != null) {
                     onRestoredState(savedInstanceState)
                 }
+
+                val preferences = Preferences.getPreferences(this, "")
+
+                if (preferences.getDebugTestAds() && !preferences.getDebugMode()) {
+                    preferences.setDebugMode(true)
+                    recreate()
+                }
+
+                if (preferences.getDebugMode()) {
+                    btnDebugger?.visibility = View.VISIBLE
+                    btnDebugger?.setOnClickListener {
+                        debuggerWindow?.visibility = View.VISIBLE
+                    }
+
+                    btnCloseDebugger?.setOnClickListener {
+                        debuggerWindow?.visibility = View.GONE
+                    }
+
+                    btnInitiateCrash?.setOnClickListener {
+                        throw RuntimeException("Test crash")
+                    }
+                }
             }
         }.start()
     }
@@ -160,12 +192,26 @@ class MainActivity : FragmentActivity() {
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
             root?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
             navigationBar!!.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
+
+            val drawable = GradientDrawable()
+            drawable.shape = GradientDrawable.RECTANGLE
+            drawable.setColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
+            drawable.alpha = 220
+
+            debuggerWindow?.background = drawable
         } else {
             window.navigationBarColor = SurfaceColors.SURFACE_3.getColor(this)
             window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
             window.setBackgroundDrawableResource(R.color.window_background)
             root?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
             navigationBar!!.setBackgroundColor(SurfaceColors.SURFACE_3.getColor(this))
+
+            val drawable = GradientDrawable()
+            drawable.shape = GradientDrawable.RECTANGLE
+            drawable.setColor(SurfaceColors.SURFACE_0.getColor(this))
+            drawable.alpha = 220
+
+            debuggerWindow?.background = drawable
         }
 
         (frameChats as ChatsListFragment).reloadAmoled()

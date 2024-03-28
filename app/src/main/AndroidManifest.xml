@@ -176,8 +176,15 @@
         </activity>
 
         <activity
-            android:name=".ui.debug.DebugActivity"
+            android:name=".ui.activities.LogsActivity"
             android:exported="false"
+            android:theme="@style/UI.Fade"
+            android:launchMode="singleTask">
+        </activity>
+
+        <activity
+            android:name=".ui.debug.DebugActivity"
+            android:exported="true"
             android:theme="@style/UI.Fade"
             android:launchMode="singleTask">
         </activity>

@@ -193,8 +193,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:background="@drawable/btn_accent"
-                    android:onClick="dismiss"
-                    android:text="Close"
+                    android:onClick="restart"
+                    android:text="Restart app"
                     android:textAllCaps="false"
                     android:textColor="@color/window_background" />
 

@@ -19,7 +19,10 @@ package org.teslasoft.core
 import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -30,6 +33,10 @@ import androidx.fragment.app.FragmentActivity
 import cat.ereza.customactivityoncrash.CustomActivityOnCrash
 
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.DeviceInfoProvider
+import org.teslasoft.assistant.ui.activities.MainActivity
+import java.time.Instant
+import java.time.format.DateTimeFormatter
 
 /** This activity will be opened if app os crashed. */
 class CrashHandlerActivity : FragmentActivity() {
@@ -38,7 +45,7 @@ class CrashHandlerActivity : FragmentActivity() {
 
     private var textError: TextView? = null
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "HardwareIds")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -53,9 +60,17 @@ class CrashHandlerActivity : FragmentActivity() {
                 }
             })
 
+            val IID = when (val installationId = DeviceInfoProvider.getInstallationId(this)) {
+                "00000000-0000-0000-0000-000000000000" -> "<Authorization revoked>"
+                "" -> "<Not assigned>"
+                else -> installationId
+            }
+
             textError = findViewById(R.id.text_error)
             textError!!.setTextIsSelectable(true)
-            textError!!.text = "\n$error"
+            textError!!.text = "\nAn app has been crashed and needs to be restarted.\n\n===== BEGIN SYSTEM INFO =====\nAndroid version: ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT} ${Build.VERSION.CODENAME})\nROM version: ${Build.VERSION.INCREMENTAL}\nDevice model: ${Build.MODEL}\nAndroid device ID: ${Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)}\nInstallation ID: ${IID}\nEffective time: ${
+                DateTimeFormatter.ISO_INSTANT.format(
+                    Instant.now())}\n===== END SYSTEM INFO =====\n\n===== BEGIN OF CRASH =====\n$error\n===== END OF CRASH =====\n"
 
             if (error == "") {
                 finishAndRemoveTask()
@@ -65,8 +80,9 @@ class CrashHandlerActivity : FragmentActivity() {
         }
     }
 
-    fun dismiss(v: View?) {
-        finishAndRemoveTask()
+    fun restart(v: View?) {
+        startActivity(Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        finish()
     }
 
     fun copy(v: View?) {

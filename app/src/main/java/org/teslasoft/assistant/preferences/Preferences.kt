@@ -337,7 +337,7 @@ class Preferences private constructor(private var preferences: SharedPreferences
      * @return experimental UI mode
      */
     fun getExperimentalUI() : Boolean {
-        return getGlobalBoolean("experimentalUI", false)
+        return getGlobalBoolean("experimentalUI", true)
     }
 
     /**
@@ -365,6 +365,20 @@ class Preferences private constructor(private var preferences: SharedPreferences
      */
     fun setCustomHost(host: String) {
         putGlobalString("custom_host", host)
+    }
+
+    /**
+     * Get debug mode
+     * */
+    fun getDebugMode() : Boolean {
+        return getGlobalBoolean("debug_mode", false)
+    }
+
+    /**
+     * Set debug mode
+     * */
+    fun setDebugMode(state: Boolean) {
+        putGlobalBoolean("debug_mode", state)
     }
 
     /**

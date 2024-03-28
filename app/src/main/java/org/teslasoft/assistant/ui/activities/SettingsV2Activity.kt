@@ -16,6 +16,7 @@
 
 package org.teslasoft.assistant.ui.activities
 
+import android.annotation.SuppressLint
 import android.app.role.RoleManager
 import android.content.Context
 import android.content.Intent
@@ -273,12 +274,14 @@ class SettingsV2Activity : FragmentActivity() {
                 Thread.sleep(500)
                 runOnUiThread {
                     if (isDev) {
+                        preferences?.setDebugMode(true)
                         if (areFragmentsInitialized) {
                             tileDebugTestAds?.setEnabled(true)
                         }
 
                         testAdsReady = true
                     } else {
+                        preferences?.setDebugMode(false)
                         if (areFragmentsInitialized) {
                             tileDebugTestAds?.setEnabled(false)
                         }
@@ -292,6 +295,7 @@ class SettingsV2Activity : FragmentActivity() {
 
         override fun onAuthFailed(state: String, message: String) {
             runOnUiThread {
+                preferences?.setDebugMode(false)
                 if (areFragmentsInitialized) {
                     tileDebugTestAds?.setEnabled(false)
                 }
@@ -303,6 +307,7 @@ class SettingsV2Activity : FragmentActivity() {
 
         override fun onSignedOut() {
             runOnUiThread {
+                preferences?.setDebugMode(false)
                 if (areFragmentsInitialized) {
                     tileDebugTestAds?.setEnabled(false)
                 }
@@ -979,6 +984,7 @@ class SettingsV2Activity : FragmentActivity() {
 
     private fun initAds() {
         val crearEventoHilo: Thread = object : Thread() {
+            @SuppressLint("HardwareIds")
             override fun run() {
                 val info: AdvertisingIdClient.Info?
 
@@ -1349,15 +1355,15 @@ class SettingsV2Activity : FragmentActivity() {
         }
 
         tileCrashLog?.setOnTileClickListener {
-            // TODO: Implement
+            startActivity(Intent(this, LogsActivity::class.java).putExtra("type", "crash"))
         }
 
         tileAdsLog?.setOnTileClickListener {
-            // TODO: Implement
+            startActivity(Intent(this, LogsActivity::class.java).putExtra("type", "ads"))
         }
 
         tileEventLog?.setOnTileClickListener {
-            // TODO: Implement
+            startActivity(Intent(this, LogsActivity::class.java).putExtra("type", "event"))
         }
 
         tileDebugTestAds?.setOnCheckedChangeListener { ischecked ->

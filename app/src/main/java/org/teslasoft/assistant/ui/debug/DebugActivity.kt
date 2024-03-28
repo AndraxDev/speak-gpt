@@ -78,6 +78,9 @@ class DebugActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        finish()
+
+        /*
         setContentView(R.layout.activity_debug)
 
         btnDebug = findViewById(R.id.btnDebug)
@@ -91,6 +94,7 @@ class DebugActivity : FragmentActivity() {
         btnDebug?.setOnClickListener {
             tts!!.speak(fieldDebug!!.text, TextToSpeech.QUEUE_FLUSH, null,"")
         }
+        */
     }
 
     public override fun onDestroy() {
