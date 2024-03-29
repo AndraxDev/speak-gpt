@@ -74,8 +74,9 @@
                     android:minHeight="56dp"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:text="GPT 3.5 (Long context)"
-                    android:textSize="16sp" />
+                    android:text="GPT 3.5 (Long context) (1106)"
+                    android:textSize="16sp"
+                    android:visibility="gone" />
 
                 <RadioButton
                     android:id="@+id/gpt_35_turbo_0125"
@@ -87,7 +88,7 @@
                     android:minHeight="56dp"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:text="GPT 3.5 (Cost effective)"
+                    android:text="GPT 3.5 (Cost effective) (0125)"
                     android:textSize="16sp" />
 
                 <RadioButton
@@ -150,7 +151,7 @@
                     android:minHeight="56dp"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:text="GPT 4 (Extended version)"
+                    android:text="GPT 4 (Extended version, 32k)"
                     android:textSize="16sp" />
 
                 <RadioButton
@@ -312,6 +313,7 @@
                     android:textSize="16sp" />
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/ft_frame"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="24dp"

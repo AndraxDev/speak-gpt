@@ -382,6 +382,20 @@ class Preferences private constructor(private var preferences: SharedPreferences
     }
 
     /**
+     * Get ads enabled
+     * */
+    fun getAdsEnabled() : Boolean {
+        return getGlobalBoolean("ads_enabled", true)
+    }
+
+    /**
+     * Set ads enabled
+     * */
+    fun setAdsEnabled(state: Boolean) {
+        putGlobalBoolean("ads_enabled", state)
+    }
+
+    /**
      * Retrieves system message. System messages allow you to make ChatGPT more reliable.
      *
      * @return System message.

@@ -66,6 +66,7 @@ import org.teslasoft.assistant.ui.fragments.dialogs.LanguageSelectorDialogFragme
 import org.teslasoft.assistant.ui.fragments.dialogs.SelectResolutionFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.SystemMessageDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.VoiceSelectorDialogFragment
+import org.teslasoft.assistant.util.TestDevicesAds
 import org.teslasoft.core.auth.AccountSyncListener
 import org.teslasoft.core.auth.client.SettingsListener
 import org.teslasoft.core.auth.client.SyncListener
@@ -1024,43 +1025,40 @@ class SettingsV2Activity : FragmentActivity() {
             }
         }.start()
 
-        MobileAds.initialize(this) { /* unused */ }
-
-        val testDevices: MutableList<String> = ArrayList()
-        testDevices.add(AdRequest.DEVICE_ID_EMULATOR)
-        testDevices.add("10e46e1d-ccaa-4909-85bf-83994b920a9c")
-        testDevices.add("c29eb9ca-6008-421f-b306-c559d96ea303")
-        testDevices.add("5e03e1ee-7eb9-4b51-9d21-10ca1ad1abe1")
-        testDevices.add("9AB1B18F59CF84AA")
-        testDevices.add("27583FCB662C9F6D")
-
-        val requestConfiguration = RequestConfiguration.Builder()
-            .setTestDeviceIds(testDevices)
-            .build()
-        MobileAds.setRequestConfiguration(requestConfiguration)
-
         ad = findViewById(R.id.ad)
 
-        val adView = AdView(this)
-        adView.setAdSize(AdSize.LARGE_BANNER)
-        adView.adUnitId = if (preferences?.getDebugTestAds()!!) "ca-app-pub-3940256099942544/9214589741" else "ca-app-pub-7410382345282120/1474294730"
+        if (preferences?.getAdsEnabled()!!) {
+            MobileAds.initialize(this) { /* unused */ }
 
-        ad?.addView(adView)
+            val requestConfiguration = RequestConfiguration.Builder()
+                .setTestDeviceIds(TestDevicesAds.TEST_DEVICES)
+                .build()
+            MobileAds.setRequestConfiguration(requestConfiguration)
 
-        val adRequest: AdRequest = AdRequest.Builder().build()
+            val adView = AdView(this)
+            adView.setAdSize(AdSize.LARGE_BANNER)
+            adView.adUnitId =
+                if (preferences?.getDebugTestAds()!!) getString(R.string.ad_banner_unit_id_test) else getString(
+                    R.string.ad_banner_unit_id
+                )
 
-        adView.loadAd(adRequest)
+            ad?.addView(adView)
 
-        adView.adListener = object : com.google.android.gms.ads.AdListener() {
-            override fun onAdFailedToLoad(error: LoadAdError) {
-                ad?.visibility = View.GONE
+            val adRequest: AdRequest = AdRequest.Builder().build()
 
-                // Toast.makeText(this@SettingsV2Activity, "Ad failed to load with error: ${error.message}", Toast.LENGTH_SHORT).show()
+            adView.loadAd(adRequest)
+
+            adView.adListener = object : com.google.android.gms.ads.AdListener() {
+                override fun onAdFailedToLoad(error: LoadAdError) {
+                    ad?.visibility = View.GONE
+                }
+
+                override fun onAdLoaded() {
+                    ad?.visibility = View.VISIBLE
+                }
             }
-
-            override fun onAdLoaded() {
-                ad?.visibility = View.VISIBLE
-            }
+        } else {
+            ad?.visibility = View.GONE
         }
     }
 

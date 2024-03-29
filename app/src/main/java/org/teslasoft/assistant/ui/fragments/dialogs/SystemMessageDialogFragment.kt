@@ -71,9 +71,9 @@ class SystemMessageDialogFragment : DialogFragment() {
         promptInput = view.findViewById(R.id.prompt_input)
         promptInput?.setText(requireArguments().getString("prompt"))
 
-        promptInput?.requestFocus()
+        // promptInput?.requestFocus()
 
-        promptInput?.setOnKeyListener { v, keyCode, event ->
+        /*promptInput?.setOnKeyListener { v, keyCode, event ->
             run {
                 if (event.action == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_ESCAPE)) {
                     dismiss()
@@ -81,7 +81,7 @@ class SystemMessageDialogFragment : DialogFragment() {
                 }
                 return@run false
             }
-        }
+        }*/
 
         builder!!.setView(view)
             .setCancelable(false)

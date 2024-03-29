@@ -36,7 +36,7 @@
             android:layout_height="180dp"
             android:gravity="top|start"
             android:hint="@string/hint_act_prompt"
-            android:inputType="text|textCapSentences" />
+            android:inputType="text|textCapSentences|textMultiLine" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView

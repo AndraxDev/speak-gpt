@@ -51,10 +51,11 @@ class MainActivity : FragmentActivity() {
     private var fragmentChats: ConstraintLayout? = null
     private var fragmentPrompts: ConstraintLayout? = null
     private var fragmentTips: ConstraintLayout? = null
-    private var btnDebugger: MaterialButton? = null
+    private var btnDebugger: ImageButton? = null
     private var debuggerWindow: ConstraintLayout? = null
     private var btnCloseDebugger: ImageButton? = null
     private var btnInitiateCrash: MaterialButton? = null
+    private var btnSwitchAds: MaterialButton? = null
 
     private var selectedTab: Int = 1
     private var isAnimating = false
@@ -87,6 +88,7 @@ class MainActivity : FragmentActivity() {
         debuggerWindow = findViewById(R.id.debugger_window)
         btnCloseDebugger = findViewById(R.id.btn_close_debugger)
         btnInitiateCrash = findViewById(R.id.btn_initiate_crash)
+        btnSwitchAds = findViewById(R.id.btn_switch_ads)
 
         btnDebugger?.visibility = View.GONE
         debuggerWindow?.visibility = View.GONE
@@ -175,6 +177,25 @@ class MainActivity : FragmentActivity() {
                     btnInitiateCrash?.setOnClickListener {
                         throw RuntimeException("Test crash")
                     }
+
+                    if (preferences.getAdsEnabled()) {
+                        btnSwitchAds?.text = "Disable ads"
+                        btnSwitchAds?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_900, theme)
+                        btnSwitchAds?.setTextColor(ResourcesCompat.getColor(resources, R.color.window_background, theme))
+                    } else {
+                        btnSwitchAds?.text = "Enable ads"
+                        btnSwitchAds?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_100, theme)
+                        btnSwitchAds?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_900, theme))
+                    }
+
+                    btnSwitchAds?.setOnClickListener {
+                        if (preferences.getAdsEnabled()) {
+                            preferences.setAdsEnabled(false)
+                        } else {
+                            preferences.setAdsEnabled(true)
+                        }
+                        recreate()
+                    }
                 }
             }
         }.start()
@@ -196,7 +217,7 @@ class MainActivity : FragmentActivity() {
             val drawable = GradientDrawable()
             drawable.shape = GradientDrawable.RECTANGLE
             drawable.setColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
-            drawable.alpha = 220
+            drawable.alpha = 235
 
             debuggerWindow?.background = drawable
         } else {
@@ -209,7 +230,7 @@ class MainActivity : FragmentActivity() {
             val drawable = GradientDrawable()
             drawable.shape = GradientDrawable.RECTANGLE
             drawable.setColor(SurfaceColors.SURFACE_0.getColor(this))
-            drawable.alpha = 220
+            drawable.alpha = 235
 
             debuggerWindow?.background = drawable
         }

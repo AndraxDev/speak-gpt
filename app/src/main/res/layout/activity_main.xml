@@ -12,6 +12,7 @@
         android:layout_height="match_parent"
         android:clickable="true"
         android:elevation="10dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,15 +20,15 @@
 
         <ImageButton
             android:id="@+id/btn_close_debugger"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/btn_accent_selector_v2"
+            android:background="@drawable/btn_accent_tonal"
             android:contentDescription="Close"
             android:src="@drawable/ic_cancel"
             android:tooltipText="Close"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_cancel" />
 
@@ -50,25 +51,43 @@
             android:layout_width="0dp"
             android:layout_height="64dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/btn_accent_24"
             android:text="Initiate crash"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView59" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_close_debugger" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_switch_ads"
+            style="@style/Widget.Material3.Button"
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/btn_accent_24"
+            android:text="Disable ads"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_initiate_crash" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.google.android.material.button.MaterialButton
+    <ImageButton
         android:id="@+id/btn_open_debugger"
-        style="@style/Widget.Material3.Button.TonalButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/btn_accent_tonal"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:text="Debug mode"
+        android:contentDescription="Debugger"
+        android:tooltipText="Debug mode enabled"
+        android:src="@drawable/ic_bug"
+        app:elevation="6dp"
+        app:srcCompat="@drawable/ic_bug"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -71,7 +71,7 @@ class ActivationPromptDialogFragment : DialogFragment() {
         promptInput = view.findViewById(R.id.prompt_input)
         promptInput?.setText(requireArguments().getString("prompt"))
 
-        promptInput?.requestFocus()
+        /*promptInput?.requestFocus()
 
         promptInput?.setOnKeyListener { v, keyCode, event ->
             run {
@@ -81,7 +81,7 @@ class ActivationPromptDialogFragment : DialogFragment() {
                 }
                 return@run false
             }
-        }
+        }*/
 
         builder!!.setView(view)
             .setCancelable(false)
