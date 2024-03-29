@@ -25,6 +25,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -60,7 +61,11 @@ class AboutActivity : FragmentActivity() {
 
     private var root: ConstraintLayout? = null
 
+    private var btnBack: ImageButton? = null
+
     private var activateEasterEggCounter: Int = 0
+
+    private var preferences: Preferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,6 +80,7 @@ class AboutActivity : FragmentActivity() {
         appVer = findViewById(R.id.app_ver)
         btnDonate = findViewById(R.id.btn_donate)
         btnGithub = findViewById(R.id.btn_github)
+        btnBack = findViewById(R.id.btn_back)
 
         actions = findViewById(R.id.common_actions)
         system = findViewById(R.id.system_info)
@@ -83,6 +89,15 @@ class AboutActivity : FragmentActivity() {
         root = findViewById(R.id.root)
 
         appIcon?.setImageResource(R.drawable.assistant)
+
+        val extras = intent.extras
+        var chatId = ""
+
+        if (extras != null) {
+            chatId = extras.getString("chatId", "")
+        }
+
+        preferences = Preferences.getPreferences(this, chatId)
 
         reloadAmoled()
 
@@ -157,6 +172,10 @@ class AboutActivity : FragmentActivity() {
             i.action = Intent.ACTION_VIEW
             startActivity(i)
         }
+
+        btnBack?.setOnClickListener {
+            finish()
+        }
     }
 
     override fun onResume() {
@@ -177,6 +196,7 @@ class AboutActivity : FragmentActivity() {
             links?.setBackgroundResource(R.drawable.btn_accent_24_amoled)
 
             root?.setBackgroundResource(R.color.amoled_window_background)
+            btnBack?.setBackgroundResource(R.drawable.btn_accent_icon_large_amoled)
         } else {
             window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
             window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
@@ -189,6 +209,7 @@ class AboutActivity : FragmentActivity() {
             links?.background = getDarkDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_24, theme)!!)
 
             root?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
+            btnBack?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_icon_large, theme)!!)
         }
     }
 
@@ -204,6 +225,19 @@ class AboutActivity : FragmentActivity() {
             Configuration.UI_MODE_NIGHT_NO -> false
             Configuration.UI_MODE_NIGHT_UNDEFINED -> false
             else -> false
+        }
+    }
+
+    private fun getDisabledDrawable(drawable: Drawable) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getDisabledColor())
+        return drawable
+    }
+
+    private fun getDisabledColor() : Int {
+        return if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack() == true) {
+            ResourcesCompat.getColor(resources, R.color.accent_50, theme)
+        } else {
+            SurfaceColors.SURFACE_5.getColor(this)
         }
     }
 }

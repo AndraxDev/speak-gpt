@@ -1,9 +1,20 @@
 package org.teslasoft.assistant.preferences
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.provider.Settings
 
 class DeviceInfoProvider {
     companion object {
+
+        /**
+         * Get Android ID
+         * */
+        @SuppressLint("HardwareIds")
+        fun getAndroidId(context: Context) : String {
+            return Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+        }
+
         /**
          * Get installation ID
          * */

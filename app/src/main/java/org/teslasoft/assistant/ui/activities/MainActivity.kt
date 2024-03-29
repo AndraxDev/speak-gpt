@@ -18,32 +18,47 @@ package org.teslasoft.assistant.ui.activities
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.MenuItem
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ImageButton
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import com.google.android.gms.ads.identifier.AdvertisingIdClient
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException
+import com.google.android.gms.common.GooglePlayServicesRepairableException
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.navigation.NavigationBarView
+import org.teslasoft.assistant.Config.Companion.API_ENDPOINT
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.DeviceInfoProvider
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.fragments.tabs.ChatsListFragment
 import org.teslasoft.assistant.ui.fragments.tabs.PromptsFragment
+import org.teslasoft.core.api.network.RequestNetwork
+import java.io.IOException
 
 
 class MainActivity : FragmentActivity() {
@@ -57,6 +72,10 @@ class MainActivity : FragmentActivity() {
     private var btnInitiateCrash: MaterialButton? = null
     private var btnSwitchAds: MaterialButton? = null
 
+    private var threadLoader: LinearLayout? = null
+
+    private var devIds: TextView? = null
+
     private var selectedTab: Int = 1
     private var isAnimating = false
 
@@ -66,6 +85,39 @@ class MainActivity : FragmentActivity() {
 
     private var root: ConstraintLayout? = null
 
+    private var requestNetwork: RequestNetwork? = null
+
+    private var preferences: Preferences? = null
+
+    private val requestListener = object : RequestNetwork.RequestListener {
+        override fun onResponse(tag: String, message: String) {
+            val preferences = Preferences.getPreferences(this@MainActivity, "")
+            if (message == "131") {
+                preferences.setAdsEnabled(false)
+                startActivity(Intent(this@MainActivity, ThanksActivity::class.java))
+                finish()
+            } else {
+                if (tag == "AID" && !preferences.getDebugMode()) {
+                    preferences.setAdsEnabled(true)
+                } else {
+                    val androidId = DeviceInfoProvider.getAndroidId(this@MainActivity)
+
+                    requestNetwork?.startRequestNetwork(
+                        "GET",
+                        "${API_ENDPOINT}/checkForDonation?did=${androidId}",
+                        "AID",
+                        this
+                    )
+                }
+            }
+        }
+
+        override fun onErrorResponse(tag: String, message: String) {
+            /* Failed to verify donation */
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -78,6 +130,8 @@ class MainActivity : FragmentActivity() {
 
         setContentView(R.layout.activity_main)
 
+        preferences = Preferences.getPreferences(this, "")
+
         navigationBar = findViewById(R.id.navigation_bar)
 
         fragmentChats = findViewById(R.id.fragment_chats)
@@ -89,6 +143,12 @@ class MainActivity : FragmentActivity() {
         btnCloseDebugger = findViewById(R.id.btn_close_debugger)
         btnInitiateCrash = findViewById(R.id.btn_initiate_crash)
         btnSwitchAds = findViewById(R.id.btn_switch_ads)
+        devIds = findViewById(R.id.dev_ids)
+        threadLoader = findViewById(R.id.thread_loader)
+
+        threadLoader?.visibility = View.VISIBLE
+
+        preloadAmoled()
 
         btnDebugger?.visibility = View.GONE
         debuggerWindow?.visibility = View.GONE
@@ -97,14 +157,23 @@ class MainActivity : FragmentActivity() {
         framePrompts = supportFragmentManager.findFragmentById(R.id.fragment_prompts_)
         frameTips = supportFragmentManager.findFragmentById(R.id.fragment_tips_)
 
-        Thread {
-            DeviceInfoProvider.assignInstallationId(this)
-
-            if (Build.VERSION.SDK_INT >= 33) {
-                onBackInvokedDispatcher.registerOnBackInvokedCallback(
-                    OnBackInvokedDispatcher.PRIORITY_DEFAULT
-                ) {
-                    MaterialAlertDialogBuilder(this)
+        if (Build.VERSION.SDK_INT >= 33) {
+            onBackInvokedDispatcher.registerOnBackInvokedCallback(
+                OnBackInvokedDispatcher.PRIORITY_DEFAULT
+            ) {
+                MaterialAlertDialogBuilder(this)
+                    .setTitle("Confirm exit")
+                    .setMessage("Do you want to exit?")
+                    .setPositiveButton("Yes") { _, _ ->
+                        finish()
+                    }
+                    .setNegativeButton("No") { _, _ -> }
+                    .show()
+            }
+        } else {
+            onBackPressedDispatcher.addCallback(this /* lifecycle owner */, object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    MaterialAlertDialogBuilder(this@MainActivity)
                         .setTitle("Confirm exit")
                         .setMessage("Do you want to exit?")
                         .setPositiveButton("Yes") { _, _ ->
@@ -113,20 +182,11 @@ class MainActivity : FragmentActivity() {
                         .setNegativeButton("No") { _, _ -> }
                         .show()
                 }
-            } else {
-                onBackPressedDispatcher.addCallback(this /* lifecycle owner */, object : OnBackPressedCallback(true) {
-                    override fun handleOnBackPressed() {
-                        MaterialAlertDialogBuilder(this@MainActivity)
-                            .setTitle("Confirm exit")
-                            .setMessage("Do you want to exit?")
-                            .setPositiveButton("Yes") { _, _ ->
-                                finish()
-                            }
-                            .setNegativeButton("No") { _, _ -> }
-                            .show()
-                    }
-                })
-            }
+            })
+        }
+
+        Thread {
+            DeviceInfoProvider.assignInstallationId(this)
 
             runOnUiThread {
                 reloadAmoled()
@@ -161,7 +221,15 @@ class MainActivity : FragmentActivity() {
 
                 if (preferences.getDebugTestAds() && !preferences.getDebugMode()) {
                     preferences.setDebugMode(true)
-                    recreate()
+                    restartActivity()
+                }
+
+                val installationId = DeviceInfoProvider.getInstallationId(this)
+                val androidId = DeviceInfoProvider.getAndroidId(this)
+
+                if (preferences.getAdsEnabled()) {
+                    requestNetwork = RequestNetwork(this)
+                    requestNetwork?.startRequestNetwork("GET", "${API_ENDPOINT}/checkForDonation?did=${installationId}", "IID", requestListener)
                 }
 
                 if (preferences.getDebugMode()) {
@@ -180,12 +248,8 @@ class MainActivity : FragmentActivity() {
 
                     if (preferences.getAdsEnabled()) {
                         btnSwitchAds?.text = "Disable ads"
-                        btnSwitchAds?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_900, theme)
-                        btnSwitchAds?.setTextColor(ResourcesCompat.getColor(resources, R.color.window_background, theme))
                     } else {
                         btnSwitchAds?.text = "Enable ads"
-                        btnSwitchAds?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_100, theme)
-                        btnSwitchAds?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_900, theme))
                     }
 
                     btnSwitchAds?.setOnClickListener {
@@ -194,11 +258,79 @@ class MainActivity : FragmentActivity() {
                         } else {
                             preferences.setAdsEnabled(true)
                         }
+                        restartActivity()
+                    }
+
+                    devIds?.text = "${devIds?.text}\n\nInstallation ID: $installationId\nAndroid ID: $androidId"
+
+                    val crearEventoHilo: Thread = object : Thread() {
+                        @SuppressLint("HardwareIds")
+                        override fun run() {
+                            val info: AdvertisingIdClient.Info?
+
+                            val adId = try {
+                                info = AdvertisingIdClient.getAdvertisingIdInfo(this@MainActivity)
+                                info.id.toString()
+                            } catch (e: IOException) {
+                                e.printStackTrace()
+                                "<Google Play Services error>"
+                            } catch (e : GooglePlayServicesNotAvailableException) {
+                                e.printStackTrace()
+                                "<Google Play Services not found>"
+                            } catch (e : IllegalStateException) {
+                                e.printStackTrace()
+                                "<IllegalStateException: ${e.message}>"
+                            } catch (e : GooglePlayServicesRepairableException) {
+                                e.printStackTrace()
+                                "<Google Play Services error>"
+                            }
+
+                            devIds?.text = "${devIds?.text}\nAds ID: $adId"
+                        }
+                    }
+                    crearEventoHilo.start()
+
+
+                }
+
+                Handler(Looper.getMainLooper()).postDelayed({
+                    val fadeOut: Animation = AnimationUtils.loadAnimation(this, R.anim.fade_out)
+                    threadLoader?.startAnimation(fadeOut)
+
+                    fadeOut.setAnimationListener(object : Animation.AnimationListener {
+                        override fun onAnimationStart(animation: Animation) { /* UNUSED */ }
+                        override fun onAnimationEnd(animation: Animation) {
+                            runOnUiThread {
+                                threadLoader?.visibility = View.GONE
+                                threadLoader?.elevation = 0.0f
+                            }
+                        }
+
+                        override fun onAnimationRepeat(animation: Animation) { /* UNUSED */ }
+                    })
+                }, 50)
+            }
+        }.start()
+    }
+
+    private fun restartActivity() {
+        runOnUiThread {
+            threadLoader?.visibility = View.VISIBLE
+            threadLoader?.elevation = 100.0f
+            val fadeIn: Animation = AnimationUtils.loadAnimation(this, R.anim.fade_in)
+            threadLoader?.startAnimation(fadeIn)
+
+            fadeIn.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(animation: Animation) { /* UNUSED */ }
+                override fun onAnimationEnd(animation: Animation) {
+                    runOnUiThread {
                         recreate()
                     }
                 }
-            }
-        }.start()
+
+                override fun onAnimationRepeat(animation: Animation) { /* UNUSED */ }
+            })
+        }
     }
 
     override fun onResume() {
@@ -207,7 +339,7 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun reloadAmoled() {
-        if (isDarkThemeEnabled() &&  Preferences.getPreferences(this, "").getAmoledPitchBlack()) {
+        if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack()!!) {
             window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
             window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
@@ -220,6 +352,21 @@ class MainActivity : FragmentActivity() {
             drawable.alpha = 235
 
             debuggerWindow?.background = drawable
+
+            btnDebugger?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, theme)
+            btnCloseDebugger?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, theme)
+            btnInitiateCrash?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.amoled_accent_100, theme)
+            btnInitiateCrash?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_600, theme))
+            devIds?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_16_amoled, theme)
+            devIds?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_600, theme))
+
+            if (preferences?.getAdsEnabled()!!) {
+                btnSwitchAds?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_600, theme)
+                btnSwitchAds?.setTextColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
+            } else {
+                btnSwitchAds?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.amoled_accent_100, theme)
+                btnSwitchAds?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_600, theme))
+            }
         } else {
             window.navigationBarColor = SurfaceColors.SURFACE_3.getColor(this)
             window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
@@ -233,10 +380,46 @@ class MainActivity : FragmentActivity() {
             drawable.alpha = 235
 
             debuggerWindow?.background = drawable
+
+            btnDebugger?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal, theme)!!)
+            btnCloseDebugger?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal, theme)!!)
+            btnInitiateCrash?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_250, theme)
+            btnInitiateCrash?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_900, theme))
+            devIds?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_16, theme)!!)
+            devIds?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_900, theme))
+
+            if (preferences?.getAdsEnabled()!!) {
+                btnSwitchAds?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_900, theme)
+                btnSwitchAds?.setTextColor(ResourcesCompat.getColor(resources, R.color.window_background, theme))
+            } else {
+                btnSwitchAds?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_250, theme)
+                btnSwitchAds?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_900, theme))
+            }
         }
 
         (frameChats as ChatsListFragment).reloadAmoled()
         (framePrompts as PromptsFragment).reloadAmoled()
+    }
+
+    private fun preloadAmoled() {
+        if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack()!!) {
+            threadLoader?.background = ResourcesCompat.getDrawable(resources, R.color.amoled_window_background, null)
+        } else {
+            threadLoader?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
+        }
+    }
+
+    private fun getDisabledDrawable(drawable: Drawable) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getDisabledColor())
+        return drawable
+    }
+
+    private fun getDisabledColor() : Int {
+        return if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack()!!) {
+            ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme)
+        } else {
+            SurfaceColors.SURFACE_5.getColor(this)
+        }
     }
 
     private fun isDarkThemeEnabled(): Boolean {

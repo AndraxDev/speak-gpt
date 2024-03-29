@@ -37,6 +37,7 @@ import androidx.fragment.app.FragmentActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.Api
+import org.teslasoft.assistant.Config.Companion.API_ENDPOINT
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.core.api.network.RequestNetwork
@@ -222,7 +223,7 @@ class ReportAbuseActivity : FragmentActivity() {
         reportForm?.visibility = View.GONE
         loadingBar?.visibility = View.VISIBLE
 
-        requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/report.php?api_key=${Api.TESLASOFT_API_KEY}&id=$id&reason=$reason&details=${fieldDetails?.text.toString()}", "A", reportListener)
+        requestNetwork?.startRequestNetwork("GET", "${API_ENDPOINT}/report.php?api_key=${Api.TESLASOFT_API_KEY}&id=$id&reason=$reason&details=${fieldDetails?.text.toString()}", "A", reportListener)
     }
 
     override fun onResume() {

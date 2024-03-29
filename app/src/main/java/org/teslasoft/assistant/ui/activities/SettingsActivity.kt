@@ -458,7 +458,7 @@ class SettingsActivity : FragmentActivity() {
         }
 
         btnAbout?.setOnClickListener {
-            startActivity(Intent(this, AboutActivity::class.java).setAction(Intent.ACTION_VIEW))
+            startActivity(Intent(this, AboutActivity::class.java).putExtra("chatId", chatId))
         }
 
         btnClearChat?.setOnClickListener {
@@ -510,7 +510,7 @@ class SettingsActivity : FragmentActivity() {
             voiceSelectorDialogFragment.show(supportFragmentManager.beginTransaction(), "VoiceSelectorDialogFragment")
         }
 
-        btnDebugMenu?.setOnClickListener { startActivity(Intent(this, DebugActivity::class.java).setAction(Intent.ACTION_VIEW)) }
+        btnDebugMenu?.setOnClickListener { startActivity(Intent(this, DebugActivity::class.java).putExtra("chatId", chatId)) }
 
         silenceSwitch?.setOnCheckedChangeListener { _, isChecked -> run {
             preferences?.setSilence(isChecked)

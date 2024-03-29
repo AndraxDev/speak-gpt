@@ -16,19 +16,49 @@
 
 package org.teslasoft.assistant.ui.activities
 
+import android.content.Intent
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
+import android.window.OnBackInvokedDispatcher
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentActivity
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 
 class ThanksActivity : FragmentActivity() {
 
+    private var btnClose: MaterialButton? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        setContentView(R.layout.activity_thanks)
+
+        btnClose = findViewById(R.id.btn_close)
+
         reloadAmoled()
+
+        if (Build.VERSION.SDK_INT >= 33) {
+            onBackInvokedDispatcher.registerOnBackInvokedCallback(
+                OnBackInvokedDispatcher.PRIORITY_DEFAULT
+            ) {
+                startActivity(Intent(this, MainActivity::class.java))
+            }
+        } else {
+            onBackPressedDispatcher.addCallback(this /* lifecycle owner */, object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    startActivity(Intent(this@ThanksActivity, MainActivity::class.java))
+                }
+            })
+        }
+
+        btnClose?.setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
+        }
     }
 
     override fun onResume() {

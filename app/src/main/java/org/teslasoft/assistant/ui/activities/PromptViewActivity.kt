@@ -53,6 +53,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 import org.teslasoft.assistant.Api
+import org.teslasoft.assistant.Config
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.assistant.AssistantActivity
@@ -392,9 +393,9 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
 
         btnLike?.setOnClickListener {
             if (likeState) {
-                requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/dislike.php?api_key=${Api.TESLASOFT_API_KEY}&id=$id", "A", dislikeListener)
+                requestNetwork?.startRequestNetwork("GET", "${Config.API_ENDPOINT}/dislike.php?api_key=${Api.TESLASOFT_API_KEY}&id=$id", "A", dislikeListener)
             } else {
-                requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/like.php?api_key=${Api.TESLASOFT_API_KEY}&id=$id", "A", likeListener)
+                requestNetwork?.startRequestNetwork("GET", "${Config.API_ENDPOINT}/like.php?api_key=${Api.TESLASOFT_API_KEY}&id=$id", "A", likeListener)
             }
 
             btnLike?.isEnabled = false
@@ -504,6 +505,6 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
         progressBar?.visibility = View.VISIBLE
         content?.visibility = View.GONE
 
-        requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/prompt.php?api_key=${Api.TESLASOFT_API_KEY}&id=$id", "A", dataListener)
+        requestNetwork?.startRequestNetwork("GET", "${Config.API_ENDPOINT}/prompt.php?api_key=${Api.TESLASOFT_API_KEY}&id=$id", "A", dataListener)
     }
 }

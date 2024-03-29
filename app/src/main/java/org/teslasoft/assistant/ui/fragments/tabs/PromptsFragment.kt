@@ -48,6 +48,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 import org.teslasoft.assistant.Api
+import org.teslasoft.assistant.Config.Companion.API_ENDPOINT
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.PromptAdapter
@@ -153,7 +154,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
             requestNetwork?.startRequestNetwork(
                 "GET",
-                "https://gpt.teslasoft.org/api/v1/post.php?api_key=${Api.TESLASOFT_API_KEY}&name=$mName&title=$mTitle&desc=$mDesc&prompt=$mPrompt&type=$type&category=$category",
+                "${API_ENDPOINT}/post.php?api_key=${Api.TESLASOFT_API_KEY}&name=$mName&title=$mTitle&desc=$mDesc&prompt=$mPrompt&type=$type&category=$category",
                 "A",
                 promptPostListener
             )
@@ -553,7 +554,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun loadData() {
-        requestNetwork?.startRequestNetwork("GET", "https://gpt.teslasoft.org/api/v1/search.php?api_key=${Api.TESLASOFT_API_KEY}&query=$query", "A", searchDataListener)
+        requestNetwork?.startRequestNetwork("GET", "${API_ENDPOINT}/search.php?api_key=${Api.TESLASOFT_API_KEY}&query=$query", "A", searchDataListener)
         noInternetLayout?.visibility = View.GONE
         promptsList?.visibility = View.GONE
         progressbar?.visibility = View.VISIBLE

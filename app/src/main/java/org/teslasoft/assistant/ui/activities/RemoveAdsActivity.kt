@@ -19,7 +19,6 @@ package org.teslasoft.assistant.ui.activities
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.webkit.WebView
 import android.widget.ImageButton
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
@@ -29,19 +28,18 @@ import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 
-class DocumentationActivity : FragmentActivity() {
+class RemoveAdsActivity : FragmentActivity() {
 
     private var btnBack: ImageButton? = null
-    private var webview: WebView? = null
     private var root: ConstraintLayout? = null
     private var preferences: Preferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_documentation)
+
+        setContentView(R.layout.activity_remove_ads)
 
         btnBack = findViewById(R.id.btn_back)
-        webview = findViewById(R.id.webview)
         root = findViewById(R.id.root)
 
         Thread {

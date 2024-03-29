@@ -50,6 +50,7 @@ import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.ads.identifier.AdvertisingIdClient
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.common.GooglePlayServicesRepairableException
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.R
@@ -125,11 +126,13 @@ class SettingsV2Activity : FragmentActivity() {
     private var tileDebugTestAds: TileFragment? = null
     private var tileChatsAutoSave: TileFragment? = null
     private var threadLoading: LinearLayout? = null
+    private var btnRemoveAds: MaterialButton? = null
 
     private var teslasoftIDCircledButton: TeslasoftIDCircledButton? = null
 
     private var adId = "<Loading...>"
     private var installationId = ""
+    private var androidId = ""
 
     private var root: ScrollView? = null
     private var textGlobal: TextView? = null
@@ -315,7 +318,7 @@ class SettingsV2Activity : FragmentActivity() {
 
                 preferences?.setDebugTestAds(false)
                 testAdsReady = false
-                recreate()
+                restartActivity()
             }
         }
     }
@@ -328,8 +331,11 @@ class SettingsV2Activity : FragmentActivity() {
         root = findViewById(R.id.root)
         textGlobal = findViewById(R.id.text_global)
         threadLoading = findViewById(R.id.thread_loading)
+        btnRemoveAds = findViewById(R.id.btn_remove_ads)
 
         threadLoading?.visibility = View.VISIBLE
+
+        btnRemoveAds?.visibility = View.GONE
 
         val extras: Bundle? = intent.extras
 
@@ -365,6 +371,7 @@ class SettingsV2Activity : FragmentActivity() {
         teslasoftIDClient = TeslasoftIDClient(this, "B7:9F:CB:D0:5C:69:1D:C7:DD:5C:36:50:64:1E:9B:32:00:CA:11:41:47:ED:F1:D9:64:86:2A:CA:49:CD:65:25", "d07985975904997990790c2e5088372a", "org.teslasoft.assistant", settingsListener, syncListener)
 
         val t1 = Thread {
+            androidId = DeviceInfoProvider.getAndroidId(this@SettingsV2Activity)
             createFragments1()
             createFragments2()
             createFragments3()
@@ -828,7 +835,7 @@ class SettingsV2Activity : FragmentActivity() {
                 R.drawable.ic_send,
                 false,
                 chatId,
-                "This feature allows you to manage diagnostics data. Installation ID: $IID."
+                "This feature allows you to manage diagnostics data.\nInstallation ID: $IID\nAndroid ID: $androidId"
             )
 
             tileGetNewInstallationId = TileFragment.newInstance(
@@ -1006,8 +1013,6 @@ class SettingsV2Activity : FragmentActivity() {
                     "<Google Play Services error>"
                 }
 
-                val androidId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
-
                 tileDebugTestAds?.setFunctionDesc("This feature allows you to enable test ads. Use this feature while development process to avoid ads policy violations. Available only for Teslasoft ID accounts with dev permissions. Ads ID: $adId\nAndroid ID: $androidId")
             }
         }
@@ -1027,7 +1032,15 @@ class SettingsV2Activity : FragmentActivity() {
 
         ad = findViewById(R.id.ad)
 
+        btnRemoveAds?.setOnClickListener {
+            val intent = Intent(this, RemoveAdsActivity::class.java).putExtra("chatId", chatId)
+            startActivity(intent)
+        }
+
         if (preferences?.getAdsEnabled()!!) {
+            // TODO: MAke button visible
+            // btnRemoveAds?.visibility = View.VISIBLE
+            btnRemoveAds?.visibility = View.GONE
             MobileAds.initialize(this) { /* unused */ }
 
             val requestConfiguration = RequestConfiguration.Builder()
@@ -1058,6 +1071,7 @@ class SettingsV2Activity : FragmentActivity() {
                 }
             }
         } else {
+            btnRemoveAds?.visibility = View.GONE
             ad?.visibility = View.GONE
         }
     }
@@ -1236,7 +1250,7 @@ class SettingsV2Activity : FragmentActivity() {
                 preferences?.setAmoledPitchBlack(false)
             }
 
-            recreate()
+            restartActivity()
         }}
 
         tileLockAssistantWindow?.setOnCheckedChangeListener { ischecked -> run {
@@ -1256,7 +1270,7 @@ class SettingsV2Activity : FragmentActivity() {
         }}
 
         tileAboutApp?.setOnTileClickListener {
-            startActivity(Intent(this, AboutActivity::class.java))
+            startActivity(Intent(this, AboutActivity::class.java).putExtra("chatId", chatId))
         }
 
         tileClearChat?.setOnTileClickListener {
@@ -1274,7 +1288,7 @@ class SettingsV2Activity : FragmentActivity() {
         }
 
         tileDocumentation?.setOnTileClickListener {
-            startActivity(Intent(this, DocumentationActivity::class.java))
+            startActivity(Intent(this, DocumentationActivity::class.java).putExtra("chatId", chatId))
         }
 
         tileDeleteData?.setOnTileClickListener {
@@ -1302,7 +1316,7 @@ class SettingsV2Activity : FragmentActivity() {
                         run {
                             getSharedPreferences("consent", MODE_PRIVATE).edit().putBoolean("usage", false).apply()
                             tileSendDiagnosticData?.setChecked(false)
-                            recreate()
+                            restartActivity()
                         }
                     }
                     .setNegativeButton("Cancel") { _, _ -> }
@@ -1316,7 +1330,7 @@ class SettingsV2Activity : FragmentActivity() {
                             getSharedPreferences("consent", MODE_PRIVATE).edit().putBoolean("usage", true).apply()
                             DeviceInfoProvider.assignInstallationId(this)
                             tileSendDiagnosticData?.setChecked(true)
-                            recreate()
+                            restartActivity()
                         }
                     }
                     .setNegativeButton("Cancel") { _, _ -> }
@@ -1331,7 +1345,7 @@ class SettingsV2Activity : FragmentActivity() {
                 .setPositiveButton("Revoke") { _, _ ->
                     run {
                         DeviceInfoProvider.revokeAuthorization(this)
-                        recreate()
+                        restartActivity()
                     }
                 }
                 .setNegativeButton("Cancel") { _, _ -> }
@@ -1345,7 +1359,7 @@ class SettingsV2Activity : FragmentActivity() {
                 .setPositiveButton("Get new ID") { _, _ ->
                     run {
                         DeviceInfoProvider.resetInstallationId(this)
-                        recreate()
+                        restartActivity()
                     }
                 }
                 .setNegativeButton("Cancel") { _, _ -> }
@@ -1353,15 +1367,15 @@ class SettingsV2Activity : FragmentActivity() {
         }
 
         tileCrashLog?.setOnTileClickListener {
-            startActivity(Intent(this, LogsActivity::class.java).putExtra("type", "crash"))
+            startActivity(Intent(this, LogsActivity::class.java).putExtra("type", "crash").putExtra("chatId", chatId))
         }
 
         tileAdsLog?.setOnTileClickListener {
-            startActivity(Intent(this, LogsActivity::class.java).putExtra("type", "ads"))
+            startActivity(Intent(this, LogsActivity::class.java).putExtra("type", "ads").putExtra("chatId", chatId))
         }
 
         tileEventLog?.setOnTileClickListener {
-            startActivity(Intent(this, LogsActivity::class.java).putExtra("type", "event"))
+            startActivity(Intent(this, LogsActivity::class.java).putExtra("type", "event").putExtra("chatId", chatId))
         }
 
         tileDebugTestAds?.setOnCheckedChangeListener { ischecked ->
@@ -1371,7 +1385,27 @@ class SettingsV2Activity : FragmentActivity() {
                 preferences?.setDebugTestAds(false)
             }
 
-            recreate()
+            restartActivity()
+        }
+    }
+
+    private fun restartActivity() {
+        runOnUiThread {
+            threadLoading?.visibility = View.VISIBLE
+            threadLoading?.elevation = 100.0f
+            val fadeIn: Animation = AnimationUtils.loadAnimation(this, R.anim.fade_in)
+            threadLoading?.startAnimation(fadeIn)
+
+            fadeIn.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(animation: Animation) { /* UNUSED */ }
+                override fun onAnimationEnd(animation: Animation) {
+                    runOnUiThread {
+                        recreate()
+                    }
+                }
+
+                override fun onAnimationRepeat(animation: Animation) { /* UNUSED */ }
+            })
         }
     }
 
@@ -1382,7 +1416,7 @@ class SettingsV2Activity : FragmentActivity() {
             .setPositiveButton("Reset") { _, _ ->
                 run {
                     DeviceInfoProvider.resetInstallationId(this)
-                    recreate()
+                    restartActivity()
                 }
             }
             .setNegativeButton("Cancel") { _, _ -> }

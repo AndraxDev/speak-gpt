@@ -17,12 +17,17 @@
 package org.teslasoft.assistant.ui.activities
 
 import android.content.res.Configuration
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.widget.ImageButton
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Logger
 import org.teslasoft.assistant.preferences.Preferences
@@ -31,13 +36,17 @@ class LogsActivity : FragmentActivity() {
 
     private var btnClearLog: MaterialButton? = null
 
-    private var btnBack: MaterialButton? = null
+    private var btnBack: ImageButton? = null
 
     private var activityLogsTitle: TextView? = null
 
     private var textLog: TextView? = null
 
     private var logType = ""
+
+    private var root: ConstraintLayout? = null
+
+    private var preferences: Preferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,63 +57,77 @@ class LogsActivity : FragmentActivity() {
         btnBack = findViewById(R.id.btn_back)
         activityLogsTitle = findViewById(R.id.activity_logs_title)
         textLog = findViewById(R.id.text_log)
+        root = findViewById(R.id.root)
 
-        try {
-            logType = intent.extras?.getString("type").toString()
+        Thread {
+            val extras = intent.extras
+            var chatId = ""
 
-            when (logType) {
-                "crash" -> {
-                    activityLogsTitle?.text = "Crash log"
-                    textLog?.text = Logger.getCrashLog(this)
-                }
-
-                "ads" -> {
-                    activityLogsTitle?.text = "Ads log"
-                    textLog?.text = Logger.getAdsLog(this)
-                }
-
-                "event" -> {
-                    activityLogsTitle?.text = "Event log"
-                    textLog?.text = Logger.getEventLog(this)
-                }
-
-                else -> finish()
+            if (extras != null) {
+                chatId = extras.getString("chatId", "")
             }
-        } catch (e: Exception) {
-            finish()
-        }
 
-        btnClearLog?.setOnClickListener {
-            MaterialAlertDialogBuilder(this)
-                .setTitle("Clear log")
-                .setMessage("Are you sure you want to clear this log?")
-                .setPositiveButton("Yes") { _, _ ->
+            preferences = Preferences.getPreferences(this, chatId)
+
+            runOnUiThread {
+                try {
+                    logType = intent.extras?.getString("type").toString()
+
                     when (logType) {
                         "crash" -> {
-                            Logger.clearCrashLog(this)
+                            activityLogsTitle?.text = "Crash log"
                             textLog?.text = Logger.getCrashLog(this)
                         }
 
                         "ads" -> {
-                            Logger.clearAdsLog(this)
+                            activityLogsTitle?.text = "Ads log"
                             textLog?.text = Logger.getAdsLog(this)
                         }
 
                         "event" -> {
-                            Logger.clearEventLog(this)
+                            activityLogsTitle?.text = "Event log"
                             textLog?.text = Logger.getEventLog(this)
                         }
+
+                        else -> finish()
                     }
+                } catch (e: Exception) {
+                    finish()
                 }
-                .setNegativeButton("No") { _, _ -> }
-                .show()
-        }
 
-        btnBack?.setOnClickListener {
-            finish()
-        }
+                btnClearLog?.setOnClickListener {
+                    MaterialAlertDialogBuilder(this)
+                        .setTitle("Clear log")
+                        .setMessage("Are you sure you want to clear this log?")
+                        .setPositiveButton("Yes") { _, _ ->
+                            when (logType) {
+                                "crash" -> {
+                                    Logger.clearCrashLog(this)
+                                    textLog?.text = Logger.getCrashLog(this)
+                                }
 
-        reloadAmoled()
+                                "ads" -> {
+                                    Logger.clearAdsLog(this)
+                                    textLog?.text = Logger.getAdsLog(this)
+                                }
+
+                                "event" -> {
+                                    Logger.clearEventLog(this)
+                                    textLog?.text = Logger.getEventLog(this)
+                                }
+                            }
+                        }
+                        .setNegativeButton("No") { _, _ -> }
+                        .show()
+                }
+
+                btnBack?.setOnClickListener {
+                    finish()
+                }
+
+                reloadAmoled()
+            }
+        }.start()
     }
 
     override fun onResume() {
@@ -113,14 +136,18 @@ class LogsActivity : FragmentActivity() {
     }
 
     private fun reloadAmoled() {
-        if (isDarkThemeEnabled() &&  Preferences.getPreferences(this, "").getAmoledPitchBlack()) {
+        if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack()!!) {
             window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
             window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
+            root?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
+            btnBack?.setBackgroundResource(R.drawable.btn_accent_icon_large_amoled)
         } else {
-            window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.window_background, theme)
-            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.window_background, theme)
+            window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
+            window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
             window.setBackgroundDrawableResource(R.color.window_background)
+            root?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
+            btnBack?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_icon_large, theme)!!)
         }
     }
 
@@ -131,6 +158,19 @@ class LogsActivity : FragmentActivity() {
             Configuration.UI_MODE_NIGHT_NO -> false
             Configuration.UI_MODE_NIGHT_UNDEFINED -> false
             else -> false
+        }
+    }
+
+    private fun getDisabledDrawable(drawable: Drawable) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getDisabledColor())
+        return drawable
+    }
+
+    private fun getDisabledColor() : Int {
+        return if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack() == true) {
+            ResourcesCompat.getColor(resources, R.color.accent_50, theme)
+        } else {
+            SurfaceColors.SURFACE_5.getColor(this)
         }
     }
 }
