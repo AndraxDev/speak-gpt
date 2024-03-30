@@ -89,6 +89,8 @@ class MainActivity : FragmentActivity() {
 
     private var preferences: Preferences? = null
 
+    private var isInitialized: Boolean = false
+
     private val requestListener = object : RequestNetwork.RequestListener {
         override fun onResponse(tag: String, message: String) {
             val preferences = Preferences.getPreferences(this@MainActivity, "")
@@ -148,14 +150,15 @@ class MainActivity : FragmentActivity() {
 
         threadLoader?.visibility = View.VISIBLE
 
-        preloadAmoled()
-
         btnDebugger?.visibility = View.GONE
         debuggerWindow?.visibility = View.GONE
 
         frameChats = supportFragmentManager.findFragmentById(R.id.fragment_chats_)
         framePrompts = supportFragmentManager.findFragmentById(R.id.fragment_prompts_)
         frameTips = supportFragmentManager.findFragmentById(R.id.fragment_tips_)
+
+        preloadAmoled()
+        reloadAmoled()
 
         if (Build.VERSION.SDK_INT >= 33) {
             onBackInvokedDispatcher.registerOnBackInvokedCallback(
@@ -189,8 +192,6 @@ class MainActivity : FragmentActivity() {
             DeviceInfoProvider.assignInstallationId(this)
 
             runOnUiThread {
-                reloadAmoled()
-
                 navigationBar!!.setOnItemSelectedListener(NavigationBarView.OnItemSelectedListener { item: MenuItem ->
                     if (!isAnimating) {
                         isAnimating = true
@@ -303,6 +304,8 @@ class MainActivity : FragmentActivity() {
                             runOnUiThread {
                                 threadLoader?.visibility = View.GONE
                                 threadLoader?.elevation = 0.0f
+
+                                isInitialized = true
                             }
                         }
 
@@ -335,7 +338,7 @@ class MainActivity : FragmentActivity() {
 
     override fun onResume() {
         super.onResume()
-        reloadAmoled()
+        if (isInitialized) reloadAmoled()
     }
 
     private fun reloadAmoled() {
@@ -397,8 +400,8 @@ class MainActivity : FragmentActivity() {
             }
         }
 
-        (frameChats as ChatsListFragment).reloadAmoled()
-        (framePrompts as PromptsFragment).reloadAmoled()
+        (frameChats as ChatsListFragment).reloadAmoled(this)
+        (framePrompts as PromptsFragment).reloadAmoled(this)
     }
 
     private fun preloadAmoled() {

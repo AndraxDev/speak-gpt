@@ -16,6 +16,7 @@
 
 package org.teslasoft.assistant.ui.fragments.tabs
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -39,6 +40,8 @@ class TipsFragment : Fragment() {
 
     private var ad: LinearLayout? = null
 
+    private var onAttach: Boolean = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -54,38 +57,58 @@ class TipsFragment : Fragment() {
 
         ad = view.findViewById(R.id.ad)
 
-        if (preferences.getAdsEnabled()) {
-            MobileAds.initialize(requireActivity()) { /* unused */ }
+        Thread {
+            while (!onAttach) {
+                Thread.sleep(100)
+            }
 
-            val requestConfiguration = RequestConfiguration.Builder()
-                .setTestDeviceIds(TestDevicesAds.TEST_DEVICES)
-                .build()
-            MobileAds.setRequestConfiguration(requestConfiguration)
+            requireActivity().runOnUiThread {
+                if (preferences.getAdsEnabled()) {
+                    MobileAds.initialize(requireActivity()) { /* unused */ }
 
-            val adView = AdView(requireActivity())
-            adView.setAdSize(AdSize.LARGE_BANNER)
-            adView.adUnitId =
-                if (preferences.getDebugTestAds()) getString(R.string.ad_banner_unit_id_test) else getString(
-                    R.string.ad_banner_unit_id
-                )
+                    val requestConfiguration = RequestConfiguration.Builder()
+                        .setTestDeviceIds(TestDevicesAds.TEST_DEVICES)
+                        .build()
+                    MobileAds.setRequestConfiguration(requestConfiguration)
 
-            ad?.addView(adView)
+                    val adView = AdView(requireActivity())
+                    adView.setAdSize(AdSize.LARGE_BANNER)
+                    adView.adUnitId =
+                        if (preferences.getDebugTestAds()) getString(R.string.ad_banner_unit_id_test) else getString(
+                            R.string.ad_banner_unit_id
+                        )
 
-            val adRequest: AdRequest = AdRequest.Builder().build()
+                    ad?.addView(adView)
 
-            adView.loadAd(adRequest)
+                    val adRequest: AdRequest = AdRequest.Builder().build()
 
-            adView.adListener = object : com.google.android.gms.ads.AdListener() {
-                override fun onAdFailedToLoad(error: LoadAdError) {
+                    adView.loadAd(adRequest)
+
+                    adView.adListener = object : com.google.android.gms.ads.AdListener() {
+                        override fun onAdFailedToLoad(error: LoadAdError) {
+                            ad?.visibility = View.GONE
+                        }
+
+                        override fun onAdLoaded() {
+                            ad?.visibility = View.VISIBLE
+                        }
+                    }
+                } else {
                     ad?.visibility = View.GONE
                 }
-
-                override fun onAdLoaded() {
-                    ad?.visibility = View.VISIBLE
-                }
             }
-        } else {
-            ad?.visibility = View.GONE
         }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        onAttach = true
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+
+        onAttach = false
     }
 }

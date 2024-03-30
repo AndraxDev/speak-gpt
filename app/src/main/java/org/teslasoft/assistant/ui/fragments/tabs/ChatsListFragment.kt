@@ -85,6 +85,8 @@ class ChatsListFragment : Fragment() {
 
     private var searchTerm: String = ""
 
+    private var isAttached: Boolean = false
+
     var chatListUpdatedListener: AddChatDialogFragment.StateChangesListener = object : AddChatDialogFragment.StateChangesListener {
         override fun onAdd(name: String, id: String, fromFile: Boolean) {
             initSettings()
@@ -137,6 +139,18 @@ class ChatsListFragment : Fragment() {
         }
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        isAttached = true
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+
+        isAttached = false
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -150,17 +164,17 @@ class ChatsListFragment : Fragment() {
         initSettings()
     }
 
-    fun reloadAmoled() {
-        if (isDarkThemeEnabled() && Preferences.getPreferences(requireActivity(), "").getAmoledPitchBlack()) {
-            btnSettings?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, requireActivity().theme)!!
-            bgSearch?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, requireActivity().theme)!!
-            btnImport?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.amoled_accent_100, requireActivity().theme)
-            btnAdd?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_600, requireActivity().theme)
+    fun reloadAmoled(context: Context) {
+        if (isDarkThemeEnabled() && Preferences.getPreferences(context, "").getAmoledPitchBlack()) {
+            btnSettings?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, context.theme)!!
+            bgSearch?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, context.theme)!!
+            btnImport?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.amoled_accent_100, context.theme)
+            btnAdd?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_600, context.theme)
         } else {
-            btnSettings?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal, requireActivity().theme)!!)
-            bgSearch?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal, requireActivity().theme)!!)
-            btnImport?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_250, requireActivity().theme)
-            btnAdd?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_900, requireActivity().theme)
+            btnSettings?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal, context.theme)!!)
+            bgSearch?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal, context.theme)!!)
+            btnImport?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_250, context.theme)
+            btnAdd?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_900, context.theme)
         }
     }
 
@@ -169,6 +183,10 @@ class ChatsListFragment : Fragment() {
 
 
         Thread {
+            while (!isAttached) {
+                Thread.sleep(100)
+            }
+
             requireActivity().runOnUiThread {
                 initUI(view)
                 initChatsList()
@@ -185,7 +203,7 @@ class ChatsListFragment : Fragment() {
         fieldSearch = view.findViewById(R.id.field_search)
         bgSearch = view.findViewById(R.id.bg_search)
         btnAdd = view.findViewById(R.id.btn_add)
-        reloadAmoled()
+        reloadAmoled(requireActivity())
     }
 
     private fun initChatsList() {

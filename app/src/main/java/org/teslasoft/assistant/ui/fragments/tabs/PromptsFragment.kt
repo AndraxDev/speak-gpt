@@ -17,6 +17,7 @@
 package org.teslasoft.assistant.ui.fragments.tabs
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -137,6 +138,8 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private var btnImageModel: MaterialButton? = null
 
     private var btnSearch: ImageButton? = null
+
+    private var onAttach: Boolean = false
 
     private val postPromptListener: PostPromptDialogFragment.StateChangesListener = object : PostPromptDialogFragment.StateChangesListener {
         override fun onFormFilled(
@@ -286,6 +289,11 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         btnImageModel = view.findViewById(R.id.btn_image_model)
 
         Thread {
+
+            while (!onAttach) {
+                Thread.sleep(100)
+            }
+
             requireActivity().runOnUiThread {
                 initLogic()
             }
@@ -314,7 +322,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             }
         })
 
-        reloadAmoled()
+        reloadAmoled(requireActivity())
 
         noInternetLayout?.visibility = View.GONE
         promptsList?.visibility = View.GONE
@@ -425,13 +433,13 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }
     }
 
-    fun reloadAmoled() {
-        if (isDarkThemeEnabled() && Preferences.getPreferences(requireActivity(), "").getAmoledPitchBlack()) {
-            searchBar?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, requireActivity().theme)!!
-            btnPost?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_600, requireActivity().theme)
+    fun reloadAmoled(context: Context) {
+        if (isDarkThemeEnabled() && Preferences.getPreferences(context, "").getAmoledPitchBlack()) {
+            searchBar?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, context.theme)!!
+            btnPost?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_600, context.theme)
         } else {
-            searchBar?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal, requireActivity().theme)!!)
-            btnPost?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_900, requireActivity().theme)
+            searchBar?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal, context.theme)!!)
+            btnPost?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_900, context.theme)
         }
     }
 
@@ -572,5 +580,17 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private fun getDisabledColor() : Int {
         return SurfaceColors.SURFACE_5.getColor(requireActivity())
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        onAttach = true
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+
+        onAttach = false
     }
 }

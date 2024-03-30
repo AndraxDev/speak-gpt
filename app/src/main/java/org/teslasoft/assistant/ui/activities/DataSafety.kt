@@ -52,6 +52,7 @@ class DataSafety : FragmentActivity() {
             editor.putBoolean("consent", true)
             editor.apply()
             startActivity(Intent(this, MainActivity::class.java))
+            finish()
         }
 
         btnPrivacyPolicy?.setOnClickListener {

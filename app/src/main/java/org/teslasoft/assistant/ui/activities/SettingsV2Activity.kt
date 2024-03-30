@@ -1038,7 +1038,6 @@ class SettingsV2Activity : FragmentActivity() {
         }
 
         if (preferences?.getAdsEnabled()!!) {
-            // TODO: MAke button visible
             // btnRemoveAds?.visibility = View.VISIBLE
             btnRemoveAds?.visibility = View.GONE
             MobileAds.initialize(this) { /* unused */ }
