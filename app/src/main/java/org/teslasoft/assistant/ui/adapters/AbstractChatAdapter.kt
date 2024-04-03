@@ -55,7 +55,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.util.Base64
 
-abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActivity) : BaseAdapter() {
+abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActivity, protected open val preferences: Preferences) : BaseAdapter() {
     protected val dataArray: ArrayList<HashMap<String, Any>>? = data
     protected val mContext: FragmentActivity = context
     override fun getCount(): Int {
@@ -76,7 +76,6 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
 
     @SuppressLint("InflateParams", "SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-
         btnCopy?.setImageResource(R.drawable.ic_copy)
         btnCopy?.setOnClickListener {
             val clipboard: ClipboardManager = mContext.getSystemService(FragmentActivity.CLIPBOARD_SERVICE) as ClipboardManager
@@ -166,7 +165,7 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
     }
 
     protected fun getSurfaceColor(context: Context): Int {
-        return if (isDarkThemeEnabled() && Preferences.getPreferences(context, "").getAmoledPitchBlack()) {
+        return if (isDarkThemeEnabled() && preferences.getAmoledPitchBlack()) {
             ResourcesCompat.getColor(context.resources, R.color.amoled_accent_50, null)
         } else {
             SurfaceColors.SURFACE_1.getColor(context)
@@ -174,7 +173,7 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
     }
 
     protected fun getSurface2Color(context: Context): Int {
-        return if (isDarkThemeEnabled() && Preferences.getPreferences(context, "").getAmoledPitchBlack()) {
+        return if (isDarkThemeEnabled() && preferences.getAmoledPitchBlack()) {
             ResourcesCompat.getColor(context.resources, R.color.amoled_window_background, null)
         } else {
             SurfaceColors.SURFACE_0.getColor(context)
@@ -182,7 +181,7 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
     }
 
     private fun get3SurfaceColor(context: Context): Int {
-        return if (isDarkThemeEnabled() && Preferences.getPreferences(context, "").getAmoledPitchBlack()) {
+        return if (isDarkThemeEnabled() && preferences.getAmoledPitchBlack()) {
             ResourcesCompat.getColor(context.resources, R.color.amoled_accent_100, null)
         } else {
             SurfaceColors.SURFACE_3.getColor(context)

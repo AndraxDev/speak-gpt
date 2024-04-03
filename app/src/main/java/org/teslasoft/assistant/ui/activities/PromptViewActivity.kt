@@ -205,6 +205,9 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
     override fun onResume() {
         super.onResume()
         reloadAmoled()
+
+        // Reset preferences singleton
+        Preferences.getPreferences(this, "")
     }
 
     private fun reloadAmoled() {

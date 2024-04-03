@@ -144,6 +144,7 @@ class WindowsInstantAssistant : Fragment() {
     private var autoLangDetect = false
     private var cancelState = false
     private var disableAutoScroll = false
+    private var isProcessing = false
 
     // init AI
     private var ai: OpenAI? = null
@@ -157,6 +158,9 @@ class WindowsInstantAssistant : Fragment() {
 
     // Media player for OpenAI TTS
     private var mediaPlayer: MediaPlayer? = null
+
+    // Init preferences
+    private var preferences: Preferences? = null
 
     // Init chat save feature
     private var chatListUpdatedListener: AddChatDialogFragment.StateChangesListener = object : AddChatDialogFragment.StateChangesListener {
@@ -291,13 +295,13 @@ class WindowsInstantAssistant : Fragment() {
 
     private fun ttsPostInit() {
         if (!autoLangDetect) {
-            val result = tts!!.setLanguage(LocaleParser.parse(Preferences.getPreferences(requireActivity(), "").getLanguage()))
+            val result = tts!!.setLanguage(LocaleParser.parse(preferences!!.getLanguage()))
 
             isTTSInitialized = !(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED)
 
             val voices: Set<Voice> = tts!!.voices
             for (v: Voice in voices) {
-                if (v.name == Preferences.getPreferences(requireActivity(), "").getVoice()) {
+                if (v.name == preferences!!.getVoice()) {
                     tts!!.voice = v
                 }
             }
@@ -351,10 +355,10 @@ class WindowsInstantAssistant : Fragment() {
     @SuppressLint("ClickableViewAccessibility")
     @Suppress("unchecked")
     private fun initSettings() {
-        key = Preferences.getPreferences(requireActivity(), "").getApiKey(requireActivity())
+        key = preferences!!.getApiKey(requireActivity())
 
-        endSeparator = Preferences.getPreferences(requireActivity(), "").getEndSeparator()
-        prefix = Preferences.getPreferences(requireActivity(), "").getPrefix()
+        endSeparator = preferences!!.getEndSeparator()
+        prefix = preferences!!.getPrefix()
 
         loadResolution()
 
@@ -362,12 +366,12 @@ class WindowsInstantAssistant : Fragment() {
             startActivity(Intent(requireActivity(), WelcomeActivity::class.java).setAction(Intent.ACTION_VIEW))
             requireActivity().finishAndRemoveTask()
         } else {
-            silenceMode = Preferences.getPreferences(requireActivity(), "").getSilence()
-            autoLangDetect = Preferences.getPreferences(requireActivity(), "").getAutoLangDetect()
+            silenceMode = preferences!!.getSilence()
+            autoLangDetect = preferences!!.getAutoLangDetect()
 
             messages = ArrayList()
 
-            adapter = AssistantAdapter(messages, requireActivity())
+            adapter = AssistantAdapter(messages, requireActivity(), preferences!!)
 
             assistantConversation?.adapter = adapter
             assistantConversation?.dividerHeight = 0
@@ -391,7 +395,7 @@ class WindowsInstantAssistant : Fragment() {
 
     private fun initLogic() {
         btnAssistantVoice?.setOnClickListener {
-            if (Preferences.getPreferences(requireActivity(), "").getAudioModel() == "google") {
+            if (preferences!!.getAudioModel() == "google") {
                 handleGoogleSpeechRecognition()
             } else {
                 handleWhisperSpeechRecognition()
@@ -409,7 +413,7 @@ class WindowsInstantAssistant : Fragment() {
                     tts!!.stop()
                 } catch (_: java.lang.Exception) {/**/}
                 btnAssistantVoice?.setImageResource(R.drawable.ic_microphone_v2)
-                if (Preferences.getPreferences(requireActivity(), "").getAudioModel() == "google") recognizer?.stopListening()
+                if (preferences!!.getAudioModel() == "google") recognizer?.stopListening()
                 isRecording = false
             }
 
@@ -650,7 +654,7 @@ class WindowsInstantAssistant : Fragment() {
                 timeout = Timeout(socket = 30.seconds),
                 organization = null,
                 headers = emptyMap(),
-                host = OpenAIHost(Preferences.getPreferences(requireActivity(), "").getCustomHost()),
+                host = OpenAIHost(preferences!!.getCustomHost()),
                 proxy = null,
                 retry = RetryStrategy()
             )
@@ -662,8 +666,8 @@ class WindowsInstantAssistant : Fragment() {
     }
 
     private fun setup() {
-        endSeparator = Preferences.getPreferences(requireActivity(), "").getEndSeparator()
-        prefix = Preferences.getPreferences(requireActivity(), "").getPrefix()
+        endSeparator = preferences!!.getEndSeparator()
+        prefix = preferences!!.getPrefix()
         val extras: Bundle? = requireActivity().intent.extras
 
         if (extras != null) {
@@ -735,7 +739,7 @@ class WindowsInstantAssistant : Fragment() {
 
     private fun runActivationPrompt() {
         if (messages.isEmpty()) {
-            val prompt: String = Preferences.getPreferences(requireActivity(), "").getPrompt()
+            val prompt: String = preferences!!.getPrompt()
 
             if (prompt.toString() != "" && prompt.toString() != "null" && prompt != "") {
                 putMessage(prompt, false)
@@ -783,7 +787,7 @@ class WindowsInstantAssistant : Fragment() {
             btnAssistantSend?.isEnabled = false
             assistantLoading?.visibility = View.VISIBLE
 
-            val imagineCommandEnabled: Boolean = Preferences.getPreferences(requireActivity(), "").getImagineCommand()
+            val imagineCommandEnabled: Boolean = preferences!!.getImagineCommand()
 
             if (m.lowercase().contains("/imagine") && m.length > 9 && (imagineCommandEnabled || FORCE_SLASH_COMMANDS_ENABLED)) {
                 val x: String = m.substring(9)
@@ -814,13 +818,13 @@ class WindowsInstantAssistant : Fragment() {
     }
 
     private fun loadModel() {
-        model = Preferences.getPreferences(requireActivity(), "").getModel()
-        endSeparator = Preferences.getPreferences(requireActivity(), "").getEndSeparator()
-        prefix = Preferences.getPreferences(requireActivity(), "").getPrefix()
+        model = preferences!!.getModel()
+        endSeparator = preferences!!.getEndSeparator()
+        prefix = preferences!!.getPrefix()
     }
 
     private fun loadResolution() {
-        resolution = Preferences.getPreferences(requireActivity(), "").getResolution()
+        resolution = preferences!!.getResolution()
     }
 
     private fun sendImageRequest(str: String) {
@@ -832,7 +836,7 @@ class WindowsInstantAssistant : Fragment() {
     private fun startRecognition() {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, LocaleParser.parse(Preferences.getPreferences(requireActivity(), "").getLanguage()))
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, LocaleParser.parse(preferences!!.getLanguage()))
         intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
 
         recognizer?.startListening(intent)
@@ -875,6 +879,7 @@ class WindowsInstantAssistant : Fragment() {
     }
 
     private suspend fun generateResponse(request: String, shouldPronounce: Boolean) {
+        isProcessing = true
         assistantConversation?.visibility = View.VISIBLE
         btnSaveToChat?.visibility = View.VISIBLE
 
@@ -917,8 +922,9 @@ class WindowsInstantAssistant : Fragment() {
                 btnAssistantSend?.isEnabled = true
                 assistantLoading?.visibility = View.GONE
                 showKeyboard()
+                isProcessing = false
             } else {
-                val functionCallingEnabled: Boolean = Preferences.getPreferences(requireActivity(), "").getFunctionCalling()
+                val functionCallingEnabled: Boolean = preferences!!.getFunctionCalling()
 
                 if (functionCallingEnabled) {
                     val imageParams = Parameters.buildJsonObject {
@@ -1050,10 +1056,13 @@ class WindowsInstantAssistant : Fragment() {
             assistantLoading?.visibility = View.GONE
 
             showKeyboard()
+
+            isProcessing = false
         }
     }
 
     private suspend fun regularGPTResponse(shouldPronounce: Boolean) {
+        isProcessing = true
         disableAutoScroll = false
         assistantConversation?.transcriptMode = ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL
 
@@ -1062,7 +1071,7 @@ class WindowsInstantAssistant : Fragment() {
 
         val msgs: ArrayList<ChatMessage> = chatMessages.clone() as ArrayList<ChatMessage>
 
-        val systemMessage = Preferences.getPreferences(requireActivity(), "").getSystemMessage()
+        val systemMessage = preferences!!.getSystemMessage()
 
         if (systemMessage != "") {
             msgs.add(
@@ -1107,10 +1116,11 @@ class WindowsInstantAssistant : Fragment() {
         btnAssistantSend?.isEnabled = true
         assistantLoading?.visibility = View.GONE
         showKeyboard()
+        isProcessing = false
     }
 
     private fun pronounce(st: Boolean, message: String) {
-        if (st && isTTSInitialized && !silenceMode || Preferences.getPreferences(requireActivity(), "").getNotSilence()) {
+        if (st && isTTSInitialized && !silenceMode || preferences!!.getNotSilence()) {
             if (autoLangDetect) {
                 languageIdentifier.identifyLanguage(message)
                     .addOnSuccessListener { languageCode ->
@@ -1138,9 +1148,7 @@ class WindowsInstantAssistant : Fragment() {
     }
 
     private fun speak(message: String) {
-        val preferences = Preferences.getPreferences(requireActivity(), "")
-
-        if (preferences.getTtsEngine() == "google") {
+        if (preferences!!.getTtsEngine() == "google") {
             tts!!.speak(message, TextToSpeech.QUEUE_FLUSH, null, "")
         } else {
             CoroutineScope(Dispatchers.Main).launch {
@@ -1149,7 +1157,7 @@ class WindowsInstantAssistant : Fragment() {
                         model = ModelId("tts-1"),
                         input = message,
                         // TODO: Replace with voice setting
-                        voice = com.aallam.openai.api.audio.Voice(preferences.getOpenAIVoice()),
+                        voice = com.aallam.openai.api.audio.Voice(preferences!!.getOpenAIVoice()),
                     )
                 )
 
@@ -1205,6 +1213,7 @@ class WindowsInstantAssistant : Fragment() {
 
     @SuppressLint("ClickableViewAccessibility")
     private suspend fun generateImage(p: String) {
+        isProcessing = true
         assistantConversation?.setOnTouchListener(null)
         assistantConversation?.visibility = View.VISIBLE
         btnSaveToChat?.visibility = View.VISIBLE
@@ -1217,7 +1226,7 @@ class WindowsInstantAssistant : Fragment() {
                 creation = ImageCreation(
                     prompt = p,
                     n = 1,
-                    model = ModelId("dall-e-${Preferences.getPreferences(requireActivity(), "").getDalleVersion()}"),
+                    model = ModelId("dall-e-${preferences!!.getDalleVersion()}"),
                     size = ImageSize(resolution)
                 )
             )
@@ -1227,23 +1236,36 @@ class WindowsInstantAssistant : Fragment() {
             val `is` = withContext(Dispatchers.IO) {
                 url.openStream()
             }
-            val bytes: ByteArray = org.apache.commons.io.IOUtils.toByteArray(`is`)
 
-            writeImageToCache(bytes)
+            Thread {
+                val bytes: ByteArray = org.apache.commons.io.IOUtils.toByteArray(`is`)
 
-            val encoded = Base64.getEncoder().encodeToString(bytes)
+                writeImageToCache(bytes)
 
-            val path = "data:image/png;base64,$encoded"
+                val encoded = Base64.getEncoder().encodeToString(bytes)
 
-            putMessage(path, true)
+                val path = "data:image/png;base64,$encoded"
 
-            assistantConversation?.setOnTouchListener { _, event -> run {
-                if (event.action == MotionEvent.ACTION_SCROLL || event.action == MotionEvent.ACTION_UP) {
-                    assistantConversation?.transcriptMode = ListView.TRANSCRIPT_MODE_DISABLED
-                    disableAutoScroll = true
+                requireActivity().runOnUiThread {
+                    putMessage(path, true)
+
+                    assistantConversation?.setOnTouchListener { _, event -> run {
+                        if (event.action == MotionEvent.ACTION_SCROLL || event.action == MotionEvent.ACTION_UP) {
+                            assistantConversation?.transcriptMode = ListView.TRANSCRIPT_MODE_DISABLED
+                            disableAutoScroll = true
+                        }
+                        return@setOnTouchListener false
+                    } }
+
+                    saveSettings()
+
+                    btnAssistantVoice?.isEnabled = true
+                    btnAssistantSend?.isEnabled = true
+                    assistantLoading?.visibility = View.GONE
+                    showKeyboard()
+                    isProcessing = false
                 }
-                return@setOnTouchListener false
-            } }
+            }.start()
         } catch (e: Exception) {
             when {
                 e.stackTraceToString().contains("Your request was rejected") -> {
@@ -1265,14 +1287,15 @@ class WindowsInstantAssistant : Fragment() {
                     putMessage(e.stackTraceToString(), true)
                 }
             }
+
+            saveSettings()
+
+            btnAssistantVoice?.isEnabled = true
+            btnAssistantSend?.isEnabled = true
+            assistantLoading?.visibility = View.GONE
+            showKeyboard()
+            isProcessing = false
         }
-
-        saveSettings()
-
-        btnAssistantVoice?.isEnabled = true
-        btnAssistantSend?.isEnabled = true
-        assistantLoading?.visibility = View.GONE
-        showKeyboard()
     }
 
     private fun saveSettings() {
@@ -1290,6 +1313,7 @@ class WindowsInstantAssistant : Fragment() {
 
             editor.apply()
         }
+        isProcessing = false
     }
 
     private fun save(id: String) {
@@ -1302,6 +1326,8 @@ class WindowsInstantAssistant : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        preferences = Preferences.getPreferences(requireActivity(), "")
 
         mediaPlayer = MediaPlayer()
 

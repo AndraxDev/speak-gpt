@@ -26,7 +26,6 @@ import android.content.res.Configuration
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
@@ -44,8 +43,6 @@ import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.Toast
-import android.window.OnBackInvokedDispatcher
-import androidx.activity.OnBackPressedCallback
 
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -149,6 +146,10 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private var autoLangDetect = false
     private var cancelState = false
     private var disableAutoScroll = false
+    private var isProcessing = false
+    private var isSaved = false
+    private var isAutosaveEnabled = false
+    private var isInitialized = false
 
     // init AI
     private var ai: OpenAI? = null
@@ -162,6 +163,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     // Autosave
     private var chatPreferences: ChatPreferences? = null
+    private var preferences: Preferences? = null
 
     private fun isDarkThemeEnabled(): Boolean {
         return when (resources.configuration.uiMode and
@@ -174,7 +176,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     }
 
     private fun reloadAmoled() {
-        if (isDarkThemeEnabled() &&  Preferences.getPreferences(requireActivity(), "").getAmoledPitchBlack()) {
+        if (isDarkThemeEnabled() &&  preferences!!.getAmoledPitchBlack()) {
             dialog?.window?.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, requireActivity().theme)
             ui?.setBackgroundResource(R.drawable.assistant_amoled)
         } else {
@@ -318,13 +320,13 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     private fun ttsPostInit() {
         if (!autoLangDetect) {
-            val result = tts!!.setLanguage(LocaleParser.parse(Preferences.getPreferences(requireActivity(), "").getLanguage()))
+            val result = tts!!.setLanguage(LocaleParser.parse(preferences!!.getLanguage()))
 
             isTTSInitialized = !(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED)
 
             val voices: Set<Voice> = tts!!.voices
             for (v: Voice in voices) {
-                if (v.name == Preferences.getPreferences(requireActivity(), "").getVoice()) {
+                if (v.name == preferences!!.getVoice()) {
                     tts!!.voice = v
                 }
             }
@@ -380,10 +382,10 @@ class AssistantFragment : BottomSheetDialogFragment() {
     @SuppressLint("ClickableViewAccessibility")
     @Suppress("unchecked")
     private fun initSettings() {
-        key = Preferences.getPreferences(requireActivity(), "").getApiKey(requireActivity())
+        key = preferences!!.getApiKey(requireActivity())
 
-        endSeparator = Preferences.getPreferences(requireActivity(), "").getEndSeparator()
-        prefix = Preferences.getPreferences(requireActivity(), "").getPrefix()
+        endSeparator = preferences!!.getEndSeparator()
+        prefix = preferences!!.getPrefix()
 
         loadResolution()
 
@@ -391,12 +393,12 @@ class AssistantFragment : BottomSheetDialogFragment() {
             startActivity(Intent(requireActivity(), WelcomeActivity::class.java).setAction(Intent.ACTION_VIEW))
             requireActivity().finishAndRemoveTask()
         } else {
-            silenceMode = Preferences.getPreferences(requireActivity(), "").getSilence()
-            autoLangDetect = Preferences.getPreferences(requireActivity(), "").getAutoLangDetect()
+            silenceMode = preferences!!.getSilence()
+            autoLangDetect = preferences!!.getAutoLangDetect()
 
             messages = ArrayList()
 
-            adapter = AssistantAdapter(messages, requireActivity())
+            adapter = AssistantAdapter(messages, requireActivity(), preferences!!)
 
             assistantConversation?.adapter = adapter
             assistantConversation?.dividerHeight = 0
@@ -420,7 +422,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     private fun initLogic() {
         btnAssistantVoice?.setOnClickListener {
-            if (Preferences.getPreferences(requireActivity(), "").getAudioModel() == "google") {
+            if (preferences!!.getAudioModel() == "google") {
                 handleGoogleSpeechRecognition()
             } else {
                 handleWhisperSpeechRecognition()
@@ -436,9 +438,9 @@ class AssistantFragment : BottomSheetDialogFragment() {
                         mediaPlayer!!.reset()
                     }
                     tts!!.stop()
-                } catch (_: java.lang.Exception) {/**/}
+                } catch (_: java.lang.Exception) {/* ignored */}
                 btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
-                if (Preferences.getPreferences(requireActivity(), "").getAudioModel() == "google") recognizer?.stopListening()
+                if (preferences!!.getAudioModel() == "google") recognizer?.stopListening()
                 isRecording = false
             }
 
@@ -679,7 +681,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 timeout = Timeout(socket = 30.seconds),
                 organization = null,
                 headers = emptyMap(),
-                host = OpenAIHost(Preferences.getPreferences(requireActivity(), "").getCustomHost()),
+                host = OpenAIHost(preferences!!.getCustomHost()),
                 proxy = null,
                 retry = RetryStrategy()
             )
@@ -691,8 +693,8 @@ class AssistantFragment : BottomSheetDialogFragment() {
     }
 
     private fun setup() {
-        endSeparator = Preferences.getPreferences(requireActivity(), "").getEndSeparator()
-        prefix = Preferences.getPreferences(requireActivity(), "").getPrefix()
+        endSeparator = preferences!!.getEndSeparator()
+        prefix = preferences!!.getPrefix()
         val extras: Bundle? = requireActivity().intent.extras
 
         if (extras != null) {
@@ -764,9 +766,9 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     private fun runActivationPrompt() {
         if (messages.isEmpty()) {
-            val prompt: String = Preferences.getPreferences(requireActivity(), "").getPrompt()
+            val prompt: String = preferences!!.getPrompt()
 
-            if (prompt.toString() != "" && prompt.toString() != "null" && prompt != "") {
+            if (prompt != "" && prompt != "null") {
                 putMessage(prompt, false)
 
                 chatMessages.add(
@@ -788,6 +790,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun parseMessage(message: String) {
         try {
             if (mediaPlayer!!.isPlaying) {
@@ -795,7 +798,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 mediaPlayer!!.reset()
             }
             tts!!.stop()
-        } catch (_: java.lang.Exception) {/**/}
+        } catch (_: java.lang.Exception) {/* ignored */}
         if (message != "") {
             assistantMessage?.setText("")
 
@@ -812,7 +815,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
             btnAssistantSend?.isEnabled = false
             assistantLoading?.visibility = View.VISIBLE
 
-            val imagineCommandEnabled: Boolean = Preferences.getPreferences(requireActivity(), "").getImagineCommand()
+            val imagineCommandEnabled: Boolean = preferences!!.getImagineCommand()
 
             if (m.lowercase().contains("/imagine") && m.length > 9 && (imagineCommandEnabled || FORCE_SLASH_COMMANDS_ENABLED)) {
                 val x: String = m.substring(9)
@@ -842,13 +845,13 @@ class AssistantFragment : BottomSheetDialogFragment() {
     }
 
     private fun loadModel() {
-        model = Preferences.getPreferences(requireActivity(), "").getModel()
-        endSeparator = Preferences.getPreferences(requireActivity(), "").getEndSeparator()
-        prefix = Preferences.getPreferences(requireActivity(), "").getPrefix()
+        model = preferences!!.getModel()
+        endSeparator = preferences!!.getEndSeparator()
+        prefix = preferences!!.getPrefix()
     }
 
     private fun loadResolution() {
-        resolution = Preferences.getPreferences(requireActivity(), "").getResolution()
+        resolution = preferences!!.getResolution()
     }
 
     private fun sendImageRequest(str: String) {
@@ -860,7 +863,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private fun startRecognition() {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, LocaleParser.parse(Preferences.getPreferences(requireActivity(), "").getLanguage()))
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, LocaleParser.parse(preferences!!.getLanguage()))
         intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
 
         recognizer?.startListening(intent)
@@ -902,6 +905,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     }
 
     private suspend fun generateResponse(request: String, shouldPronounce: Boolean) {
+        isProcessing = true
         assistantConversation?.visibility = View.VISIBLE
         btnSaveToChat?.visibility = View.VISIBLE
 
@@ -943,8 +947,9 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 btnAssistantVoice?.isEnabled = true
                 btnAssistantSend?.isEnabled = true
                 assistantLoading?.visibility = View.GONE
+                isProcessing = false
             } else {
-                val functionCallingEnabled: Boolean = Preferences.getPreferences(requireActivity(), "").getFunctionCalling()
+                val functionCallingEnabled: Boolean = preferences!!.getFunctionCalling()
 
                 if (functionCallingEnabled) {
                     val imageParams = Parameters.buildJsonObject {
@@ -1074,10 +1079,12 @@ class AssistantFragment : BottomSheetDialogFragment() {
             btnAssistantVoice?.isEnabled = true
             btnAssistantSend?.isEnabled = true
             assistantLoading?.visibility = View.GONE
+            isProcessing = false
         }
     }
 
     private suspend fun regularGPTResponse(shouldPronounce: Boolean) {
+        isProcessing = true
         disableAutoScroll = false
         assistantConversation?.transcriptMode = ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL
 
@@ -1086,7 +1093,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
         val msgs: ArrayList<ChatMessage> = chatMessages.clone() as ArrayList<ChatMessage>
 
-        val systemMessage = Preferences.getPreferences(requireActivity(), "").getSystemMessage()
+        val systemMessage = preferences!!.getSystemMessage()
 
         if (systemMessage != "") {
             msgs.add(
@@ -1130,10 +1137,11 @@ class AssistantFragment : BottomSheetDialogFragment() {
         btnAssistantVoice?.isEnabled = true
         btnAssistantSend?.isEnabled = true
         assistantLoading?.visibility = View.GONE
+        isProcessing = false
     }
 
     private fun pronounce(st: Boolean, message: String) {
-        if (st && isTTSInitialized && !silenceMode || Preferences.getPreferences(requireActivity(), "").getNotSilence()) {
+        if (st && isTTSInitialized && !silenceMode || preferences!!.getNotSilence()) {
             if (autoLangDetect) {
                 languageIdentifier.identifyLanguage(message)
                     .addOnSuccessListener { languageCode ->
@@ -1161,9 +1169,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     }
 
     private fun speak(message: String) {
-        val preferences = Preferences.getPreferences(requireActivity(), "")
-
-        if (preferences.getTtsEngine() == "google") {
+        if (preferences!!.getTtsEngine() == "google") {
             tts!!.speak(message, TextToSpeech.QUEUE_FLUSH, null, "")
         } else {
             CoroutineScope(Dispatchers.Main).launch {
@@ -1171,7 +1177,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                     request = SpeechRequest(
                         model = ModelId("tts-1"),
                         input = message,
-                        voice = com.aallam.openai.api.audio.Voice(preferences.getOpenAIVoice()),
+                        voice = com.aallam.openai.api.audio.Voice(preferences!!.getOpenAIVoice()),
                     )
                 )
 
@@ -1227,6 +1233,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     @SuppressLint("ClickableViewAccessibility")
     private suspend fun generateImage(p: String) {
+        isProcessing = true
         assistantConversation?.setOnTouchListener(null)
         assistantConversation?.visibility = View.VISIBLE
         btnSaveToChat?.visibility = View.VISIBLE
@@ -1239,7 +1246,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 creation = ImageCreation(
                     prompt = p,
                     n = 1,
-                    model = ModelId("dall-e-${Preferences.getPreferences(requireActivity(), "").getDalleVersion()}"),
+                    model = ModelId("dall-e-${preferences!!.getDalleVersion()}"),
                     size = ImageSize(resolution)
                 )
             )
@@ -1249,23 +1256,35 @@ class AssistantFragment : BottomSheetDialogFragment() {
             val `is` = withContext(Dispatchers.IO) {
                 url.openStream()
             }
-            val bytes: ByteArray = org.apache.commons.io.IOUtils.toByteArray(`is`)
 
-            writeImageToCache(bytes)
+            Thread {
+                val bytes: ByteArray = org.apache.commons.io.IOUtils.toByteArray(`is`)
 
-            val encoded = Base64.getEncoder().encodeToString(bytes)
+                writeImageToCache(bytes)
 
-            val path = "data:image/png;base64,$encoded"
+                val encoded = Base64.getEncoder().encodeToString(bytes)
 
-            putMessage(path, true)
+                val path = "data:image/png;base64,$encoded"
 
-            assistantConversation?.setOnTouchListener { _, event -> run {
-                if (event.action == MotionEvent.ACTION_SCROLL || event.action == MotionEvent.ACTION_UP) {
-                    assistantConversation?.transcriptMode = ListView.TRANSCRIPT_MODE_DISABLED
-                    disableAutoScroll = true
+                requireActivity().runOnUiThread {
+                    putMessage(path, true)
+
+                    assistantConversation?.setOnTouchListener { _, event -> run {
+                        if (event.action == MotionEvent.ACTION_SCROLL || event.action == MotionEvent.ACTION_UP) {
+                            assistantConversation?.transcriptMode = ListView.TRANSCRIPT_MODE_DISABLED
+                            disableAutoScroll = true
+                        }
+                        return@setOnTouchListener false
+                    }}
+
+                    saveSettings()
+
+                    btnAssistantVoice?.isEnabled = true
+                    btnAssistantSend?.isEnabled = true
+                    assistantLoading?.visibility = View.GONE
+                    isProcessing = false
                 }
-                return@setOnTouchListener false
-            } }
+            }.start()
         } catch (e: Exception) {
             when {
                 e.stackTraceToString().contains("Your request was rejected") -> {
@@ -1287,13 +1306,14 @@ class AssistantFragment : BottomSheetDialogFragment() {
                     putMessage(e.stackTraceToString(), true)
                 }
             }
+
+            saveSettings()
+
+            btnAssistantVoice?.isEnabled = true
+            btnAssistantSend?.isEnabled = true
+            assistantLoading?.visibility = View.GONE
+            isProcessing = false
         }
-
-        saveSettings()
-
-        btnAssistantVoice?.isEnabled = true
-        btnAssistantSend?.isEnabled = true
-        assistantLoading?.visibility = View.GONE
     }
 
     private fun saveSettings() {
@@ -1311,18 +1331,33 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
             editor.apply()
         }
+
+        isProcessing = false
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (isInitialized) {
+            preferences = Preferences.getPreferences(requireActivity(), chatID)
+        }
     }
 
     private fun save(id: String) {
+        isSaved = true
         chatID = id
         saveSettings()
+        preferences = Preferences.getPreferences(requireActivity(), chatID)
         btnSaveToChat?.text = "Saved"
         btnSaveToChat?.isEnabled = false
         btnSaveToChat?.setIconResource(R.drawable.ic_done)
+
+        preferences?.forceUpdate()
     }
 
     private fun autosave() {
-        if (Preferences.getPreferences(requireActivity(), "").getChatsAutosave()) {
+        if (preferences!!.getChatsAutosave()) {
+            isAutosaveEnabled = true
             chatPreferences = ChatPreferences.getChatPreferences()
 
             val chatName = "_autoname_${chatPreferences?.getAvailableChatIdForAutoname(requireActivity())}"
@@ -1331,58 +1366,67 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
             chatPreferences?.addChat(requireActivity(), chatName)
 
-            val preferences = Preferences.getPreferences(requireActivity(), "")
-            val resolution = preferences.getResolution()
-            val speech = preferences.getAudioModel()
-            val model = preferences.getModel()
-            val maxTokens = preferences.getMaxTokens()
-            val prefix = preferences.getPrefix()
-            val endSeparator = preferences.getEndSeparator()
-            val activationPrompt = preferences.getPrompt()
-            val layout = preferences.getLayout()
-            val silent = preferences.getSilence()
-            val systemMessage = preferences.getSystemMessage()
-            val alwaysSpeak = preferences.getNotSilence()
-            val autoLanguageDetect = preferences.getAutoLangDetect()
-            val functionCalling = preferences.getFunctionCalling()
-            val slashCommands = preferences.getImagineCommand()
-            val ttsEngine = preferences.getTtsEngine()
-            val dalleVersion = preferences.getDalleVersion()
-            val opeAIVoice: String = preferences.getOpenAIVoice()
-            val voice: String = preferences.getVoice()
+            val globalPreferences = Preferences.getPreferences(requireActivity(), "")
 
-            val newPreferences: Preferences = Preferences.getPreferences(requireActivity(), Hash.hash(chatName))
+            val resolution = globalPreferences.getResolution()
+            val speech = globalPreferences.getAudioModel()
+            val model = globalPreferences.getModel()
+            val maxTokens = globalPreferences.getMaxTokens()
+            val prefix = globalPreferences.getPrefix()
+            val endSeparator = globalPreferences.getEndSeparator()
+            val activationPrompt = globalPreferences.getPrompt()
+            val layout = globalPreferences.getLayout()
+            val silent = globalPreferences.getSilence()
+            val systemMessage = globalPreferences.getSystemMessage()
+            val alwaysSpeak = globalPreferences.getNotSilence()
+            val autoLanguageDetect = globalPreferences.getAutoLangDetect()
+            val functionCalling = globalPreferences.getFunctionCalling()
+            val slashCommands = globalPreferences.getImagineCommand()
+            val ttsEngine = globalPreferences.getTtsEngine()
+            val dalleVersion = globalPreferences.getDalleVersion()
+            val opeAIVoice: String = globalPreferences.getOpenAIVoice()
+            val voice: String = globalPreferences.getVoice()
 
-            newPreferences.setPreferences(Hash.hash(chatName), requireActivity())
-            newPreferences.setResolution(resolution)
-            newPreferences.setAudioModel(speech)
-            newPreferences.setModel(model)
-            newPreferences.setMaxTokens(maxTokens)
-            newPreferences.setPrefix(prefix)
-            newPreferences.setEndSeparator(endSeparator)
-            newPreferences.setPrompt(activationPrompt)
-            newPreferences.setLayout(layout)
-            newPreferences.setSilence(silent)
-            newPreferences.setSystemMessage(systemMessage)
-            newPreferences.setNotSilence(alwaysSpeak)
-            newPreferences.setAutoLangDetect(autoLanguageDetect)
-            newPreferences.setFunctionCalling(functionCalling)
-            newPreferences.setImagineCommand(slashCommands)
-            newPreferences.setTtsEngine(ttsEngine)
-            newPreferences.setDalleVersion(dalleVersion)
-            newPreferences.setOpenAIVoice(opeAIVoice)
-            newPreferences.setVoice(voice)
+            preferences = Preferences.getPreferences(requireActivity(), chatID)
+
+            preferences!!.setPreferences(Hash.hash(chatName), requireActivity())
+            preferences!!.setResolution(resolution)
+            preferences!!.setAudioModel(speech)
+            preferences!!.setModel(model)
+            preferences!!.setMaxTokens(maxTokens)
+            preferences!!.setPrefix(prefix)
+            preferences!!.setEndSeparator(endSeparator)
+            preferences!!.setPrompt(activationPrompt)
+            preferences!!.setLayout(layout)
+            preferences!!.setSilence(silent)
+            preferences!!.setSystemMessage(systemMessage)
+            preferences!!.setNotSilence(alwaysSpeak)
+            preferences!!.setAutoLangDetect(autoLanguageDetect)
+            preferences!!.setFunctionCalling(functionCalling)
+            preferences!!.setImagineCommand(slashCommands)
+            preferences!!.setTtsEngine(ttsEngine)
+            preferences!!.setDalleVersion(dalleVersion)
+            preferences!!.setOpenAIVoice(opeAIVoice)
+            preferences!!.setVoice(voice)
 
             saveSettings()
 
-            btnSaveToChat?.text = "Autosaved"
+            btnSaveToChat?.text = "Saved"
             btnSaveToChat?.isEnabled = false
             btnSaveToChat?.setIconResource(R.drawable.ic_done)
+
+            preferences?.forceUpdate()
+
+            isInitialized = true
+        } else {
+            isInitialized = true
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        preferences = Preferences.getPreferences(requireActivity(), "")
 
         mediaPlayer = MediaPlayer()
 

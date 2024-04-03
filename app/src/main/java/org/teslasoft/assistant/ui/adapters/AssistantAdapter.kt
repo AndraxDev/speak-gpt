@@ -30,7 +30,7 @@ import androidx.fragment.app.FragmentActivity
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 
-class AssistantAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActivity) : AbstractChatAdapter(data, context) {
+class AssistantAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActivity, override val preferences: Preferences) : AbstractChatAdapter(data, context, preferences) {
     @SuppressLint("InflateParams", "SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val inflater = mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -51,12 +51,12 @@ class AssistantAdapter(data: ArrayList<HashMap<String, Any>>?, context: Fragment
         message?.setTextIsSelectable(true)
 
         if (dataArray?.get(position)?.get("isBot") == true) {
-            if (isDarkThemeEnabled() && Preferences.getPreferences(mContext, "").getAmoledPitchBlack()) {
+            if (isDarkThemeEnabled() && preferences.getAmoledPitchBlack()) {
                 bubbleBg.setBackgroundResource(R.drawable.bubble_out_dark)
                 message?.setTextColor(ResourcesCompat.getColor(mContext.resources, R.color.white, null))
             }
         } else {
-            if (isDarkThemeEnabled() && Preferences.getPreferences(mContext, "").getAmoledPitchBlack()) {
+            if (isDarkThemeEnabled() && preferences.getAmoledPitchBlack()) {
                 bubbleBg.setBackgroundResource(R.drawable.bubble_in_dark)
                 message?.setTextColor(ResourcesCompat.getColor(mContext.resources, R.color.white, null))
             }

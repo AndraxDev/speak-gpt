@@ -35,6 +35,7 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -61,7 +62,7 @@ import org.teslasoft.core.api.network.RequestNetwork
 import java.io.IOException
 
 
-class MainActivity : FragmentActivity() {
+class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener {
     private var navigationBar: BottomNavigationView? = null
     private var fragmentChats: ConstraintLayout? = null
     private var fragmentPrompts: ConstraintLayout? = null
@@ -93,14 +94,13 @@ class MainActivity : FragmentActivity() {
 
     private val requestListener = object : RequestNetwork.RequestListener {
         override fun onResponse(tag: String, message: String) {
-            val preferences = Preferences.getPreferences(this@MainActivity, "")
             if (message == "131") {
-                preferences.setAdsEnabled(false)
+                preferences!!.setAdsEnabled(false)
                 startActivity(Intent(this@MainActivity, ThanksActivity::class.java))
                 finish()
             } else {
-                if (tag == "AID" && !preferences.getDebugMode()) {
-                    preferences.setAdsEnabled(true)
+                if (tag == "AID" && !preferences!!.getDebugMode()) {
+                    preferences!!.setAdsEnabled(true)
                 } else {
                     val androidId = DeviceInfoProvider.getAndroidId(this@MainActivity)
 
@@ -128,11 +128,12 @@ class MainActivity : FragmentActivity() {
         if (!consent.getBoolean("consent", false)) {
             startActivity(Intent(this, DataSafety::class.java))
             finish()
+            return
         }
 
         setContentView(R.layout.activity_main)
 
-        preferences = Preferences.getPreferences(this, "")
+        preferences = Preferences.getPreferences(this, "").addOnPreferencesChangedListener(this)
 
         navigationBar = findViewById(R.id.navigation_bar)
 
@@ -158,7 +159,6 @@ class MainActivity : FragmentActivity() {
         frameTips = supportFragmentManager.findFragmentById(R.id.fragment_tips_)
 
         preloadAmoled()
-        reloadAmoled()
 
         if (Build.VERSION.SDK_INT >= 33) {
             onBackInvokedDispatcher.registerOnBackInvokedCallback(
@@ -218,22 +218,20 @@ class MainActivity : FragmentActivity() {
                     onRestoredState(savedInstanceState)
                 }
 
-                val preferences = Preferences.getPreferences(this, "")
-
-                if (preferences.getDebugTestAds() && !preferences.getDebugMode()) {
-                    preferences.setDebugMode(true)
+                if (preferences!!.getDebugTestAds() && !preferences!!.getDebugMode()) {
+                    preferences!!.setDebugMode(true)
                     restartActivity()
                 }
 
                 val installationId = DeviceInfoProvider.getInstallationId(this)
                 val androidId = DeviceInfoProvider.getAndroidId(this)
 
-                if (preferences.getAdsEnabled()) {
+                if (preferences!!.getAdsEnabled()) {
                     requestNetwork = RequestNetwork(this)
                     requestNetwork?.startRequestNetwork("GET", "${API_ENDPOINT}/checkForDonation?did=${installationId}", "IID", requestListener)
                 }
 
-                if (preferences.getDebugMode()) {
+                if (preferences!!.getDebugMode()) {
                     btnDebugger?.visibility = View.VISIBLE
                     btnDebugger?.setOnClickListener {
                         debuggerWindow?.visibility = View.VISIBLE
@@ -247,17 +245,17 @@ class MainActivity : FragmentActivity() {
                         throw RuntimeException("Test crash")
                     }
 
-                    if (preferences.getAdsEnabled()) {
+                    if (preferences!!.getAdsEnabled()) {
                         btnSwitchAds?.text = "Disable ads"
                     } else {
                         btnSwitchAds?.text = "Enable ads"
                     }
 
                     btnSwitchAds?.setOnClickListener {
-                        if (preferences.getAdsEnabled()) {
-                            preferences.setAdsEnabled(false)
+                        if (preferences!!.getAdsEnabled()) {
+                            preferences!!.setAdsEnabled(false)
                         } else {
-                            preferences.setAdsEnabled(true)
+                            preferences!!.setAdsEnabled(true)
                         }
                         restartActivity()
                     }
@@ -290,9 +288,9 @@ class MainActivity : FragmentActivity() {
                         }
                     }
                     crearEventoHilo.start()
-
-
                 }
+
+                reloadAmoled()
 
                 Handler(Looper.getMainLooper()).postDelayed({
                     val fadeOut: Animation = AnimationUtils.loadAnimation(this, R.anim.fade_out)
@@ -338,7 +336,13 @@ class MainActivity : FragmentActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (isInitialized) reloadAmoled()
+
+        if (isInitialized) {
+            // Reset preferences singleton to global settings
+            preferences = Preferences.getPreferences(this, "")
+
+            reloadAmoled()
+        }
     }
 
     private fun reloadAmoled() {
@@ -406,8 +410,12 @@ class MainActivity : FragmentActivity() {
 
     private fun preloadAmoled() {
         if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack()!!) {
+            window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
+            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
             threadLoader?.background = ResourcesCompat.getDrawable(resources, R.color.amoled_window_background, null)
         } else {
+            window.navigationBarColor = SurfaceColors.SURFACE_3.getColor(this)
+            window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
             threadLoader?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
         }
     }
@@ -434,7 +442,6 @@ class MainActivity : FragmentActivity() {
             else -> false
         }
     }
-
 
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
         super.onSaveInstanceState(savedInstanceState)
@@ -670,4 +677,10 @@ class MainActivity : FragmentActivity() {
                 }.start()
             }
         }
+
+    override fun onPreferencesChanged(key: String, value: String) {
+        if (key == "debug_mode" || key == "debug_test_ads") {
+            restartActivity()
+        }
+    }
 }

@@ -1038,8 +1038,7 @@ class SettingsV2Activity : FragmentActivity() {
         }
 
         if (preferences?.getAdsEnabled()!!) {
-            // btnRemoveAds?.visibility = View.VISIBLE
-            btnRemoveAds?.visibility = View.GONE
+            btnRemoveAds?.visibility = View.VISIBLE
             MobileAds.initialize(this) { /* unused */ }
 
             val requestConfiguration = RequestConfiguration.Builder()
@@ -1472,6 +1471,9 @@ class SettingsV2Activity : FragmentActivity() {
         if (areFragmentsInitialized) {
             tileAssistant?.setChecked(isDefaultAssistantApp(this))
         }
+
+        // Reset preferences singleton
+        Preferences.getPreferences(this, chatId)
     }
 
     private fun getDisabledDrawable(drawable: Drawable) : Drawable {

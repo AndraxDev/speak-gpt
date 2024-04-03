@@ -32,13 +32,13 @@ import androidx.fragment.app.FragmentActivity
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 
-class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActivity, private val chatID: String) : AbstractChatAdapter(data, context) {
+class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActivity, override val preferences: Preferences) : AbstractChatAdapter(data, context, preferences) {
 
     @SuppressLint("InflateParams", "SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val inflater = mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
-        val layout  = Preferences.getPreferences(mContext, chatID).getLayout()
+        val layout  = preferences.getLayout()
 
         val mView: View? = if (layout == "bubbles") {
             if (dataArray?.get(position)?.get("isBot") == true) {
@@ -50,11 +50,6 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActiv
             inflater.inflate(R.layout.view_message, null)
         }
 
-//        if (dataArray?.get(position)?.get("isBot") == true && layout == "bubbles") {
-//            val bubbleBg: ConstraintLayout = mView!!.findViewById(R.id.bubble_bg)
-//            bubbleBg.background = getSurface3Drawable(AppCompatResources.getDrawable(mContext, R.drawable.bubble_in)!!, mContext)
-//        }
-
         val bubbleBg: ConstraintLayout? = mView?.findViewById(R.id.bubble_bg)
 
         ui = mView!!.findViewById(R.id.ui)
@@ -62,7 +57,6 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActiv
         message = mView.findViewById(R.id.message)
         val username: TextView = mView.findViewById(R.id.username)
         dalleImage = mView.findViewById(R.id.dalle_image)
-        // imageFrame = mView.findViewById(R.id.dalle_image)
         btnCopy = mView.findViewById(R.id.btn_copy)
 
         btnCopy?.background = getSurface3Drawable(AppCompatResources.getDrawable(mContext, R.drawable.btn_accent_tonal)!!, mContext)
@@ -73,14 +67,14 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActiv
             if (dataArray?.get(position)?.get("isBot") == true) {
                 icon?.setImageResource(R.drawable.assistant)
 
-                if (isDarkThemeEnabled() && Preferences.getPreferences(mContext, chatID).getAmoledPitchBlack()) {
+                if (isDarkThemeEnabled() && preferences.getAmoledPitchBlack()) {
                     bubbleBg?.setBackgroundResource(R.drawable.bubble_out_dark)
                     message?.setTextColor(ResourcesCompat.getColor(mContext.resources, R.color.white, null))
                 }
             } else {
                 icon?.setImageResource(R.drawable.ic_user)
 
-                if (isDarkThemeEnabled() && Preferences.getPreferences(mContext, chatID).getAmoledPitchBlack()) {
+                if (isDarkThemeEnabled() && preferences.getAmoledPitchBlack()) {
                     bubbleBg?.setBackgroundResource(R.drawable.bubble_in_dark)
                     message?.setTextColor(ResourcesCompat.getColor(mContext.resources, R.color.white, null))
                 }

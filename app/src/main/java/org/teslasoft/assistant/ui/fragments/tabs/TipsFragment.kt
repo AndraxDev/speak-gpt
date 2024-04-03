@@ -97,7 +97,7 @@ class TipsFragment : Fragment() {
                     ad?.visibility = View.GONE
                 }
             }
-        }
+        }.start()
     }
 
     override fun onAttach(context: Context) {

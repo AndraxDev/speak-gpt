@@ -18,10 +18,6 @@ package org.teslasoft.assistant.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.widget.Toast
-
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKey
 
 class Preferences private constructor(private var preferences: SharedPreferences, private var gp: SharedPreferences, private var chatId: String) {
     companion object {
@@ -36,6 +32,23 @@ class Preferences private constructor(private var preferences: SharedPreferences
             }
 
             return preferences!!
+        }
+    }
+
+    fun interface PreferencesChangedListener {
+        fun onPreferencesChanged(key: String, value: String)
+    }
+
+    private var listeners: ArrayList<PreferencesChangedListener> = ArrayList()
+
+    fun addOnPreferencesChangedListener(listener: PreferencesChangedListener): Preferences {
+        listeners.add(listener)
+        return this
+    }
+
+    fun forceUpdate() {
+        for (listener in listeners) {
+            listener.onPreferencesChanged("forceUpdate", "true")
         }
     }
 
@@ -67,8 +80,16 @@ class Preferences private constructor(private var preferences: SharedPreferences
      * @param param The key with which the value is to be associated.
      * @param value The value to be stored.
      */
-    private fun putGlobalString(param: String, value: String) {
-        gp.edit()?.putString(param, value)?.apply()
+    private fun putGlobalString(param: String, value: String, default: String = "") {
+        val oldValue = getGlobalString(param, default)
+
+        if (oldValue != value) {
+            gp.edit()?.putString(param, value)?.apply()
+
+            for (listener in listeners) {
+                listener.onPreferencesChanged(param, value)
+            }
+        }
     }
 
     /**
@@ -87,8 +108,16 @@ class Preferences private constructor(private var preferences: SharedPreferences
      * @param param The key with which the value is to be associated.
      * @param value The value to be stored.
      * */
-    private fun putGlobalBoolean(param: String, value: Boolean) {
-        gp.edit()?.putBoolean(param, value)?.apply()
+    private fun putGlobalBoolean(param: String, value: Boolean, default: Boolean = false) {
+        val oldValue = getGlobalBoolean(param, default)
+
+        if (oldValue != value) {
+            gp.edit()?.putBoolean(param, value)?.apply()
+
+            for (listener in listeners) {
+                listener.onPreferencesChanged(param, value.toString())
+            }
+        }
     }
 
     /**
@@ -108,8 +137,16 @@ class Preferences private constructor(private var preferences: SharedPreferences
      * @param param The key with which the value is to be associated.
      * @param value The value to be stored.
      */
-    private fun putString(param: String, value: String) {
-        preferences.edit().putString(param, value).apply()
+    private fun putString(param: String, value: String, default: String = "") {
+        val oldValue = getString(param, default)
+
+        if (oldValue != value) {
+            preferences.edit().putString(param, value).apply()
+
+            for (listener in listeners) {
+                listener.onPreferencesChanged(param, value)
+            }
+        }
     }
 
     /**
@@ -129,8 +166,16 @@ class Preferences private constructor(private var preferences: SharedPreferences
      * @param param The key with which the value is to be associated.
      * @param value The value to be stored.
      */
-    private fun putBoolean(param: String, value: Boolean) {
-        preferences.edit().putBoolean(param, value).apply()
+    private fun putBoolean(param: String, value: Boolean, default: Boolean = false) {
+        val oldValue = getBoolean(param, default)
+
+        if (oldValue != value) {
+            preferences.edit().putBoolean(param, value).apply()
+
+            for (listener in listeners) {
+                listener.onPreferencesChanged(param, value.toString())
+            }
+        }
     }
 
     /**
@@ -139,7 +184,11 @@ class Preferences private constructor(private var preferences: SharedPreferences
      * @return The model name or "gpt-3.5-turbo" if not found.
      */
     fun getModel() : String {
-        return getString("model", "gpt-3.5-turbo")
+        var model = getString("model", "gpt-3.5-turbo")
+
+        // Migrate from legacy dated model
+        if (model == "gpt-4-1106-preview") model = "gpt-4-turbo-preview"
+        return model
     }
 
     /**
@@ -148,7 +197,12 @@ class Preferences private constructor(private var preferences: SharedPreferences
      * @param model The model name to be stored.
      */
     fun setModel(model: String) {
-        putString("model", model)
+        // Migrate from legacy dated model
+        if (model == "gpt-4-1106-preview") {
+            putString("model", "gpt-4-turbo-preview")
+        } else {
+            putString("model", model)
+        }
     }
 
     /**
@@ -392,7 +446,7 @@ class Preferences private constructor(private var preferences: SharedPreferences
      * Set ads enabled
      * */
     fun setAdsEnabled(state: Boolean) {
-        putGlobalBoolean("ads_enabled", state)
+        putGlobalBoolean("ads_enabled", state, true)
     }
 
     /**

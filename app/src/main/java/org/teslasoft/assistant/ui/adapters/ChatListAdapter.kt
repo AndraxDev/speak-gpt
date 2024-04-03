@@ -85,6 +85,8 @@ class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragme
         textModel.text = when (model) {
             "gpt-4" -> "GPT 4"
             "gpt-4-1106-preview" -> "GPT 4 Turbo"
+            "gpt-4-0125-preview" -> "GPT 4 Turbo"
+            "gpt-4-turbo-preview" -> "GPT 4 Turbo"
             "gpt-4-32k" -> "GPT 4"
             "gpt-3.5-turbo" -> "GPT 3.5"
             "gpt-3.5-turbo-1106" -> "GPT 3.5"

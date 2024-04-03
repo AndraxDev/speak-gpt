@@ -60,7 +60,7 @@
         <activity
             android:name=".ui.activities.ChatActivity"
             android:exported="false"
-            android:theme="@style/Theme.App">
+            android:theme="@style/UI.Fade">
         </activity>
 
         <activity
@@ -172,14 +172,14 @@
         <activity
             android:name=".ui.activities.SettingsActivity"
             android:exported="false"
-            android:theme="@style/Theme.App"
+            android:theme="@style/UI.Fade"
             android:launchMode="singleTask">
         </activity>
 
         <activity
             android:name=".ui.activities.SettingsV2Activity"
             android:exported="false"
-            android:theme="@style/Theme.App"
+            android:theme="@style/UI.Fade"
             android:launchMode="singleTask">
         </activity>
 

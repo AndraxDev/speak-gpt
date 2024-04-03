@@ -177,6 +177,9 @@ class ChatActivity : FragmentActivity() {
     // Media player for OpenAI TTS
     private var mediaPlayer: MediaPlayer? = null
 
+    // Init preferences
+    private var preferences: Preferences? = null
+
     private val speechListener = object : RecognitionListener {
         override fun onReadyForSpeech(params: Bundle?) { /* unused */ }
         override fun onBeginningOfSpeech() { /* unused */ }
@@ -239,10 +242,13 @@ class ChatActivity : FragmentActivity() {
         super.onResume()
         preloadAmoled()
         reloadAmoled()
+
+        // Reset preferences singleton
+        preferences = Preferences.getPreferences(this, chatId)
     }
 
     private fun preloadAmoled() {
-        if (isDarkThemeEnabled() && Preferences.getPreferences(this, chatId).getAmoledPitchBlack()) {
+        if (isDarkThemeEnabled() && preferences!!.getAmoledPitchBlack()) {
             threadLoader?.background = ResourcesCompat.getDrawable(resources, R.color.amoled_accent_50, null)
         } else {
             threadLoader?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
@@ -250,7 +256,7 @@ class ChatActivity : FragmentActivity() {
     }
 
     private fun reloadAmoled() {
-        if (isDarkThemeEnabled() && Preferences.getPreferences(this, chatId).getAmoledPitchBlack()) {
+        if (isDarkThemeEnabled() && preferences!!.getAmoledPitchBlack()) {
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
             window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme)
             window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme)
@@ -374,10 +380,7 @@ class ChatActivity : FragmentActivity() {
         if (!autoLangDetect) {
             val result = tts!!.setLanguage(
                 LocaleParser.parse(
-                    Preferences.getPreferences(
-                        this@ChatActivity,
-                        chatId
-                    ).getLanguage()
+                    preferences!!.getLanguage()
                 )
             )
 
@@ -386,7 +389,7 @@ class ChatActivity : FragmentActivity() {
 
             val voices: Set<Voice> = tts!!.voices
             for (v: Voice in voices) {
-                if (v.name == Preferences.getPreferences(this@ChatActivity, chatId).getVoice()) {
+                if (v.name == preferences!!.getVoice()) {
                     tts!!.voice = v
                 }
             }
@@ -415,15 +418,15 @@ class ChatActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mediaPlayer = MediaPlayer()
-
         setContentView(R.layout.activity_chat)
+
+        preferences = Preferences.getPreferences(this, chatId)
+
+        mediaPlayer = MediaPlayer()
 
         threadLoader = findViewById(R.id.thread_loader)
         preloadAmoled()
         threadLoader?.visibility = View.VISIBLE
-
-
 
         Thread {
             languageIdentifier = LanguageIdentification.getClient()
@@ -459,10 +462,10 @@ class ChatActivity : FragmentActivity() {
     /** SYSTEM INITIALIZATION START **/
     @Suppress("unchecked")
     private fun initSettings() {
-        key = Preferences.getPreferences(this, chatId).getApiKey(this)
+        key = preferences!!.getApiKey(this)
 
-        endSeparator = Preferences.getPreferences(this, chatId).getEndSeparator()
-        prefix = Preferences.getPreferences(this, chatId).getPrefix()
+        endSeparator = preferences!!.getEndSeparator()
+        prefix = preferences!!.getPrefix()
 
         loadResolution()
 
@@ -470,12 +473,12 @@ class ChatActivity : FragmentActivity() {
             startActivity(Intent(this, WelcomeActivity::class.java).setAction(Intent.ACTION_VIEW))
             finish()
         } else {
-            silenceMode = Preferences.getPreferences(this, chatId).getSilence()
-            autoLangDetect = Preferences.getPreferences(this, chatId).getAutoLangDetect()
+            silenceMode = preferences!!.getSilence()
+            autoLangDetect = preferences!!.getAutoLangDetect()
             messages = ChatPreferences.getChatPreferences().getChatById(this, chatId)
 
+            // R8 fix
             if (messages == null) messages = arrayListOf()
-
             if (chatMessages == null) chatMessages = arrayListOf()
 
             for (message: HashMap<String, Any> in messages) {
@@ -498,7 +501,7 @@ class ChatActivity : FragmentActivity() {
                 }
             }
 
-            adapter = ChatAdapter(messages, this, chatId)
+            adapter = ChatAdapter(messages, this, preferences!!)
 
             initUI()
             reloadAmoled()
@@ -621,7 +624,7 @@ class ChatActivity : FragmentActivity() {
 
     private fun initLogic() {
         btnMicro?.setOnClickListener {
-            if (Preferences.getPreferences(this, chatId).getAudioModel() == "google") {
+            if (preferences!!.getAudioModel() == "google") {
                 handleGoogleSpeechRecognition()
             } else {
                 handleWhisperSpeechRecognition()
@@ -637,9 +640,9 @@ class ChatActivity : FragmentActivity() {
                         mediaPlayer!!.reset()
                     }
                     tts!!.stop()
-                } catch (_: java.lang.Exception) {/**/}
+                } catch (_: java.lang.Exception) {/* ignored */}
                 btnMicro?.setImageResource(R.drawable.ic_microphone)
-                if (Preferences.getPreferences(this, chatId).getAudioModel() == "google") recognizer?.stopListening()
+                if (preferences!!.getAudioModel() == "google") recognizer?.stopListening()
                 isRecording = false
             }
 
@@ -671,25 +674,25 @@ class ChatActivity : FragmentActivity() {
         }
 
         messageInput?.setOnKeyListener { v, keyCode, event -> run {
-            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER && event.isShiftPressed && isHardKB(this) && Preferences.getPreferences(this, chatId).getDesktopMode()) {
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER && event.isShiftPressed && isHardKB(this) && preferences!!.getDesktopMode()) {
                 (v as EditText).append("\n")
                 return@run true
-            } else if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER && isHardKB(this) && Preferences.getPreferences(this, chatId).getDesktopMode()) {
+            } else if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER && isHardKB(this) && preferences!!.getDesktopMode()) {
                 parseMessage((v as EditText).text.toString())
                 return@run true
-            } else if (event.action == KeyEvent.ACTION_DOWN && ((keyCode == KeyEvent.KEYCODE_ESCAPE && event.isShiftPressed) || keyCode == KeyEvent.KEYCODE_BACK) && Preferences.getPreferences(this, chatId).getDesktopMode()) {
+            } else if (event.action == KeyEvent.ACTION_DOWN && ((keyCode == KeyEvent.KEYCODE_ESCAPE && event.isShiftPressed) || keyCode == KeyEvent.KEYCODE_BACK) && preferences!!.getDesktopMode()) {
                 finish()
                 return@run true
             }
             return@run false
         }}
 
-        if (Preferences.getPreferences(this, chatId).getDesktopMode()) {
+        if (preferences!!.getDesktopMode()) {
             messageInput?.requestFocus()
         }
 
         btnSettings?.setOnClickListener {
-            val i = if (Preferences.getPreferences(this, chatId).getExperimentalUI()) {
+            val i = if (preferences!!.getExperimentalUI()) {
                 Intent(this, SettingsV2Activity::class.java).setAction(Intent.ACTION_VIEW)
             } else {
                 Intent(this, SettingsActivity::class.java).setAction(Intent.ACTION_VIEW)
@@ -972,7 +975,7 @@ class ChatActivity : FragmentActivity() {
                 timeout = Timeout(socket = 30.seconds),
                 organization = null,
                 headers = emptyMap(),
-                host = OpenAIHost(Preferences.getPreferences(this, chatId).getCustomHost()),
+                host = OpenAIHost(preferences!!.getCustomHost()),
                 proxy = null,
                 retry = RetryStrategy()
             )
@@ -997,7 +1000,7 @@ class ChatActivity : FragmentActivity() {
     * */
     private fun setup() {
         if (messages.isEmpty()) {
-            val prompt: String = Preferences.getPreferences(this, chatId).getPrompt()
+            val prompt: String = preferences!!.getPrompt()
 
             if (prompt.toString() != "" && prompt.toString() != "null" && prompt != "") {
                 putMessage(prompt, false)
@@ -1021,9 +1024,9 @@ class ChatActivity : FragmentActivity() {
     }
 
     private fun loadModel() {
-        model = Preferences.getPreferences(this, chatId).getModel()
-        endSeparator = Preferences.getPreferences(this, chatId).getEndSeparator()
-        prefix = Preferences.getPreferences(this, chatId).getPrefix()
+        model = preferences!!.getModel()
+        endSeparator = preferences!!.getEndSeparator()
+        prefix = preferences!!.getPrefix()
     }
 
     @TestOnly
@@ -1047,7 +1050,7 @@ class ChatActivity : FragmentActivity() {
 
     // Init image resolutions
     private fun loadResolution() {
-        resolution = Preferences.getPreferences(this, chatId).getResolution()
+        resolution = preferences!!.getResolution()
     }
 
     /** SYSTEM INITIALIZATION END **/
@@ -1084,7 +1087,7 @@ class ChatActivity : FragmentActivity() {
             btnSend?.isEnabled = false
             progress?.visibility = View.VISIBLE
 
-            val imagineCommandEnabled: Boolean = Preferences.getPreferences(this, chatId).getImagineCommand()
+            val imagineCommandEnabled: Boolean = preferences!!.getImagineCommand()
 
             if (m.lowercase().contains("/imagine") && m.length > 9 && imagineCommandEnabled) {
                 val x: String = m.substring(9)
@@ -1123,7 +1126,7 @@ class ChatActivity : FragmentActivity() {
     private fun startRecognition() {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, LocaleParser.parse(Preferences.getPreferences(this@ChatActivity, chatId).getLanguage()))
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, LocaleParser.parse(preferences!!.getLanguage()))
         intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
 
         recognizer?.startListening(intent)
@@ -1209,7 +1212,7 @@ class ChatActivity : FragmentActivity() {
                 progress?.visibility = View.GONE
                 messageInput?.requestFocus()
             } else {
-                val functionCallingEnabled: Boolean = Preferences.getPreferences(this, chatId).getFunctionCalling()
+                val functionCallingEnabled: Boolean = preferences!!.getFunctionCalling()
 
                 if (functionCallingEnabled) {
                     val imageParams = Parameters.buildJsonObject {
@@ -1349,7 +1352,7 @@ class ChatActivity : FragmentActivity() {
 
         val msgs: ArrayList<ChatMessage> = chatMessages.clone() as ArrayList<ChatMessage>
 
-        val systemMessage = Preferences.getPreferences(this, chatId).getSystemMessage()
+        val systemMessage = preferences!!.getSystemMessage()
 
         if (systemMessage != "") {
             msgs.add(
@@ -1474,7 +1477,7 @@ class ChatActivity : FragmentActivity() {
     }
 
     private fun pronounce(st: Boolean, message: String) {
-        if ((st && isTTSInitialized && !silenceMode) || Preferences.getPreferences(this, chatId).getNotSilence()) {
+        if ((st && isTTSInitialized && !silenceMode) || preferences!!.getNotSilence()) {
             if (autoLangDetect) {
                 languageIdentifier.identifyLanguage(message)
                     .addOnSuccessListener { languageCode ->
@@ -1502,10 +1505,7 @@ class ChatActivity : FragmentActivity() {
     }
 
     private fun speak(message: String) {
-        val preferences = Preferences.getPreferences(this, chatId)
-        val preferences2 = Preferences.getPreferences(this, chatId)
-
-        if (preferences.getTtsEngine() == "google") {
+        if (preferences!!.getTtsEngine() == "google") {
             tts!!.speak(message, TextToSpeech.QUEUE_FLUSH, null, "")
         } else {
             CoroutineScope(Dispatchers.Main).launch {
@@ -1513,7 +1513,7 @@ class ChatActivity : FragmentActivity() {
                     request = SpeechRequest(
                         model = ModelId("tts-1"),
                         input = message,
-                        voice = com.aallam.openai.api.audio.Voice(preferences2.getOpenAIVoice()),
+                        voice = com.aallam.openai.api.audio.Voice(preferences!!.getOpenAIVoice()),
                     )
                 )
 
@@ -1576,7 +1576,7 @@ class ChatActivity : FragmentActivity() {
             val images = ai?.imageURL(
                 creation = ImageCreation(
                     prompt = p,
-                    model = ModelId("dall-e-${Preferences.getPreferences(this, chatId).getDalleVersion()}"),
+                    model = ModelId("dall-e-${preferences!!.getDalleVersion()}"),
                     n = 1,
                     size = ImageSize(resolution)
                 )
@@ -1587,22 +1587,35 @@ class ChatActivity : FragmentActivity() {
             val `is` = withContext(Dispatchers.IO) {
                 url.openStream()
             }
-            val bytes: ByteArray = org.apache.commons.io.IOUtils.toByteArray(`is`)
+            Thread {
+                val bytes: ByteArray = org.apache.commons.io.IOUtils.toByteArray(`is`)
 
-            writeImageToCache(bytes)
+                writeImageToCache(bytes)
 
-            val encoded = Base64.getEncoder().encodeToString(bytes)
+                val encoded = Base64.getEncoder().encodeToString(bytes)
 
-            val file = Hash.hash(encoded)
-            putMessage("~file:$file", true)
+                val file = Hash.hash(encoded)
 
-            chat?.setOnTouchListener { _, event -> run {
-                if (event.action == MotionEvent.ACTION_SCROLL || event.action == MotionEvent.ACTION_UP) {
-                    chat?.transcriptMode = ListView.TRANSCRIPT_MODE_DISABLED
-                    disableAutoScroll = true
+                runOnUiThread {
+                    putMessage("~file:$file", true)
+
+                    chat?.setOnTouchListener { _, event -> run {
+                        if (event.action == MotionEvent.ACTION_SCROLL || event.action == MotionEvent.ACTION_UP) {
+                            chat?.transcriptMode = ListView.TRANSCRIPT_MODE_DISABLED
+                            disableAutoScroll = true
+                        }
+                        return@setOnTouchListener false
+                    }}
+
+                    saveSettings()
+
+                    btnMicro?.isEnabled = true
+                    btnSend?.isEnabled = true
+                    progress?.visibility = View.GONE
+
+                    messageInput?.requestFocus()
                 }
-                return@setOnTouchListener false
-            }}
+            }.start()
         } catch (e: Exception) {
             putMessage(
                 when {
@@ -1631,14 +1644,14 @@ class ChatActivity : FragmentActivity() {
                     }
                 }, true
             )
+
+            saveSettings()
+
+            btnMicro?.isEnabled = true
+            btnSend?.isEnabled = true
+            progress?.visibility = View.GONE
+
+            messageInput?.requestFocus()
         }
-
-        saveSettings()
-
-        btnMicro?.isEnabled = true
-        btnSend?.isEnabled = true
-        progress?.visibility = View.GONE
-
-        messageInput?.requestFocus()
     }
 }

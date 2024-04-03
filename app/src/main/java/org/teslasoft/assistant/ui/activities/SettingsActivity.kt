@@ -675,4 +675,11 @@ class SettingsActivity : FragmentActivity() {
     private fun saveResolution(resolution: String) {
         preferences?.setResolution(resolution)
     }
+
+    override fun onResume() {
+        super.onResume()
+
+        // Reset preferences singleton
+        Preferences.getPreferences(this, chatId)
+    }
 }

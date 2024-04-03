@@ -20,6 +20,7 @@ import android.os.Bundle
 import android.os.StrictMode
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.elevation.SurfaceColors
+import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.fragments.WindowsInstantAssistant
 
 class WindowsProxy : FragmentActivity() {
@@ -33,5 +34,12 @@ class WindowsProxy : FragmentActivity() {
         supportFragmentManager.beginTransaction().replace(android.R.id.content, assistantFragment).commit()
 
         window.navigationBarColor = SurfaceColors.SURFACE_1.getColor(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // Reset preferences singleton
+        Preferences.getPreferences(this, "")
     }
 }

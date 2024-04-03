@@ -34,7 +34,6 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.DialogFragment
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.textfield.TextInputLayout
 
 import org.teslasoft.assistant.R
@@ -142,7 +141,7 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
             ftFrame?.visibility = View.GONE
         }
         gpt_4_turbo?.setOnClickListener {
-            model = "gpt-4-1106-preview"
+            model = "gpt-4-turbo-preview"
             clearSelection()
             gpt_4_turbo?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
             gpt_4_turbo?.background = getDarkAccentDrawableV2(
@@ -220,7 +219,7 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
                     ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
                 ftFrame?.visibility = View.GONE
             }
-            "gpt-4-1106-preview" -> {
+            "gpt-4-turbo-preview" -> {
                 gpt_4_turbo?.isChecked = true
                 clearSelection()
                 gpt_4_turbo?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))

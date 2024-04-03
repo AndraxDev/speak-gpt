@@ -63,7 +63,7 @@ import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
-class ChatsListFragment : Fragment() {
+class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
 
     private var chats: ArrayList<HashMap<String, String>> = arrayListOf()
 
@@ -86,6 +86,10 @@ class ChatsListFragment : Fragment() {
     private var searchTerm: String = ""
 
     private var isAttached: Boolean = false
+
+    private var preferences: Preferences? = null
+
+    private var isDestroyed: Boolean = false
 
     var chatListUpdatedListener: AddChatDialogFragment.StateChangesListener = object : AddChatDialogFragment.StateChangesListener {
         override fun onAdd(name: String, id: String, fromFile: Boolean) {
@@ -159,13 +163,8 @@ class ChatsListFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_chats_list, container, false)
     }
 
-    override fun onResume() {
-        super.onResume()
-        initSettings()
-    }
-
     fun reloadAmoled(context: Context) {
-        if (isDarkThemeEnabled() && Preferences.getPreferences(context, "").getAmoledPitchBlack()) {
+        if (!isDestroyed && isDarkThemeEnabled() && preferences!!.getAmoledPitchBlack()) {
             btnSettings?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, context.theme)!!
             bgSearch?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, context.theme)!!
             btnImport?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.amoled_accent_100, context.theme)
@@ -181,11 +180,12 @@ class ChatsListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         Thread {
             while (!isAttached) {
                 Thread.sleep(100)
             }
+
+            preferences = Preferences.getPreferences(requireActivity(), "").addOnPreferencesChangedListener(this)
 
             requireActivity().runOnUiThread {
                 initUI(view)
@@ -216,7 +216,7 @@ class ChatsListFragment : Fragment() {
 
     private fun initLogics() {
         btnSettings?.setOnClickListener {
-            if (Preferences.getPreferences(requireActivity(), "").getExperimentalUI()) {
+            if (preferences!!.getExperimentalUI()) {
                 startActivity(Intent(requireActivity(), SettingsV2Activity::class.java).setAction(Intent.ACTION_VIEW))
             } else {
                 startActivity(Intent(requireActivity(), SettingsActivity::class.java).setAction(Intent.ACTION_VIEW))
@@ -328,13 +328,14 @@ class ChatsListFragment : Fragment() {
     }
 
     private fun preInit() {
-        if (Preferences.getPreferences(requireActivity(), "").getApiKey(requireActivity()) == "") {
-            if (Preferences.getPreferences(requireActivity(), "").getOldApiKey() == "") {
+        if (preferences!!.getApiKey(requireActivity()) == "") {
+            if (preferences!!.getOldApiKey() == "") {
                 requireActivity().getSharedPreferences("chat_list", Context.MODE_PRIVATE).edit().putString("data", "[]").apply()
                 startActivity(Intent(requireActivity(), WelcomeActivity::class.java).setAction(Intent.ACTION_VIEW))
                 requireActivity().finish()
+                isDestroyed = true
             } else {
-                Preferences.getPreferences(requireActivity(), "").secureApiKey(requireActivity())
+                preferences!!.secureApiKey(requireActivity())
                 initSettings()
             }
         } else {
@@ -397,10 +398,18 @@ class ChatsListFragment : Fragment() {
     }
 
     private fun getDisabledColor() : Int {
-        return if (isDarkThemeEnabled() && Preferences.getPreferences(requireActivity(), "").getAmoledPitchBlack()) {
+        return if (isDarkThemeEnabled() && preferences!!.getAmoledPitchBlack()) {
             ResourcesCompat.getColor(requireActivity().resources, R.color.amoled_accent_100, requireActivity().theme)
         } else {
             SurfaceColors.SURFACE_5.getColor(requireActivity())
+        }
+    }
+
+    override fun onPreferencesChanged(key: String, value: String) {
+        if ((key == "model" || key == "forceUpdate") && isAttached && !isDestroyed) {
+            requireActivity().runOnUiThread {
+                initSettings()
+            }
         }
     }
 }
