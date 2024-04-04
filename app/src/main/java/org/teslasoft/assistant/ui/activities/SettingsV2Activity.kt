@@ -1038,7 +1038,8 @@ class SettingsV2Activity : FragmentActivity() {
         }
 
         if (preferences?.getAdsEnabled()!!) {
-            btnRemoveAds?.visibility = View.VISIBLE
+            btnRemoveAds?.visibility = View.GONE
+            // btnRemoveAds?.visibility = View.VISIBLE
             MobileAds.initialize(this) { /* unused */ }
 
             val requestConfiguration = RequestConfiguration.Builder()
