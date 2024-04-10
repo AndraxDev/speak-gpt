@@ -26,6 +26,7 @@ import java.util.Locale
 
 class DefaultPromptsParser {
     private var explanationPrompt = HashMap<String, String>()
+    private var summarizationPrompt = HashMap<String, String>()
     private var languagesSupported = arrayListOf(
         "en",
         "es",
@@ -33,7 +34,8 @@ class DefaultPromptsParser {
         "ru",
         "sk",
         "tr",
-        "uk"
+        "uk",
+        "de"
     )
 
     private var languageIdentifier: LanguageIdentifier? = null
@@ -46,6 +48,10 @@ class DefaultPromptsParser {
         explanationPrompt["sk"] = "Čo znamená \"%s\"?"
         explanationPrompt["tr"] = "\"%s\" ne anlama geliyor?"
         explanationPrompt["uk"] = "Що означає \"%s\"?"
+        explanationPrompt["de"] = "Was bedeutet \"%s\"?"
+
+        summarizationPrompt["en"] = "Summarize the following text \"%s\". Write your answer in the same language as the text."
+        summarizationPrompt["de"] = "Fasse den folgenden Text \"%s\" zusammen."
     }
 
     private var listener: OnCompletedListener? = null
@@ -71,7 +77,8 @@ class DefaultPromptsParser {
                         "ru",
                         "sk",
                         "tr",
-                        "uk"
+                        "uk",
+                        "de"
                     )
 
                     for (lang: String in languagesSupported) {
@@ -89,8 +96,41 @@ class DefaultPromptsParser {
                     listener!!.onCompleted(String.format(explanationPrompt.getValue("en"), text))
                 }
         } else if (type == "summarizationPrompt") {
-            var prompt = String.format("Summarize the following text\"%s\". Write your answer in the same language of the text.", text)
-            listener!!.onCompleted(prompt)
+            languageIdentifier = LanguageIdentification.getClient()
+            languageIdentifier?.identifyLanguage(text)
+                ?.addOnSuccessListener { languageCode ->
+                    val l = if (languageCode == "und") {
+                        "en"
+                    } else {
+                        languageCode
+                    }
+
+                    var lng = "en"
+
+                    if (languagesSupported == null) languagesSupported = arrayListOf(
+                        "en",
+                        "es",
+                        "pl",
+                        "ru",
+                        "sk",
+                        "tr",
+                        "uk",
+                        "de"
+                    )
+
+                    for (lang: String in languagesSupported) {
+                        if (lang != null && lang == l) {
+                            lng = lang
+                            break
+                        }
+                    }
+
+                    val prompt = String.format(summarizationPrompt.getValue(lng).toString(), text)
+                    listener!!.onCompleted(prompt)
+                }?.addOnFailureListener {
+                    val prompt = String.format(summarizationPrompt.getValue("en"), text)
+                    listener!!.onCompleted(prompt)
+                }
         } else {
             throw IllegalArgumentException("Unsupported prompt type at org.teslasoft.assistant.util.DefaultPromptsParser.kt")
         }

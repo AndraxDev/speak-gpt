@@ -2,12 +2,9 @@
 
 SpeakGPT is an advanced and highly intuitive voice assistant that utilizes the powerful OpenAI ChatGPT technology to provide you with unparalleled performance and functionality.
 
-![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgpt.teslasoft.org%2Fstatistics.php&query=download_count&label=downloads&color=green)
+## SpeakGPT Desktop (Early access)
 
-[//]: # (## Web app &#40;very early access&#41;)
-
-[//]: # ()
-[//]: # (<a href = "https://gpt.teslasoft.org/">https://gpt.teslasoft.org/</a>)
+<a href = "https://assistant.teslasoft.org/chat">https://assistant.teslasoft.org/chat</a>
 
 ## Download
 

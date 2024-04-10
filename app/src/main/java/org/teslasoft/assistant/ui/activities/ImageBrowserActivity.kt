@@ -112,14 +112,16 @@ class ImageBrowserActivity : FragmentActivity() {
             }, 500)
 
             btnDownload?.setOnClickListener {
-                val fileEncoded = url.replace("data:image/png;base64,", "")
+                val imageType = url.substringAfter("data:image/").substringBefore(";")
+
+                val fileEncoded = url.replace("data:image/$imageType;base64,", "")
                 fileContents = Base64.getDecoder().decode(fileEncoded)
 
                 val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
                     addCategory(Intent.CATEGORY_OPENABLE)
-                    type = "image/png"
-                    putExtra(Intent.EXTRA_TITLE, "exported.png")
-                    putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.parse("/storage/emulated/0/Pictures/SpeakGPT/exported.png"))
+                    type = "image/$imageType"
+                    putExtra(Intent.EXTRA_TITLE, if (imageType == "jpeg") "image.jpg" else "image.png")
+                    putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.parse("/storage/emulated/0/Pictures/SpeakGPT/exported.${if (imageType == "jpeg") "jpg" else "png"}"))
                 }
                 fileSaveIntentLauncher.launch(intent)
             }

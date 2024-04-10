@@ -137,7 +137,7 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
                 dalleImage?.visibility = View.GONE
                 message?.visibility = View.VISIBLE
                 btnCopy?.visibility = View.VISIBLE
-                message?.text = "<FILE NOT FOUND>"
+                message?.text = "<IMAGE NOT FOUND>"
             }
         } else {
             if (dataArray?.get(position)?.get("isBot") == true) {
@@ -148,7 +148,46 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
                 message?.text = dataArray?.get(position)?.get("message").toString()
             }
 
-            dalleImage?.visibility = View.GONE
+            if (dataArray?.get(position)?.get("isBot") == false && dataArray[position]["image"] !== null) {
+                dalleImage?.visibility = View.VISIBLE
+
+                try {
+                    val imageType = dataArray[position]["imageType"] ?: "png"
+                    val mimeType = if (imageType == "png") "image/png" else "image/jpeg"
+                    val fullPath = mContext.getExternalFilesDir("images")?.absolutePath + "/" + dataArray[position]["image"] + "." + imageType
+                    mContext.contentResolver.openFileDescriptor(Uri.fromFile(
+                        File(fullPath))
+                        , "r")?.use {
+                        FileInputStream(it.fileDescriptor).use {
+                            val c: ByteArray = it.readBytes()
+                            val m: String = "data:$mimeType;base64," + Base64.getEncoder().encodeToString(c)
+
+                            val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(convertDpToPixel(16f, mContext).toInt()))
+                            Glide.with(mContext).load(Uri.parse(m)).apply(requestOptions).into(dalleImage!!)
+
+                            dalleImage?.setOnClickListener {
+                                val sharedPreferences: SharedPreferences = mContext.getSharedPreferences("tmp", Context.MODE_PRIVATE)
+                                val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                                editor.putString("tmp", m)
+                                editor.apply()
+                                val intent = Intent(mContext, ImageBrowserActivity::class.java).setAction(Intent.ACTION_VIEW)
+                                intent.putExtra("tmp", "1")
+                                mContext.startActivity(intent)
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    dalleImage?.visibility = View.GONE
+                    message?.visibility = View.VISIBLE
+                    btnCopy?.visibility = View.VISIBLE
+                    message?.text = "${message?.text}\n<IMAGE NOT FOUND: ${dataArray[position]["image"]}.${dataArray[position]["imageType"]}>"
+                }
+            } else {
+                dalleImage?.visibility = View.GONE
+            }
+
+
             message?.visibility = View.VISIBLE
         }
 

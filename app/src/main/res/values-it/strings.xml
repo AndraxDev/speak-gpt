@@ -1,0 +1,125 @@
+<resources>
+    <string name="app_name">SpeakGPT</string>
+    <string name="activation_prompt_set_message">Premi per impostare la richiesta di attivazione</string>
+    <string name="menu_chat">Chat</string>
+    <string name="menu_prompts">Richieste</string>
+    <string name="menu_tips">Suggerimenti</string>
+    <string name="about_developer">Sviluppatore: AndraxDev</string>
+    <string name="about_version">Versione: </string>
+    <string name="about_view_other_projects">Visualizza altri progetti</string>
+    <string name="about_send_feedback">Invia feedback</string>
+    <string name="about_terms">Termini</string>
+    <string name="about_privacy">Riservatezza</string>
+    <string name="activation">Attivazione</string>
+    <string name="activation_desc1">Per utilizzare questo software è necessario fornire la chiave API di OpenAI. SpeakGPT utilizza modelli a pagamento di OpenAI.</string>
+    <string name="activation_begin">Inizia</string>
+    <string name="activation_desc2">L\'utilizzo dell\'API è significativamente più economico rispetto all\'abbonamento fisso.</string>
+    <string name="activation_openai_api_key">Chiave API OpenAI</string>
+    <string name="activation_warning">Inserisci la chiave solo se hai scaricato questa app dallo Store ufficiale o dalla pagina Github o compilato dalle fonti. Non siamo responsabili per le app di terze parti. Le build da fonti di terze parti potrebbero non essere sicure.</string>
+    <string name="btn_send">Invia</string>
+    <string name="hint_message">Messaggio</string>
+    <string name="btn_speak">Parla</string>
+    <string name="btn_settings">Impostazioni</string>
+    <string name="btn_export_chat">Esporta chat</string>
+    <string name="btn_export_image">Esporta immagine</string>
+    <string name="title_report_abuse">Segnala abuso</string>
+    <string name="report_desc">Questa richiesta contiene:</string>
+    <string name="illegal_activity">Attività illecite</string>
+    <string name="child_sexual_abuse">Abuso sessuale su minori</string>
+    <string name="generation_of_hateful_harassing_or_violent_content">Generazione di contenuti odiose, molesti o violenti</string> <string name="generation_of_malware">Generazione di malware</string>
+    <string name="fraudulent_or_deceptive_activity">Attività fraudolente o ingannevoli</string>
+    <string name="adult_content">Contenuti per adulti</string> <string name="political_campaigning_or_lobbying">Campagne politiche o lobbying</string> <string name="duplicated_prompt_or_spam">Prompt duplicati o spam</string>
+    <string name="hint_additional_info">Informazioni aggiuntive</string> <string name="btn_send_report">Invia segnalazione</string>
+    <string name="report_warning">Nota: L\'invio di segnalazioni multiple identiche non risolverà il problema più velocemente.</string>
+    <string name="settings">Impostazioni</string> <string name="restart_warning">Richiede il riavvio dell\'app</string>
+    <string name="setting_change_openai_api_key">Cambia la chiave API di OpenAI</string>
+    <string name="setting_manage_account_desc">Tocca per gestire il tuo account OpenAI</string>
+    <string name="setting_account">Account</string>
+    <string name="setting_default_desc">Rendi SpeakGPT il tuo assistente predefinito</string>
+    <string name="setting_default">Impostazioni assistente</string> <string name="setting_lang_desc">Imposta una lingua per l\'output vocale</string>
+    <string name="setting_lang">Lingua dell\'assistente</string>
+    <string name="setting_resolution_desc">Risoluzione delle immagini generate</string>
+    <string name="setting_resolution_note">Nota: Tutte le immagini sono quadrate. Una risoluzione più alta è più costosa e si carica più lentamente. Puoi vedere i prezzi sulla pagina ufficiale di OpenAI. Il prezzo medio è di $0,018/immagine.</string>
+    <string name="setting_voice">Sistema di riconoscimento vocale</string> <string name="setting_voice_note">Nota: Alcune ROM potrebbero non supportare il riconoscimento vocale di Google. Whisper API è un API a pagamento di OpenAI che richiede Internet.</string>
+    <string name="setting_model">Modello di intelligenza artificiale</string> <string name="setting_advanced_desc">Tocca per accedere alle impostazioni avanzate</string>
+    <string name="setting_advanced">Impostazioni avanzate</string> <string name="setting_act_prompt">Richiesta di attivazione</string>
+    <string name="setting_layout">Layout della chat</string> <string name="layout_classic">Classico</string>
+    <string name="layout_bubbles">Bolle</string>
+    <string name="setting_silent">Modalità silenziosa</string>
+    <string name="setting_silent_desc">Non pronunciare le risposte del bot</string>
+    <string name="setting_about_desc">Tocca per visualizzare le informazioni sull\'app e sullo sviluppatore</string>
+    <string name="setting_about">Informazioni sull\'app</string>
+    <string name="setting_clear_chat">Cancella la cronologia della chat</string>
+    <string name="title_terms">Termini</string>
+    <string name="terms_desc1">Questo è l\'esempio di come utilizzare l\'API di ChatGPT. Noi (gli sviluppatori) non siamo affiliati con OpenAI. Il logo di OpenAI e di ChatGPT sono di proprietà di OpenAI LLC.</string>
+    <string name="btn_next">Avanti</string>
+    <string name="terms_desc2">Non siamo responsabili dell\'output dell\'assistente. Come modello di lingua AI, SpeakGPT potrebbe occasionalmente fornire informazioni errate, non pertinenti o offensive.</string>
+    <string name="terms_desc3">La tua cronologia della chat viene salvata localmente, ma puoi attivare la sincronizzazione di Teslasoft ID. In questo caso, la tua cronologia della chat verrà salvata sui nostri server per scopi di backup. Nessun dato viene trasferito a società di terze parti.</string>
+    <string name="prompt_tip">Consiglio professionale: puoi modificare il prompt prima di provarlo.</string>
+    <string name="btn_flag">Segnala come inappropriato</string>
+    <string name="welcome_to_speakgpt">Benvenuto in SpeakGPT</string>
+    <string name="app_desc">SpeakGPT è un assistente vocale avanzato e altamente intuitivo che utilizza la potente tecnologia di OpenAI ChatGPT per fornirti prestazioni e funzionalità senza precedenti.</string>
+    <string name="btn_get_started">Inizia</string>
+    <string name="title_act_prompt">Richiesta di attivazione</string>
+    <string name="hint_act_prompt">Voglio che tu agisca come...</string>
+    <string name="act_prompt_desc">Nota: Questo prompt verrà inviato all\'inizio di ogni conversazione. Si prega di notare che questa funzione potrebbe utilizzare token aggiuntivi. Lasciare vuoto per disattivare questa funzione. Se non funziona, cancella la cronologia della chat.</string>
+    <string name="title_new_chat">Nuova chat</string>
+    <string name="hint_chat_name">Nome della chat</string>
+    <string name="title_advanced_settings">Impostazioni avanzate</string>
+    <string name="select_ai_model">Seleziona il modello di intelligenza artificiale</string>
+    <string name="custom_fine_tuned_model">Modello personalizzato addestrato</string>
+    <string name="max_tokens_desc">AVVERTENZA: Consigliamo di impostare il parametro max_tokens per i classificatori per evitare un uso inutile. Un valore più basso renderà il processo di generazione più veloce ma potrebbe tagliare l\'output.</string>
+    <string name="hint_max_tokens">Max tokens</string>
+    <string name="end_separator_desc">Alcuni modelli funzionano meglio se viene impostato il separatore finale. OpenAI consiglia di usare il separatore \"\\n\\n###\\n\\n\".</string>
+    <string name="hint_prefix">Prefisso</string>
+    <string name="hint_end_separator">Separatore finale</string>
+    <string name="gpt_beta_warn">Nota: ChatGPT 4 è attualmente in beta limitata. Unisciti alla lista di attesa per ottenere l\'accesso all\'API. Se hai un errore, passa a un altro modello. Se hai una prestazione lenta su un modello specifico, significa che troppi utenti lo stanno usando contemporaneamente. Alcuni modelli sono deprecati e verranno rimossi in futuro. Consulta la documentazione per ulteriori informazioni.</string>
+    <string name="btn_show_keyboard">Mostra la tastiera</string>
+    <string name="btn_hide_keyboard">Nascondi la tastiera</string>
+    <string name="btn_save">Salva</string>
+    <string name="btn_new_chat">Nuova chat</string>
+    <string name="btn_import_chat">Importa chat</string>
+    <string name="title_network_error">Errore di rete</string>
+    <string name="network_error_desc">Controlla la tua connessione internet e riprova</string>
+    <string name="btn_try_again">Riprova</string>
+    <string name="title_post_a_prompt">Pubblica un prompt</string>
+    <string name="hint_name">Il tuo nome</string>
+    <string name="hint_prompt_title">Titolo del prompt</string>
+    <string name="hint_prompt_desc">Breve descrizione</string>
+    <string name="hint_prompt">Prompt</string>
+    <string name="prompt_for">Prompt per</string>
+    <string name="category">Categoria</string>
+    <string name="cat_development">Sviluppo</string>
+    <string name="cat_music">Musica</string>
+    <string name="cat_art">Arte</string>
+    <string name="cat_culture">Cultura</string>
+    <string name="cat_business">Business</string>
+    <string name="cat_gaming">Gaming</string>
+    <string name="cat_education">Educazione</string>
+    <string name="cat_history">Storia</string>
+    <string name="cat_health">Salute</string>
+    <string name="cat_food">Cibo</string>
+    <string name="cat_tourism">Turismo</string>
+    <string name="cat_productivity">Produttività</string>
+    <string name="cat_tools">Strumenti</string>
+    <string name="cat_entertainment">Intrattenimento</string>
+    <string name="safety_warning">Segui i principi di sicurezza di OpenAI. Non pubblicare informazioni inappropriate o sensibili. Tutti i prompt sono moderati. I prompt inappropriati verranno rimossi senza preavviso.</string>
+    <string name="btn_post_your_prompt">Pubblica il tuo prompt</string>
+    <string name="title_prompts_store">Negozio di prompt</string>
+    <string name="hint_search">Cerca</string>
+    <string name="title_select_language">Seleziona la lingua</string>
+    <string name="title_tips">Suggerimenti</string>
+    <string name="tip1">Inizia il tuo messaggio con \"Crea un\'immagine\", \"Crea una foto\" o \"/ immagina\" per generare immagini.</string>
+    <string name="tip2">Tieni premuto il nome della chat per modificarlo o eliminarlo.</string>
+    <string name="tip3">Trucchi di ricerca: \n\nUtilizza il prefisso \"autore: \" per cercare per autore. \nUtilizza il prefisso \"titolo: \" per cercare per titolo. \nUtilizza il prefisso \"id: \" per cercare per ID. \nUtilizza il prefisso \"cat: \" per cercare per categoria. \nUtilizza il prefisso \"tipo: \" per cercare per tipo.</string>
+    <string name="tip4">ChatGPT sembra noioso? Prova altri modelli. A volte potresti ottenere risultati molto interessanti.</string>
+    <string name="tip5">Solo i modelli GPT possono ricordare i messaggi precedenti. Altri modelli non sono ottimizzati per questo.</string>
+    <string name="tip6">A volte possono apparire alcune funzioni strane o inutili. Questa app è in fase di beta test.</string>
+    <string name="tip7">Seleziona il testo in qualsiasi app e tocca \"SpeakGPT\" per avviare una conversazione con l\'assistente. Questa funzione è disponibile anche se la funzione dell\'assistente predefinito è disattivata. Puoi anche condividere il testo con SpeakGPT utilizzando l\'opzione di condivisione predefinita se l\'opzione SpeakGPT non è disponibile.</string>
+    <string name="tip8">Puoi salvare la tua conversazione con l\'assistente. Una volta cliccato il pulsante di salvataggio, tutti i messaggi futuri verranno anche salvati.</string>
+    <string name="tip9">SpeakGPT è troppo lento? Prova a ridurre il numero massimo di token per output. Puoi farlo nelle impostazioni del modello.</string>
+    <string name="tip10">L\'input vocale di Google potrebbe non essere supportato su tutti i dispositivi (specialmente su quelli senza Google Services). In questo caso puoi passare al modello Whisper. Si noti che Whisper è un\'API a pagamento e richiede una connessione Internet.</string>
+    <string name="btn_copy">Copia</string>
+    <string name="user">Utente</string>
+    <string name="title_edit_chat">Modifica chat</string>
+</resources>

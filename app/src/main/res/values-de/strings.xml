@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">SpeakGPT</string>
-    <string name="activation_prompt_set_message">Tippen Sie, um die Aktivierungsaufforderung festzulegen</string>
+    <string name="activation_prompt_set_message">Tippen Sie, um die Aktivierungsprompt festzulegen</string>
     <string name="menu_chat">Chat</string>
     <string name="menu_prompts">Prompts</string>
     <string name="menu_tips">Tipps</string>
@@ -13,7 +13,7 @@
     <string name="activation">Aktivierung</string>
     <string name="activation_desc1">Um diese Software zu verwenden, müssen Sie Ihren OpenAI API-Schlüssel bereitstellen. SpeakGPT verwendet kostenpflichtige OpenAI-Modelle.</string>
     <string name="activation_begin">Lass uns beginnen</string>
-    <string name="activation_desc2">Die API-Nutzung ist wesentlich günstiger als ein festes Abonnement. Die Authentifizierung mit API-Schlüssel ist sicherer als die Authentifizierung mit Benutzername/Passwort. Die App kann nur auf die API, aber nicht auf Kontoinformationen zugreifen. Sie können den API-Schlüssel jederzeit widerrufen, ohne Ihr Konto zu verlieren. Der API-Schlüssel ist verschlüsselt und wird nur auf Ihrem Gerät gespeichert.</string>
+    <string name="activation_desc2">Die API-Nutzung ist wesentlich günstiger als ein festes Abonnement.</string>
     <string name="activation_openai_api_key">OpenAI API-Schlüssel</string>
     <string name="activation_warning">Geben Sie den Schlüssel nur ein, wenn Sie diese App aus dem offiziellen Store, der Github-Seite oder aus Quellen kompiliert haben. Wir sind nicht verantwortlich für Apps aus Drittanbieterquellen. Builds aus Drittanbieterquellen können unsicher sein.</string>
     <string name="btn_send">Senden</string>
@@ -23,7 +23,7 @@
     <string name="btn_export_chat">Chat exportieren</string>
     <string name="btn_export_image">Bild exportieren</string>
     <string name="title_report_abuse">Missbrauch melden</string>
-    <string name="report_desc">Diese Aufforderung enthält:</string>
+    <string name="report_desc">Dieser Prompt enthält:</string>
     <string name="illegal_activity">Illegale Aktivität</string>
     <string name="child_sexual_abuse">Sexueller Missbrauch von Kindern</string>
     <string name="generation_of_hateful_harassing_or_violent_content">Generierung von hasserfülltem, belästigendem oder gewalttätigem Inhalt</string>
@@ -31,7 +31,7 @@
     <string name="fraudulent_or_deceptive_activity">Betrügerische oder irreführende Aktivität</string>
     <string name="adult_content">Erwachseneninhalte</string>
     <string name="political_campaigning_or_lobbying">Politische Kampagnen oder Lobbyarbeit</string>
-    <string name="duplicated_prompt_or_spam">Doppelte Aufforderung oder Spam</string>
+    <string name="duplicated_prompt_or_spam">Doppelter Prompt oder Spam</string>
     <string name="hint_additional_info">Zusätzliche Informationen</string>
     <string name="btn_send_report">Bericht senden</string>
     <string name="report_warning">Hinweis: Das Senden mehrerer identischer Berichte löst Ihr Problem nicht schneller.</string>
@@ -65,14 +65,14 @@
     <string name="btn_next">Weiter</string>
     <string name="terms_desc2">Wir übernehmen keine Verantwortung für die Ausgabe des Assistenten. Als KI-Sprachmodell kann SpeakGPT gelegentlich falsche, irrelevante oder beleidigende Informationen bereitstellen.</string>
     <string name="terms_desc3">Ihr Chatverlauf wird lokal gespeichert, aber Sie können die Teslasoft ID-Synchronisierung aktivieren. In diesem Fall wird Ihr Chatverlauf zu Sicherungszwecken auf unseren Servern gespeichert. Es werden keine Daten an Drittanbieterunternehmen übertragen.</string>
-    <string name="prompt_tip">Profi-Tipp: Sie können die Aufforderung vor dem Ausprobieren bearbeiten.</string>
+    <string name="prompt_tip">Profi-Tipp: Sie können den Prompt vor dem Ausprobieren bearbeiten.</string>
     <string name="btn_flag">Als unangemessen markieren</string>
     <string name="welcome_to_speakgpt">Willkommen bei SpeakGPT</string>
     <string name="app_desc">SpeakGPT ist ein fortschrittlicher und äußerst intuitiver Sprachassistent, der die leistungsstarke OpenAI ChatGPT-Technologie verwendet, um Ihnen unvergleichliche Leistung und Funktionalität zu bieten.</string>
     <string name="btn_get_started">Loslegen</string>
-    <string name="title_act_prompt">Aktivierungsaufforderung</string>
+    <string name="title_act_prompt">Aktivierungsprompt</string>
     <string name="hint_act_prompt">Ich möchte, dass du dich verhältst wie...</string>
-    <string name="act_prompt_desc">Hinweis: Diese Aufforderung wird zu Beginn jeder Unterhaltung gesendet. Beachten Sie, dass diese Funktion möglicherweise zusätzliche Tokens verwendet. Lassen Sie dieses Feld leer, um diese Funktion zu deaktivieren. Wenn es nicht funktioniert, löschen Sie einfach Ihren Chatverlauf.</string>
+    <string name="act_prompt_desc">Hinweis: Dieser Prompt wird zu Beginn jeder Unterhaltung gesendet. Beachten Sie, dass diese Funktion möglicherweise zusätzliche Tokens verwendet. Lassen Sie dieses Feld leer, um diese Funktion zu deaktivieren. Wenn es nicht funktioniert, löschen Sie einfach Ihren Chatverlauf.</string>
     <string name="title_new_chat">Neuer Chat</string>
     <string name="hint_chat_name">Chatname</string>
     <string name="title_advanced_settings">Erweiterte Einstellungen</string>
@@ -92,12 +92,12 @@
     <string name="title_network_error">Netzwerkfehler</string>
     <string name="network_error_desc">Überprüfen Sie Ihre Internetverbindung und versuchen Sie es erneut</string>
     <string name="btn_try_again">Erneut versuchen</string>
-    <string name="title_post_a_prompt">Eine Aufforderung veröffentlichen</string>
+    <string name="title_post_a_prompt">Einen Prompt veröffentlichen</string>
     <string name="hint_name">Ihr Name</string>
-    <string name="hint_prompt_title">Aufforderungstitel</string>
+    <string name="hint_prompt_title">Prompttitel</string>
     <string name="hint_prompt_desc">Kurze Beschreibung</string>
-    <string name="hint_prompt">Aufforderung</string>
-    <string name="prompt_for">Aufforderung für</string>
+    <string name="hint_prompt">Prompt</string>
+    <string name="prompt_for">Prompt für</string>
     <string name="category">Kategorie</string>
     <string name="cat_development">Entwicklung</string>
     <string name="cat_music">Musik</string>
@@ -116,9 +116,9 @@
     <string name="cat_sport">Sport</string>
     <string name="cat_uncat">Unkategorisiert</string>
     <string name="cat">Kategorie: %s</string>
-    <string name="safety_warning">Befolgen Sie die Sicherheitsprinzipien von OpenAI. Veröffentlichen Sie keine unangemessenen oder sensiblen Informationen. Alle Aufforderungen werden moderiert. Unangemessene Aufforderungen werden ohne weitere Benachrichtigung entfernt.</string>
-    <string name="btn_post_your_prompt">Ihre Aufforderung veröffentlichen</string>
-    <string name="title_prompts_store">Aufforderungen-Store</string>
+    <string name="safety_warning">Befolgen Sie die Sicherheitsprinzipien von OpenAI. Veröffentlichen Sie keine unangemessenen oder sensiblen Informationen. Alle Prompts werden moderiert. Unangemessene Prompts werden ohne weitere Benachrichtigung entfernt.</string>
+    <string name="btn_post_your_prompt">Ihren Prompt veröffentlichen</string>
+    <string name="title_prompts_store">Prompt-Store</string>
     <string name="hint_search">Suche</string>
     <string name="title_select_language">Sprache auswählen</string>
     <string name="title_tips">Tipps</string>
@@ -153,7 +153,7 @@
     <string name="setting_cmd_desc">Aktiviere Chat-Slash-Befehle wie /imagine</string>
     <string name="setting_cmd">Chat-Slash-Befehle</string>
     <string name="assistant_action_menu">Was möchtest du mit diesem Text tun?</string>
-    <string name="option_us_as_a_prompt">Als Anstoß verwenden</string>
+    <string name="option_us_as_a_prompt">Als Prompt verwenden</string>
     <string name="option_explain_meaning">Bedeutung erklären</string>
     <string name="option_generate_an_image">Ein Bild generieren</string>
     <string name="option_cancel">Abbrechen</string>
@@ -164,4 +164,9 @@
     <string name="setting_system_message_hint">Das Hinzufügen einer Systemnachricht am Ende des Gesprächs kann die Qualität der Antworten verbessern und das "Vergessen" von Informationen verhindern.</string>
     <string name="prompt_report_success">Einspruch gesendet. Vielen Dank für das Feedback!</string>
     <string name="prompt_report_failed">Senden des Berichts fehlgeschlagen</string>
+    <string name="option_summarize">Zusammenfassen</string>
+    <string name="tip_11">Drücken Sie lange auf die Taste zum Stoppen der Aufnahme, um die Spracherkennung abzubrechen und die Generierung einer Antwort zu verhindern.</string>
+    <string name="global_settings_tip">WARNUNG:\n\nSie bearbeiten globale Einstellungen. Dies ist eine Vorlage für neue Chats und Einstellungen für den Assistenten. Diese Einstellungen gelten nicht für bestehende Chats. Um Einstellungen für bestehende Chats zu bearbeiten, öffnen Sie den Chat und klicken Sie auf Einstellungen-Symbol. Wenn diese Meldung verschwunden ist, haben Sie alles richtig gemacht!</string>
+    <string name="global_settings_title">Allgemeine Einstellungen</string>
+    <string name="chat_settings_title">Chat Einstellungen</string>
 </resources>

@@ -23,10 +23,19 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
+import android.graphics.Rect
+import android.graphics.RectF
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Bundle
+import android.provider.DocumentsContract
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
@@ -39,6 +48,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.ProgressBar
@@ -52,10 +62,14 @@ import androidx.fragment.app.FragmentActivity
 import com.aallam.openai.api.audio.SpeechRequest
 import com.aallam.openai.api.audio.TranscriptionRequest
 import com.aallam.openai.api.chat.ChatCompletionChunk
+import com.aallam.openai.api.chat.ChatCompletionRequest
 import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatRole
+import com.aallam.openai.api.chat.ContentPart
 import com.aallam.openai.api.chat.FunctionMode
+import com.aallam.openai.api.chat.ImagePart
 import com.aallam.openai.api.chat.Parameters
+import com.aallam.openai.api.chat.TextPart
 import com.aallam.openai.api.chat.chatCompletionRequest
 import com.aallam.openai.api.completion.CompletionRequest
 import com.aallam.openai.api.completion.TextCompletion
@@ -96,18 +110,22 @@ import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.AssistantAdapter
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
 import org.teslasoft.assistant.ui.activities.SettingsActivity
+import org.teslasoft.assistant.ui.activities.SettingsV2Activity
 import org.teslasoft.assistant.ui.fragments.dialogs.ActionSelectorDialog
 import org.teslasoft.assistant.ui.permission.MicrophonePermissionActivity
 import org.teslasoft.assistant.ui.fragments.dialogs.AddChatDialogFragment
 import org.teslasoft.assistant.util.DefaultPromptsParser
 import org.teslasoft.assistant.util.Hash
 import org.teslasoft.assistant.util.LocaleParser
+import java.io.BufferedReader
+import java.io.ByteArrayOutputStream
 
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
+import java.io.InputStreamReader
 import java.net.URL
 import java.util.Base64
 import java.util.Locale
@@ -129,6 +147,10 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private var assistantConversation: ListView? = null
     private var assistantLoading: ProgressBar? = null
     private var ui: LinearLayout? = null
+    private var btnCamera: ImageButton? = null
+    private var attachedImage: LinearLayout? = null
+    private var selectedImage: ImageView? = null
+    private var btnRemoveImage: ImageButton? = null
 
     // Init chat
     private var messages: ArrayList<HashMap<String, Any>> = arrayListOf()
@@ -150,6 +172,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private var isSaved = false
     private var isAutosaveEnabled = false
     private var isInitialized = false
+    private var imageIsSelected = false
 
     // init AI
     private var ai: OpenAI? = null
@@ -164,6 +187,105 @@ class AssistantFragment : BottomSheetDialogFragment() {
     // Autosave
     private var chatPreferences: ChatPreferences? = null
     private var preferences: Preferences? = null
+
+    private var bitmap: Bitmap? = null
+    private var baseImageString: String? = null
+    private var selectedImageType: String? = null
+
+    fun roundCorners(bitmap: Bitmap, cornerRadius: Float): Bitmap {
+        // Create a bitmap with the same size as the original.
+        val output = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
+
+        // Prepare a canvas with the new bitmap.
+        val canvas = Canvas(output)
+
+        // The paint used to draw the original bitmap onto the new one.
+        val paint = Paint().apply {
+            isAntiAlias = true
+            color = -0xbdbdbe
+        }
+
+        // The rectangle bounds for the original bitmap.
+        val rect = Rect(0, 0, bitmap.width, bitmap.height)
+        val rectF = RectF(rect)
+
+        // Draw rounded rectangle as background.
+        canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, paint)
+
+        // Change the paint mode to draw the original bitmap on top.
+        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+
+        // Draw the original bitmap.
+        canvas.drawBitmap(bitmap, rect, rect, paint)
+
+        return output
+    }
+
+    private val fileIntentLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        run {
+            if (result.resultCode == Activity.RESULT_OK) {
+                result.data?.data?.also { uri ->
+                    bitmap = readFile(uri)
+
+                    if (bitmap != null) {
+                        attachedImage?.visibility = View.VISIBLE
+                        selectedImage?.setImageBitmap(roundCorners(bitmap!!, 80f))
+                        imageIsSelected = true
+
+                        val mimeType = requireActivity().contentResolver.getType(uri)
+                        val format = when {
+                            mimeType.equals("image/jpeg", ignoreCase = true) -> {
+                                selectedImageType = "jpg"
+                                Bitmap.CompressFormat.JPEG
+                            }
+                            mimeType.equals("image/png", ignoreCase = true) -> {
+                                selectedImageType = "png"
+                                Bitmap.CompressFormat.PNG
+                            }
+                            else -> {
+                                selectedImageType = "jpg"
+                                Bitmap.CompressFormat.JPEG
+                            }
+                        }
+
+                        // Step 3: Convert the Bitmap to a Base64-encoded string
+                        val outputStream = ByteArrayOutputStream()
+                        bitmap!!.compress(format, 100, outputStream) // Note: Adjust the quality as necessary
+                        val base64Image = android.util.Base64.encodeToString(outputStream.toByteArray(), android.util.Base64.DEFAULT)
+
+                        // Step 4: Generate the data URL
+                        val imageType = when(format) {
+                            Bitmap.CompressFormat.JPEG -> "jpeg"
+                            Bitmap.CompressFormat.PNG -> "png"
+                            // Add more mappings as necessary
+                            else -> ""
+                        }
+
+                        baseImageString = "data:image/$imageType;base64,$base64Image"
+                    }
+                }
+            }
+        }
+    }
+
+    private fun readFile(uri: Uri) : Bitmap? {
+        return requireActivity().contentResolver.openInputStream(uri)?.use { inputStream ->
+            BufferedReader(InputStreamReader(inputStream)).use { _ ->
+                BitmapFactory.decodeStream(inputStream)
+            }
+        }
+    }
+
+    private fun openFile(pickerInitialUri: Uri) {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "image/*"
+
+            putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri)
+        }
+
+        fileIntentLauncher.launch(intent)
+    }
 
     private fun isDarkThemeEnabled(): Boolean {
         return when (resources.configuration.uiMode and
@@ -452,10 +574,19 @@ class AssistantFragment : BottomSheetDialogFragment() {
         }
 
         btnAssistantSettings?.setOnClickListener {
-            val i = Intent(
-                requireActivity(),
-                SettingsActivity::class.java
-            ).setAction(Intent.ACTION_VIEW)
+            val i =  if (preferences?.getExperimentalUI()!!) {
+                Intent(
+                    requireActivity(),
+                    SettingsV2Activity::class.java
+                )
+            } else {
+                Intent(
+                    requireActivity(),
+                    SettingsActivity::class.java
+                )
+            }
+
+            i.putExtra("chatId", chatID)
 
             settingsLauncher.launch(
                 i
@@ -806,9 +937,19 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
             val m = prefix + message + endSeparator
 
-            saveSettings()
+            if (imageIsSelected) {
+                val bytes = android.util.Base64.decode(baseImageString!!.split(",")[1], android.util.Base64.DEFAULT)
+                writeImageToCache(bytes, selectedImageType!!)
 
-            putMessage(m, false)
+                val encoded = java.util.Base64.getEncoder().encodeToString(bytes)
+
+                val file = Hash.hash(encoded)
+
+                putMessage(m, false, file, selectedImageType!!)
+            } else {
+                putMessage(m, false)
+            }
+            saveSettings()
 
             hideKeyboard()
             btnAssistantVoice?.isEnabled = false
@@ -869,11 +1010,16 @@ class AssistantFragment : BottomSheetDialogFragment() {
         recognizer?.startListening(intent)
     }
 
-    private fun putMessage(message: String, isBot: Boolean) {
+    private fun putMessage(message: String, isBot: Boolean, image: String = "", type: String = "") {
         val map: HashMap<String, Any> = HashMap()
 
         map["message"] = message
         map["isBot"] = isBot
+
+        if (image != "") {
+            map["image"] = image
+            map["imageType"] = type
+        }
 
         messages.add(map)
         adapter?.notifyDataSetChanged()
@@ -914,7 +1060,62 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
         try {
             var response = ""
-            if (!model.contains("gpt") || model.contains(":ft-")) {
+
+            if (imageIsSelected) {
+                imageIsSelected = false;
+
+                attachedImage?.visibility = View.GONE
+
+                putMessage("", true)
+
+                val reqList: ArrayList<ContentPart> = ArrayList<ContentPart>()
+                reqList.add(TextPart(request))
+                reqList.add(ImagePart(baseImageString!!))
+                val chatCompletionRequest = ChatCompletionRequest(
+                    model = ModelId("gpt-4-vision-preview"),
+                    messages = listOf(
+                        ChatMessage(
+                            role = ChatRole.System,
+                            content = "You are a helpful assistant!"
+                        ),
+                        ChatMessage(
+                            role = ChatRole.User,
+                            content = reqList
+                        )
+                    )
+                )
+
+                val completions: Flow<ChatCompletionChunk> = ai!!.chatCompletions(chatCompletionRequest)
+
+                completions.collect { v ->
+                    run {
+                        if (v.choices[0].delta.content != "null") {
+                            response += v.choices[0].delta.content
+                            if (response != "null") {
+                                messages[messages.size - 1]["message"] = "$response █"
+                                adapter?.notifyDataSetChanged()
+                            }
+                        }
+                    }
+                }
+
+                messages[messages.size - 1]["message"] = "${response.dropLast(4)}\n"
+                adapter?.notifyDataSetChanged()
+
+                chatMessages.add(ChatMessage(
+                    role = ChatRole.Assistant,
+                    content = response
+                ))
+
+                pronounce(shouldPronounce, response)
+
+                saveSettings()
+
+                btnAssistantVoice?.isEnabled = true
+                btnAssistantSend?.isEnabled = true
+                assistantLoading?.visibility = View.GONE
+                isProcessing = false
+            } else if (!model.contains("gpt") || model.contains(":ft-")) {
                 putMessage("", true)
 
                 val completionRequest = CompletionRequest(
@@ -1215,9 +1416,9 @@ class AssistantFragment : BottomSheetDialogFragment() {
         }
     }
 
-    private fun writeImageToCache(bytes: ByteArray) {
+    private fun writeImageToCache(bytes: ByteArray, imageType: String = "png") {
         try {
-            requireActivity().contentResolver.openFileDescriptor(Uri.fromFile(File(requireActivity().getExternalFilesDir("images")?.absolutePath + "/" + Hash.hash(Base64.getEncoder().encodeToString(bytes)) + ".png")), "w")?.use {
+            requireActivity().contentResolver.openFileDescriptor(Uri.fromFile(File(requireActivity().getExternalFilesDir("images")?.absolutePath + "/" + Hash.hash(Base64.getEncoder().encodeToString(bytes)) + "." + imageType)), "w")?.use {
                 FileOutputStream(it.fileDescriptor).use {
                     it.write(
                         bytes
@@ -1445,12 +1646,18 @@ class AssistantFragment : BottomSheetDialogFragment() {
         assistantConversation = view.findViewById(R.id.assistant_conversation)
         assistantLoading = view.findViewById(R.id.assistant_loading)
         ui = view.findViewById(R.id.ui)
+        btnCamera = view.findViewById(R.id.btn_assistant_attach)
+        attachedImage = view.findViewById(R.id.attachedImage)
+        selectedImage = view.findViewById(R.id.selectedImage)
+        btnRemoveImage = view.findViewById(R.id.btnRemoveImage)
 
         btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
         btnAssistantSettings?.setImageResource(R.drawable.ic_settings)
         btnAssistantShowKeyboard?.setImageResource(R.drawable.ic_keyboard)
         btnAssistantHideKeyboard?.setImageResource(R.drawable.ic_keyboard_hide)
         btnAssistantSend?.setImageResource(R.drawable.ic_send)
+
+        attachedImage?.visibility = View.GONE
 
         reloadAmoled()
 
@@ -1465,6 +1672,16 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
         btnAssistantHideKeyboard?.setOnClickListener {
             hideKeyboard()
+        }
+
+        btnCamera?.setOnClickListener {
+            openFile(Uri.parse("/storage/emulated/0/image.png"))
+        }
+
+        btnRemoveImage?.setOnClickListener {
+            attachedImage?.visibility = View.GONE
+            imageIsSelected = false
+            bitmap = null
         }
 
         btnSaveToChat?.setOnClickListener {

@@ -25,6 +25,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.res.Configuration.KEYBOARD_QWERTY
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.media.MediaPlayer
 import android.media.MediaRecorder
@@ -49,6 +51,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.ProgressBar
@@ -112,15 +115,27 @@ import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
 import org.teslasoft.assistant.ui.permission.MicrophonePermissionActivity
 import org.teslasoft.assistant.util.Hash
 import org.teslasoft.assistant.util.LocaleParser
+import java.io.BufferedReader
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
+import java.io.InputStreamReader
 import java.net.URL
-import java.util.Base64
 import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.PorterDuffXfermode
+import android.graphics.Rect
+import android.graphics.RectF
+import android.graphics.PorterDuff
+import android.util.Base64
+import com.aallam.openai.api.chat.ContentPart
+import com.aallam.openai.api.chat.ImagePart
+import com.aallam.openai.api.chat.TextPart
+import java.io.ByteArrayOutputStream
 
 
 class ChatActivity : FragmentActivity() {
@@ -140,6 +155,10 @@ class ChatActivity : FragmentActivity() {
     private var keyboardFrame: ConstraintLayout? = null
     private var root: ConstraintLayout? = null
     private var threadLoader: LinearLayout? = null
+    private var btnCamera: ImageButton? = null
+    private var attachedImage: LinearLayout? = null
+    private var selectedImage: ImageView? = null
+    private var btnRemoveImage: ImageButton? = null
 
     // Init chat
     private var messages: ArrayList<HashMap<String, Any>> = arrayListOf()
@@ -157,6 +176,7 @@ class ChatActivity : FragmentActivity() {
     private var autoLangDetect = false
     private var cancelState = false
     private var disableAutoScroll = false
+    private var imageIsSelected = false
 
     // init AI
     private var ai: OpenAI? = null
@@ -240,11 +260,12 @@ class ChatActivity : FragmentActivity() {
 
     override fun onResume() {
         super.onResume()
-        preloadAmoled()
-        reloadAmoled()
 
-        // Reset preferences singleton
-        preferences = Preferences.getPreferences(this, chatId)
+        if (chatId != "") {
+            preloadAmoled()
+            reloadAmoled()
+            preferences = Preferences.getPreferences(this, chatId)
+        }
     }
 
     private fun preloadAmoled() {
@@ -420,12 +441,10 @@ class ChatActivity : FragmentActivity() {
 
         setContentView(R.layout.activity_chat)
 
-        preferences = Preferences.getPreferences(this, chatId)
-
         mediaPlayer = MediaPlayer()
 
         threadLoader = findViewById(R.id.thread_loader)
-        preloadAmoled()
+
         threadLoader?.visibility = View.VISIBLE
 
         Thread {
@@ -526,6 +545,12 @@ class ChatActivity : FragmentActivity() {
         btnBack = findViewById(R.id.btn_back)
         keyboardFrame = findViewById(R.id.keyboard_frame)
         root = findViewById(R.id.root)
+        btnCamera = findViewById(R.id.btn_attach)
+        attachedImage = findViewById(R.id.attachedImage)
+        selectedImage = findViewById(R.id.selectedImage)
+        btnRemoveImage = findViewById(R.id.btnRemoveImage)
+
+        attachedImage?.visibility = View.GONE
 
         btnExport?.setImageResource(R.drawable.ic_upload)
         btnBack?.setImageResource(R.drawable.ic_back)
@@ -622,6 +647,105 @@ class ChatActivity : FragmentActivity() {
         return ResourcesCompat.getColor(context.resources, R.color.amoled_accent_300, null)
     }
 
+    private var bitmap: Bitmap? = null
+    private var baseImageString: String? = null
+    private var selectedImageType: String? = null
+
+    fun roundCorners(bitmap: Bitmap, cornerRadius: Float): Bitmap {
+        // Create a bitmap with the same size as the original.
+        val output = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
+
+        // Prepare a canvas with the new bitmap.
+        val canvas = Canvas(output)
+
+        // The paint used to draw the original bitmap onto the new one.
+        val paint = Paint().apply {
+            isAntiAlias = true
+            color = -0xbdbdbe
+        }
+
+        // The rectangle bounds for the original bitmap.
+        val rect = Rect(0, 0, bitmap.width, bitmap.height)
+        val rectF = RectF(rect)
+
+        // Draw rounded rectangle as background.
+        canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, paint)
+
+        // Change the paint mode to draw the original bitmap on top.
+        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+
+        // Draw the original bitmap.
+        canvas.drawBitmap(bitmap, rect, rect, paint)
+
+        return output
+    }
+
+    private val fileIntentLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        run {
+            if (result.resultCode == Activity.RESULT_OK) {
+                result.data?.data?.also { uri ->
+                    bitmap = readFile(uri)
+
+                    if (bitmap != null) {
+                        attachedImage?.visibility = View.VISIBLE
+                        selectedImage?.setImageBitmap(roundCorners(bitmap!!, 80f))
+                        imageIsSelected = true
+
+                        val mimeType = contentResolver.getType(uri)
+                        val format = when {
+                            mimeType.equals("image/jpeg", ignoreCase = true) -> {
+                                selectedImageType = "jpg"
+                                Bitmap.CompressFormat.JPEG
+                            }
+                            mimeType.equals("image/png", ignoreCase = true) -> {
+                                selectedImageType = "png"
+                                Bitmap.CompressFormat.PNG
+                            }
+                            else -> {
+                                selectedImageType = "jpg"
+                                Bitmap.CompressFormat.JPEG
+                            }
+                        }
+
+                        // Step 3: Convert the Bitmap to a Base64-encoded string
+                        val outputStream = ByteArrayOutputStream()
+                        bitmap!!.compress(format, 100, outputStream) // Note: Adjust the quality as necessary
+                        val base64Image = Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT)
+
+                        // Step 4: Generate the data URL
+                        val imageType = when(format) {
+                            Bitmap.CompressFormat.JPEG -> "jpeg"
+                            Bitmap.CompressFormat.PNG -> "png"
+                            // Add more mappings as necessary
+                            else -> ""
+                        }
+
+                        baseImageString = "data:image/$imageType;base64,$base64Image"
+                    }
+                }
+            }
+        }
+    }
+
+    private fun readFile(uri: Uri) : Bitmap? {
+        return contentResolver.openInputStream(uri)?.use { inputStream ->
+            BufferedReader(InputStreamReader(inputStream)).use { _ ->
+                BitmapFactory.decodeStream(inputStream)
+            }
+        }
+    }
+
+    private fun openFile(pickerInitialUri: Uri) {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "image/*"
+
+            putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri)
+        }
+
+        fileIntentLauncher.launch(intent)
+    }
+
     private fun initLogic() {
         btnMicro?.setOnClickListener {
             if (preferences!!.getAudioModel() == "google") {
@@ -630,6 +754,8 @@ class ChatActivity : FragmentActivity() {
                 handleWhisperSpeechRecognition()
             }
         }
+
+        attachedImage?.setOnClickListener { /* ignored */ }
 
         btnMicro?.setOnLongClickListener {
             if (isRecording) {
@@ -671,6 +797,16 @@ class ChatActivity : FragmentActivity() {
 
         btnSend?.setOnClickListener {
             parseMessage(messageInput?.text.toString())
+        }
+
+        btnCamera?.setOnClickListener {
+            openFile(Uri.parse("/storage/emulated/0/image.png"))
+        }
+
+        btnRemoveImage?.setOnClickListener {
+            attachedImage?.visibility = View.GONE
+            imageIsSelected = false
+            bitmap = null
         }
 
         messageInput?.setOnKeyListener { v, keyCode, event -> run {
@@ -993,6 +1129,11 @@ class ChatActivity : FragmentActivity() {
 
             chatName = extras.getString("name", "")
         }
+
+        preferences = Preferences.getPreferences(this, chatId)
+
+        preloadAmoled()
+        reloadAmoled()
     }
 
     /*
@@ -1080,7 +1221,18 @@ class ChatActivity : FragmentActivity() {
 
             val m = prefix + message + endSeparator
 
-            putMessage(m, false)
+            if (imageIsSelected) {
+                val bytes = Base64.decode(baseImageString!!.split(",")[1], Base64.DEFAULT)
+                writeImageToCache(bytes, selectedImageType!!)
+
+                val encoded = java.util.Base64.getEncoder().encodeToString(bytes)
+
+                val file = Hash.hash(encoded)
+
+                putMessage(m, false, file, selectedImageType!!)
+            } else {
+                putMessage(m, false)
+            }
             saveSettings()
 
             btnMicro?.isEnabled = false
@@ -1132,11 +1284,16 @@ class ChatActivity : FragmentActivity() {
         recognizer?.startListening(intent)
     }
 
-    private fun putMessage(message: String, isBot: Boolean) {
+    private fun putMessage(message: String, isBot: Boolean, image: String = "", imageType: String = "") {
         val map: HashMap<String, Any> = HashMap()
 
         map["message"] = message
         map["isBot"] = isBot
+
+        if (image != "") {
+            map["image"] = image
+            map["imageType"] = imageType
+        }
 
         messages.add(map)
         adapter?.notifyDataSetChanged()
@@ -1175,7 +1332,61 @@ class ChatActivity : FragmentActivity() {
         try {
             var response = ""
 
-            if (!model.contains("gpt") || model.contains(":ft-")) {
+            if (imageIsSelected) {
+                imageIsSelected = false;
+
+                attachedImage?.visibility = View.GONE
+
+                putMessage("", true)
+
+                val reqList: ArrayList<ContentPart> = ArrayList<ContentPart>()
+                reqList.add(TextPart(request))
+                reqList.add(ImagePart(baseImageString!!))
+                val chatCompletionRequest = ChatCompletionRequest(
+                    model = ModelId("gpt-4-vision-preview"),
+                    messages = listOf(
+                        ChatMessage(
+                            role = ChatRole.System,
+                            content = "You are a helpful assistant!"
+                        ),
+                        ChatMessage(
+                            role = ChatRole.User,
+                            content = reqList
+                        )
+                    )
+                )
+
+                val completions: Flow<ChatCompletionChunk> = ai!!.chatCompletions(chatCompletionRequest)
+
+                completions.collect { v ->
+                    run {
+                        if (v.choices[0].delta.content != "null") {
+                            response += v.choices[0].delta.content
+                            if (response != "null") {
+                                messages[messages.size - 1]["message"] = "$response █"
+                                adapter?.notifyDataSetChanged()
+                            }
+                        }
+                    }
+                }
+
+                messages[messages.size - 1]["message"] = "${response.dropLast(4)}\n"
+                adapter?.notifyDataSetChanged()
+
+                chatMessages.add(ChatMessage(
+                    role = ChatRole.Assistant,
+                    content = response
+                ))
+
+                pronounce(shouldPronounce, response)
+
+                saveSettings()
+
+                btnMicro?.isEnabled = true
+                btnSend?.isEnabled = true
+                progress?.visibility = View.GONE
+                messageInput?.requestFocus()
+            } else if (!model.contains("gpt") || model.contains(":ft-")) {
                 putMessage("", true)
                 val completionRequest = CompletionRequest(
                     model = ModelId(model),
@@ -1551,9 +1762,9 @@ class ChatActivity : FragmentActivity() {
         }
     }
 
-    private fun writeImageToCache(bytes: ByteArray) {
+    private fun writeImageToCache(bytes: ByteArray, imageType: String = "png") {
         try {
-            contentResolver.openFileDescriptor(Uri.fromFile(File(getExternalFilesDir("images")?.absolutePath + "/" + Hash.hash(Base64.getEncoder().encodeToString(bytes)) + ".png")), "w")?.use {
+            contentResolver.openFileDescriptor(Uri.fromFile(File(getExternalFilesDir("images")?.absolutePath + "/" + Hash.hash(java.util.Base64.getEncoder().encodeToString(bytes)) + "." + imageType)), "w")?.use {
                 FileOutputStream(it.fileDescriptor).use {
                     it.write(
                         bytes
@@ -1592,7 +1803,7 @@ class ChatActivity : FragmentActivity() {
 
                 writeImageToCache(bytes)
 
-                val encoded = Base64.getEncoder().encodeToString(bytes)
+                val encoded = java.util.Base64.getEncoder().encodeToString(bytes)
 
                 val file = Hash.hash(encoded)
 

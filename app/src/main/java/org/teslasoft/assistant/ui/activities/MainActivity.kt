@@ -35,7 +35,6 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -61,7 +60,6 @@ import org.teslasoft.assistant.ui.fragments.tabs.PromptsFragment
 import org.teslasoft.core.api.network.RequestNetwork
 import java.io.IOException
 
-
 class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener {
     private var navigationBar: BottomNavigationView? = null
     private var fragmentChats: ConstraintLayout? = null
@@ -72,24 +70,17 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     private var btnCloseDebugger: ImageButton? = null
     private var btnInitiateCrash: MaterialButton? = null
     private var btnSwitchAds: MaterialButton? = null
-
     private var threadLoader: LinearLayout? = null
-
     private var devIds: TextView? = null
-
-    private var selectedTab: Int = 1
-    private var isAnimating = false
-
     private var frameChats: Fragment? = null
     private var framePrompts: Fragment? = null
     private var frameTips: Fragment? = null
-
     private var root: ConstraintLayout? = null
-
     private var requestNetwork: RequestNetwork? = null
-
     private var preferences: Preferences? = null
 
+    private var selectedTab: Int = 1
+    private var isAnimating = false
     private var isInitialized: Boolean = false
 
     private val requestListener = object : RequestNetwork.RequestListener {
