@@ -16,8 +16,8 @@ android {
         minSdk 28
         //noinspection ExpiredTargetSdkVersion
         targetSdk 34
-        versionCode 313
-        versionName "3.13"
+        versionCode 314
+        versionName "3.14"
         externalNativeBuild {
             cmake {
                 cppFlags ''

@@ -54,6 +54,7 @@ import org.teslasoft.assistant.ui.activities.ImageBrowserActivity
 import java.io.File
 import java.io.FileInputStream
 import java.util.Base64
+import java.util.Collections
 
 abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActivity, protected open val preferences: Preferences) : BaseAdapter() {
     protected val dataArray: ArrayList<HashMap<String, Any>>? = data
@@ -73,6 +74,8 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
     protected var message: TextView? = null
     protected var dalleImage: ImageView? = null
     protected var btnCopy: ImageButton? = null
+    private var dalleImageStringList = ArrayList<String>(Collections.nCopies(count+1, ""))
+    private var imageStringList = ArrayList<String>(Collections.nCopies(count+1, ""))
 
     @SuppressLint("InflateParams", "SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
@@ -111,25 +114,47 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
             val fileName: String = contents.replace("~file:", "")
             try {
                 val fullPath = mContext.getExternalFilesDir("images")?.absolutePath + "/" + fileName + ".png"
-                mContext.contentResolver.openFileDescriptor(Uri.fromFile(
-                    File(fullPath))
-                    , "r")?.use {
-                    FileInputStream(it.fileDescriptor).use {
-                        val c: ByteArray = it.readBytes()
-                        val m: String = "data:image/png;base64," + Base64.getEncoder().encodeToString(c)
 
-                        val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(convertDpToPixel(16f, mContext).toInt()))
-                        Glide.with(mContext).load(Uri.parse(m)).apply(requestOptions).into(dalleImage!!)
+                while (dalleImageStringList.size < count+1) {
+                    dalleImageStringList.add("")
+                }
 
-                        dalleImage?.setOnClickListener {
-                            val sharedPreferences: SharedPreferences = mContext.getSharedPreferences("tmp", Context.MODE_PRIVATE)
-                            val editor: SharedPreferences.Editor = sharedPreferences.edit()
-                            editor.putString("tmp", m)
-                            editor.apply()
-                            val intent = Intent(mContext, ImageBrowserActivity::class.java).setAction(Intent.ACTION_VIEW)
-                            intent.putExtra("tmp", "1")
-                            mContext.startActivity(intent)
+                if (dalleImageStringList[position] == "") {
+                    mContext.contentResolver.openFileDescriptor(
+                        Uri.fromFile(
+                            File(fullPath)
+                        ), "r"
+                    )?.use {
+                        FileInputStream(it.fileDescriptor).use {
+                            val c: ByteArray = it.readBytes()
+                            dalleImageStringList[position] = "data:image/png;base64," + Base64.getEncoder().encodeToString(c)
+
+                            val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(convertDpToPixel(16f, mContext).toInt()))
+                            Glide.with(mContext).load(Uri.parse(dalleImageStringList[position])).apply(requestOptions).into(dalleImage!!)
+
+                            dalleImage?.setOnClickListener {
+                                val sharedPreferences: SharedPreferences = mContext.getSharedPreferences("tmp", Context.MODE_PRIVATE)
+                                val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                                editor.putString("tmp", dalleImageStringList[position])
+                                editor.apply()
+                                val intent = Intent(mContext, ImageBrowserActivity::class.java).setAction(Intent.ACTION_VIEW)
+                                intent.putExtra("tmp", "1")
+                                mContext.startActivity(intent)
+                            }
                         }
+                    }
+                } else {
+                    val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(convertDpToPixel(16f, mContext).toInt()))
+                    Glide.with(mContext).load(Uri.parse(dalleImageStringList[position])).apply(requestOptions).into(dalleImage!!)
+
+                    dalleImage?.setOnClickListener {
+                        val sharedPreferences: SharedPreferences = mContext.getSharedPreferences("tmp", Context.MODE_PRIVATE)
+                        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                        editor.putString("tmp", dalleImageStringList[position])
+                        editor.apply()
+                        val intent = Intent(mContext, ImageBrowserActivity::class.java).setAction(Intent.ACTION_VIEW)
+                        intent.putExtra("tmp", "1")
+                        mContext.startActivity(intent)
                     }
                 }
             } catch (e: Exception) {
@@ -137,7 +162,8 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
                 dalleImage?.visibility = View.GONE
                 message?.visibility = View.VISIBLE
                 btnCopy?.visibility = View.VISIBLE
-                message?.text = "<IMAGE NOT FOUND>"
+                message?.text = "<IMAGE NOT FOUND\n" +
+                        "Stacktrace: ${e.stackTraceToString()}>"
             }
         } else {
             if (dataArray?.get(position)?.get("isBot") == true) {
@@ -155,25 +181,47 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
                     val imageType = dataArray[position]["imageType"] ?: "png"
                     val mimeType = if (imageType == "png") "image/png" else "image/jpeg"
                     val fullPath = mContext.getExternalFilesDir("images")?.absolutePath + "/" + dataArray[position]["image"] + "." + imageType
-                    mContext.contentResolver.openFileDescriptor(Uri.fromFile(
-                        File(fullPath))
-                        , "r")?.use {
-                        FileInputStream(it.fileDescriptor).use {
-                            val c: ByteArray = it.readBytes()
-                            val m: String = "data:$mimeType;base64," + Base64.getEncoder().encodeToString(c)
 
-                            val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(convertDpToPixel(16f, mContext).toInt()))
-                            Glide.with(mContext).load(Uri.parse(m)).apply(requestOptions).into(dalleImage!!)
+                    while (imageStringList.size < count+1) {
+                        imageStringList.add("")
+                    }
 
-                            dalleImage?.setOnClickListener {
-                                val sharedPreferences: SharedPreferences = mContext.getSharedPreferences("tmp", Context.MODE_PRIVATE)
-                                val editor: SharedPreferences.Editor = sharedPreferences.edit()
-                                editor.putString("tmp", m)
-                                editor.apply()
-                                val intent = Intent(mContext, ImageBrowserActivity::class.java).setAction(Intent.ACTION_VIEW)
-                                intent.putExtra("tmp", "1")
-                                mContext.startActivity(intent)
+                    if (imageStringList[position] == "") {
+                        mContext.contentResolver.openFileDescriptor(
+                            Uri.fromFile(
+                                File(fullPath)
+                            ), "r"
+                        )?.use { it ->
+                            FileInputStream(it.fileDescriptor).use {
+                                val c: ByteArray = it.readBytes()
+                                imageStringList[position] = "data:$mimeType;base64," + Base64.getEncoder().encodeToString(c)
+
+                                val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(convertDpToPixel(16f, mContext).toInt()))
+                                Glide.with(mContext).load(Uri.parse(imageStringList[position])).apply(requestOptions).into(dalleImage!!)
+
+                                dalleImage?.setOnClickListener {
+                                    val sharedPreferences: SharedPreferences = mContext.getSharedPreferences("tmp", Context.MODE_PRIVATE)
+                                    val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                                    editor.putString("tmp", imageStringList[position])
+                                    editor.apply()
+                                    val intent = Intent(mContext, ImageBrowserActivity::class.java).setAction(Intent.ACTION_VIEW)
+                                    intent.putExtra("tmp", "1")
+                                    mContext.startActivity(intent)
+                                }
                             }
+                        }
+                    } else {
+                        val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(convertDpToPixel(16f, mContext).toInt()))
+                        Glide.with(mContext).load(Uri.parse(imageStringList[position])).apply(requestOptions).into(dalleImage!!)
+
+                        dalleImage?.setOnClickListener {
+                            val sharedPreferences: SharedPreferences = mContext.getSharedPreferences("tmp", Context.MODE_PRIVATE)
+                            val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                            editor.putString("tmp", imageStringList[position])
+                            editor.apply()
+                            val intent = Intent(mContext, ImageBrowserActivity::class.java).setAction(Intent.ACTION_VIEW)
+                            intent.putExtra("tmp", "1")
+                            mContext.startActivity(intent)
                         }
                     }
                 } catch (e: Exception) {
@@ -181,12 +229,11 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
                     dalleImage?.visibility = View.GONE
                     message?.visibility = View.VISIBLE
                     btnCopy?.visibility = View.VISIBLE
-                    message?.text = "${message?.text}\n<IMAGE NOT FOUND: ${dataArray[position]["image"]}.${dataArray[position]["imageType"]}>"
+                    message?.text = "${message?.text}\n<IMAGE NOT FOUND: ${dataArray[position]["image"]}.${dataArray[position]["imageType"]}\nStacktrace: ${e.stackTraceToString()}>"
                 }
             } else {
                 dalleImage?.visibility = View.GONE
             }
-
 
             message?.visibility = View.VISIBLE
         }
