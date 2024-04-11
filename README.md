@@ -27,6 +27,7 @@ SpeakGPT is an advanced and highly intuitive voice assistant that utilizes the p
 
 - [x] Chat
 - [x] Images generation (DALL-e)
+- [x] GPT 4 Vision
 - [x] Activation prompt
 - [x] Voice input (Whisper and Google)
 - [x] Assistant
@@ -43,15 +44,12 @@ SpeakGPT is an advanced and highly intuitive voice assistant that utilizes the p
 - [x] Tips for newbies
 - [x] Custom fine-tuned models are supported
 
-> \* Note
->
-> Trial period depends on your usage. Each new OpenAI customer gets $18 free credit. You can spend it less than 4 months.
-
 ## Task list
 
 ### ✔️ Already added
 
 - [x] Chat
+- [x] GPT 4 Vision
 - [x] Activation prompt
 - [x] Voice input (Whisper and Google)
 - [x] Assistant

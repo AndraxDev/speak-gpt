@@ -155,6 +155,19 @@
                     android:textSize="16sp" />
 
                 <RadioButton
+                    android:id="@+id/see_all_models"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:button="@null"
+                    android:minHeight="56dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:text="See all models"
+                    android:textSize="16sp" />
+
+                <RadioButton
                     android:id="@+id/gpt_4_0613"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -337,7 +350,8 @@
                     android:layout_marginVertical="8dp"
                     android:background="@drawable/btn_tip1"
                     android:orientation="horizontal"
-                    android:padding="16dp">
+                    android:padding="16dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/textView27"
@@ -439,9 +453,10 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
                 android:layout_marginBottom="16dp"
-                android:paddingBottom="84dp"
-                android:text="@string/gpt_beta_warn"
+                android:paddingBottom="64dp"
+                android:text=""
                 android:textSize="14sp"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

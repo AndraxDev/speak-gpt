@@ -923,6 +923,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     @SuppressLint("SetTextI18n")
     private fun parseMessage(message: String) {
+        autosave()
         try {
             if (mediaPlayer!!.isPlaying) {
                 mediaPlayer!!.stop()
@@ -1693,8 +1694,6 @@ class AssistantFragment : BottomSheetDialogFragment() {
         btnExit?.setOnClickListener {
             requireActivity().finishAndRemoveTask()
         }
-
-        autosave()
 
         hideKeyboard()
     }
