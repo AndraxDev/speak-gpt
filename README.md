@@ -43,6 +43,7 @@ SpeakGPT is an advanced and highly intuitive open-source AI assistant that utili
 - [x] Pay as you go system
 - [x] Tips for newbies
 - [x] Custom fine-tuned models are supported
+- [x] AMOLED dark mode
 
 ## Task list
 
@@ -63,6 +64,7 @@ SpeakGPT is an advanced and highly intuitive open-source AI assistant that utili
 - [x] A lot of different models
 - [x] Add support of custom fine-tuned models
 - [o] Function calling features
+- [x] AMOLED dark mode
 
 ### ❌ Planned to add (Share your ideas in Issues)
 
