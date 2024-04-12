@@ -29,7 +29,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 import org.teslasoft.assistant.R
 
-class MicrophonePermissionActivity : FragmentActivity() {
+class CameraPermissionActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         askNotificationPermission()
@@ -43,7 +43,7 @@ class MicrophonePermissionActivity : FragmentActivity() {
             } else {
                 MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
                     .setTitle("Permission denied")
-                    .setMessage("You can not use this feature because app do not have microphone access.")
+                    .setMessage("You can not use this feature because app do not have camera access.")
                     .setCancelable(false)
                     .setPositiveButton(android.R.string.ok) { _: DialogInterface?, _: Int ->
                         this.setResult(RESULT_CANCELED)
@@ -54,24 +54,24 @@ class MicrophonePermissionActivity : FragmentActivity() {
 
     private fun askNotificationPermission() {
         if (ContextCompat.checkSelfPermission(
-                this, Manifest.permission.RECORD_AUDIO
+                this, Manifest.permission.CAMERA
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             setResult(RESULT_OK)
             finish()
-        } else if (shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
+        } else if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
             MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
-                .setTitle("Use microphone")
-                .setMessage("SpeakGPT allows you to interact with ChatGPT via voice activation. To enable voice activation please allow this app to use your device microphone. Allow microphone access?")
+                .setTitle("Use camera")
+                .setMessage("SpeakGPT allows you to interact with ChatGPT Vision using your photos taken directly from camera in this app. To enable camera for GPT Vision please allow us to use your camera. You can still pick your existing pictures from gallery without camera permission. Allow camera access?")
                 .setCancelable(false)
                 .setPositiveButton("Allow") { _: DialogInterface?, _: Int ->
-                    requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                    requestPermissionLauncher.launch(Manifest.permission.CAMERA)
                 }.setNegativeButton("No thanks") { _: DialogInterface?, _: Int ->
                     this.setResult(RESULT_CANCELED)
                     finish()
                 }.show()
         } else {
-            requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+            requestPermissionLauncher.launch(Manifest.permission.CAMERA)
         }
     }
 }

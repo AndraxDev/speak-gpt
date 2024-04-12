@@ -131,10 +131,15 @@ import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.PorterDuff
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Base64
+import androidx.core.content.FileProvider
 import com.aallam.openai.api.chat.ContentPart
 import com.aallam.openai.api.chat.ImagePart
 import com.aallam.openai.api.chat.TextPart
+import org.teslasoft.assistant.preferences.GlobalPreferences
+import org.teslasoft.assistant.ui.permission.CameraPermissionActivity
 import java.io.ByteArrayOutputStream
 
 
@@ -155,10 +160,13 @@ class ChatActivity : FragmentActivity() {
     private var keyboardFrame: ConstraintLayout? = null
     private var root: ConstraintLayout? = null
     private var threadLoader: LinearLayout? = null
-    private var btnCamera: ImageButton? = null
+    private var btnAttachFile: ImageButton? = null
     private var attachedImage: LinearLayout? = null
     private var selectedImage: ImageView? = null
     private var btnRemoveImage: ImageButton? = null
+    private var visionActions: LinearLayout? = null
+    private var btnVisionActionCamera: ImageButton? = null
+    private var btnVisionActionGallery: ImageButton? = null
 
     // Init chat
     private var messages: ArrayList<HashMap<String, Any>> = arrayListOf()
@@ -261,48 +269,105 @@ class ChatActivity : FragmentActivity() {
     override fun onResume() {
         super.onResume()
 
+        preloadAmoled()
+        reloadAmoled()
+
         if (chatId != "") {
-            preloadAmoled()
-            reloadAmoled()
             preferences = Preferences.getPreferences(this, chatId)
         }
     }
 
     private fun preloadAmoled() {
-        if (isDarkThemeEnabled() && preferences!!.getAmoledPitchBlack()) {
+        if (isDarkThemeEnabled() && GlobalPreferences.getPreferences(this).getAmoledPitchBlack()) {
             threadLoader?.background = ResourcesCompat.getDrawable(resources, R.color.amoled_accent_50, null)
         } else {
             threadLoader?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
         }
     }
 
+    private var cameraIntentLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val imageFile = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "tmp.jpg")
+            val uri = FileProvider.getUriForFile(this, "org.teslasoft.assistant.fileprovider", imageFile)
+
+            bitmap = readFile(uri)
+
+            if (bitmap != null) {
+                attachedImage?.visibility = View.VISIBLE
+                selectedImage?.setImageBitmap(roundCorners(bitmap!!, 80f))
+                imageIsSelected = true
+
+                val mimeType = contentResolver.getType(uri)
+                val format = when {
+                    mimeType.equals("image/png", ignoreCase = true) -> {
+                        selectedImageType = "png"
+                        Bitmap.CompressFormat.PNG
+                    }
+                    else -> {
+                        selectedImageType = "jpg"
+                        Bitmap.CompressFormat.JPEG
+                    }
+                }
+
+                // Step 3: Convert the Bitmap to a Base64-encoded string
+                val outputStream = ByteArrayOutputStream()
+                bitmap!!.compress(format, 100, outputStream) // Note: Adjust the quality as necessary
+                val base64Image = Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT)
+
+                // Step 4: Generate the data URL
+                val imageType = when(format) {
+                    Bitmap.CompressFormat.JPEG -> "jpeg"
+                    Bitmap.CompressFormat.PNG -> "png"
+                    // Add more mappings as necessary
+                    else -> ""
+                }
+
+                baseImageString = "data:image/$imageType;base64,$base64Image"
+            }
+        }
+    }
+
+    private val permissionResultLauncherCamera = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        run {
+            if (result.resultCode == Activity.RESULT_OK) {
+                val intent = Intent().setAction(MediaStore.ACTION_IMAGE_CAPTURE)
+                intent.putExtra("android.intent.extra.quickCapture", true)
+                val externalFilesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                val imageFile = File(externalFilesDir, "tmp.jpg")
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(this, "org.teslasoft.assistant.fileprovider", imageFile))
+                cameraIntentLauncher.launch(intent)
+            }
+        }
+    }
+
     private fun reloadAmoled() {
-        if (isDarkThemeEnabled() && preferences!!.getAmoledPitchBlack()) {
+        if (isDarkThemeEnabled() && GlobalPreferences.getPreferences(this).getAmoledPitchBlack()) {
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
-            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme)
+            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme)
             window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme)
             keyboardFrame?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme))
-            actionBar?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme))
-            activityTitle?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme))
+            actionBar?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme))
+            activityTitle?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme))
             root?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
+            messageInput?.setHintTextColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_600, theme))
             btnBack?.background = getAmoledAccentDrawable(
                 AppCompatResources.getDrawable(
                     this,
-                    R.drawable.btn_accent_tonal_v4_amoled
+                    R.drawable.btn_accent_tonal_v5_amoled
                 )!!, this
             )
 
             btnExport?.background = getAmoledAccentDrawable(
                 AppCompatResources.getDrawable(
                     this,
-                    R.drawable.btn_accent_tonal_v4_amoled
+                    R.drawable.btn_accent_tonal_v5_amoled
                 )!!, this
             )
 
             btnSettings?.background = getAmoledAccentDrawable(
                 AppCompatResources.getDrawable(
                     this,
-                    R.drawable.btn_accent_tonal_v4_amoled
+                    R.drawable.btn_accent_tonal_v5_amoled
                 )!!, this
             )
 
@@ -326,6 +391,12 @@ class ChatActivity : FragmentActivity() {
                     R.drawable.btn_accent_tonal_v5_amoled
                 )!!, this
             )
+            btnAttachFile?.background = getAmoledAccentDrawableV2(
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.btn_accent_tonal_v5_amoled
+                )!!, this
+            )
         } else {
             window.setBackgroundDrawableResource(R.color.window_background)
             window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
@@ -334,6 +405,7 @@ class ChatActivity : FragmentActivity() {
             actionBar?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
             activityTitle?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
             root?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
+            messageInput?.setHintTextColor(ResourcesCompat.getColor(resources, R.color.accent_500, theme))
             btnBack?.background = getDarkAccentDrawable(
                 AppCompatResources.getDrawable(
                     this,
@@ -370,6 +442,12 @@ class ChatActivity : FragmentActivity() {
             )
 
             btnSend?.background = getDarkAccentDrawable(
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.btn_accent_tonal_v5
+                )!!, this
+            )
+            btnAttachFile?.background = getDarkAccentDrawable(
                 AppCompatResources.getDrawable(
                     this,
                     R.drawable.btn_accent_tonal_v5
@@ -440,6 +518,9 @@ class ChatActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_chat)
+
+        preloadAmoled()
+        reloadAmoled()
 
         mediaPlayer = MediaPlayer()
 
@@ -545,10 +626,15 @@ class ChatActivity : FragmentActivity() {
         btnBack = findViewById(R.id.btn_back)
         keyboardFrame = findViewById(R.id.keyboard_frame)
         root = findViewById(R.id.root)
-        btnCamera = findViewById(R.id.btn_attach)
+        btnAttachFile = findViewById(R.id.btn_attach)
         attachedImage = findViewById(R.id.attachedImage)
         selectedImage = findViewById(R.id.selectedImage)
         btnRemoveImage = findViewById(R.id.btnRemoveImage)
+        visionActions = findViewById(R.id.vision_action_selector)
+        btnVisionActionCamera = findViewById(R.id.action_camera)
+        btnVisionActionGallery = findViewById(R.id.action_gallery)
+
+        visionActions?.visibility = View.GONE
 
         attachedImage?.visibility = View.GONE
 
@@ -636,15 +722,15 @@ class ChatActivity : FragmentActivity() {
     }
 
     private fun getSurfaceColor(context: Context) : Int {
-        return SurfaceColors.SURFACE_5.getColor(context)
+        return SurfaceColors.SURFACE_4.getColor(context)
     }
 
     private fun getAmoledSurfaceColor(context: Context) : Int {
-        return ResourcesCompat.getColor(context.resources, R.color.amoled_accent_50, null)
+        return ResourcesCompat.getColor(context.resources, R.color.amoled_accent_100, null)
     }
 
     private fun getAmoledSurfaceColorV2(context: Context) : Int {
-        return ResourcesCompat.getColor(context.resources, R.color.amoled_accent_300, null)
+        return ResourcesCompat.getColor(context.resources, R.color.amoled_accent_200, null)
     }
 
     private var bitmap: Bitmap? = null
@@ -693,10 +779,6 @@ class ChatActivity : FragmentActivity() {
 
                         val mimeType = contentResolver.getType(uri)
                         val format = when {
-                            mimeType.equals("image/jpeg", ignoreCase = true) -> {
-                                selectedImageType = "jpg"
-                                Bitmap.CompressFormat.JPEG
-                            }
                             mimeType.equals("image/png", ignoreCase = true) -> {
                                 selectedImageType = "png"
                                 Bitmap.CompressFormat.PNG
@@ -799,8 +881,19 @@ class ChatActivity : FragmentActivity() {
             parseMessage(messageInput?.text.toString())
         }
 
-        btnCamera?.setOnClickListener {
+        btnAttachFile?.setOnClickListener {
+            visionActions?.visibility = if (visionActions?.visibility == View.VISIBLE) View.GONE else View.VISIBLE
+        }
+
+        btnVisionActionGallery?.setOnClickListener {
+            visionActions?.visibility = View.GONE
             openFile(Uri.parse("/storage/emulated/0/image.png"))
+        }
+
+        btnVisionActionCamera?.setOnClickListener {
+            visionActions?.visibility = View.GONE
+            val intent = Intent(this, CameraPermissionActivity::class.java).setAction(Intent.ACTION_VIEW)
+            permissionResultLauncherCamera.launch(intent)
         }
 
         btnRemoveImage?.setOnClickListener {

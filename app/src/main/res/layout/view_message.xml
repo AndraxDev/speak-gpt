@@ -10,7 +10,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="24dp"
         android:paddingBottom="4dp"
         android:text="@string/user"
@@ -36,10 +36,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
         android:focusable="true"
         android:paddingBottom="16dp"
         android:text=""
+        android:textColor="@color/text"
         android:textIsSelectable="true"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -52,9 +54,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="24dp"
-        android:gravity="center"
+        android:gravity="center_vertical"
         android:orientation="vertical"
-        android:paddingTop="24dp"
+        android:paddingTop="16dp"
         android:paddingBottom="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/icon"
@@ -64,9 +66,9 @@
             android:id="@+id/dalle_image"
             android:layout_width="300dp"
             android:layout_height="300dp"
-            app:srcCompat="@drawable/assistant"
+            android:contentDescription="@string/image"
             android:descendantFocusability="blocksDescendants"
-            android:contentDescription="@string/image" />
+            app:srcCompat="@drawable/assistant" />
     </LinearLayout>
 
     <ImageButton

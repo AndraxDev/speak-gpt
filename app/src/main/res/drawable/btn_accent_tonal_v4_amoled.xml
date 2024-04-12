@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape>
-            <corners android:radius="25dp" />
-            <solid android:color="@color/amoled_accent_50" />
+            <corners android:radius="12dp" />
+            <solid android:color="@color/amoled_accent_100" />
         </shape>
     </item>
 </ripple>

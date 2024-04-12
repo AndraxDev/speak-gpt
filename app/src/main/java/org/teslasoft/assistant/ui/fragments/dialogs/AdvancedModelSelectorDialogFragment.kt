@@ -22,7 +22,6 @@ import android.view.View
 import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.aallam.openai.api.http.Timeout
@@ -41,7 +40,6 @@ import kotlinx.coroutines.launch
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.ModelListAdapter
-import org.teslasoft.assistant.ui.adapters.VoiceListAdapter
 import kotlin.time.Duration.Companion.seconds
 
 class AdvancedModelSelectorDialogFragment : DialogFragment() {

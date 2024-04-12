@@ -11,6 +11,55 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <LinearLayout
+            android:id="@+id/vision_action_selector"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginBottom="12dp"
+            android:elevation="12dp"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/input_layout"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/btn_accent_tonal_16">
+
+                <ImageButton
+                    android:id="@+id/action_camera"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:background="@drawable/btn_accent_center"
+                    android:src="@drawable/ic_camera"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_camera" />
+
+                <ImageButton
+                    android:id="@+id/action_gallery"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:background="@drawable/btn_accent_center"
+                    android:src="@drawable/ic_photo"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/action_camera"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_photo" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
         <ImageButton
             android:id="@+id/btn_assistant_voice"
             android:layout_width="64dp"
@@ -142,9 +191,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginBottom="12dp"
-            android:orientation="vertical"
-            android:elevation="12dp"
             android:background="@drawable/btn_accent_tonal_selector"
+            android:elevation="12dp"
+            android:orientation="vertical"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/input_layout"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -219,12 +269,12 @@
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:background="@drawable/btn_accent_tonal"
-                    android:contentDescription="Camera"
-                    android:src="@drawable/ic_camera"
+                    android:contentDescription="Attach"
+                    android:src="@drawable/ic_attach"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/btn_assistant_hide_keyboard"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_camera" />
+                    app:srcCompat="@drawable/ic_attach" />
 
                 <ImageButton
                     android:id="@+id/btn_assistant_send"

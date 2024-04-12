@@ -35,7 +35,9 @@ import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.DocumentsContract
+import android.provider.MediaStore
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
@@ -56,6 +58,7 @@ import android.widget.Toast
 
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentActivity
 
@@ -107,6 +110,7 @@ import okio.Path.Companion.toPath
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ChatPreferences
 import org.teslasoft.assistant.preferences.Preferences
+import org.teslasoft.assistant.ui.activities.CameraActivity
 import org.teslasoft.assistant.ui.adapters.AssistantAdapter
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
 import org.teslasoft.assistant.ui.activities.SettingsActivity
@@ -114,6 +118,7 @@ import org.teslasoft.assistant.ui.activities.SettingsV2Activity
 import org.teslasoft.assistant.ui.fragments.dialogs.ActionSelectorDialog
 import org.teslasoft.assistant.ui.permission.MicrophonePermissionActivity
 import org.teslasoft.assistant.ui.fragments.dialogs.AddChatDialogFragment
+import org.teslasoft.assistant.ui.permission.CameraPermissionActivity
 import org.teslasoft.assistant.util.DefaultPromptsParser
 import org.teslasoft.assistant.util.Hash
 import org.teslasoft.assistant.util.LocaleParser
@@ -147,10 +152,13 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private var assistantConversation: ListView? = null
     private var assistantLoading: ProgressBar? = null
     private var ui: LinearLayout? = null
-    private var btnCamera: ImageButton? = null
+    private var btnAttachFile: ImageButton? = null
     private var attachedImage: LinearLayout? = null
     private var selectedImage: ImageView? = null
     private var btnRemoveImage: ImageButton? = null
+    private var visionActions: LinearLayout? = null
+    private var btnVisionActionCamera: ImageButton? = null
+    private var btnVisionActionGallery: ImageButton? = null
 
     // Init chat
     private var messages: ArrayList<HashMap<String, Any>> = arrayListOf()
@@ -234,10 +242,6 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
                         val mimeType = requireActivity().contentResolver.getType(uri)
                         val format = when {
-                            mimeType.equals("image/jpeg", ignoreCase = true) -> {
-                                selectedImageType = "jpg"
-                                Bitmap.CompressFormat.JPEG
-                            }
                             mimeType.equals("image/png", ignoreCase = true) -> {
                                 selectedImageType = "png"
                                 Bitmap.CompressFormat.PNG
@@ -1241,7 +1245,6 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 }
             }
         } catch (e: Exception) {
-            // putMessage("", true)
             val response = when {
                 e.stackTraceToString().contains("does not exist") -> {
                     "Looks like this model (${model}) is not available to you right now. It can be because of high demand or this model is currently in limited beta. If you are using a fine-tuned model, please make sure you entered correct model name. Usually model starts with 'model_name:ft-' and contains original model name, organization name and timestamp. Example: ada:ft-organization_name:model_name-YYYY-MM-DD-hh-mm-ss."
@@ -1625,6 +1628,61 @@ class AssistantFragment : BottomSheetDialogFragment() {
         }
     }
 
+    private var cameraIntentLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val imageFile = File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "tmp.jpg")
+            val uri = FileProvider.getUriForFile(requireActivity(), "org.teslasoft.assistant.fileprovider", imageFile)
+
+            bitmap = readFile(uri)
+
+            if (bitmap != null) {
+                attachedImage?.visibility = View.VISIBLE
+                selectedImage?.setImageBitmap(roundCorners(bitmap!!, 80f))
+                imageIsSelected = true
+
+                val mimeType = requireActivity().contentResolver.getType(uri)
+                val format = when {
+                    mimeType.equals("image/png", ignoreCase = true) -> {
+                        selectedImageType = "png"
+                        Bitmap.CompressFormat.PNG
+                    }
+                    else -> {
+                        selectedImageType = "jpg"
+                        Bitmap.CompressFormat.JPEG
+                    }
+                }
+
+                // Step 3: Convert the Bitmap to a Base64-encoded string
+                val outputStream = ByteArrayOutputStream()
+                bitmap!!.compress(format, 100, outputStream) // Note: Adjust the quality as necessary
+                val base64Image = android.util.Base64.encodeToString(outputStream.toByteArray(), android.util.Base64.DEFAULT)
+
+                // Step 4: Generate the data URL
+                val imageType = when(format) {
+                    Bitmap.CompressFormat.JPEG -> "jpeg"
+                    Bitmap.CompressFormat.PNG -> "png"
+                    // Add more mappings as necessary
+                    else -> ""
+                }
+
+                baseImageString = "data:image/$imageType;base64,$base64Image"
+            }
+        }
+    }
+
+    private val permissionResultLauncherCamera = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        run {
+            if (result.resultCode == Activity.RESULT_OK) {
+                val intent = Intent().setAction(MediaStore.ACTION_IMAGE_CAPTURE)
+                intent.putExtra("android.intent.extra.quickCapture", true)
+                val externalFilesDir = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                val imageFile = File(externalFilesDir, "tmp.jpg")
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(requireActivity(), "org.teslasoft.assistant.fileprovider", imageFile))
+                cameraIntentLauncher.launch(intent)
+            }
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -1647,10 +1705,15 @@ class AssistantFragment : BottomSheetDialogFragment() {
         assistantConversation = view.findViewById(R.id.assistant_conversation)
         assistantLoading = view.findViewById(R.id.assistant_loading)
         ui = view.findViewById(R.id.ui)
-        btnCamera = view.findViewById(R.id.btn_assistant_attach)
+        btnAttachFile = view.findViewById(R.id.btn_assistant_attach)
         attachedImage = view.findViewById(R.id.attachedImage)
         selectedImage = view.findViewById(R.id.selectedImage)
         btnRemoveImage = view.findViewById(R.id.btnRemoveImage)
+        visionActions = view.findViewById(R.id.vision_action_selector)
+        btnVisionActionCamera = view.findViewById(R.id.action_camera)
+        btnVisionActionGallery = view.findViewById(R.id.action_gallery)
+
+        visionActions?.visibility = View.GONE
 
         btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
         btnAssistantSettings?.setImageResource(R.drawable.ic_settings)
@@ -1675,8 +1738,19 @@ class AssistantFragment : BottomSheetDialogFragment() {
             hideKeyboard()
         }
 
-        btnCamera?.setOnClickListener {
+        btnAttachFile?.setOnClickListener {
+            visionActions?.visibility = if (visionActions?.visibility == View.VISIBLE) View.GONE else View.VISIBLE
+        }
+
+        btnVisionActionGallery?.setOnClickListener {
+            visionActions?.visibility = View.GONE
             openFile(Uri.parse("/storage/emulated/0/image.png"))
+        }
+
+        btnVisionActionCamera?.setOnClickListener {
+            visionActions?.visibility = View.GONE
+            val intent = Intent(requireActivity(), CameraPermissionActivity::class.java).setAction(Intent.ACTION_VIEW)
+            permissionResultLauncherCamera.launch(intent)
         }
 
         btnRemoveImage?.setOnClickListener {

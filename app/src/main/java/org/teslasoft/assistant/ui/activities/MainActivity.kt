@@ -338,11 +338,11 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
 
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack()!!) {
-            window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
+            window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme)
             window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
             root?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
-            navigationBar!!.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
+            navigationBar!!.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme))
 
             val drawable = GradientDrawable()
             drawable.shape = GradientDrawable.RECTANGLE

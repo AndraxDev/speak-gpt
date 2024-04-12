@@ -22,6 +22,8 @@
     <color name="amoled_accent_250">#212121</color>
     <color name="amoled_accent_400">#252525</color>
     <color name="amoled_accent_300">#2A2A2A</color>
+    <color name="amoled_accent_500">#3F3F3F</color>
+    <color name="amoled_accent_600">#3F3F3F</color>
     <color name="amoled_bottom_navbar">@color/accent_50</color>
     <color name="amoled_button">@color/accent_100</color>
     <color name="amoled_window_background">#000000</color>
