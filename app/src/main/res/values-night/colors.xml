@@ -45,7 +45,7 @@
     <color name="cat_education">#caf9fc</color>
     <color name="cat_history">#cafce2</color>
     <color name="cat_food">#fccaf1</color>
-    <color name="cat_tourism">#FFD6E3</color>
+    <color name="cat_tourism">#FFB8CF</color>
     <color name="cat_productivity">#faffcc</color>
     <color name="cat_tools">#ccddff</color>
     <color name="cat_entertainment">#ffe6cc</color>
@@ -62,7 +62,7 @@
     <color name="tint_cat_education">#25caf9fc</color>
     <color name="tint_cat_history">#25cafce2</color>
     <color name="tint_cat_food">#25fccaf1</color>
-    <color name="tint_cat_tourism">#25FFD6E3</color>
+    <color name="tint_cat_tourism">#25FFABC6</color>
     <color name="tint_cat_productivity">#25faffcc</color>
     <color name="tint_cat_tools">#25ccddff</color>
     <color name="tint_cat_entertainment">#25ffe6cc</color>

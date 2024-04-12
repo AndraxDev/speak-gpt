@@ -1,6 +1,6 @@
 # SpeakGPT
 
-SpeakGPT is an advanced and highly intuitive voice assistant that utilizes the powerful OpenAI ChatGPT technology to provide you with unparalleled performance and functionality.
+SpeakGPT is an advanced and highly intuitive open-source AI assistant that utilizes the powerful OpenAI technologies to provide you with unparalleled performance and functionality.
 
 ## SpeakGPT Desktop (Early access)
 
@@ -25,10 +25,11 @@ SpeakGPT is an advanced and highly intuitive voice assistant that utilizes the p
 
 ## Basic features
 
-- [x] Chat
+- [x] Chat (saved locally but can be imported/exported if needed)
 - [x] Images generation (DALL-e)
-- [x] GPT 4 Vision
+- [x] GPT 4 Vision (use your images and photos with ChatGPT)
 - [x] Activation prompt
+- [x] System message
 - [x] Voice input (Whisper and Google)
 - [x] Assistant
 - [x] SpeakGPT in context menu
@@ -40,7 +41,6 @@ SpeakGPT is an advanced and highly intuitive voice assistant that utilizes the p
 - [x] A lot of different models
 - [x] No captcha
 - [x] Pay as you go system
-- [x] Long trial period (up to 4 months*)
 - [x] Tips for newbies
 - [x] Custom fine-tuned models are supported
 
@@ -49,8 +49,9 @@ SpeakGPT is an advanced and highly intuitive voice assistant that utilizes the p
 ### ✔️ Already added
 
 - [x] Chat
-- [x] GPT 4 Vision
+- [x] GPT 4 Vision (use your images and photos with ChatGPT)
 - [x] Activation prompt
+- [x] System message
 - [x] Voice input (Whisper and Google)
 - [x] Assistant
 - [x] SpeakGPT in context menu
