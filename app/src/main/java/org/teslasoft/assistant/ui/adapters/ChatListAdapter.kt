@@ -85,12 +85,16 @@ class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragme
         textModel.text = when (model) {
             "gpt-4" -> "GPT 4"
             "gpt-4-1106-preview" -> "GPT 4 Turbo"
+            "gpt-4-turbo-2024-04-09" -> "GPT 4 Turbo"
             "gpt-4-0125-preview" -> "GPT 4 Turbo"
             "gpt-4-turbo-preview" -> "GPT 4 Turbo"
             "gpt-4-32k" -> "GPT 4"
             "gpt-3.5-turbo" -> "GPT 3.5"
             "gpt-3.5-turbo-1106" -> "GPT 3.5"
             "gpt-3.5-turbo-0125" -> "GPT 3.5 (0125)"
+            "gemma-7b-it" -> "GROQ"
+            "llama2-70b-4096" -> "GROQ"
+            "mixtral-8x7b-32768" -> "GROQ"
             else -> "FT"
         }
 
@@ -118,6 +122,9 @@ class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragme
             }
             "FT" -> {
                 updateCard(selector, icon, R.color.tint_blue, R.color.gpt_icon_blue)
+            }
+            "GROQ" -> {
+                updateCard(selector, icon, R.color.tint_orange, R.color.gpt_icon_orange)
             }
             else -> {
                 icon.setImageResource(R.drawable.chatgpt_icon)

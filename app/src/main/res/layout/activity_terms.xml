@@ -59,7 +59,7 @@
                 style="@style/Widget.Material3.Button"
                 android:layout_width="200dp"
                 android:layout_height="64dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/btn_accent_selector_v2"
                 android:text="@string/btn_next"
@@ -90,6 +90,7 @@
                 android:layout_marginEnd="24dp"
                 android:text="@string/terms_desc3"
                 android:textSize="16sp"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView3" />
@@ -101,6 +102,7 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView4" />

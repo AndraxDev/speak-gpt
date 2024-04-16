@@ -1,6 +1,6 @@
 # SpeakGPT
 
-SpeakGPT is an advanced and highly intuitive open-source AI assistant that utilizes the powerful OpenAI technologies to provide you with unparalleled performance and functionality.
+SpeakGPT is an advanced and highly intuitive open-source AI assistant that utilizes the powerful large language models (LLM) to provide you with unparalleled performance and functionality. Officially it supports GPT models, LLAMA, MIXTRAL, GEMMA, Vision, DALL-E and other models.
 
 ## SpeakGPT Desktop (Early access)
 
@@ -25,6 +25,17 @@ Repo can be found [here](https://github.com/AndraxDev/speak-gpt-web)
 	<img src="https://gpt.teslasoft.org/s/6.png" width="200"/>
 </div>
 
+## API providers supported
+
+- OpenAI (Full support)
+- GROQ (Partial support)
+- Azure (Partial support)
+- Other (must be tested by community, don't be shy and provide your feedback)
+
+> ![NOTE]
+> 
+> To change your API provider, go to settings and select the Custom API host. Don't forget to update and API key.
+
 ## Basic features
 
 - [x] Chat (saved locally but can be imported/exported if needed)
@@ -46,6 +57,7 @@ Repo can be found [here](https://github.com/AndraxDev/speak-gpt-web)
 - [x] Tips for newbies
 - [x] Custom fine-tuned models are supported
 - [x] AMOLED dark mode
+- [x] Custom API provider support
 
 ## Task list
 
@@ -67,13 +79,13 @@ Repo can be found [here](https://github.com/AndraxDev/speak-gpt-web)
 - [x] Add support of custom fine-tuned models
 - [o] Function calling features
 - [x] AMOLED dark mode
+- [x] Custom API provider support
 
 ### ❌ Planned to add (Share your ideas in Issues)
 
 - [ ] Device routines (like set alarm or open app)
 - [ ] Sync chat history
 - [ ] Browse model so SpeakGPT can provide information from Internet
-- [ ] New experimental model llama 7b
 - [ ] Add models exchange portal like prompts store
 
 ## API key safety:

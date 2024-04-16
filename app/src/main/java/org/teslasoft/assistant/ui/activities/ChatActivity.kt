@@ -1479,7 +1479,7 @@ class ChatActivity : FragmentActivity() {
                 btnSend?.isEnabled = true
                 progress?.visibility = View.GONE
                 messageInput?.requestFocus()
-            } else if (!model.contains("gpt") || model.contains(":ft-")) {
+            } else if (model.contains(":ft") || model.contains("ft:")) {
                 putMessage("", true)
                 val completionRequest = CompletionRequest(
                     model = ModelId(model),

@@ -170,12 +170,7 @@ class SettingsActivity : FragmentActivity() {
 
     private var hostChangedListener: HostnameEditorDialog.StateChangesListener = object : HostnameEditorDialog.StateChangesListener {
         override fun onFormError(name: String) {
-            runOnUiThread {
-                Toast.makeText(this@SettingsActivity, "Please enter hostname", Toast.LENGTH_SHORT).show()
-            }
-            val hostnameEditorDialog: HostnameEditorDialog = HostnameEditorDialog.newInstance(name)
-            hostnameEditorDialog.setStateChangedListener(this)
-            hostnameEditorDialog.show(supportFragmentManager.beginTransaction(), "HostEditorDialog")
+            preferences?.setCustomHost("https://api.openai.com/v1/")
         }
 
         override fun onSelected(name: String) {

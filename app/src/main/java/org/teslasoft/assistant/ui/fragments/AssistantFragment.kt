@@ -1120,7 +1120,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 btnAssistantSend?.isEnabled = true
                 assistantLoading?.visibility = View.GONE
                 isProcessing = false
-            } else if (!model.contains("gpt") || model.contains(":ft-")) {
+            } else if (model.contains(":ft") || model.contains("ft:")) {
                 putMessage("", true)
 
                 val completionRequest = CompletionRequest(

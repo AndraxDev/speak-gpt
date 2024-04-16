@@ -11,8 +11,6 @@
     <string name="about_send_feedback">Надіслати відгук</string>
     <string name="about_terms">Умови використання</string>
     <string name="about_privacy">Конфіденційність</string>
-    <string name="activation">Активація</string>
-    <string name="activation_desc1">Щоб використовувати це програмне забезпечення, вам потрібно надати свій ключ API OpenAI. SpeakGPT використовує платні моделі OpenAI.</string>
     <string name="activation_begin">Почнемо</string>
     <string name="activation_desc2">Використання API значно дешевше, ніж фіксована передплата. Аутентифікація за допомогою API-ключа безпечніша, ніж аутентифікація за допомогою імені користувача/пароля. Додаток може отримувати доступ лише до API, а не до інформації облікового запису. Ви можете відкликати API-ключ у будь-який час, не втрачаючи свій обліковий запис. API-ключ зашифрований та зберігається лише на вашому пристрої.</string>
     <string name="activation_openai_api_key">Ключ API OpenAI</string>

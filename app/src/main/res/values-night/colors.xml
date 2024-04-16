@@ -103,5 +103,8 @@
     <color name="tint_purple">#40795896</color>
     <color name="gpt_icon_purple">#C2B4CC</color>
 
+    <color name="tint_orange">#40966E58</color>
+    <color name="gpt_icon_orange">#CCBEB4</color>
+
     <color name="border">#38FFFFFF</color>
 </resources>

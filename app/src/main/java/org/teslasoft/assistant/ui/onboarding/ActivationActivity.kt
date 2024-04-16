@@ -36,6 +36,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 import org.teslasoft.assistant.ui.activities.MainActivity
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.GlobalPreferences
 import org.teslasoft.assistant.preferences.Preferences
 
 class ActivationActivity : FragmentActivity() {
@@ -43,6 +44,7 @@ class ActivationActivity : FragmentActivity() {
     private var btnNext: MaterialButton? = null
     private var webView: WebView? = null
     private var keyInput: EditText? = null
+    private var hostInput: EditText? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +53,7 @@ class ActivationActivity : FragmentActivity() {
         btnNext = findViewById(R.id.btn_next)
         webView = findViewById(R.id.webview)
         keyInput = findViewById(R.id.key_input)
+        hostInput = findViewById(R.id.host_input)
 
         webView?.setBackgroundColor(0x00000000)
 
@@ -91,8 +94,12 @@ class ActivationActivity : FragmentActivity() {
         btnNext?.setOnClickListener {
             if (keyInput?.text.toString() == "") {
                 Toast.makeText(this, "Please enter an API key", Toast.LENGTH_SHORT).show()
+            } else if (hostInput?.text.toString() == "") {
+                Toast.makeText(this, "Please enter API endpoint", Toast.LENGTH_SHORT).show()
             } else {
-                Preferences.getPreferences(this, "").setApiKey(keyInput?.text.toString(), this)
+                val gPreferences = GlobalPreferences.getPreferences(this)
+                gPreferences.setApiKey(keyInput?.text.toString(), this)
+                gPreferences.setCustomHost(hostInput?.text.toString())
                 startActivity(Intent(this, MainActivity::class.java).setAction(Intent.ACTION_VIEW))
                 finish()
             }

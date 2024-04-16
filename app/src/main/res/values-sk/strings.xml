@@ -11,8 +11,6 @@
     <string name="about_send_feedback">Poslať spätnú väzbu</string>
     <string name="about_terms">Podmienky</string>
     <string name="about_privacy">Súkromie</string>
-    <string name="activation">Aktivácia</string>
-    <string name="activation_desc1">Na používanie tohto softvéru je potrebné zadať váš OpenAI API kľúč. SpeakGPT používa platené modely OpenAI.</string>
     <string name="activation_begin">Začnime</string>
     <string name="activation_desc2">Použitie API je výrazne lacnejšie než pevné predplatné. Autentifikácia pomocou API kľúča je bezpečnejšia ako autentifikácia pomocou mena používateľa/hesla. Aplikácia môže pristupovať iba k API, ale nie k informáciám o účte. API kľúč môžete kedykoľvek zrušiť bez straty vášho účtu. API kľúč je zašifrovaný a uložený len na vašom zariadení.</string>
     <string name="activation_openai_api_key">OpenAI API kľúč</string>

@@ -9,9 +9,6 @@
     <string name="about_view_other_projects">Andere Projekte anzeigen</string>
     <string name="about_send_feedback">Feedback senden</string>
     <string name="about_terms">Nutzungsbedingungen</string>
-    <string name="about_privacy">Datenschutz</string>
-    <string name="activation">Aktivierung</string>
-    <string name="activation_desc1">Um diese Software zu verwenden, müssen Sie Ihren OpenAI API-Schlüssel bereitstellen. SpeakGPT verwendet kostenpflichtige OpenAI-Modelle.</string>
     <string name="activation_begin">Lass uns beginnen</string>
     <string name="activation_desc2">Die API-Nutzung ist wesentlich günstiger als ein festes Abonnement.</string>
     <string name="activation_openai_api_key">OpenAI API-Schlüssel</string>
