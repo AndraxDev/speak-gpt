@@ -473,14 +473,14 @@ class SettingsV2Activity : FragmentActivity() {
             tileCustomHost = TileFragment.newInstance(
                 false,
                 false,
-                "Custom host",
+                "API endpoint",
                 null,
                 host,
                 null,
                 R.drawable.ic_user,
                 false,
                 chatId,
-                "This feature allows you to set custom OpenAI API host."
+                "This feature allows you to set custom OpenAI API endpoint."
             )
 
             tileVoice = TileFragment.newInstance(

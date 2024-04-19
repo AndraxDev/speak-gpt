@@ -120,7 +120,7 @@ To secure your API key perform the following steps:
 
 ## Buy me a coffee:
 
-<a href = "https://www.paypal.com/donate/?hosted_button_id=KR6BRY2BPEQTL"><img src = "https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"></a>
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="andrax_dev" data-color="#FF5F5F" data-emoji="☕" data-font="Lato" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00" ></script>
 
 ## License
 

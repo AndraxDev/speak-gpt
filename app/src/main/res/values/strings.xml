@@ -139,7 +139,7 @@
     <string name="prompt_explain">What does "%s" means?</string>
     <string name="cat_all">All</string>
     <string name="incorrect_category">Incorrect category</string>
-    <string name="setting_custom_host">Custom API host</string>
+    <string name="setting_custom_host">Custom API endpoint</string>
     <string name="setting_custom_host_desc">Set if you want to use other LLMs or OpenAI is banned in your country</string>
     <string name="setting_assistant_voice">Assistant voice</string>
     <string name="setting_assistant_voice_desc">Customize assistant voice</string>
