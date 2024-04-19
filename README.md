@@ -109,7 +109,8 @@ To secure your API key perform the following steps:
 >
 > Developer name: Dmytro Ostapenko (AndraxDev)\
 > Contact: dostapenko82@gmail.com, +421951829517\
-> Location: Kosice, Slovakia
+> Legal address: Južná trieda 4B, 04001 Košice, Slovakia 04001\
+> Legal entity ID: 55545386
 
 ## You are appreciated to:
 

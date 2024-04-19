@@ -17,6 +17,7 @@
 package org.teslasoft.assistant.ui.fragments.tabs
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
@@ -141,6 +142,8 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private var onAttach: Boolean = false
 
+    private var mContext: Context? = null
+
     private val postPromptListener: PostPromptDialogFragment.StateChangesListener = object : PostPromptDialogFragment.StateChangesListener {
         override fun onFormFilled(
             name: String,
@@ -171,7 +174,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             type: String,
             category: String
         ) {
-            Toast.makeText(requireActivity(), "Please fill all blanks", Toast.LENGTH_SHORT).show()
+            Toast.makeText(mContext?: return, "Please fill all blanks", Toast.LENGTH_SHORT).show()
 
             val promptDialog: PostPromptDialogFragment =
                 PostPromptDialogFragment.newInstance(name, title, desc, prompt, type, category)
@@ -200,7 +203,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 noInternetLayout?.visibility = View.VISIBLE
                 promptsList?.visibility = View.GONE
                 progressbar?.visibility = View.GONE
-                Toast.makeText(requireActivity(), "Server error. Please try again later.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(mContext?: return, "Server error. Please try again later.", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -219,7 +222,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }
 
         override fun onErrorResponse(tag: String, message: String) {
-            MaterialAlertDialogBuilder(requireActivity(), R.style.App_MaterialAlertDialog)
+            MaterialAlertDialogBuilder(mContext?: return, R.style.App_MaterialAlertDialog)
                 .setTitle("Error")
                 .setMessage("Failed to post prompt. Please check your Internet connection.")
                 .setPositiveButton("Close") { _, _ -> }
@@ -294,7 +297,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 Thread.sleep(100)
             }
 
-            requireActivity().runOnUiThread {
+            (mContext as Activity?)?.runOnUiThread {
                 initLogic()
             }
         }.start()
@@ -322,7 +325,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             }
         })
 
-        reloadAmoled(requireActivity())
+        reloadAmoled(mContext?: return)
 
         noInternetLayout?.visibility = View.GONE
         promptsList?.visibility = View.GONE
@@ -334,7 +337,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         refreshLayout?.setColorSchemeResources(R.color.accent_900)
         refreshLayout?.setProgressBackgroundColorSchemeColor(
-            SurfaceColors.SURFACE_2.getColor(requireActivity())
+            SurfaceColors.SURFACE_2.getColor(mContext ?: return)
         )
 
         refreshLayout?.setSize(SwipeRefreshLayout.LARGE)
@@ -349,7 +352,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         promptsAdapter?.notifyDataSetChanged()
 
-        requestNetwork = RequestNetwork(requireActivity())
+        requestNetwork = RequestNetwork((mContext as Activity?)?: return)
 
         btnSearch?.setImageResource(R.drawable.ic_search)
 
@@ -404,7 +407,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }
 
         btnDetails?.setOnClickListener {
-            MaterialAlertDialogBuilder(requireActivity(), R.style.App_MaterialAlertDialog)
+            MaterialAlertDialogBuilder(mContext?: return@setOnClickListener, R.style.App_MaterialAlertDialog)
                 .setTitle("Error details")
                 .setMessage(networkError)
                 .setPositiveButton("Close") { _, _ -> }
@@ -415,17 +418,16 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun updateModelsPanel(btnAllBg: Int, btnTextBg: Int, btnImageBg: Int, btnAllText: Int, btnTextText: Int, btnImageText: Int) {
-        btnTextModel?.backgroundTintList = ResourcesCompat.getColorStateList(resources, btnTextBg, requireActivity().theme)
-        btnImageModel?.backgroundTintList = ResourcesCompat.getColorStateList(resources, btnImageBg, requireActivity().theme)
-        btnAllModels?.backgroundTintList = ResourcesCompat.getColorStateList(resources, btnAllBg, requireActivity().theme)
-        btnTextModel?.setTextColor(ResourcesCompat.getColor(resources, btnTextText, requireActivity().theme))
-        btnImageModel?.setTextColor(ResourcesCompat.getColor(resources, btnImageText, requireActivity().theme))
-        btnAllModels?.setTextColor(ResourcesCompat.getColor(resources, btnAllText, requireActivity().theme))
+        btnTextModel?.backgroundTintList = ResourcesCompat.getColorStateList(mContext?.resources?: return, btnTextBg, mContext?.theme)
+        btnImageModel?.backgroundTintList = ResourcesCompat.getColorStateList(mContext?.resources?: return, btnImageBg, mContext?.theme)
+        btnAllModels?.backgroundTintList = ResourcesCompat.getColorStateList(mContext?.resources?: return, btnAllBg, mContext?.theme)
+        btnTextModel?.setTextColor(ResourcesCompat.getColor(mContext?.resources?: return, btnTextText, mContext?.theme))
+        btnImageModel?.setTextColor(ResourcesCompat.getColor(mContext?.resources?: return, btnImageText, mContext?.theme))
+        btnAllModels?.setTextColor(ResourcesCompat.getColor(mContext?.resources?: return, btnAllText, mContext?.theme))
     }
 
     private fun isDarkThemeEnabled(): Boolean {
-        return when (resources.configuration.uiMode and
-                Configuration.UI_MODE_NIGHT_MASK) {
+        return when (mContext?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
             Configuration.UI_MODE_NIGHT_YES -> true
             Configuration.UI_MODE_NIGHT_NO -> false
             Configuration.UI_MODE_NIGHT_UNDEFINED -> false
@@ -435,11 +437,11 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     fun reloadAmoled(context: Context) {
         if (isDarkThemeEnabled() && Preferences.getPreferences(context, "").getAmoledPitchBlack()) {
-            searchBar?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, context.theme)!!
-            btnPost?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_600, context.theme)
+            searchBar?.background = ResourcesCompat.getDrawable(mContext?.resources?: return, R.drawable.btn_accent_tonal_amoled, context.theme)!!
+            btnPost?.backgroundTintList = ResourcesCompat.getColorStateList(mContext?.resources?: return, R.color.accent_600, context.theme)
         } else {
-            searchBar?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal, context.theme)!!)
-            btnPost?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_900, context.theme)
+            searchBar?.background = getDisabledDrawable(ResourcesCompat.getDrawable(mContext?.resources?: return, R.drawable.btn_accent_tonal, context.theme)!!)
+            btnPost?.backgroundTintList = ResourcesCompat.getColorStateList(mContext?.resources?: return, R.color.accent_900, context.theme)
         }
     }
 
@@ -579,18 +581,18 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun getDisabledColor() : Int {
-        return SurfaceColors.SURFACE_5.getColor(requireActivity())
+        return SurfaceColors.SURFACE_5.getColor(mContext ?: return 0)
     }
 
     override fun onAttach(context: Context) {
-        super.onAttach(context)
-
+        mContext = context
         onAttach = true
+        super.onAttach(context)
     }
 
     override fun onDetach() {
-        super.onDetach()
-
+        mContext = null
         onAttach = false
+        super.onDetach()
     }
 }

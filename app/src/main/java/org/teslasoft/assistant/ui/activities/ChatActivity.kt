@@ -1612,7 +1612,7 @@ class ChatActivity : FragmentActivity() {
                     "Looks like this model (${model}) is not available to you right now. It can be because of high demand or this model is currently in limited beta. If you are using a fine-tuned model, please make sure you entered correct model name. Usually model starts with 'model_name:ft-' and contains original model name, organization name and timestamp. Example: ada:ft-organization_name:model_name-YYYY-MM-DD-hh-mm-ss."
                 }
                 e.stackTraceToString().contains("Connect timeout has expired") || e.stackTraceToString().contains("SocketTimeoutException") -> {
-                    "Could not connect to OpenAI servers. It may happen when your Internet speed is slow or too many users are using this model at the same time. Try to switch to another model."
+                    "Could not connect to the server. It may happen when your Internet speed is slow or too many users are using this model at the same time. Try to switch to another model."
                 }
                 e.stackTraceToString().contains("This model's maximum") -> {
                     "Too many tokens. It is an internal error, please report it. Also try to truncate your input. Sometimes it may help."
@@ -1621,7 +1621,7 @@ class ChatActivity : FragmentActivity() {
                     "You are currently offline. Please check your connection and try again."
                 }
                 e.stackTraceToString().contains("Incorrect API key") -> {
-                    "Your API key is incorrect. Change it in Settings > Change OpenAI key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked."
+                    "Your API key is incorrect. Change it in Settings > Change API key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked."
                 }
                 e.stackTraceToString().contains("you must provide a model") -> {
                     "No valid model is set in settings. Please change the model and try again."

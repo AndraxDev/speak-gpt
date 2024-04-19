@@ -91,20 +91,22 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
 
     private var isDestroyed: Boolean = false
 
+    private var mContext: Context? = null
+
     var chatListUpdatedListener: AddChatDialogFragment.StateChangesListener = object : AddChatDialogFragment.StateChangesListener {
         override fun onAdd(name: String, id: String, fromFile: Boolean) {
             initSettings()
 
             if (fromFile && selectedFile.replace("null", "") != "") {
-                val chat = requireActivity().getSharedPreferences("chat_$id", FragmentActivity.MODE_PRIVATE)
-                val editor = chat.edit()
+                val chat = mContext?.getSharedPreferences("chat_$id", FragmentActivity.MODE_PRIVATE)
+                val editor = chat?.edit()
 
-                editor.putString("chat", selectedFile)
-                editor.apply()
+                editor?.putString("chat", selectedFile)
+                editor?.apply()
             }
 
             val i = Intent(
-                requireActivity(),
+                mContext ?: return,
                 ChatActivity::class.java
             ).setAction(Intent.ACTION_VIEW)
 
@@ -119,7 +121,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
         }
 
         override fun onError(fromFile: Boolean) {
-            Toast.makeText(requireActivity(), "Please fill name field", Toast.LENGTH_SHORT).show()
+            Toast.makeText(mContext ?: return, "Please fill name field", Toast.LENGTH_SHORT).show()
 
             val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", fromFile, false, false)
             chatDialogFragment.setStateChangedListener(this)
@@ -135,7 +137,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
         }
 
         override fun onDuplicate() {
-            Toast.makeText(requireActivity(), "Name must be unique", Toast.LENGTH_SHORT).show()
+            Toast.makeText(mContext ?: return, "Name must be unique", Toast.LENGTH_SHORT).show()
 
             val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false, false, false)
             chatDialogFragment.setStateChangedListener(this)
@@ -144,15 +146,21 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
     }
 
     override fun onAttach(context: Context) {
-        super.onAttach(context)
-
         isAttached = true
+        mContext = context
+        super.onAttach(context)
     }
 
     override fun onDetach() {
-        super.onDetach()
-
         isAttached = false
+        mContext = null
+        super.onDetach()
+    }
+
+    override fun onDestroy() {
+        isAttached = false
+        mContext = null
+        super.onDestroy()
     }
 
     override fun onCreateView(
@@ -165,15 +173,15 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
 
     fun reloadAmoled(context: Context) {
         if (!isDestroyed && isDarkThemeEnabled() && preferences!!.getAmoledPitchBlack()) {
-            btnSettings?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, context.theme)!!
-            bgSearch?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, context.theme)!!
-            btnImport?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.amoled_accent_100, context.theme)
-            btnAdd?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_600, context.theme)
+            btnSettings?.background = ResourcesCompat.getDrawable(mContext?.resources?: return, R.drawable.btn_accent_tonal_amoled, context.theme)!!
+            bgSearch?.background = ResourcesCompat.getDrawable(mContext?.resources?: return, R.drawable.btn_accent_tonal_amoled, context.theme)!!
+            btnImport?.backgroundTintList = ResourcesCompat.getColorStateList(mContext?.resources?: return, R.color.amoled_accent_100, context.theme)
+            btnAdd?.backgroundTintList = ResourcesCompat.getColorStateList(mContext?.resources?: return, R.color.accent_600, context.theme)
         } else {
-            btnSettings?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal, context.theme)!!)
-            bgSearch?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal, context.theme)!!)
-            btnImport?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_250, context.theme)
-            btnAdd?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_900, context.theme)
+            btnSettings?.background = getDisabledDrawable(ResourcesCompat.getDrawable(mContext?.resources?: return, R.drawable.btn_accent_tonal, context.theme)!!)
+            bgSearch?.background = getDisabledDrawable(ResourcesCompat.getDrawable(mContext?.resources?: return, R.drawable.btn_accent_tonal, context.theme)!!)
+            btnImport?.backgroundTintList = ResourcesCompat.getColorStateList(mContext?.resources?: return, R.color.accent_250, context.theme)
+            btnAdd?.backgroundTintList = ResourcesCompat.getColorStateList(mContext?.resources?: return, R.color.accent_900, context.theme)
         }
     }
 
@@ -185,9 +193,9 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
                 Thread.sleep(100)
             }
 
-            preferences = Preferences.getPreferences(requireActivity(), "").addOnPreferencesChangedListener(this)
+            preferences = Preferences.getPreferences(mContext ?: return@Thread, "").addOnPreferencesChangedListener(this)
 
-            requireActivity().runOnUiThread {
+            (mContext as Activity?)?.runOnUiThread {
                 initUI(view)
                 initChatsList()
                 initLogics()
@@ -203,7 +211,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
         fieldSearch = view.findViewById(R.id.field_search)
         bgSearch = view.findViewById(R.id.bg_search)
         btnAdd = view.findViewById(R.id.btn_add)
-        reloadAmoled(requireActivity())
+        reloadAmoled(mContext?:return)
     }
 
     private fun initChatsList() {
@@ -217,9 +225,9 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
     private fun initLogics() {
         btnSettings?.setOnClickListener {
             if (preferences!!.getExperimentalUI()) {
-                startActivity(Intent(requireActivity(), SettingsV2Activity::class.java).setAction(Intent.ACTION_VIEW))
+                startActivity(Intent(mContext?: return@setOnClickListener, SettingsV2Activity::class.java).setAction(Intent.ACTION_VIEW))
             } else {
-                startActivity(Intent(requireActivity(), SettingsActivity::class.java).setAction(Intent.ACTION_VIEW))
+                startActivity(Intent(mContext?: return@setOnClickListener, SettingsActivity::class.java).setAction(Intent.ACTION_VIEW))
             }
         }
 
@@ -281,7 +289,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
                             "AddChatDialog"
                         )
                     } else {
-                        MaterialAlertDialogBuilder(requireActivity(), R.style.App_MaterialAlertDialog)
+                        MaterialAlertDialogBuilder(mContext?: return@also, R.style.App_MaterialAlertDialog)
                             .setTitle("Error")
                             .setMessage("An error is occurred while analyzing file. The file might be corrupted or invalid.")
                             .setPositiveButton("Close") { _, _ -> }
@@ -304,7 +312,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
 
     private fun readFile(uri: Uri) : String {
         val stringBuilder = StringBuilder()
-        requireActivity().contentResolver.openInputStream(uri)?.use { inputStream ->
+        mContext?.contentResolver?.openInputStream(uri)?.use { inputStream ->
             BufferedReader(InputStreamReader(inputStream)).use { reader ->
                 var line: String? = reader.readLine()
                 while (line != null) {
@@ -328,14 +336,14 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
     }
 
     private fun preInit() {
-        if (preferences!!.getApiKey(requireActivity()) == "") {
+        if (preferences!!.getApiKey(mContext?: return) == "") {
             if (preferences!!.getOldApiKey() == "") {
-                requireActivity().getSharedPreferences("chat_list", Context.MODE_PRIVATE).edit().putString("data", "[]").apply()
-                startActivity(Intent(requireActivity(), WelcomeActivity::class.java).setAction(Intent.ACTION_VIEW))
-                requireActivity().finish()
+                mContext?.getSharedPreferences("chat_list", Context.MODE_PRIVATE)?.edit()?.putString("data", "[]")?.apply()
+                startActivity(Intent(mContext?: return, WelcomeActivity::class.java).setAction(Intent.ACTION_VIEW))
+                (mContext as Activity?)?.finish()
                 isDestroyed = true
             } else {
-                preferences!!.secureApiKey(requireActivity())
+                preferences!!.secureApiKey(mContext?: return)
                 initSettings()
             }
         } else {
@@ -344,7 +352,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
     }
 
     private fun initSettings() {
-        chats = ChatPreferences.getChatPreferences().getChatList(requireActivity())
+        chats = ChatPreferences.getChatPreferences().getChatList(mContext?: return)
 
         // R8 went fuck himself...
         if (chats == null) chats = arrayListOf()
@@ -388,8 +396,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
     }
 
     private fun isDarkThemeEnabled(): Boolean {
-        return when (resources.configuration.uiMode and
-                Configuration.UI_MODE_NIGHT_MASK) {
+        return when (mContext?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
             Configuration.UI_MODE_NIGHT_YES -> true
             Configuration.UI_MODE_NIGHT_NO -> false
             Configuration.UI_MODE_NIGHT_UNDEFINED -> false
@@ -399,15 +406,15 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
 
     private fun getDisabledColor() : Int {
         return if (isDarkThemeEnabled() && preferences!!.getAmoledPitchBlack()) {
-            ResourcesCompat.getColor(requireActivity().resources, R.color.amoled_accent_100, requireActivity().theme)
-        } else {
-            SurfaceColors.SURFACE_5.getColor(requireActivity())
-        }
+            ResourcesCompat.getColor(mContext?.resources!!, R.color.amoled_accent_100,  mContext?.theme)
+        } else if (mContext != null) {
+                SurfaceColors.SURFACE_5.getColor(mContext!!)
+        } else 0
     }
 
     override fun onPreferencesChanged(key: String, value: String) {
         if ((key == "model" || key == "firstMessage" || key == "forceUpdate") && isAttached && !isDestroyed) {
-            requireActivity().runOnUiThread {
+            (mContext as Activity?)?.runOnUiThread {
                 initSettings()
             }
         }
@@ -416,14 +423,18 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
     override fun onResume() {
         super.onResume()
 
-        val chatList = ChatPreferences.getChatPreferences().getChatList(requireActivity())
-
-        // Compare chats and chatList and update the list if needed
-        if (chats != chatList) {
-            chats = chatList
-            adapter = ChatListAdapter(chats, this@ChatsListFragment)
-            chatsList?.adapter = adapter
-            adapter?.notifyDataSetChanged()
+        // Another dumb things goes here...
+        // Oh yes, it's not a code smell, it just appears that R8 minifier is a bit dumb
+        // Nothing interesting, you may ignore this...
+        if (!chats.isNullOrEmpty()) {
+            val chatList = ChatPreferences.getChatPreferences().getChatList(mContext?: return)
+            // Compare chats and chatList and update the list if needed
+            if (chats != chatList) {
+                chats = chatList
+                adapter = ChatListAdapter(chats, this@ChatsListFragment)
+                chatsList?.adapter = adapter
+                adapter?.notifyDataSetChanged()
+            }
         }
     }
 }

@@ -16,6 +16,7 @@
 
 package org.teslasoft.assistant.ui.fragments.tabs
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -42,6 +43,8 @@ class TipsFragment : Fragment() {
 
     private var onAttach: Boolean = false
 
+    private var mContext: Context? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -53,7 +56,7 @@ class TipsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val preferences: Preferences = Preferences.getPreferences(requireActivity(), "")
+        val preferences: Preferences = Preferences.getPreferences(mContext?: return, "")
 
         ad = view.findViewById(R.id.ad)
 
@@ -62,16 +65,16 @@ class TipsFragment : Fragment() {
                 Thread.sleep(100)
             }
 
-            requireActivity().runOnUiThread {
+            (mContext as Activity?)?.runOnUiThread {
                 if (preferences.getAdsEnabled()) {
-                    MobileAds.initialize(requireActivity()) { /* unused */ }
+                    MobileAds.initialize(mContext?: return@runOnUiThread) { /* unused */ }
 
                     val requestConfiguration = RequestConfiguration.Builder()
                         .setTestDeviceIds(TestDevicesAds.TEST_DEVICES)
                         .build()
                     MobileAds.setRequestConfiguration(requestConfiguration)
 
-                    val adView = AdView(requireActivity())
+                    val adView = AdView(mContext ?: return@runOnUiThread)
                     adView.setAdSize(AdSize.LARGE_BANNER)
                     adView.adUnitId =
                         if (preferences.getDebugTestAds()) getString(R.string.ad_banner_unit_id_test) else getString(
@@ -101,14 +104,15 @@ class TipsFragment : Fragment() {
     }
 
     override fun onAttach(context: Context) {
-        super.onAttach(context)
-
+        mContext = context
         onAttach = true
+
+        super.onAttach(context)
     }
 
     override fun onDetach() {
-        super.onDetach()
-
+        mContext = null
         onAttach = false
+        super.onDetach()
     }
 }

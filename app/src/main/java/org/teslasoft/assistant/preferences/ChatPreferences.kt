@@ -92,6 +92,12 @@ class ChatPreferences private constructor() {
             arrayListOf()
         }
 
+        // Bugfix for R8 minifier, yes It make no sense for regular programmer, but it's a bug in R8 minifier
+        if (list == null) list = arrayListOf()
+
+        // Dumb things goes gere
+        if (list.isEmpty()) return arrayListOf()
+
         for (chat in list) {
             val messagesList = getChatById(context, Hash.hash(chat["name"].toString()))
 
@@ -103,7 +109,7 @@ class ChatPreferences private constructor() {
             }
         }
 
-        // Bugfix for R8 minifier
+        // Bugfix for R8 minifier, yes It make no sense for regular programmer, but it's a bug in R8 minifier
         if (list == null) list = arrayListOf()
 
         return list
