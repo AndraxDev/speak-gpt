@@ -207,6 +207,7 @@ class ChatActivity : FragmentActivity() {
 
     // Init preferences
     private var preferences: Preferences? = null
+    private var preferencesChangedListener: Preferences.PreferencesChangedListener? = null
 
     private val speechListener = object : RecognitionListener {
         override fun onReadyForSpeech(params: Bundle?) { /* unused */ }

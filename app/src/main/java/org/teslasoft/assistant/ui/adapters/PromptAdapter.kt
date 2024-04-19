@@ -117,7 +117,7 @@ class PromptAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragment
         likesCounter?.setTextColor(color)
         background?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(mContext.requireActivity(),
-                R.drawable.btn_accent_tonal_selector)!!, tintColor)
+                R.drawable.btn_accent_tonal_selector_transparent)!!, tintColor)
 
         likeIcon?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(mContext.requireActivity(),

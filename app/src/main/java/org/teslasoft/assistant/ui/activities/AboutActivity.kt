@@ -161,7 +161,7 @@ class AboutActivity : FragmentActivity() {
 
         btnDonate?.setOnClickListener {
             val i = Intent()
-            i.data = Uri.parse("https://www.paypal.com/donate/?hosted_button_id=KR6BRY2BPEQTL")
+            i.data = Uri.parse("https://buymeacoffee.com/andrax_dev")
             i.action = Intent.ACTION_VIEW
             startActivity(i)
         }

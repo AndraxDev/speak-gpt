@@ -156,10 +156,10 @@
                     android:padding="8dp">
 
                     <LinearLayout
-                        android:layout_width="71dp"
-                        android:layout_height="70dp"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
                         android:background="@drawable/ic_github"
-                        android:orientation="vertical"></LinearLayout>
+                        android:orientation="vertical" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -175,11 +175,9 @@
 
                     <LinearLayout
                         android:layout_width="120dp"
-                        android:layout_height="70dp"
-                        android:background="@drawable/paypal_button"
-                        android:orientation="horizontal">
-
-                    </LinearLayout>
+                        android:layout_height="120dp"
+                        android:background="@drawable/bmc_qr"
+                        android:orientation="horizontal" />
                 </LinearLayout>
 
             </LinearLayout>

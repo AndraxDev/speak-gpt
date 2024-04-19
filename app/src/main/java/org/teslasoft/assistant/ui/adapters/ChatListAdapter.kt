@@ -70,11 +70,14 @@ class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragme
         val name: TextView = mView!!.findViewById(R.id.name)
         val selector: ConstraintLayout = mView.findViewById(R.id.chat_selector)
         val icon: ImageView = mView.findViewById(R.id.chat_icon)
+        val textFirstMessage: TextView = mView.findViewById(R.id.chat_first_message)
         val modelName: TextView = mView.findViewById(R.id.model_name)
 
         icon.setImageResource(R.drawable.chatgpt_icon)
 
         name.text = if (dataArray?.get(position)?.get("name").toString().trim().contains("_autoname_")) "Untitled chat" else dataArray?.get(position)?.get("name").toString()
+
+        textFirstMessage.text = dataArray?.get(position)?.get("first_message") ?: "No messages yet."
 
         val model: String = Preferences.getPreferences(mContext.requireActivity(), Hash.hash(dataArray?.get(position)?.get("name").toString())).getModel()
 
@@ -160,7 +163,7 @@ class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragme
             ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_selector_tint)!!, mContext.requireActivity().getColor(tintColor))
 
         icon.background = getAccentDrawable(
-            ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_v3)!!, mContext.requireActivity().getColor(tintColor))
+            ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_transparent)!!, mContext.requireActivity().getColor(tintColor))
 
         icon.setImageResource(R.drawable.chatgpt_icon)
         DrawableCompat.setTint(icon.getDrawable(), ContextCompat.getColor(mContext.requireActivity(), iconColor))

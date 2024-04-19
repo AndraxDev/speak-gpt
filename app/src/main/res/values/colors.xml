@@ -16,12 +16,12 @@
     <color name="white">#ffffffff</color>
     <color name="warning">#ffff3d00</color>
 
-    <color name="amoled_accent_50">#0a0a0a</color>
-    <color name="amoled_accent_100">#121212</color>
-    <color name="amoled_accent_200">#181818</color>
-    <color name="amoled_accent_250">#212121</color>
-    <color name="amoled_accent_400">#252525</color>
-    <color name="amoled_accent_300">#2A2A2A</color>
+    <color name="amoled_accent_50">#121212</color>
+    <color name="amoled_accent_100">#181818</color>
+    <color name="amoled_accent_200">#212121</color>
+    <color name="amoled_accent_250">#242424</color>
+    <color name="amoled_accent_400">#292929</color>
+    <color name="amoled_accent_300">#323232</color>
     <color name="amoled_accent_500">#3F3F3F</color>
     <color name="amoled_accent_600">#3F3F3F</color>
     <color name="amoled_bottom_navbar">@color/accent_50</color>
@@ -61,6 +61,7 @@
     <color name="text_hint">#99000000</color>
     <color name="text_subtitle_inv">#AAFFFFFF</color>
     <color name="ripple">#4D000000</color>
+    <color name="ripple_bg">#CC000000</color>
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/accent_900</color>
     <color name="system_bars">@color/accent_100</color>
     <color name="marker">#15000000</color>

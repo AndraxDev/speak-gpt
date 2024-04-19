@@ -18,6 +18,7 @@ package org.teslasoft.assistant.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.widget.Toast
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -89,6 +90,17 @@ class ChatPreferences private constructor() {
             gson.fromJson<Any>(json, type) as ArrayList<HashMap<String, String>>
         } catch (e: Exception) {
             arrayListOf()
+        }
+
+        for (chat in list) {
+            val messagesList = getChatById(context, Hash.hash(chat["name"].toString()))
+
+            if (messagesList.isNotEmpty()) {
+                val firstMessage = messagesList[0]["message"].toString()
+                chat["first_message"] = firstMessage
+            } else {
+                chat["first_message"] = "No messages yet."
+            }
         }
 
         // Bugfix for R8 minifier

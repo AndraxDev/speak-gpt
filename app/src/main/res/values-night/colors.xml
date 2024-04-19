@@ -29,6 +29,7 @@
     <color name="text_hint">#66FFFFFF</color>
     <color name="text_subtitle_inv">#99000000</color>
     <color name="ripple">#4DFFFFFF</color>
+    <color name="ripple_bg">#CCFFFFFF</color>
     <color name="success">#9CE38F</color>
     <color name="text">#eeffffff</color>
     <color name="hint">#aaffffff</color>

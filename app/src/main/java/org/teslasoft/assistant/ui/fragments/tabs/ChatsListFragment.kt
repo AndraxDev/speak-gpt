@@ -406,10 +406,24 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
     }
 
     override fun onPreferencesChanged(key: String, value: String) {
-        if ((key == "model" || key == "forceUpdate") && isAttached && !isDestroyed) {
+        if ((key == "model" || key == "firstMessage" || key == "forceUpdate") && isAttached && !isDestroyed) {
             requireActivity().runOnUiThread {
                 initSettings()
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val chatList = ChatPreferences.getChatPreferences().getChatList(requireActivity())
+
+        // Compare chats and chatList and update the list if needed
+        if (chats != chatList) {
+            chats = chatList
+            adapter = ChatListAdapter(chats, this@ChatsListFragment)
+            chatsList?.adapter = adapter
+            adapter?.notifyDataSetChanged()
         }
     }
 }
