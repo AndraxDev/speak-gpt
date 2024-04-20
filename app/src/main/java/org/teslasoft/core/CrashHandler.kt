@@ -20,6 +20,8 @@ import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Intent
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -49,6 +51,37 @@ class CrashHandlerActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        window.statusBarColor = getColor(R.color.amoled_window_background)
+        window.navigationBarColor = getColor(R.color.amoled_window_background)
+
+        val appVersion = try {
+            val pInfo: PackageInfo = if (Build.VERSION.SDK_INT >= 33) {
+                packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
+            } else {
+                packageManager.getPackageInfo(packageName, 0)
+            }
+
+            val version = pInfo.versionName
+
+            version
+        } catch (e: PackageManager.NameNotFoundException) {
+            "unknown"
+        }
+
+        val versionCode = try {
+            val pInfo: PackageInfo = if (Build.VERSION.SDK_INT >= 33) {
+                packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
+            } else {
+                packageManager.getPackageInfo(packageName, 0)
+            }
+
+            val version = pInfo.longVersionCode
+
+            version
+        } catch (e: PackageManager.NameNotFoundException) {
+            "unknown"
+        }
+
         try {
             error = CustomActivityOnCrash.getStackTraceFromIntent(intent)
 
@@ -68,7 +101,7 @@ class CrashHandlerActivity : FragmentActivity() {
 
             textError = findViewById(R.id.text_error)
             textError!!.setTextIsSelectable(true)
-            textError!!.text = "\nAn app has been crashed and needs to be restarted.\n\n===== BEGIN SYSTEM INFO =====\nAndroid version: ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT} ${Build.VERSION.CODENAME})\nROM version: ${Build.VERSION.INCREMENTAL}\nDevice model: ${Build.MODEL}\nAndroid device ID: ${Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)}\nInstallation ID: ${IID}\nEffective time: ${
+            textError!!.text = "\nAn app has been crashed and needs to be restarted.\n\n===== BEGIN SYSTEM INFO =====\nAndroid version: ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT} ${Build.VERSION.CODENAME})\nROM version: ${Build.VERSION.INCREMENTAL}\nApp version: $appVersion ($versionCode)\nDevice model: ${Build.MODEL}\nAndroid device ID: ${Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)}\nInstallation ID: ${IID}\nEffective time: ${
                 DateTimeFormatter.ISO_INSTANT.format(
                     Instant.now())}\n===== END SYSTEM INFO =====\n\n===== BEGIN OF CRASH =====\n$error\n===== END OF CRASH =====\n"
 

@@ -55,6 +55,7 @@ import org.teslasoft.assistant.Config.Companion.API_ENDPOINT
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.DeviceInfoProvider
 import org.teslasoft.assistant.preferences.Preferences
+import org.teslasoft.assistant.pwa.PWAActivity
 import org.teslasoft.assistant.ui.fragments.tabs.ChatsListFragment
 import org.teslasoft.assistant.ui.fragments.tabs.PromptsFragment
 import org.teslasoft.core.api.network.RequestNetwork
@@ -69,6 +70,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     private var debuggerWindow: ConstraintLayout? = null
     private var btnCloseDebugger: ImageButton? = null
     private var btnInitiateCrash: MaterialButton? = null
+    private var btnLaunchPWA: MaterialButton? = null
     private var btnSwitchAds: MaterialButton? = null
     private var threadLoader: LinearLayout? = null
     private var devIds: TextView? = null
@@ -136,6 +138,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         debuggerWindow = findViewById(R.id.debugger_window)
         btnCloseDebugger = findViewById(R.id.btn_close_debugger)
         btnInitiateCrash = findViewById(R.id.btn_initiate_crash)
+        btnLaunchPWA = findViewById(R.id.btn_launch_pwa)
         btnSwitchAds = findViewById(R.id.btn_switch_ads)
         devIds = findViewById(R.id.dev_ids)
         threadLoader = findViewById(R.id.thread_loader)
@@ -234,6 +237,10 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
 
                     btnInitiateCrash?.setOnClickListener {
                         throw RuntimeException("Test crash")
+                    }
+
+                    btnLaunchPWA?.setOnClickListener {
+                        startActivity(Intent(this, PWAActivity::class.java))
                     }
 
                     if (preferences!!.getAdsEnabled()) {
@@ -355,6 +362,8 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
             btnCloseDebugger?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, theme)
             btnInitiateCrash?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.amoled_accent_100, theme)
             btnInitiateCrash?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_600, theme))
+            btnLaunchPWA?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.amoled_accent_100, theme)
+            btnLaunchPWA?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_600, theme))
             devIds?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_16_amoled, theme)
             devIds?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_600, theme))
 
@@ -383,6 +392,8 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
             btnCloseDebugger?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal, theme)!!)
             btnInitiateCrash?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_250, theme)
             btnInitiateCrash?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_900, theme))
+            btnLaunchPWA?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_250, theme)
+            btnLaunchPWA?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_900, theme))
             devIds?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_16, theme)!!)
             devIds?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_900, theme))
 

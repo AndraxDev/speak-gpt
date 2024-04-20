@@ -56,6 +56,20 @@
         <item name="buttonBarPositiveButtonStyle">@style/App.PositiveButtonStyle</item>
     </style>
 
+    <style name="Theme.PWA" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/pwa_accent</item>
+        <item name="colorOnPrimary">@color/pwa_background</item>
+        <item name="colorSecondary">@color/pwa_accent</item>
+        <item name="colorOnSecondary">@color/pwa_background</item>
+        <item name="colorAccent">@color/pwa_accent</item>
+        <item name="android:statusBarColor">@color/pwa_background</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">@color/pwa_background</item>
+        <item name="android:windowBackground">@color/pwa_background</item>
+        <item name="android:windowAnimationStyle">@style/Theme.Anim.Fade.Material</item>
+        <item name="android:typeface">sans</item>
+    </style>
+
     <style name="App.NegativeButtonStyle" parent="Widget.Material3.Button.TextButton.Dialog">
         <item name="android:textColor">@color/accent_900</item>
     </style>

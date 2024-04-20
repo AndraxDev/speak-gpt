@@ -138,4 +138,7 @@
     <color name="gpt_icon_orange">#733600</color>
 
     <color name="border">#33000000</color>
+
+    <color name="pwa_background">#191c20</color>
+    <color name="pwa_accent">#a9c7ff</color>
 </resources>
