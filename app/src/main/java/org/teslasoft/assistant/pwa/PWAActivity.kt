@@ -3,6 +3,7 @@ package org.teslasoft.assistant.pwa
 import android.os.Build
 import android.os.Bundle
 import android.webkit.WebView
+import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
@@ -15,6 +16,7 @@ import org.teslasoft.assistant.R
 class PWAActivity : FragmentActivity() {
     private var webView: WebView? = null
     private var loader: ProgressBar? = null
+    private var btnClose: ImageButton? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,8 +26,13 @@ class PWAActivity : FragmentActivity() {
 
         setContentView(R.layout.activity_pwa)
 
-        webView = findViewById(R.id.webView)
+        webView = findViewById(R.id.web_view)
         loader = findViewById(R.id.loader)
+        btnClose = findViewById(R.id.btn_close)
+
+        btnClose?.setOnClickListener {
+            closePWA()
+        }
 
         webView?.settings?.javaScriptEnabled = true
         webView?.settings?.domStorageEnabled = true
@@ -52,7 +59,7 @@ class PWAActivity : FragmentActivity() {
                         it.goBack()
                         return@registerOnBackInvokedCallback
                     } else {
-                        finish()
+                        closePWA()
                     }
                 }
             }
@@ -64,11 +71,22 @@ class PWAActivity : FragmentActivity() {
                             it.goBack()
                             return
                         } else {
-                            finish()
+                            closePWA()
                         }
                     }
                 }
             })
         }
+    }
+
+    private fun closePWA() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("PWA")
+            .setMessage("Are you sure you want to close the PWA?")
+            .setPositiveButton("Close") { _, _ ->
+                finish()
+            }
+            .setNegativeButton("Cancel") { _, _ -> }
+            .show()
     }
 }
