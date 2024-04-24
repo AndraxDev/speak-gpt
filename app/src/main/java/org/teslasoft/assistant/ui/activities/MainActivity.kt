@@ -158,18 +158,9 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
             onBackInvokedDispatcher.registerOnBackInvokedCallback(
                 OnBackInvokedDispatcher.PRIORITY_DEFAULT
             ) {
-                MaterialAlertDialogBuilder(this)
-                    .setTitle("Confirm exit")
-                    .setMessage("Do you want to exit?")
-                    .setPositiveButton("Yes") { _, _ ->
-                        finish()
-                    }
-                    .setNegativeButton("No") { _, _ -> }
-                    .show()
-            }
-        } else {
-            onBackPressedDispatcher.addCallback(this /* lifecycle owner */, object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
+                if (debuggerWindow?.visibility == View.VISIBLE) {
+                    debuggerWindow?.visibility = View.GONE
+                } else {
                     MaterialAlertDialogBuilder(this@MainActivity)
                         .setTitle("Confirm exit")
                         .setMessage("Do you want to exit?")
@@ -178,6 +169,23 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                         }
                         .setNegativeButton("No") { _, _ -> }
                         .show()
+                }
+            }
+        } else {
+            onBackPressedDispatcher.addCallback(this /* lifecycle owner */, object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (debuggerWindow?.visibility == View.VISIBLE) {
+                        debuggerWindow?.visibility = View.GONE
+                    } else {
+                        MaterialAlertDialogBuilder(this@MainActivity)
+                            .setTitle("Confirm exit")
+                            .setMessage("Do you want to exit?")
+                            .setPositiveButton("Yes") { _, _ ->
+                                finish()
+                            }
+                            .setNegativeButton("No") { _, _ -> }
+                            .show()
+                    }
                 }
             })
         }

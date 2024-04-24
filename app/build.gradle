@@ -9,20 +9,12 @@ android {
     namespace 'org.teslasoft.assistant'
     compileSdk 34
 
-    ndkVersion "23.1.7779620"
-
     defaultConfig {
         applicationId "org.teslasoft.assistant"
         minSdk 28
-        //noinspection ExpiredTargetSdkVersion
         targetSdk 34
         versionCode 320
         versionName "3.20"
-        externalNativeBuild {
-            cmake {
-                cppFlags ''
-            }
-        }
     }
 
     buildTypes {
@@ -48,12 +40,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = '17'
-    }
-    externalNativeBuild {
-        cmake {
-            path file('cpp/CMakeLists.txt')
-            version '3.22.1'
-        }
     }
 }
 
@@ -83,16 +69,9 @@ dependencies {
     implementation 'com.google.mlkit:language-id:17.0.5'
     implementation 'cat.ereza:customactivityoncrash:2.4.0'
     implementation 'org.conscrypt:conscrypt-android:2.5.2'
-    implementation ('com.google.android.gms:play-services-ads:23.0.0')
+    implementation 'com.google.android.gms:play-services-ads:23.0.0'
 
     implementation platform('com.google.firebase:firebase-bom:32.8.1') {
         exclude group: 'com.google.android.gms', module: 'play-services-ads-lite'
     }
-
-//    implementation ('com.google.firebase:firebase-analytics') {
-//        exclude group: 'com.google.android.gms', module: 'play-services-ads'
-//    }
-
-    // VR SDK, remove before publishing to Google Play
-    // implementation 'com.tencent.tcr:vr-sdk-oculus:0.2.1'
 }

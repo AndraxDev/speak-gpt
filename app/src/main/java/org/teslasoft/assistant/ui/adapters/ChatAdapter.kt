@@ -58,7 +58,9 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActiv
         dalleImage = mView.findViewById(R.id.dalle_image)
         btnCopy = mView.findViewById(R.id.btn_copy)
 
-        btnCopy?.background = getSurface3Drawable(AppCompatResources.getDrawable(mContext, R.drawable.btn_accent_tonal)!!, mContext)
+        btnEdit = mView.findViewById(R.id.btn_edit)
+
+        // btnCopy?.background = getSurface3Drawable(AppCompatResources.getDrawable(mContext, R.drawable.btn_accent_tonal)!!, mContext)
 
         super.getView(position, mView, parent)
 

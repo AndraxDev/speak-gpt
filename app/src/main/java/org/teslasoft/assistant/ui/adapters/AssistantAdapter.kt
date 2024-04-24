@@ -48,6 +48,8 @@ class AssistantAdapter(data: ArrayList<HashMap<String, Any>>?, context: Fragment
         dalleImage = mView.findViewById(R.id.dalle_image)
         btnCopy = mView.findViewById(R.id.btn_copy)
 
+        btnEdit = mView.findViewById(R.id.btn_edit)
+
         message?.setTextIsSelectable(true)
 
         if (dataArray?.get(position)?.get("isBot") == true) {
@@ -62,7 +64,7 @@ class AssistantAdapter(data: ArrayList<HashMap<String, Any>>?, context: Fragment
             }
         }
 
-        btnCopy?.background = getSurface3Drawable(AppCompatResources.getDrawable(mContext, R.drawable.btn_accent_tonal)!!, mContext)
+        // btnCopy?.background = getSurface3Drawable(AppCompatResources.getDrawable(mContext, R.drawable.btn_accent_tonal)!!, mContext)
 
         super.getView(position, mView, parent)
 

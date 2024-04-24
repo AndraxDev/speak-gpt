@@ -171,6 +171,28 @@ class ChatPreferences private constructor() {
         return x.toString()
     }
 
+    fun editMessage(context: Context, chatId: String, position: Int, newMessage: String) {
+        val list = getChatById(context, chatId)
+
+        list[position]["message"] = newMessage
+
+        val json: String = Gson().toJson(list)
+
+        val settings: SharedPreferences = context.getSharedPreferences("chat_$chatId", Context.MODE_PRIVATE)
+        settings.edit().putString("chat", json).apply()
+    }
+
+    fun deleteMessage(context: Context, chatId: String, position: Int) {
+        val list = getChatById(context, chatId)
+
+        list.removeAt(position)
+
+        val json: String = Gson().toJson(list)
+
+        val settings: SharedPreferences = context.getSharedPreferences("chat_$chatId", Context.MODE_PRIVATE)
+        settings.edit().putString("chat", json).apply()
+    }
+
     /**
      * Generates a unique chat ID for a new chat (autoname).
      *

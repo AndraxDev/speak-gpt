@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="12dp"
         android:background="@drawable/btn_accent_tonal"
@@ -34,77 +34,75 @@
             android:id="@+id/bubble_bg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/bubble_in">
 
             <TextView
                 android:id="@+id/message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="8dp"
                 android:minWidth="50dp"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
                 android:textColor="@color/accent_900"
                 android:textIsSelectable="true"
                 android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/dalle_image"
-                android:layout_width="240dp"
-                android:layout_height="0dp"
-                android:descendantFocusability="blocksDescendants"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintDimensionRatio="H,1:1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/message"
-                app:layout_constraintVertical_bias="0.0"
-                app:srcCompat="@drawable/assistant" />
 
             <LinearLayout
                 android:id="@+id/image_frame"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:paddingTop="16dp"
-                android:paddingBottom="16dp"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
+                android:paddingTop="8dp"
+                android:visibility="visible"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/message">
 
+                <ImageView
+                    android:id="@+id/dalle_image"
+                    android:layout_width="240dp"
+                    android:layout_height="240dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:descendantFocusability="blocksDescendants"
+                    app:srcCompat="@drawable/assistant" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="12dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/message">
+                app:layout_constraintTop_toBottomOf="@+id/image_frame">
 
                 <ImageButton
                     android:id="@+id/btn_copy"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:layout_marginStart="8dp"
-                    android:background="@drawable/btn_accent_tonal"
+                    android:layout_marginEnd="8dp"
+                    android:background="@color/transparent"
                     android:contentDescription="@string/btn_copy"
                     android:descendantFocusability="blocksDescendants"
                     app:srcCompat="@drawable/ic_copy" />
+
+                <ImageButton
+                    android:id="@+id/btn_edit"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="@color/transparent"
+                    android:contentDescription="Edit"
+                    android:descendantFocusability="blocksDescendants"
+                    android:src="@drawable/ic_edit"
+                    app:srcCompat="@drawable/ic_edit" />
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -105,22 +105,22 @@
     <color name="disabled_background">#66999999</color>
     <color name="disabled_icon">#FF999999</color>
 
-    <color name="tint_red">#40965050</color>
+    <color name="tint_red">#30965050</color>
     <color name="gpt_icon_red">#CCB4B4</color>
 
-    <color name="tint_yellow">#40877249</color>
+    <color name="tint_yellow">#30877249</color>
     <color name="gpt_icon_yellow">#D0C9BC</color>
 
-    <color name="tint_green">#30739665</color>
+    <color name="tint_green">#29739665</color>
     <color name="gpt_icon_green">#C2CCB4</color>
 
-    <color name="tint_blue">#405F7CA7</color>
+    <color name="tint_blue">#305F7CA7</color>
     <color name="gpt_icon_blue">#B4BFCC</color>
 
-    <color name="tint_purple">#40795896</color>
+    <color name="tint_purple">#30795896</color>
     <color name="gpt_icon_purple">#C2B4CC</color>
 
-    <color name="tint_orange">#40966E58</color>
+    <color name="tint_orange">#30966E58</color>
     <color name="gpt_icon_orange">#CCBEB4</color>
 
     <color name="border">#38FFFFFF</color>

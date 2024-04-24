@@ -35,6 +35,10 @@ class Preferences private constructor(private var preferences: SharedPreferences
         }
     }
 
+    fun getChatId() : String {
+        return chatId
+    }
+
     fun interface PreferencesChangedListener {
         fun onPreferencesChanged(key: String, value: String)
     }

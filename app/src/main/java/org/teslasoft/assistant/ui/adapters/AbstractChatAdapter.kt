@@ -48,15 +48,17 @@ import com.google.android.material.elevation.SurfaceColors
 import io.noties.markwon.Markwon
 
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.ChatPreferences
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.activities.ImageBrowserActivity
+import org.teslasoft.assistant.ui.fragments.dialogs.EditMessageDialogFragment
 
 import java.io.File
 import java.io.FileInputStream
 import java.util.Base64
 import java.util.Collections
 
-abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActivity, protected open val preferences: Preferences) : BaseAdapter() {
+abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActivity, protected open val preferences: Preferences) : BaseAdapter(), EditMessageDialogFragment.StateChangesListener {
     protected val dataArray: ArrayList<HashMap<String, Any>>? = data
     protected val mContext: FragmentActivity = context
     override fun getCount(): Int {
@@ -74,11 +76,57 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
     protected var message: TextView? = null
     protected var dalleImage: ImageView? = null
     protected var btnCopy: ImageButton? = null
+    protected var btnEdit: ImageButton? = null
     private var dalleImageStringList = ArrayList<String>(Collections.nCopies(count+1, ""))
     private var imageStringList = ArrayList<String>(Collections.nCopies(count+1, ""))
 
+    private fun editMessage(position: Int, message: String) {
+        dataArray?.get(position)?.set("message", message)
+    }
+
+    private fun deleteMessage(position: Int) {
+        dataArray?.removeAt(position)
+    }
+
+    override fun onEdit(prompt: String, position: Int) {
+        editMessage(position, prompt)
+        notifyDataSetChanged()
+
+        if (preferences.getChatId() !== "") {
+            val chatPreferences = ChatPreferences.getChatPreferences()
+            chatPreferences.editMessage(mContext, preferences.getChatId(), position, prompt)
+        }
+    }
+
+    override fun onDelete(position: Int) {
+        deleteMessage(position)
+        notifyDataSetChanged()
+
+        if (preferences.getChatId() !== "") {
+            val chatPreferences = ChatPreferences.getChatPreferences()
+            chatPreferences.deleteMessage(mContext, preferences.getChatId(), position)
+        }
+    }
+
+    protected fun openEditDialog(position: Int) {
+        val dialog = EditMessageDialogFragment.newInstance(dataArray?.get(position)?.get("message").toString(), position)
+        dialog.setStateChangedListener(this)
+        dialog.show(mContext.supportFragmentManager, "EditMessageDialogFragment")
+    }
+
     @SuppressLint("InflateParams", "SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        ui = convertView?.findViewById(R.id.ui)
+
+        ui?.setOnLongClickListener {
+            openEditDialog(position)
+            true
+        }
+
+        btnEdit?.setOnClickListener {
+            openEditDialog(position)
+        }
+
         btnCopy?.setImageResource(R.drawable.ic_copy)
         btnCopy?.setOnClickListener {
             val clipboard: ClipboardManager = mContext.getSystemService(FragmentActivity.CLIPBOARD_SERVICE) as ClipboardManager

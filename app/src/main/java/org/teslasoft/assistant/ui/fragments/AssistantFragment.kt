@@ -19,6 +19,7 @@ package org.teslasoft.assistant.ui.fragments
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -36,6 +37,8 @@ import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.speech.RecognitionListener
@@ -48,15 +51,18 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
@@ -88,6 +94,7 @@ import com.aallam.openai.client.OpenAI
 import com.aallam.openai.client.OpenAIConfig
 import com.aallam.openai.client.OpenAIHost
 import com.aallam.openai.client.RetryStrategy
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
@@ -111,6 +118,7 @@ import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ChatPreferences
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.activities.CameraActivity
+import org.teslasoft.assistant.ui.activities.MainActivity
 import org.teslasoft.assistant.ui.adapters.AssistantAdapter
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
 import org.teslasoft.assistant.ui.activities.SettingsActivity
@@ -151,6 +159,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private var assistantActionsLayout: LinearLayout? = null
     private var assistantConversation: ListView? = null
     private var assistantLoading: ProgressBar? = null
+    private var assistantTitle: TextView? = null
     private var ui: LinearLayout? = null
     private var btnAttachFile: ImageButton? = null
     private var attachedImage: LinearLayout? = null
@@ -1704,6 +1713,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         assistantActionsLayout = view.findViewById(R.id.assistant_actions)
         assistantConversation = view.findViewById(R.id.assistant_conversation)
         assistantLoading = view.findViewById(R.id.assistant_loading)
+        assistantTitle = view.findViewById(R.id.assistant_title)
         ui = view.findViewById(R.id.ui)
         btnAttachFile = view.findViewById(R.id.btn_assistant_attach)
         attachedImage = view.findViewById(R.id.attachedImage)
@@ -1769,6 +1779,12 @@ class AssistantFragment : BottomSheetDialogFragment() {
             requireActivity().finishAndRemoveTask()
         }
 
+        assistantTitle?.setOnClickListener {
+            val intent = Intent(requireActivity(), MainActivity::class.java).setAction(Intent.ACTION_VIEW)
+            startActivity(intent)
+            requireActivity().finish()
+        }
+
         hideKeyboard()
     }
 
@@ -1789,9 +1805,28 @@ class AssistantFragment : BottomSheetDialogFragment() {
         btnAssistantSend?.isEnabled = true
         btnAssistantHideKeyboard?.isEnabled = true
         btnAssistantVoice?.visibility = View.GONE
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            assistantMessage?.requestFocus()
+            val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.showSoftInput(assistantMessage, InputMethodManager.SHOW_IMPLICIT)
+        }, 100)
     }
 
     private fun run(prompt: String) {
         parseMessage(prompt)
+    }
+
+    private fun expandFullHeight(view: View) {
+        view.post {
+            val parent = view.parent as View
+            val params = parent.layoutParams as CoordinatorLayout.LayoutParams
+            val behavior = params.behavior as BottomSheetBehavior
+            // Optional: Adjust here to set how high the bottom sheet should expand
+            behavior.peekHeight = view.measuredHeight
+
+            // Set the initially state to expanded
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
     }
 }
