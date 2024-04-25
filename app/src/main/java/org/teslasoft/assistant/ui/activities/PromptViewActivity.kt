@@ -32,9 +32,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
-
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
@@ -45,13 +43,11 @@ import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
-
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-
 import org.teslasoft.assistant.Api
 import org.teslasoft.assistant.Config
 import org.teslasoft.assistant.R
@@ -59,6 +55,9 @@ import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.assistant.AssistantActivity
 import org.teslasoft.assistant.util.TestDevicesAds.Companion.TEST_DEVICES
 import org.teslasoft.core.api.network.RequestNetwork
+import java.net.MalformedURLException
+import java.net.URL
+
 
 class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListener {
 
@@ -297,28 +296,46 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
         val extras: Bundle? = intent.extras
 
         if (extras == null) {
-            finish()
+            checkForURI()
         } else {
             id = extras.getString("id", "")
             title = extras.getString("title", "")
 
             if (id == "" || title == "") {
-                finish()
+                checkForURI()
             } else {
-                setContentView(R.layout.activity_view_prompt)
-
-                window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
-
-
-                initUI()
-
-                Thread {
-                    runOnUiThread {
-                        initLogic()
-                    }
-                }.start()
+                allowLaunch()
             }
         }
+    }
+
+    private fun checkForURI() {
+        val uri = intent.data
+        try {
+            val url = URL(uri?.scheme, uri?.host, uri?.path)
+
+            val paths = url.path.split("/")
+            id = paths[paths.size - 1]
+
+            allowLaunch()
+        } catch (e: MalformedURLException) {
+            Toast.makeText(this, "Invalid URL", Toast.LENGTH_SHORT).show()
+            finish()
+        }
+    }
+
+    private fun allowLaunch() {
+        setContentView(R.layout.activity_view_prompt)
+
+        window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
+
+        initUI()
+
+        Thread {
+            runOnUiThread {
+                initLogic()
+            }
+        }.start()
     }
 
     private fun initUI() {
