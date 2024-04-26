@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">SpeakGPT</string>
     <string name="activation_prompt_set_message">Kliknite pre nastavenie aktivačného príkazu</string>
     <string name="menu_chat">Rozhovor</string>
     <string name="menu_prompts">Výzvy</string>

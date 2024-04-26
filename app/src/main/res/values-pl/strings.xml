@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">SpeakGPT</string>
     <string name="activation_prompt_set_message">Stuknij, aby ustawić monit aktywacji</string>
     <string name="menu_chat">Czat</string>
     <string name="menu_prompts">Monity</string>

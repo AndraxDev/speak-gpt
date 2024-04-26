@@ -37,6 +37,7 @@ class PWAActivity : FragmentActivity() {
         webView?.settings?.javaScriptEnabled = true
         webView?.settings?.domStorageEnabled = true
         webView?.settings?.databaseEnabled = true
+        webView?.settings?.cacheMode = android.webkit.WebSettings.LOAD_CACHE_ELSE_NETWORK
         webView?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.pwa_background, null))
 
         loader?.visibility = ProgressBar.GONE
@@ -85,6 +86,10 @@ class PWAActivity : FragmentActivity() {
             .setMessage("Are you sure you want to close the PWA?")
             .setPositiveButton("Close") { _, _ ->
                 finish()
+            }
+            .setNeutralButton("Clear cache & reload") { _, _ ->
+                webView?.clearCache(true)
+                webView?.reload()
             }
             .setNegativeButton("Cancel") { _, _ -> }
             .show()

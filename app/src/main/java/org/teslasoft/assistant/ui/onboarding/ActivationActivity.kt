@@ -42,7 +42,6 @@ import org.teslasoft.assistant.preferences.Preferences
 class ActivationActivity : FragmentActivity() {
 
     private var btnNext: MaterialButton? = null
-    private var webView: WebView? = null
     private var keyInput: EditText? = null
     private var hostInput: EditText? = null
 
@@ -51,11 +50,8 @@ class ActivationActivity : FragmentActivity() {
         setContentView(R.layout.activity_activation)
 
         btnNext = findViewById(R.id.btn_next)
-        webView = findViewById(R.id.webview)
         keyInput = findViewById(R.id.key_input)
         hostInput = findViewById(R.id.host_input)
-
-        webView?.setBackgroundColor(0x00000000)
 
         val processName = getProcessName(this)
         try {
@@ -63,33 +59,6 @@ class ActivationActivity : FragmentActivity() {
                 WebView.setDataDirectorySuffix(processName!!)
             }
         } catch (ignored: Exception) { /* unused */ }
-
-        webView?.webViewClient = object : WebViewClient() {
-            override fun onPageFinished(view: WebView, url: String) { /* unused */ }
-
-            override fun shouldOverrideUrlLoading(
-                view: WebView, request: WebResourceRequest
-            ): Boolean {
-                try {
-                    val intent = Intent()
-                    intent.action = Intent.ACTION_VIEW
-                    intent.data = Uri.parse(request.url.toString())
-                    startActivity(intent)
-                } catch (e: Exception) {
-                    MaterialAlertDialogBuilder(this@ActivationActivity, R.style.App_MaterialAlertDialog)
-                        .setTitle("Error opening link")
-                        .setMessage("You need a web browser installed to perform this action")
-                        .setPositiveButton("Close") { _, _ -> }
-                        .show()
-                }
-                return true
-            }
-        }
-
-        when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-            Configuration.UI_MODE_NIGHT_YES -> webView?.loadUrl("file:///android_asset/www/api.html")
-            Configuration.UI_MODE_NIGHT_NO -> webView?.loadUrl("file:///android_asset/www/api_light.html")
-        }
 
         btnNext?.setOnClickListener {
             if (keyInput?.text.toString() == "") {

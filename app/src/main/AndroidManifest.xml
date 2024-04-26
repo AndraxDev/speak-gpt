@@ -200,8 +200,12 @@
         <activity
             android:name=".pwa.PWAActivity"
             android:exported="true"
+            android:icon="@mipmap/ic_launcher_round_lite"
             android:theme="@style/Theme.PWA"
-            android:launchMode="singleTask">
+            android:taskAffinity=".pwa.PWAActivity"
+            android:label="@string/app_name_lite"
+            android:process=":lite"
+            android:launchMode="singleTop">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

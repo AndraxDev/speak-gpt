@@ -248,7 +248,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                     }
 
                     btnLaunchPWA?.setOnClickListener {
-                        startActivity(Intent(this, PWAActivity::class.java))
+                        startActivity(Intent(this, PWAActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
                     }
 
                     if (preferences!!.getAdsEnabled()) {
