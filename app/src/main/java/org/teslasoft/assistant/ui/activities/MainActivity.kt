@@ -19,8 +19,11 @@ package org.teslasoft.assistant.ui.activities
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
@@ -28,6 +31,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.Animation
@@ -54,12 +58,14 @@ import com.google.android.material.navigation.NavigationBarView
 import org.teslasoft.assistant.Config.Companion.API_ENDPOINT
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.DeviceInfoProvider
+import org.teslasoft.assistant.preferences.Logger
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.pwa.PWAActivity
 import org.teslasoft.assistant.ui.fragments.tabs.ChatsListFragment
 import org.teslasoft.assistant.ui.fragments.tabs.PromptsFragment
 import org.teslasoft.core.api.network.RequestNetwork
 import java.io.IOException
+
 
 class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener {
     private var navigationBar: BottomNavigationView? = null
@@ -71,6 +77,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     private var btnCloseDebugger: ImageButton? = null
     private var btnInitiateCrash: MaterialButton? = null
     private var btnLaunchPWA: MaterialButton? = null
+    private var btnTogglePWA: MaterialButton? = null
     private var btnSwitchAds: MaterialButton? = null
     private var threadLoader: LinearLayout? = null
     private var devIds: TextView? = null
@@ -139,6 +146,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         btnCloseDebugger = findViewById(R.id.btn_close_debugger)
         btnInitiateCrash = findViewById(R.id.btn_initiate_crash)
         btnLaunchPWA = findViewById(R.id.btn_launch_pwa)
+        btnTogglePWA = findViewById(R.id.btn_toggle_pwa)
         btnSwitchAds = findViewById(R.id.btn_switch_ads)
         devIds = findViewById(R.id.dev_ids)
         threadLoader = findViewById(R.id.thread_loader)
@@ -190,10 +198,36 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
             })
         }
 
+        if (isActivityEnabled(this, "org.teslasoft.assistant.pwa.PWAActivity")) {
+            btnTogglePWA?.text = "Disable PWA"
+        } else {
+            btnTogglePWA?.text = "Enable PWA"
+        }
+
+        btnTogglePWA?.setOnClickListener {
+            val pm = packageManager
+            if (isActivityEnabled(this, "org.teslasoft.assistant.pwa.PWAActivity")) {
+                btnTogglePWA?.text = "Enable PWA"
+                pm.setComponentEnabledSetting(
+                    ComponentName(this, "org.teslasoft.assistant.pwa.PWAActivity"),
+                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP
+                )
+                Logger.log(this, "event", "ComponentManager", "info", "Component disabled: org.teslasoft.assistant.pwa.PWAActivity")
+            } else {
+                btnTogglePWA?.text = "Disable PWA"
+                pm.setComponentEnabledSetting(
+                    ComponentName(this, "org.teslasoft.assistant.pwa.PWAActivity"),
+                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP
+                )
+                Logger.log(this, "event", "ComponentManager", "info", "Component enabled: org.teslasoft.assistant.pwa.PWAActivity")
+            }
+        }
+
         Thread {
             DeviceInfoProvider.assignInstallationId(this)
 
             runOnUiThread {
+
                 navigationBar!!.setOnItemSelectedListener(NavigationBarView.OnItemSelectedListener { item: MenuItem ->
                     if (!isAnimating) {
                         isAnimating = true
@@ -248,7 +282,14 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                     }
 
                     btnLaunchPWA?.setOnClickListener {
-                        startActivity(Intent(this, PWAActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                        if (isActivityEnabled(this, "org.teslasoft.assistant.pwa.PWAActivity")) {
+                            startActivity(Intent(this, PWAActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                        } else {
+                            MaterialAlertDialogBuilder(this)
+                                .setMessage("This component is disabled by the component manager.")
+                                .setPositiveButton("Close") { _, _ -> }
+                                .show()
+                        }
                     }
 
                     if (preferences!!.getAdsEnabled()) {
@@ -320,6 +361,22 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         }.start()
     }
 
+    private fun isActivityEnabled(context: Context, component: String): Boolean {
+        try {
+            val manager = context.packageManager
+            val componentName = ComponentName(context, component)
+            manager.getActivityInfo(componentName, PackageManager.GET_META_DATA)
+            Logger.log(this, "event", "ComponentManager", "info", "Activity found")
+            return true
+        } catch (e: PackageManager.NameNotFoundException) {
+            Logger.log(this, "event", "ComponentManager", "error", "Activity not found: ${e.message}")
+        } catch (e: SecurityException) {
+            Logger.log(this, "event", "ComponentManager", "error", "Security exception: ${e.message}")
+        }
+
+        return false
+    }
+
     private fun restartActivity() {
         runOnUiThread {
             threadLoader?.visibility = View.VISIBLE
@@ -372,6 +429,8 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
             btnInitiateCrash?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_600, theme))
             btnLaunchPWA?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.amoled_accent_100, theme)
             btnLaunchPWA?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_600, theme))
+            btnTogglePWA?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.amoled_accent_100, theme)
+            btnTogglePWA?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_600, theme))
             devIds?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_16_amoled, theme)
             devIds?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_600, theme))
 
@@ -402,6 +461,8 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
             btnInitiateCrash?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_900, theme))
             btnLaunchPWA?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_250, theme)
             btnLaunchPWA?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_900, theme))
+            btnTogglePWA?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_250, theme)
+            btnTogglePWA?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_900, theme))
             devIds?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_16, theme)!!)
             devIds?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_900, theme))
 

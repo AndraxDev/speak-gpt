@@ -19,6 +19,7 @@ package org.teslasoft.assistant.ui.fragments
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -60,14 +61,12 @@ import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentActivity
-
 import com.aallam.openai.api.audio.SpeechRequest
 import com.aallam.openai.api.audio.TranscriptionRequest
 import com.aallam.openai.api.chat.ChatCompletionChunk
@@ -82,6 +81,7 @@ import com.aallam.openai.api.chat.TextPart
 import com.aallam.openai.api.chat.chatCompletionRequest
 import com.aallam.openai.api.completion.CompletionRequest
 import com.aallam.openai.api.completion.TextCompletion
+import com.aallam.openai.api.core.Role
 import com.aallam.openai.api.file.FileSource
 import com.aallam.openai.api.http.Timeout
 import com.aallam.openai.api.image.ImageCreation
@@ -94,8 +94,7 @@ import com.aallam.openai.client.OpenAI
 import com.aallam.openai.client.OpenAIConfig
 import com.aallam.openai.client.OpenAIHost
 import com.aallam.openai.client.RetryStrategy
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -103,36 +102,34 @@ import com.google.android.material.elevation.SurfaceColors
 import com.google.gson.Gson
 import com.google.mlkit.nl.languageid.LanguageIdentification
 import com.google.mlkit.nl.languageid.LanguageIdentifier
-
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.*
-
 import okio.FileSystem
 import okio.Path.Companion.toPath
-
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ChatPreferences
 import org.teslasoft.assistant.preferences.Preferences
-import org.teslasoft.assistant.ui.activities.CameraActivity
 import org.teslasoft.assistant.ui.activities.MainActivity
-import org.teslasoft.assistant.ui.adapters.AssistantAdapter
-import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
 import org.teslasoft.assistant.ui.activities.SettingsActivity
 import org.teslasoft.assistant.ui.activities.SettingsV2Activity
+import org.teslasoft.assistant.ui.adapters.AbstractChatAdapter
+import org.teslasoft.assistant.ui.adapters.AssistantAdapter
 import org.teslasoft.assistant.ui.fragments.dialogs.ActionSelectorDialog
-import org.teslasoft.assistant.ui.permission.MicrophonePermissionActivity
 import org.teslasoft.assistant.ui.fragments.dialogs.AddChatDialogFragment
+import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
 import org.teslasoft.assistant.ui.permission.CameraPermissionActivity
+import org.teslasoft.assistant.ui.permission.MicrophonePermissionActivity
 import org.teslasoft.assistant.util.DefaultPromptsParser
 import org.teslasoft.assistant.util.Hash
 import org.teslasoft.assistant.util.LocaleParser
 import java.io.BufferedReader
 import java.io.ByteArrayOutputStream
-
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
@@ -144,15 +141,16 @@ import java.util.Base64
 import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
 
-class AssistantFragment : BottomSheetDialogFragment() {
+class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnRetryClickListener {
 
     // Init UI
     private var btnAssistantVoice: ImageButton? = null
     private var btnAssistantSettings: ImageButton? = null
     private var btnAssistantShowKeyboard: ImageButton? = null
     private var btnAssistantHideKeyboard: ImageButton? = null
-    private var btnSaveToChat: MaterialButton? = null
-    private var btnExit: MaterialButton? = null
+    private var btnSaveToChat: ImageButton? = null
+    private var btnExit: ImageButton? = null
+    private var btnClearConversation: ImageButton? = null
     private var btnAssistantSend: ImageButton? = null
     private var assistantMessage: EditText? = null
     private var assistantInputLayout: LinearLayout? = null
@@ -161,6 +159,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private var assistantLoading: ProgressBar? = null
     private var assistantTitle: TextView? = null
     private var ui: LinearLayout? = null
+    private var window_: ConstraintLayout? = null
     private var btnAttachFile: ImageButton? = null
     private var attachedImage: LinearLayout? = null
     private var selectedImage: ImageView? = null
@@ -182,6 +181,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private var isTTSInitialized = false
     private var silenceMode = false
     private var chatID = ""
+    private var chatName = ""
     private var autoLangDetect = false
     private var cancelState = false
     private var disableAutoScroll = false
@@ -190,6 +190,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private var isAutosaveEnabled = false
     private var isInitialized = false
     private var imageIsSelected = false
+    private var stopper = false
 
     // init AI
     private var ai: OpenAI? = null
@@ -209,7 +210,23 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private var baseImageString: String? = null
     private var selectedImageType: String? = null
 
-    fun roundCorners(bitmap: Bitmap, cornerRadius: Float): Bitmap {
+    private var savedInstanceState: Bundle? = null
+
+    private var mContext: Context? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        mContext = context
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+
+        mContext = null
+    }
+
+    private fun roundCorners(bitmap: Bitmap, cornerRadius: Float): Bitmap {
         // Create a bitmap with the same size as the original.
         val output = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
 
@@ -249,7 +266,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                         selectedImage?.setImageBitmap(roundCorners(bitmap!!, 80f))
                         imageIsSelected = true
 
-                        val mimeType = requireActivity().contentResolver.getType(uri)
+                        val mimeType = mContext?.contentResolver?.getType(uri)
                         val format = when {
                             mimeType.equals("image/png", ignoreCase = true) -> {
                                 selectedImageType = "png"
@@ -282,7 +299,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     }
 
     private fun readFile(uri: Uri) : Bitmap? {
-        return requireActivity().contentResolver.openInputStream(uri)?.use { inputStream ->
+        return mContext?.contentResolver?.openInputStream(uri)?.use { inputStream ->
             BufferedReader(InputStreamReader(inputStream)).use { _ ->
                 BitmapFactory.decodeStream(inputStream)
             }
@@ -312,11 +329,11 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() &&  preferences!!.getAmoledPitchBlack()) {
-            dialog?.window?.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, requireActivity().theme)
-            ui?.setBackgroundResource(R.drawable.assistant_amoled)
+            dialog?.window?.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, mContext?.theme)
+            window_?.setBackgroundResource(R.drawable.assistant_amoled)
         } else {
-            dialog?.window?.navigationBarColor = SurfaceColors.SURFACE_1.getColor(requireActivity())
-            ui?.setBackgroundColor(ResourcesCompat.getColor(resources, android.R.color.transparent, requireActivity().theme))
+            dialog?.window?.navigationBarColor = SurfaceColors.SURFACE_0.getColor(mContext ?: return)
+            window_?.setBackgroundResource(R.drawable.assistant_normal)
         }
     }
 
@@ -334,7 +351,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         }
 
         override fun onError(fromFile: Boolean) {
-            Toast.makeText(requireActivity(), "Please fill name field", Toast.LENGTH_SHORT).show()
+            Toast.makeText(mContext ?: return, "Please fill name field", Toast.LENGTH_SHORT).show()
 
             val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false, false, true)
             chatDialogFragment.setStateChangedListener(this)
@@ -350,7 +367,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         }
 
         override fun onDuplicate() {
-            Toast.makeText(requireActivity(), "Name must be unique", Toast.LENGTH_SHORT).show()
+            Toast.makeText(mContext ?: return, "Name must be unique", Toast.LENGTH_SHORT).show()
 
             val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false, false, true)
             chatDialogFragment.setStateChangedListener(this)
@@ -371,13 +388,13 @@ class AssistantFragment : BottomSheetDialogFragment() {
                     val parser = DefaultPromptsParser()
                     parser.init()
                     parser.addOnCompletedListener { t -> run(t) }
-                    parser.parse("explanationPrompt", text, requireActivity())
+                    parser.parse("explanationPrompt", text, mContext ?: return@StateChangesListener)
                 }
                 "summarize" -> {
                     val parser = DefaultPromptsParser()
                     parser.init()
                     parser.addOnCompletedListener { t -> run(t) }
-                    parser.parse("summarizationPrompt", text, requireActivity())
+                    parser.parse("summarizationPrompt", text, mContext ?: return@StateChangesListener)
                 }
                 "image" -> run("/imagine $text")
                 "cancel" -> this@AssistantFragment.dismiss()
@@ -437,7 +454,13 @@ class AssistantFragment : BottomSheetDialogFragment() {
                     assistantLoading?.visibility = View.VISIBLE
 
                     CoroutineScope(Dispatchers.Main).launch {
-                        generateResponse(prefix + recognizedText + endSeparator, true)
+                        assistantLoading?.setOnClickListener {
+                            cancel()
+                        }
+
+                        try {
+                            generateResponse(prefix + recognizedText + endSeparator, true)
+                        } catch (e: CancellationException) { /* ignore */ }
                     }
                 }
             }
@@ -511,13 +534,22 @@ class AssistantFragment : BottomSheetDialogFragment() {
             mediaPlayer!!.reset()
         }
 
-        requireActivity().finishAndRemoveTask()
+        if (savedInstanceState == null) {
+            if (messages.isEmpty()) {
+                val chatPreferences = ChatPreferences.getChatPreferences()
+
+                chatPreferences.deleteChatById(mContext ?: return, chatID)
+
+                preferences?.forceUpdate()
+            }
+            (mContext as Activity?)?.finishAndRemoveTask()
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
     @Suppress("unchecked")
     private fun initSettings() {
-        key = preferences!!.getApiKey(requireActivity())
+        key = preferences!!.getApiKey(mContext ?: return)
 
         endSeparator = preferences!!.getEndSeparator()
         prefix = preferences!!.getPrefix()
@@ -525,15 +557,16 @@ class AssistantFragment : BottomSheetDialogFragment() {
         loadResolution()
 
         if (key == null) {
-            startActivity(Intent(requireActivity(), WelcomeActivity::class.java).setAction(Intent.ACTION_VIEW))
-            requireActivity().finishAndRemoveTask()
+            startActivity(Intent(mContext ?: return, WelcomeActivity::class.java).setAction(Intent.ACTION_VIEW))
+            (mContext as Activity?)?.finishAndRemoveTask()
         } else {
             silenceMode = preferences!!.getSilence()
             autoLangDetect = preferences!!.getAutoLangDetect()
 
             messages = ArrayList()
 
-            adapter = AssistantAdapter(messages, requireActivity(), preferences!!)
+            adapter = AssistantAdapter(messages, (mContext as FragmentActivity), preferences!!)
+            adapter?.setOnRetryClickListener(this)
 
             assistantConversation?.adapter = adapter
             assistantConversation?.dividerHeight = 0
@@ -589,12 +622,12 @@ class AssistantFragment : BottomSheetDialogFragment() {
         btnAssistantSettings?.setOnClickListener {
             val i =  if (preferences?.getExperimentalUI()!!) {
                 Intent(
-                    requireActivity(),
+                    mContext ?: return@setOnClickListener,
                     SettingsV2Activity::class.java
                 )
             } else {
                 Intent(
-                    requireActivity(),
+                    mContext ?: return@setOnClickListener,
                     SettingsActivity::class.java
                 )
             }
@@ -609,14 +642,14 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     private fun startWhisper() {
         if (android.os.Build.VERSION.SDK_INT >= 31) {
-            recorder = MediaRecorder(requireActivity()).apply {
+            recorder = MediaRecorder(mContext ?: return).apply {
                 setAudioSource(MediaRecorder.AudioSource.MIC)
                 setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
                 setAudioEncoder(MediaRecorder.AudioEncoder.HE_AAC)
                 setAudioChannels(1)
                 setAudioSamplingRate(44100)
                 setAudioEncodingBitRate(96000)
-                setOutputFile("${requireActivity().externalCacheDir?.absolutePath}/tmp.m4a")
+                setOutputFile("${mContext?.externalCacheDir?.absolutePath}/tmp.m4a")
 
                 if (!cancelState) {
                     try {
@@ -625,12 +658,12 @@ class AssistantFragment : BottomSheetDialogFragment() {
                         btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
                         isRecording = false
                         MaterialAlertDialogBuilder(
-                            requireActivity(),
+                            mContext ?: return,
                             R.style.App_MaterialAlertDialog
                         )
                             .setTitle("Audio error")
                             .setMessage("Failed to initialize microphone")
-                            .setPositiveButton("Close") { _, _, -> }
+                            .setPositiveButton("Close") { _, _ -> }
                             .show()
                     }
 
@@ -649,7 +682,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 setAudioChannels(1)
                 setAudioSamplingRate(44100)
                 setAudioEncodingBitRate(96000)
-                setOutputFile("${requireActivity().externalCacheDir?.absolutePath}/tmp.m4a")
+                setOutputFile("${mContext?.externalCacheDir?.absolutePath}/tmp.m4a")
 
                 if (!cancelState) {
                     try {
@@ -657,10 +690,10 @@ class AssistantFragment : BottomSheetDialogFragment() {
                     } catch (e: IOException) {
                         btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
                         isRecording = false
-                        MaterialAlertDialogBuilder(requireActivity(), R.style.App_MaterialAlertDialog)
+                        MaterialAlertDialogBuilder(mContext ?: return@apply, R.style.App_MaterialAlertDialog)
                             .setTitle("Audio error")
                             .setMessage("Failed to initialize microphone")
-                            .setPositiveButton("Close") { _, _, -> }
+                            .setPositiveButton("Close") { _, _ -> }
                             .show()
                     }
 
@@ -687,7 +720,13 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
         if (!cancelState) {
             CoroutineScope(Dispatchers.Main).launch {
-                processRecording()
+                assistantLoading?.setOnClickListener {
+                    cancel()
+                }
+
+                try {
+                    processRecording()
+                } catch (e: CancellationException) { /* ignore */ }
             }
         } else {
             cancelState = false
@@ -700,7 +739,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         try {
             val transcriptionRequest = TranscriptionRequest(
                 audio = FileSource(
-                    path = "${requireActivity().externalCacheDir?.absolutePath}/tmp.m4a".toPath(),
+                    path = "${mContext?.externalCacheDir?.absolutePath}/tmp.m4a".toPath(),
                     fileSystem = FileSystem.SYSTEM
                 ),
                 model = ModelId("whisper-1"),
@@ -730,11 +769,17 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 assistantLoading?.visibility = View.VISIBLE
 
                 CoroutineScope(Dispatchers.Main).launch {
-                    generateResponse(prefix + transcription + endSeparator, true)
+                    assistantLoading?.setOnClickListener {
+                        cancel()
+                    }
+
+                    try {
+                        generateResponse(prefix + transcription + endSeparator, true)
+                    } catch (e: CancellationException) { /* ignore */ }
                 }
             }
         } catch (e: Exception) {
-            Toast.makeText(requireActivity(), "Failed to record audio", Toast.LENGTH_SHORT).show()
+            Toast.makeText(mContext, "Failed to record audio", Toast.LENGTH_SHORT).show()
             btnAssistantVoice?.isEnabled = true
             btnAssistantSend?.isEnabled = true
             assistantLoading?.visibility = View.GONE
@@ -751,14 +796,14 @@ class AssistantFragment : BottomSheetDialogFragment() {
             isRecording = true
 
             if (ContextCompat.checkSelfPermission(
-                    requireActivity(), Manifest.permission.RECORD_AUDIO
+                    mContext ?: return, Manifest.permission.RECORD_AUDIO
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
                 startWhisper()
             } else {
                 permissionResultLauncherV2.launch(
                     Intent(
-                        requireActivity(),
+                        mContext ?: return,
                         MicrophonePermissionActivity::class.java
                     ).setAction(Intent.ACTION_VIEW)
                 )
@@ -788,14 +833,14 @@ class AssistantFragment : BottomSheetDialogFragment() {
             } catch (_: java.lang.Exception) {/**/}
             btnAssistantVoice?.setImageResource(R.drawable.ic_stop_recording)
             if (ContextCompat.checkSelfPermission(
-                    requireActivity(), Manifest.permission.RECORD_AUDIO
+                    mContext ?: return, Manifest.permission.RECORD_AUDIO
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
                 startRecognition()
             } else {
                 permissionResultLauncher.launch(
                     Intent(
-                        requireActivity(),
+                        mContext ?: return,
                         MicrophonePermissionActivity::class.java
                     ).setAction(Intent.ACTION_VIEW)
                 )
@@ -806,18 +851,18 @@ class AssistantFragment : BottomSheetDialogFragment() {
     }
 
     private fun initSpeechListener() {
-        recognizer = SpeechRecognizer.createSpeechRecognizer(requireActivity())
+        recognizer = SpeechRecognizer.createSpeechRecognizer(mContext ?: return)
         recognizer?.setRecognitionListener(speechListener)
     }
 
     private fun initTTS() {
-        tts = TextToSpeech(requireActivity(), ttsListener)
+        tts = TextToSpeech(mContext ?: return, ttsListener)
     }
 
     private fun initAI() {
         if (key == null) {
-            startActivity(Intent(requireActivity(), WelcomeActivity::class.java).setAction(Intent.ACTION_VIEW))
-            requireActivity().finish()
+            startActivity(Intent(mContext ?: return, WelcomeActivity::class.java).setAction(Intent.ACTION_VIEW))
+            (mContext as Activity?)?.finish()
         } else {
             val config = OpenAIConfig(
                 token = key!!,
@@ -839,7 +884,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     private fun setup() {
         endSeparator = preferences!!.getEndSeparator()
         prefix = preferences!!.getPrefix()
-        val extras: Bundle? = requireActivity().intent.extras
+        val extras: Bundle? = (mContext as Activity?)?.intent?.extras
 
         if (extras != null) {
             val tryPrompt: String = extras.getString("prompt", "")
@@ -850,13 +895,19 @@ class AssistantFragment : BottomSheetDialogFragment() {
             if (tryPrompt != "") {
                 if (runWithParams == "true") {
                     CoroutineScope(Dispatchers.Main).launch {
-                        val actionSelectorDialog: ActionSelectorDialog =
-                            ActionSelectorDialog.newInstance(tryPrompt)
-                        actionSelectorDialog.setStateChangedListener(stateListener)
-                        actionSelectorDialog.show(
-                            parentFragmentManager.beginTransaction(),
-                            "ActionSelectorDialog\$setup()"
-                        )
+                        assistantLoading?.setOnClickListener {
+                            cancel()
+                        }
+
+                        try {
+                            val actionSelectorDialog: ActionSelectorDialog =
+                                ActionSelectorDialog.newInstance(tryPrompt)
+                            actionSelectorDialog.setStateChangedListener(stateListener)
+                            actionSelectorDialog.show(
+                                parentFragmentManager.beginTransaction(),
+                                "ActionSelectorDialog\$setup()"
+                            )
+                        } catch (e: CancellationException) { /* ignore */ }
                     }
                 } else {
                     run(prefix + tryPrompt + endSeparator)
@@ -870,17 +921,23 @@ class AssistantFragment : BottomSheetDialogFragment() {
     }
 
     private fun runFromShareIntent() {
-        if (requireActivity().intent?.action == Intent.ACTION_SEND && requireActivity().intent.type == "text/plain") {
-            val receivedText = requireActivity().intent.getStringExtra(Intent.EXTRA_TEXT)
+        if ((mContext as Activity?)?.intent?.action == Intent.ACTION_SEND && (mContext as Activity?)?.intent?.type == "text/plain") {
+            val receivedText = (mContext as Activity?)?.intent?.getStringExtra(Intent.EXTRA_TEXT)
             if (receivedText != null) {
                 CoroutineScope(Dispatchers.Main).launch {
-                    val actionSelectorDialog: ActionSelectorDialog =
-                        ActionSelectorDialog.newInstance(receivedText)
-                    actionSelectorDialog.setStateChangedListener(stateListener)
-                    actionSelectorDialog.show(
-                        parentFragmentManager.beginTransaction(),
-                        "ActionSelectorDialog\$runFromShareIntent()"
-                    )
+                    assistantLoading?.setOnClickListener {
+                        cancel()
+                    }
+
+                    try {
+                        val actionSelectorDialog: ActionSelectorDialog =
+                            ActionSelectorDialog.newInstance(receivedText)
+                        actionSelectorDialog.setStateChangedListener(stateListener)
+                        actionSelectorDialog.show(
+                            parentFragmentManager.beginTransaction(),
+                            "ActionSelectorDialog\$runFromShareIntent()"
+                        )
+                    } catch (e: CancellationException) { /* ignore */ }
                 }
             } else {
                 runFromContextMenu()
@@ -891,17 +948,23 @@ class AssistantFragment : BottomSheetDialogFragment() {
     }
 
     private fun runFromContextMenu() {
-        val tryPrompt = requireActivity().intent.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT).toString()
+        val tryPrompt = (mContext as Activity?)?.intent?.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT).toString()
 
         if (tryPrompt != "" && tryPrompt != "null") {
             CoroutineScope(Dispatchers.Main).launch {
-                val actionSelectorDialog: ActionSelectorDialog =
-                    ActionSelectorDialog.newInstance(tryPrompt)
-                actionSelectorDialog.setStateChangedListener(stateListener)
-                actionSelectorDialog.show(
-                    parentFragmentManager.beginTransaction(),
-                    "ActionSelectorDialog\$runFromContextMenu()"
-                )
+                assistantLoading?.setOnClickListener {
+                    cancel()
+                }
+
+                try {
+                    val actionSelectorDialog: ActionSelectorDialog =
+                        ActionSelectorDialog.newInstance(tryPrompt)
+                    actionSelectorDialog.setStateChangedListener(stateListener)
+                    actionSelectorDialog.show(
+                        parentFragmentManager.beginTransaction(),
+                        "ActionSelectorDialog\$runFromContextMenu()"
+                    )
+                } catch (e: CancellationException) { /* ignore */ }
             }
         } else {
             runActivationPrompt()
@@ -928,14 +991,20 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 assistantLoading?.visibility = View.VISIBLE
 
                 CoroutineScope(Dispatchers.Main).launch {
-                    generateResponse(prompt, false)
+                    assistantLoading?.setOnClickListener {
+                        cancel()
+                    }
+
+                    try {
+                        generateResponse(prompt, false)
+                    } catch (e: CancellationException) { /* ignore */ }
                 }
             }
         }
     }
 
     @SuppressLint("SetTextI18n")
-    private fun parseMessage(message: String) {
+    private fun parseMessage(message: String, shouldAdd: Boolean = true) {
         autosave()
         try {
             if (mediaPlayer!!.isPlaying) {
@@ -961,7 +1030,9 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
                 putMessage(m, false, file, selectedImageType!!)
             } else {
-                putMessage(m, false)
+                if (shouldAdd) {
+                    putMessage(m, false)
+                }
             }
             saveSettings()
 
@@ -985,15 +1056,23 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 btnAssistantSend?.isEnabled = true
                 assistantLoading?.visibility = View.GONE
             } else {
-                chatMessages.add(
-                    ChatMessage(
-                        role = ChatRole.User,
-                        content = m
+                if (shouldAdd) {
+                    chatMessages.add(
+                        ChatMessage(
+                            role = ChatRole.User,
+                            content = m
+                        )
                     )
-                )
+                }
 
                 CoroutineScope(Dispatchers.Main).launch {
-                    generateResponse(m, false)
+                    assistantLoading?.setOnClickListener {
+                        cancel()
+                    }
+
+                    try {
+                        generateResponse(m, false)
+                    } catch (e: CancellationException) { /* ignore */ }
                 }
             }
         }
@@ -1011,7 +1090,13 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
     private fun sendImageRequest(str: String) {
         CoroutineScope(Dispatchers.Main).launch {
-            generateImage(str)
+            assistantLoading?.setOnClickListener {
+                cancel()
+            }
+
+            try {
+                generateImage(str)
+            } catch (e: CancellationException) { /* ignore */ }
         }
     }
 
@@ -1103,11 +1188,16 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
                 completions.collect { v ->
                     run {
+                        if (stopper) {
+                            stopper = false
+                            return@collect
+                        }
                         if (v.choices[0].delta.content != "null") {
                             response += v.choices[0].delta.content
                             if (response != "null") {
-                                messages[messages.size - 1]["message"] = "$response █"
+                                messages[messages.size - 1]["message"] = response
                                 adapter?.notifyDataSetChanged()
+                                saveSettings()
                             }
                         }
                     }
@@ -1142,10 +1232,15 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
                 completions.collect { v ->
                     run {
+                        if (stopper) {
+                            stopper = false
+                            return@collect
+                        }
                         if (v.choices[0].text != "null") {
                             response += v.choices[0].text
-                            messages[messages.size - 1]["message"] = "$response █"
+                            messages[messages.size - 1]["message"] = response
                             adapter?.notifyDataSetChanged()
+                            saveSettings()
                         }
                     }
                 }
@@ -1253,6 +1348,10 @@ class AssistantFragment : BottomSheetDialogFragment() {
                     regularGPTResponse(shouldPronounce)
                 }
             }
+        } catch (e: CancellationException) {
+            (mContext as Activity?)?.runOnUiThread {
+                restoreUIState()
+            }
         } catch (e: Exception) {
             val response = when {
                 e.stackTraceToString().contains("does not exist") -> {
@@ -1284,9 +1383,11 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 }
             }
 
-            putMessage(response, true)
-
+            messages[messages.size - 1]["message"] = "${messages[messages.size - 1]["message"]}\n\nAn error has been occurred during generation. See the error details below:\n\n$response"
             adapter?.notifyDataSetChanged()
+
+//            putMessage(response, true)
+//            adapter?.notifyDataSetChanged()
 
             saveSettings()
 
@@ -1294,6 +1395,10 @@ class AssistantFragment : BottomSheetDialogFragment() {
             btnAssistantSend?.isEnabled = true
             assistantLoading?.visibility = View.GONE
             isProcessing = false
+        } finally {
+            (mContext as Activity?)?.runOnUiThread {
+                restoreUIState()
+            }
         }
     }
 
@@ -1328,10 +1433,15 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
         completions.collect { v ->
             run {
+                if (stopper) {
+                    stopper = false
+                    return@collect
+                }
                 if (v.choices[0].delta.content != null) {
                     response += v.choices[0].delta.content
-                    messages[messages.size - 1]["message"] = "$response █"
+                    messages[messages.size - 1]["message"] = response
                     adapter?.notifyDataSetChanged()
+                    saveSettings()
                 }
             }
         }
@@ -1387,51 +1497,57 @@ class AssistantFragment : BottomSheetDialogFragment() {
             tts!!.speak(message, TextToSpeech.QUEUE_FLUSH, null, "")
         } else {
             CoroutineScope(Dispatchers.Main).launch {
-                val rawAudio = ai!!.speech(
-                    request = SpeechRequest(
-                        model = ModelId("tts-1"),
-                        input = message,
-                        voice = com.aallam.openai.api.audio.Voice(preferences!!.getOpenAIVoice()),
-                    )
-                )
-
-                requireActivity().runOnUiThread {
-                    try {
-                        // create temp file that will hold byte array
-                        val tempMp3 = File.createTempFile("audio", "mp3", requireActivity().cacheDir)
-                        tempMp3.deleteOnExit()
-                        val fos = FileOutputStream(tempMp3)
-                        fos.write(rawAudio)
-                        fos.close()
-
-                        // resetting mediaplayer instance to evade problems
-                        mediaPlayer?.reset()
-
-                        // In case you run into issues with threading consider new instance like:
-                        // MediaPlayer mediaPlayer = new MediaPlayer();
-
-                        // Tried passing path directly, but kept getting
-                        // "Prepare failed.: status=0x1"
-                        // so using file descriptor instead
-                        val fis = FileInputStream(tempMp3)
-                        mediaPlayer?.setDataSource(fis.getFD())
-                        mediaPlayer?.prepare()
-                        mediaPlayer?.start()
-                    } catch (ex: IOException) {
-                        MaterialAlertDialogBuilder(requireActivity(), R.style.App_MaterialAlertDialog)
-                            .setTitle("Audio error")
-                            .setMessage(ex.stackTraceToString())
-                            .setPositiveButton("Close") { _, _ -> }
-                            .show()
-                    }
+                assistantLoading?.setOnClickListener {
+                    cancel()
                 }
+
+                try {
+                    val rawAudio = ai!!.speech(
+                        request = SpeechRequest(
+                            model = ModelId("tts-1"),
+                            input = message,
+                            voice = com.aallam.openai.api.audio.Voice(preferences!!.getOpenAIVoice()),
+                        )
+                    )
+
+                    (mContext as Activity?)?.runOnUiThread {
+                        try {
+                            // create temp file that will hold byte array
+                            val tempMp3 = File.createTempFile("audio", "mp3", mContext?.cacheDir)
+                            tempMp3.deleteOnExit()
+                            val fos = FileOutputStream(tempMp3)
+                            fos.write(rawAudio)
+                            fos.close()
+
+                            // resetting mediaplayer instance to evade problems
+                            mediaPlayer?.reset()
+
+                            // In case you run into issues with threading consider new instance like:
+                            // MediaPlayer mediaPlayer = new MediaPlayer();
+
+                            // Tried passing path directly, but kept getting
+                            // "Prepare failed.: status=0x1"
+                            // so using file descriptor instead
+                            val fis = FileInputStream(tempMp3)
+                            mediaPlayer?.setDataSource(fis.getFD())
+                            mediaPlayer?.prepare()
+                            mediaPlayer?.start()
+                        } catch (ex: IOException) {
+                            MaterialAlertDialogBuilder(mContext ?: return@runOnUiThread, R.style.App_MaterialAlertDialog)
+                                .setTitle("Audio error")
+                                .setMessage(ex.stackTraceToString())
+                                .setPositiveButton("Close") { _, _ -> }
+                                .show()
+                        }
+                    }
+                } catch (e: CancellationException) { /* ignore */ }
             }
         }
     }
 
     private fun writeImageToCache(bytes: ByteArray, imageType: String = "png") {
         try {
-            requireActivity().contentResolver.openFileDescriptor(Uri.fromFile(File(requireActivity().getExternalFilesDir("images")?.absolutePath + "/" + Hash.hash(Base64.getEncoder().encodeToString(bytes)) + "." + imageType)), "w")?.use {
+            mContext?.contentResolver?.openFileDescriptor(Uri.fromFile(File(mContext?.getExternalFilesDir("images")?.absolutePath + "/" + Hash.hash(Base64.getEncoder().encodeToString(bytes)) + "." + imageType)), "w")?.use {
                 FileOutputStream(it.fileDescriptor).use {
                     it.write(
                         bytes
@@ -1480,7 +1596,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
                 val path = "data:image/png;base64,$encoded"
 
-                requireActivity().runOnUiThread {
+                (mContext as Activity?)?.runOnUiThread {
                     putMessage(path, true)
 
                     assistantConversation?.setOnTouchListener { _, event -> run {
@@ -1499,6 +1615,10 @@ class AssistantFragment : BottomSheetDialogFragment() {
                     isProcessing = false
                 }
             }.start()
+        } catch (e: CancellationException) {
+            (mContext as Activity?)?.runOnUiThread {
+                restoreUIState()
+            }
         } catch (e: Exception) {
             when {
                 e.stackTraceToString().contains("Your request was rejected") -> {
@@ -1527,23 +1647,34 @@ class AssistantFragment : BottomSheetDialogFragment() {
             btnAssistantSend?.isEnabled = true
             assistantLoading?.visibility = View.GONE
             isProcessing = false
+        } finally {
+            (mContext as Activity?)?.runOnUiThread {
+                restoreUIState()
+            }
         }
+    }
+
+    private fun restoreUIState() {
+        btnAssistantVoice?.isEnabled = true
+        btnAssistantSend?.isEnabled = true
+        assistantLoading?.visibility = View.GONE
+        isProcessing = false
     }
 
     private fun saveSettings() {
         if (chatID != "") {
-            val chat = requireActivity().getSharedPreferences(
+            val chat = mContext?.getSharedPreferences(
                 "chat_$chatID",
                 FragmentActivity.MODE_PRIVATE
             )
-            val editor = chat.edit()
+            val editor = chat?.edit()
             val gson = Gson()
             val json: String = gson.toJson(messages)
 
-            if (json == "") editor.putString("chat", "[]")
-            else editor.putString("chat", json)
+            if (json == "") editor?.putString("chat", "[]")
+            else editor?.putString("chat", json)
 
-            editor.apply()
+            editor?.apply()
         }
 
         isProcessing = false
@@ -1553,7 +1684,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         super.onResume()
 
         if (isInitialized) {
-            preferences = Preferences.getPreferences(requireActivity(), chatID)
+            preferences = Preferences.getPreferences(mContext ?: return, chatID)
         }
     }
 
@@ -1561,12 +1692,17 @@ class AssistantFragment : BottomSheetDialogFragment() {
         isSaved = true
         chatID = id
         saveSettings()
-        preferences = Preferences.getPreferences(requireActivity(), chatID)
-        btnSaveToChat?.text = "Saved"
+        preferences = Preferences.getPreferences(mContext ?: return, chatID)
         btnSaveToChat?.isEnabled = false
-        btnSaveToChat?.setIconResource(R.drawable.ic_done)
+        btnSaveToChat?.setImageResource(R.drawable.ic_done)
 
         preferences?.forceUpdate()
+    }
+
+    private fun saveChatState() {
+        chatID = "temp_state"
+        preferences = Preferences.getPreferences(mContext ?: return, "")
+        saveSettings()
     }
 
     private fun autosave() {
@@ -1574,73 +1710,24 @@ class AssistantFragment : BottomSheetDialogFragment() {
             isAutosaveEnabled = true
             chatPreferences = ChatPreferences.getChatPreferences()
 
-            val chatName = "_autoname_${chatPreferences?.getAvailableChatIdForAutoname(requireActivity())}"
-
-            chatID = Hash.hash(chatName)
-
-            chatPreferences?.addChat(requireActivity(), chatName)
-
-            val globalPreferences = Preferences.getPreferences(requireActivity(), "")
-
-            val resolution = globalPreferences.getResolution()
-            val speech = globalPreferences.getAudioModel()
-            val model = globalPreferences.getModel()
-            val maxTokens = globalPreferences.getMaxTokens()
-            val prefix = globalPreferences.getPrefix()
-            val endSeparator = globalPreferences.getEndSeparator()
-            val activationPrompt = globalPreferences.getPrompt()
-            val layout = globalPreferences.getLayout()
-            val silent = globalPreferences.getSilence()
-            val systemMessage = globalPreferences.getSystemMessage()
-            val alwaysSpeak = globalPreferences.getNotSilence()
-            val autoLanguageDetect = globalPreferences.getAutoLangDetect()
-            val functionCalling = globalPreferences.getFunctionCalling()
-            val slashCommands = globalPreferences.getImagineCommand()
-            val ttsEngine = globalPreferences.getTtsEngine()
-            val dalleVersion = globalPreferences.getDalleVersion()
-            val opeAIVoice: String = globalPreferences.getOpenAIVoice()
-            val voice: String = globalPreferences.getVoice()
-
-            preferences = Preferences.getPreferences(requireActivity(), chatID)
-
-            preferences!!.setPreferences(Hash.hash(chatName), requireActivity())
-            preferences!!.setResolution(resolution)
-            preferences!!.setAudioModel(speech)
-            preferences!!.setModel(model)
-            preferences!!.setMaxTokens(maxTokens)
-            preferences!!.setPrefix(prefix)
-            preferences!!.setEndSeparator(endSeparator)
-            preferences!!.setPrompt(activationPrompt)
-            preferences!!.setLayout(layout)
-            preferences!!.setSilence(silent)
-            preferences!!.setSystemMessage(systemMessage)
-            preferences!!.setNotSilence(alwaysSpeak)
-            preferences!!.setAutoLangDetect(autoLanguageDetect)
-            preferences!!.setFunctionCalling(functionCalling)
-            preferences!!.setImagineCommand(slashCommands)
-            preferences!!.setTtsEngine(ttsEngine)
-            preferences!!.setDalleVersion(dalleVersion)
-            preferences!!.setOpenAIVoice(opeAIVoice)
-            preferences!!.setVoice(voice)
-
             saveSettings()
 
-            btnSaveToChat?.text = "Saved"
             btnSaveToChat?.isEnabled = false
-            btnSaveToChat?.setIconResource(R.drawable.ic_done)
+            btnSaveToChat?.setImageResource(R.drawable.ic_done)
 
             preferences?.forceUpdate()
 
             isInitialized = true
         } else {
+            saveChatState()
             isInitialized = true
         }
     }
 
     private var cameraIntentLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val imageFile = File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "tmp.jpg")
-            val uri = FileProvider.getUriForFile(requireActivity(), "org.teslasoft.assistant.fileprovider", imageFile)
+            val imageFile = File(mContext?.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "tmp.jpg")
+            val uri = FileProvider.getUriForFile(mContext ?: return@registerForActivityResult, "org.teslasoft.assistant.fileprovider", imageFile)
 
             bitmap = readFile(uri)
 
@@ -1649,7 +1736,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
                 selectedImage?.setImageBitmap(roundCorners(bitmap!!, 80f))
                 imageIsSelected = true
 
-                val mimeType = requireActivity().contentResolver.getType(uri)
+                val mimeType = mContext?.contentResolver?.getType(uri)
                 val format = when {
                     mimeType.equals("image/png", ignoreCase = true) -> {
                         selectedImageType = "png"
@@ -1684,9 +1771,9 @@ class AssistantFragment : BottomSheetDialogFragment() {
             if (result.resultCode == Activity.RESULT_OK) {
                 val intent = Intent().setAction(MediaStore.ACTION_IMAGE_CAPTURE)
                 intent.putExtra("android.intent.extra.quickCapture", true)
-                val externalFilesDir = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                val externalFilesDir = mContext?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                 val imageFile = File(externalFilesDir, "tmp.jpg")
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(requireActivity(), "org.teslasoft.assistant.fileprovider", imageFile))
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(mContext ?: return@registerForActivityResult, "org.teslasoft.assistant.fileprovider", imageFile))
                 cameraIntentLauncher.launch(intent)
             }
         }
@@ -1695,7 +1782,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        preferences = Preferences.getPreferences(requireActivity(), "")
+        preferences = Preferences.getPreferences(mContext ?: return, "")
 
         mediaPlayer = MediaPlayer()
 
@@ -1708,6 +1795,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         btnAssistantSend = view.findViewById(R.id.btn_assistant_send)
         btnSaveToChat = view.findViewById(R.id.btn_save)
         btnExit = view.findViewById(R.id.btn_exit)
+        btnClearConversation = view.findViewById(R.id.btn_clear_conversation)
         assistantMessage = view.findViewById(R.id.assistant_message)
         assistantInputLayout = view.findViewById(R.id.input_layout)
         assistantActionsLayout = view.findViewById(R.id.assistant_actions)
@@ -1715,6 +1803,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         assistantLoading = view.findViewById(R.id.assistant_loading)
         assistantTitle = view.findViewById(R.id.assistant_title)
         ui = view.findViewById(R.id.ui)
+        window_ = view.findViewById(R.id.window)
         btnAttachFile = view.findViewById(R.id.btn_assistant_attach)
         attachedImage = view.findViewById(R.id.attachedImage)
         selectedImage = view.findViewById(R.id.selectedImage)
@@ -1722,6 +1811,13 @@ class AssistantFragment : BottomSheetDialogFragment() {
         visionActions = view.findViewById(R.id.vision_action_selector)
         btnVisionActionCamera = view.findViewById(R.id.action_camera)
         btnVisionActionGallery = view.findViewById(R.id.action_gallery)
+
+        btnSaveToChat?.setImageResource(R.drawable.ic_storage)
+        btnExit?.setImageResource(R.drawable.ic_back)
+
+        if (preferences?.getLockAssistantWindow() == false) {
+            btnExit?.visibility = View.GONE
+        }
 
         visionActions?.visibility = View.GONE
 
@@ -1759,7 +1855,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
         btnVisionActionCamera?.setOnClickListener {
             visionActions?.visibility = View.GONE
-            val intent = Intent(requireActivity(), CameraPermissionActivity::class.java).setAction(Intent.ACTION_VIEW)
+            val intent = Intent(mContext ?: return@setOnClickListener, CameraPermissionActivity::class.java).setAction(Intent.ACTION_VIEW)
             permissionResultLauncherCamera.launch(intent)
         }
 
@@ -1776,16 +1872,69 @@ class AssistantFragment : BottomSheetDialogFragment() {
         }
 
         btnExit?.setOnClickListener {
-            requireActivity().finishAndRemoveTask()
+            (mContext as Activity?)?.finishAndRemoveTask()
         }
 
         assistantTitle?.setOnClickListener {
-            val intent = Intent(requireActivity(), MainActivity::class.java).setAction(Intent.ACTION_VIEW)
+            val intent = Intent(mContext ?: return@setOnClickListener, MainActivity::class.java).setAction(Intent.ACTION_VIEW)
             startActivity(intent)
-            requireActivity().finish()
+            (mContext as Activity?)?.finish()
+        }
+
+        btnClearConversation?.setOnClickListener {
+            MaterialAlertDialogBuilder(mContext ?: return@setOnClickListener, R.style.App_MaterialAlertDialog)
+                .setTitle("Clear conversation")
+                .setMessage("Are you sure you want to clear the conversation?")
+                .setPositiveButton("Yes") { _, _ ->
+                    messages.clear()
+                    chatMessages.clear()
+                    adapter = AssistantAdapter(messages, (mContext as FragmentActivity?), preferences!!)
+                    adapter?.setOnRetryClickListener(this)
+                    assistantConversation?.adapter = adapter
+                    adapter?.notifyDataSetChanged()
+                    saveSettings()
+                }
+                .setNegativeButton("No") { _, _ -> }
+                .show()
         }
 
         hideKeyboard()
+    }
+
+    private fun loadMessages(chatId: String) {
+        messages = ChatPreferences.getChatPreferences().getChatById(mContext ?: return, chatId)
+
+        // R8 fix
+        if (messages == null) messages = arrayListOf()
+        if (chatMessages == null) chatMessages = arrayListOf()
+
+        for (message: HashMap<String, Any> in messages) {
+            if (!message["message"].toString().contains("data:image")) {
+                if (message["isBot"] == true) {
+                    chatMessages.add(
+                        ChatMessage(
+                            role = ChatRole.Assistant,
+                            content = message["message"].toString()
+                        )
+                    )
+                } else {
+                    chatMessages.add(
+                        ChatMessage(
+                            role = ChatRole.User,
+                            content = message["message"].toString()
+                        )
+                    )
+                }
+            }
+        }
+
+        adapter = AssistantAdapter(messages, (mContext as FragmentActivity?), preferences!!)
+        adapter?.setOnRetryClickListener(this)
+        assistantConversation?.adapter = adapter
+        adapter?.notifyDataSetChanged()
+        assistantConversation?.post {
+            assistantConversation?.setSelection(adapter?.count!! - 1)
+        }
     }
 
     private fun hideKeyboard() {
@@ -1795,6 +1944,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
         btnAssistantSend?.isEnabled = false
         btnAssistantHideKeyboard?.isEnabled = false
         btnAssistantVoice?.visibility = View.VISIBLE
+        visionActions?.visibility = View.GONE
     }
 
     private fun showKeyboard() {
@@ -1808,7 +1958,7 @@ class AssistantFragment : BottomSheetDialogFragment() {
 
         Handler(Looper.getMainLooper()).postDelayed({
             assistantMessage?.requestFocus()
-            val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm = mContext?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.showSoftInput(assistantMessage, InputMethodManager.SHOW_IMPLICIT)
         }, 100)
     }
@@ -1817,16 +1967,125 @@ class AssistantFragment : BottomSheetDialogFragment() {
         parseMessage(prompt)
     }
 
-    private fun expandFullHeight(view: View) {
-        view.post {
-            val parent = view.parent as View
-            val params = parent.layoutParams as CoordinatorLayout.LayoutParams
-            val behavior = params.behavior as BottomSheetBehavior
-            // Optional: Adjust here to set how high the bottom sheet should expand
-            behavior.peekHeight = view.measuredHeight
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return BottomSheetDialog(mContext ?: return onCreateDialog(savedInstanceState), R.style.AssistantWindowTheme)
+    }
 
-            // Set the initially state to expanded
-            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setStyle(STYLE_NORMAL, R.style.AssistantWindowTheme)
+
+        if (savedInstanceState == null) {
+            val chatPreferences = ChatPreferences.getChatPreferences()
+            chatPreferences.clearChatById(mContext ?: return, "temp_state")
+
+            preferences = Preferences.getPreferences(mContext ?: return, "")
+
+            if (preferences?.getChatsAutosave() == true) {
+                val chatName = "_autoname_${chatPreferences.getAvailableChatIdForAutoname(mContext ?: return)}"
+                this.chatName = chatName
+                chatID = Hash.hash(chatName)
+
+                chatPreferences.addChat(mContext ?: return, chatName)
+
+                val globalPreferences = Preferences.getPreferences(mContext ?: return, "")
+
+                val resolution = globalPreferences.getResolution()
+                val speech = globalPreferences.getAudioModel()
+                val model = globalPreferences.getModel()
+                val maxTokens = globalPreferences.getMaxTokens()
+                val prefix = globalPreferences.getPrefix()
+                val endSeparator = globalPreferences.getEndSeparator()
+                val activationPrompt = globalPreferences.getPrompt()
+                val layout = globalPreferences.getLayout()
+                val silent = globalPreferences.getSilence()
+                val systemMessage = globalPreferences.getSystemMessage()
+                val alwaysSpeak = globalPreferences.getNotSilence()
+                val autoLanguageDetect = globalPreferences.getAutoLangDetect()
+                val functionCalling = globalPreferences.getFunctionCalling()
+                val slashCommands = globalPreferences.getImagineCommand()
+                val ttsEngine = globalPreferences.getTtsEngine()
+                val dalleVersion = globalPreferences.getDalleVersion()
+                val opeAIVoice: String = globalPreferences.getOpenAIVoice()
+                val voice: String = globalPreferences.getVoice()
+
+                preferences = Preferences.getPreferences(mContext ?: return, chatID)
+                preferences!!.setPreferences(Hash.hash(chatName), mContext ?: return)
+                preferences!!.setResolution(resolution)
+                preferences!!.setAudioModel(speech)
+                preferences!!.setModel(model)
+                preferences!!.setMaxTokens(maxTokens)
+                preferences!!.setPrefix(prefix)
+                preferences!!.setEndSeparator(endSeparator)
+                preferences!!.setPrompt(activationPrompt)
+                preferences!!.setLayout(layout)
+                preferences!!.setSilence(silent)
+                preferences!!.setSystemMessage(systemMessage)
+                preferences!!.setNotSilence(alwaysSpeak)
+                preferences!!.setAutoLangDetect(autoLanguageDetect)
+                preferences!!.setFunctionCalling(functionCalling)
+                preferences!!.setImagineCommand(slashCommands)
+                preferences!!.setTtsEngine(ttsEngine)
+                preferences!!.setDalleVersion(dalleVersion)
+                preferences!!.setOpenAIVoice(opeAIVoice)
+                preferences!!.setVoice(voice)
+            }
         }
+    }
+
+    override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        super.onSaveInstanceState(savedInstanceState)
+
+        this.savedInstanceState = savedInstanceState
+
+        savedInstanceState.putString("chatId", chatID)
+        savedInstanceState.putString("chatName", chatName)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        if (savedInstanceState != null) {
+            this.savedInstanceState = null
+
+            chatID = savedInstanceState.getString("chatId").toString()
+            chatName = savedInstanceState.getString("chatName").toString()
+
+            if (preferences?.getChatsAutosave() == false) {
+                chatID = "temp_state"
+                chatName = ""
+            }
+
+            loadMessages(chatID)
+        }
+    }
+
+    private fun findLastUserMessage(): String {
+        var lastUserMessage = ""
+
+        for (i in messages.size - 1 downTo 0) {
+            if (messages[i]["isBot"] == false) {
+                lastUserMessage = messages[i]["message"].toString()
+                break
+            }
+        }
+
+        return lastUserMessage
+    }
+
+    private fun removeLastAssistantMessageIfAvailable() {
+        if (messages.isNotEmpty() && messages.size - 1 > 0 && messages[messages.size - 1]["isBot"] == true) {
+            messages.removeAt(messages.size - 1)
+        }
+
+        if (chatMessages.isNotEmpty() && chatMessages.size - 1 > 0 && chatMessages[chatMessages.size - 1].role == Role.Assistant) {
+            chatMessages.removeAt(chatMessages.size - 1)
+        }
+    }
+
+    override fun onRetryClick() {
+        removeLastAssistantMessageIfAvailable()
+        saveSettings()
+        parseMessage(findLastUserMessage(), false)
     }
 }

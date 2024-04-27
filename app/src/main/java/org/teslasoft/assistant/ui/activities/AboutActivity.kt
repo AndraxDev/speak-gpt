@@ -140,14 +140,14 @@ class AboutActivity : FragmentActivity() {
 
         btnTerms?.setOnClickListener {
             val i = Intent()
-            i.data = Uri.parse("https://teslasoft.org/tos")
+            i.data = Uri.parse("https://assistant.teslasoft.org/terms")
             i.action = Intent.ACTION_VIEW
             startActivity(i)
         }
 
         btnPrivacy?.setOnClickListener {
             val i = Intent()
-            i.data = Uri.parse("https://teslasoft.org/privacy")
+            i.data = Uri.parse("https://assistant.teslasoft.org/privacy")
             i.action = Intent.ACTION_VIEW
             startActivity(i)
         }

@@ -35,6 +35,8 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActiv
 
     @SuppressLint("InflateParams", "SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        if (mContext == null) return convertView!!
+
         val inflater = mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
         val layout  = preferences.getLayout()
@@ -83,7 +85,7 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActiv
         } else {
             if (dataArray?.get(position)?.get("isBot") == true) {
                 icon?.setImageResource(R.drawable.assistant)
-                username.text = mContext.resources.getString(R.string.app_name)
+                username.text = mContext.resources?.getString(R.string.app_name)
                 ui?.setBackgroundColor(getSurfaceColor(mContext))
             } else {
                 icon?.setImageResource(R.drawable.ic_user)

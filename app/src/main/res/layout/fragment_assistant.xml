@@ -4,10 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ui"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingBottom="12dp"
+    android:paddingEnd="12dp"
+    android:paddingStart="12dp">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/window"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -62,10 +66,10 @@
 
         <ImageButton
             android:id="@+id/btn_assistant_voice"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_marginBottom="24dp"
-            android:background="@drawable/btn_accent_tonal_v2"
+            android:layout_width="84dp"
+            android:layout_height="84dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/mtrl_shape1"
             android:contentDescription="@string/btn_speak"
             android:elevation="0.02dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -76,21 +80,23 @@
         <ProgressBar
             android:id="@+id/assistant_loading"
             style="?android:attr/progressBarStyle"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:background="@drawable/btn_accent_tonal_v2"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/assistant_clear"
             android:clickable="false"
             android:elevation="0.03dip"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/btn_assistant_voice"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/assistant_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="24sp"
+            android:paddingTop="16sp"
             android:text="@string/app_name"
             android:textColor="@color/accent_900"
             android:textSize="24sp"
@@ -101,10 +107,10 @@
 
         <LinearLayout
             android:id="@+id/assistant_actions"
-            android:layout_width="170dp"
+            android:layout_width="164dp"
             android:layout_height="48dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/btn_accent_tonal"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/btn_accent_assistant_actions"
             android:clickable="false"
             android:elevation="0.01dp"
             android:orientation="horizontal"
@@ -114,14 +120,15 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="@drawable/btn_accent_assistant_actions">
 
                 <ImageButton
                     android:id="@+id/btn_assistant_settings"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:layout_marginStart="8dp"
-                    android:background="@drawable/btn_accent_tonal"
+                    android:background="@drawable/btn_accent_assistant_actions"
                     android:contentDescription="@string/btn_settings"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -133,7 +140,7 @@
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:layout_marginEnd="8dp"
-                    android:background="@drawable/btn_accent_tonal"
+                    android:background="@drawable/btn_accent_assistant_actions"
                     android:contentDescription="@string/btn_show_keyboard"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -148,6 +155,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/assistant_title">
 
@@ -162,27 +170,41 @@
                 android:transcriptMode="alwaysScroll" />
         </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
+        <ImageButton
             android:id="@+id/btn_save"
-            style="@style/Widget.Material3.Button.TonalButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="-8dp"
-            android:text="@string/btn_save"
+            android:src="@drawable/ic_storage"
             android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@+id/assistant_title"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:tooltipText="Save"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.button.MaterialButton
-            style="@style/Widget.Material3.Button.TonalButton"
+        <ImageButton
             android:id="@+id/btn_exit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:text="Exit"
+            android:src="@drawable/ic_back"
+            android:tooltipText="Exit"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btn_clear_conversation"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="2dp"
+            android:src="@drawable/ic_close"
+            android:tooltipText="Clear chet"
+            app:layout_constraintEnd_toStartOf="@+id/btn_save"
             app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
@@ -191,8 +213,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginBottom="12dp"
+            android:clickable="true"
             android:background="@drawable/btn_accent_tonal_selector"
-            android:elevation="12dp"
+            android:elevation="6dp"
             android:orientation="vertical"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/input_layout"
@@ -204,8 +227,8 @@
 
                 <ImageView
                     android:id="@+id/selectedImage"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:layout_marginStart="12dp"
                     android:layout_marginTop="12dp"
                     android:layout_marginEnd="12dp"
@@ -238,7 +261,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="32dp"
             android:background="@drawable/btn_accent_tonal"
             android:clickable="false"
             android:orientation="horizontal"

@@ -24,6 +24,7 @@ import com.google.android.material.color.DynamicColors
 import org.conscrypt.Conscrypt
 
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.Logger
 import java.security.Security
 
 /**
@@ -45,6 +46,9 @@ class MainApplication : Application() {
         if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.P) {
             Security.insertProviderAt(Conscrypt.newProvider(), 1)
         }
+
+        // Clear event log on startup
+        Logger.clearEventLog(this)
 
         CaocConfig.Builder.create()
             .backgroundMode(CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM)

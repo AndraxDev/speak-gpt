@@ -30,9 +30,12 @@ import androidx.fragment.app.FragmentActivity
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 
-class AssistantAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActivity, override val preferences: Preferences) : AbstractChatAdapter(data, context, preferences) {
+class AssistantAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActivity?, override val preferences: Preferences) : AbstractChatAdapter(data, context, preferences) {
     @SuppressLint("InflateParams", "SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+
+        if (mContext == null) return convertView!!
+
         val inflater = mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
         val mView: View? = if (dataArray?.get(position)?.get("isBot") == true) {

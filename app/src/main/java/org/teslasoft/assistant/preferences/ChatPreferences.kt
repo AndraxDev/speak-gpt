@@ -143,6 +143,22 @@ class ChatPreferences private constructor() {
         return list
     }
 
+    fun getChatByIdAsString(context: Context, chatId: String) : String {
+        val chat: SharedPreferences = context.getSharedPreferences("chat_$chatId",
+            Context.MODE_PRIVATE
+        )
+
+        return chat.getString("chat", "[]").toString()
+    }
+
+    fun clearChatById(context: Context, chatId: String) {
+        val chat: SharedPreferences = context.getSharedPreferences("chat_$chatId",
+            Context.MODE_PRIVATE
+        )
+
+        chat.edit().putString("chat", "[]").apply()
+    }
+
     /**
      * Generates a unique chat ID for a new chat.
      *
@@ -202,7 +218,13 @@ class ChatPreferences private constructor() {
     fun getAvailableChatIdForAutoname(context: Context) : String {
         var x = 1
 
-        val list = getChatList(context)
+        var list = getChatList(context)
+
+        // R8 Bugfix
+        if (list == null) list = arrayListOf()
+
+        // Dumb things goes gere
+        if (list.isEmpty()) list = arrayListOf()
 
         while (true) {
             var isFound = false
@@ -312,5 +334,24 @@ class ChatPreferences private constructor() {
                 break
             }
         }
+    }
+
+    fun deleteChatById(context: Context, chatId: String) {
+        val list = getChatList(context)
+
+        for (map: HashMap<String, String> in list) {
+            if (map["id"] == chatId) {
+                list.remove(map)
+                break
+            }
+        }
+
+        val json: String = Gson().toJson(list)
+
+        val settings: SharedPreferences = context.getSharedPreferences("chat_list", Context.MODE_PRIVATE)
+        settings.edit().putString("data", json).apply()
+
+        val settings2: SharedPreferences = context.getSharedPreferences("chat_$chatId", Context.MODE_PRIVATE)
+        settings2.edit().clear().apply()
     }
 }

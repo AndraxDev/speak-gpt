@@ -18,6 +18,7 @@ package org.teslasoft.assistant.ui.assistant
 
 import android.os.Bundle
 import android.os.StrictMode
+import android.widget.Toast
 
 import androidx.fragment.app.FragmentActivity
 
@@ -27,20 +28,32 @@ import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.fragments.AssistantFragment
 
 class AssistantActivity : FragmentActivity() {
+
+    private var restoreFromState = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
-        val assistantFragment = AssistantFragment()
-        assistantFragment.isCancelable = !Preferences.getPreferences(this, "").getLockAssistantWindow()
-        assistantFragment.show(supportFragmentManager, "AssistantFragment")
-
         window.navigationBarColor = SurfaceColors.SURFACE_1.getColor(this)
 
-        assistantFragment.dialog?.setOnDismissListener {
-            finish()
+        if (savedInstanceState == null) {
+            val assistantFragment = AssistantFragment()
+            assistantFragment.isCancelable = !Preferences.getPreferences(this, "").getLockAssistantWindow()
+            assistantFragment.show(supportFragmentManager, "AssistantFragment")
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        restoreFromState = true
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+
+        restoreFromState = false
     }
 }

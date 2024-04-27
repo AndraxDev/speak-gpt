@@ -25,4 +25,13 @@
         <item name="android:windowAnimationStyle">@style/Theme.Anim.Fade.Material</item>
         <item name="android:typeface">sans</item>
     </style>
+
+    <style name="AssistantWindowTheme" parent="Theme.Design.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AssistantWindowStyle</item>
+        <item name="colorPrimary">@color/accent_900</item>
+        <item name="colorOnPrimary">@color/window_background</item>
+        <item name="colorSecondary">@color/accent_900</item>
+        <item name="colorOnSecondary">@color/window_background</item>
+        <item name="colorAccent">@color/accent_900</item>
+    </style>
 </resources>

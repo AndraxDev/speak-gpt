@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="36dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="12dp"
         android:gravity="end"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -22,8 +22,8 @@
             android:id="@+id/bubble_bg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
             android:background="@drawable/bubble_out"
             android:gravity="end"
             android:orientation="vertical">
@@ -87,6 +87,17 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/image_frame">
+
+                <ImageButton
+                    android:id="@+id/btn_retry"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/btn_accent_tonal"
+                    android:contentDescription="Retry"
+                    android:descendantFocusability="blocksDescendants"
+                    android:src="@drawable/ic_retry"
+                    app:srcCompat="@drawable/ic_retry" />
 
                 <ImageButton
                     android:id="@+id/btn_copy"

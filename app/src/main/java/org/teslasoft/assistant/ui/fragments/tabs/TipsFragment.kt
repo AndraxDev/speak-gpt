@@ -34,6 +34,7 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.Logger
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.util.TestDevicesAds
 
@@ -68,6 +69,7 @@ class TipsFragment : Fragment() {
             (mContext as Activity?)?.runOnUiThread {
                 if (preferences.getAdsEnabled()) {
                     MobileAds.initialize(mContext?: return@runOnUiThread) { /* unused */ }
+                    Logger.log(mContext?: return@runOnUiThread, "ads", "AdMob", "info", "Ads initialized")
 
                     val requestConfiguration = RequestConfiguration.Builder()
                         .setTestDeviceIds(TestDevicesAds.TEST_DEVICES)
@@ -90,14 +92,17 @@ class TipsFragment : Fragment() {
                     adView.adListener = object : com.google.android.gms.ads.AdListener() {
                         override fun onAdFailedToLoad(error: LoadAdError) {
                             ad?.visibility = View.GONE
+                            Logger.log(mContext?: return, "ads", "AdMob", "error", "Ad failed to load: ${error.message}")
                         }
 
                         override fun onAdLoaded() {
                             ad?.visibility = View.VISIBLE
+                            Logger.log(mContext?: return, "ads", "AdMob", "info", "Ad loaded successfully")
                         }
                     }
                 } else {
                     ad?.visibility = View.GONE
+                    Logger.log(mContext?: return@runOnUiThread, "ads", "AdMob", "info", "Ads initialization skipped: Ads are disabled")
                 }
             }
         }.start()

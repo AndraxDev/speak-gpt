@@ -30,6 +30,7 @@
 
     <color name="accent_50">#F0EDF6</color>
     <color name="accent_100">#e3dfec</color>
+    <color name="accent_100x2">#e3dfec</color>
     <color name="accent_200">#c7c4cf</color>
     <color name="accent_250">#9C8EC2</color>
     <color name="accent_300">#fdfbff</color>

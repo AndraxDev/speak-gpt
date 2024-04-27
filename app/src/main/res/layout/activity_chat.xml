@@ -90,7 +90,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
-                android:background="@drawable/btn_accent_tonal_v5"
+                android:background="@drawable/assistant_clear"
                 android:elevation="0.02dip"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

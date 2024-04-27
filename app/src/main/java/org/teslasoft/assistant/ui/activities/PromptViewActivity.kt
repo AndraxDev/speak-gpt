@@ -51,6 +51,7 @@ import com.google.gson.reflect.TypeToken
 import org.teslasoft.assistant.Api
 import org.teslasoft.assistant.Config
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.Logger
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.assistant.AssistantActivity
 import org.teslasoft.assistant.util.TestDevicesAds.Companion.TEST_DEVICES
@@ -359,6 +360,10 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
         promptBg = findViewById(R.id.prompt_bg)
         promptActions = findViewById(R.id.prompt_actions)
 
+        noInternetLayout?.visibility = View.GONE
+        progressBar?.visibility = View.VISIBLE
+        content?.visibility = View.GONE
+
         reloadAmoled()
     }
 
@@ -458,6 +463,7 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
 
         if (preferences.getAdsEnabled()) {
             MobileAds.initialize(this) { /* unused */ }
+            Logger.log(this, "ads", "AdMob", "info", "Ads initialized")
 
             val requestConfiguration = RequestConfiguration.Builder()
                 .setTestDeviceIds(TEST_DEVICES)
@@ -480,14 +486,17 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
             adView.adListener = object : com.google.android.gms.ads.AdListener() {
                 override fun onAdFailedToLoad(error: LoadAdError) {
                     ad?.visibility = View.GONE
+                    Logger.log(this@PromptViewActivity, "ads", "AdMob", "error", "Ad failed to load: ${error.message}")
                 }
 
                 override fun onAdLoaded() {
                     ad?.visibility = View.VISIBLE
+                    Logger.log(this@PromptViewActivity, "ads", "AdMob", "info", "Ad loaded successfully")
                 }
             }
         } else {
             ad?.visibility = View.GONE
+            Logger.log(this, "ads", "AdMob", "info", "Ads initialization skipped: Ads are disabled")
         }
 
         btnShowDetails?.setOnClickListener {

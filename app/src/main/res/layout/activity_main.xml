@@ -27,7 +27,7 @@
         android:layout_height="match_parent"
         android:clickable="true"
         android:elevation="9dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -89,6 +89,20 @@
             app:layout_constraintTop_toBottomOf="@+id/btn_initiate_crash" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_toggle_pwa"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/btn_accent_24"
+            android:text="Enable PWA"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_launch_pwa" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_switch_ads"
             style="@style/Widget.Material3.Button"
             android:layout_width="0dp"
@@ -100,7 +114,7 @@
             android:text="Disable ads"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_launch_pwa" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_toggle_pwa" />
 
         <TextView
             android:id="@+id/dev_ids"

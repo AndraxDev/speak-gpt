@@ -1038,6 +1038,8 @@ class SettingsV2Activity : FragmentActivity() {
             // btnRemoveAds?.visibility = View.VISIBLE
             MobileAds.initialize(this) { /* unused */ }
 
+            Logger.log(this, "ads", "AdMob", "info", "Ads initialized")
+
             val requestConfiguration = RequestConfiguration.Builder()
                 .setTestDeviceIds(TestDevicesAds.TEST_DEVICES)
                 .build()
@@ -1059,15 +1061,18 @@ class SettingsV2Activity : FragmentActivity() {
             adView.adListener = object : com.google.android.gms.ads.AdListener() {
                 override fun onAdFailedToLoad(error: LoadAdError) {
                     ad?.visibility = View.GONE
+                    Logger.log(this@SettingsV2Activity, "ads", "AdMob", "error", "Ad failed to load: ${error.message}")
                 }
 
                 override fun onAdLoaded() {
                     ad?.visibility = View.VISIBLE
+                    Logger.log(this@SettingsV2Activity, "ads", "AdMob", "info", "Ad loaded successfully")
                 }
             }
         } else {
             btnRemoveAds?.visibility = View.GONE
             ad?.visibility = View.GONE
+            Logger.log(this, "ads", "AdMob", "info", "Ads initialization skipped: Ads are disabled")
         }
     }
 

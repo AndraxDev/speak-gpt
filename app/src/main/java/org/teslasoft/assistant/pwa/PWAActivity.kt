@@ -84,10 +84,10 @@ class PWAActivity : FragmentActivity() {
         MaterialAlertDialogBuilder(this)
             .setTitle("PWA")
             .setMessage("Are you sure you want to close the PWA?")
-            .setPositiveButton("Close") { _, _ ->
+            .setPositiveButton("Exit") { _, _ ->
                 finish()
             }
-            .setNeutralButton("Clear cache & reload") { _, _ ->
+            .setNeutralButton("Clear cache and reload") { _, _ ->
                 webView?.clearCache(true)
                 webView?.reload()
             }

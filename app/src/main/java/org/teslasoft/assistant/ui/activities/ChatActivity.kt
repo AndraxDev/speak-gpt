@@ -138,12 +138,18 @@ import androidx.core.content.FileProvider
 import com.aallam.openai.api.chat.ContentPart
 import com.aallam.openai.api.chat.ImagePart
 import com.aallam.openai.api.chat.TextPart
+import com.aallam.openai.api.core.Role
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.isActive
 import org.teslasoft.assistant.preferences.GlobalPreferences
 import org.teslasoft.assistant.ui.permission.CameraPermissionActivity
 import java.io.ByteArrayOutputStream
+import kotlinx.coroutines.CancellationException
+import org.teslasoft.assistant.ui.adapters.AbstractChatAdapter
+import kotlin.coroutines.coroutineContext
 
 
-class ChatActivity : FragmentActivity() {
+class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnRetryClickListener {
 
     // Init UI
     private var messageInput: EditText? = null
@@ -193,6 +199,8 @@ class ChatActivity : FragmentActivity() {
     private var endSeparator = ""
     private var prefix = ""
 
+    private var stopper = false
+
     // Init DALL-e
     private var resolution = "512x152"
 
@@ -208,6 +216,30 @@ class ChatActivity : FragmentActivity() {
     // Init preferences
     private var preferences: Preferences? = null
     private var preferencesChangedListener: Preferences.PreferencesChangedListener? = null
+
+    private var onSpeechResultsScope: CoroutineScope? = null
+    private var whisperScope: CoroutineScope? = null
+    private var processRecordingScope: CoroutineScope? = null
+    private var setupScope: CoroutineScope? = null
+    private var imageRequestScope: CoroutineScope? = null
+    private var speakScope: CoroutineScope? = null
+
+    private fun killAllProcesses() {
+        onSpeechResultsScope?.coroutineContext?.cancel(CancellationException("Killed"))
+        whisperScope?.coroutineContext?.cancel(CancellationException("Killed"))
+        processRecordingScope?.coroutineContext?.cancel(CancellationException("Killed"))
+        setupScope?.coroutineContext?.cancel(CancellationException("Killed"))
+        imageRequestScope?.coroutineContext?.cancel(CancellationException("Killed"))
+        speakScope?.coroutineContext?.cancel(CancellationException("Killed"))
+    }
+
+    private fun restoreUIState() {
+        progress?.visibility = View.GONE
+        btnMicro?.isEnabled = true
+        btnSend?.isEnabled = true
+        isRecording = false
+        btnMicro?.setImageResource(R.drawable.ic_microphone)
+    }
 
     private val speechListener = object : RecognitionListener {
         override fun onReadyForSpeech(params: Bundle?) { /* unused */ }
@@ -259,8 +291,18 @@ class ChatActivity : FragmentActivity() {
                     btnSend?.isEnabled = false
                     progress?.visibility = View.VISIBLE
 
-                    CoroutineScope(Dispatchers.Main).launch {
-                        generateResponse(prefix + recognizedText + endSeparator, true)
+                    onSpeechResultsScope = CoroutineScope(Dispatchers.Main)
+                    onSpeechResultsScope?.launch {
+                        progress?.setOnClickListener {
+                            cancel()
+                            restoreUIState()
+                        }
+
+                        try {
+                            generateResponse(prefix + recognizedText + endSeparator, true)
+                        } catch (e: CancellationException) {
+                            Toast.makeText(this@ChatActivity, "Cancelled", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
@@ -557,6 +599,9 @@ class ChatActivity : FragmentActivity() {
             mediaPlayer!!.stop()
             mediaPlayer!!.reset()
         }
+
+        killAllProcesses()
+
         super.onDestroy()
     }
 
@@ -603,6 +648,7 @@ class ChatActivity : FragmentActivity() {
             }
 
             adapter = ChatAdapter(messages, this, preferences!!)
+            adapter?.setOnRetryClickListener(this)
 
             initUI()
             reloadAmoled()
@@ -738,7 +784,7 @@ class ChatActivity : FragmentActivity() {
     private var baseImageString: String? = null
     private var selectedImageType: String? = null
 
-    fun roundCorners(bitmap: Bitmap, cornerRadius: Float): Bitmap {
+    private fun roundCorners(bitmap: Bitmap, cornerRadius: Float): Bitmap {
         // Create a bitmap with the same size as the original.
         val output = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
 
@@ -1066,8 +1112,19 @@ class ChatActivity : FragmentActivity() {
         progress?.visibility = View.VISIBLE
 
         if (!cancelState) {
-            CoroutineScope(Dispatchers.Main).launch {
-                processRecording()
+            whisperScope = CoroutineScope(Dispatchers.Main)
+
+            whisperScope?.launch {
+                progress?.setOnClickListener {
+                    cancel()
+                    restoreUIState()
+                }
+
+                try {
+                    processRecording()
+                } catch (e: CancellationException) {
+                    Toast.makeText(this@ChatActivity, "Cancelled", Toast.LENGTH_SHORT).show()
+                }
             }
         } else {
             cancelState = false
@@ -1109,8 +1166,19 @@ class ChatActivity : FragmentActivity() {
                 btnSend?.isEnabled = false
                 progress?.visibility = View.VISIBLE
 
-                CoroutineScope(Dispatchers.Main).launch {
-                    generateResponse(prefix + transcription + endSeparator, true)
+                processRecordingScope = CoroutineScope(Dispatchers.Main)
+
+                processRecordingScope?.launch {
+                    progress?.setOnClickListener {
+                        cancel()
+                        restoreUIState()
+                    }
+
+                    try {
+                        generateResponse(prefix + transcription + endSeparator, true)
+                    } catch (cancelledException: CancellationException) {
+                        Toast.makeText(this@ChatActivity, "Cancelled", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         } catch (e: Exception) {
@@ -1251,8 +1319,19 @@ class ChatActivity : FragmentActivity() {
                 btnSend?.isEnabled = false
                 progress?.visibility = View.VISIBLE
 
-                CoroutineScope(Dispatchers.Main).launch {
-                    generateResponse(prompt, false)
+                setupScope = CoroutineScope(Dispatchers.Main)
+
+                setupScope?.launch {
+                    progress?.setOnClickListener {
+                        cancel()
+                        restoreUIState()
+                    }
+
+                    try {
+                        generateResponse(prompt, false)
+                    } catch (cancelledException: CancellationException) {
+                        Toast.makeText(this@ChatActivity, "Cancelled", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
@@ -1300,7 +1379,7 @@ class ChatActivity : FragmentActivity() {
         editor.apply()
     }
 
-    private fun parseMessage(message: String) {
+    private fun parseMessage(message: String, shouldAdd: Boolean = true) {
         try {
             if (mediaPlayer!!.isPlaying) {
                 mediaPlayer!!.stop()
@@ -1325,7 +1404,7 @@ class ChatActivity : FragmentActivity() {
 
                 putMessage(m, false, file, selectedImageType!!)
             } else {
-                putMessage(m, false)
+                if (shouldAdd) putMessage(m, false)
             }
             saveSettings()
 
@@ -1348,15 +1427,26 @@ class ChatActivity : FragmentActivity() {
                 btnSend?.isEnabled = true
                 progress?.visibility = View.GONE
             } else {
-                chatMessages.add(
-                    ChatMessage(
-                        role = ChatRole.User,
-                        content = m
+                if (shouldAdd) {
+                    chatMessages.add(
+                        ChatMessage(
+                            role = ChatRole.User,
+                            content = m
+                        )
                     )
-                )
+                }
 
                 CoroutineScope(Dispatchers.Main).launch {
-                    generateResponse(m, false)
+                    progress?.setOnClickListener {
+                        cancel()
+                        restoreUIState()
+                    }
+
+                    try {
+                        generateResponse(m, false)
+                    } catch (cancelledException: CancellationException) {
+                        Toast.makeText(this@ChatActivity, "Cancelled", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
@@ -1364,8 +1454,18 @@ class ChatActivity : FragmentActivity() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun sendImageRequest(str: String) {
-        CoroutineScope(Dispatchers.Main).launch {
-            generateImage(str)
+        imageRequestScope = CoroutineScope(Dispatchers.Main)
+        imageRequestScope?.launch {
+            progress?.setOnClickListener {
+                cancel()
+                restoreUIState()
+            }
+
+            try {
+                generateImage(str)
+            } catch (cancelledException: CancellationException) {
+                Toast.makeText(this@ChatActivity, "Cancelled", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -1454,11 +1554,13 @@ class ChatActivity : FragmentActivity() {
 
                 completions.collect { v ->
                     run {
-                        if (v.choices[0].delta.content != "null") {
+                        if (!coroutineContext.isActive) throw CancellationException()
+                        else if (v.choices[0].delta.content != "null") {
                             response += v.choices[0].delta.content
                             if (response != "null") {
-                                messages[messages.size - 1]["message"] = "$response █"
+                                messages[messages.size - 1]["message"] = response
                                 adapter?.notifyDataSetChanged()
+                                saveSettings()
                             }
                         }
                     }
@@ -1492,10 +1594,12 @@ class ChatActivity : FragmentActivity() {
 
                 completions.collect { v ->
                     run {
-                        if (v.choices[0].text != "null") {
+                        if (!coroutineContext.isActive) throw CancellationException()
+                        else if (v.choices[0].text != "null") {
                             response += v.choices[0].text
-                            messages[messages.size - 1]["message"] = "$response █"
+                            messages[messages.size - 1]["message"] = response
                             adapter?.notifyDataSetChanged()
+                            saveSettings()
                         }
                     }
                 }
@@ -1606,6 +1710,10 @@ class ChatActivity : FragmentActivity() {
                     regularGPTResponse(shouldPronounce)
                 }
             }
+        } catch (e: CancellationException) {
+            runOnUiThread {
+                restoreUIState()
+            }
         } catch (e: Exception) {
             val response = when {
                 e.stackTraceToString().contains("does not exist") -> {
@@ -1637,15 +1745,24 @@ class ChatActivity : FragmentActivity() {
                 }
             }
 
-            putMessage(response, true)
+            messages[messages.size - 1]["message"] = "${messages[messages.size - 1]["message"]}\n\nAn error has been occurred during generation. See the error details below:\n\n$response"
             adapter?.notifyDataSetChanged()
+
+//            putMessage(response, true)
+//            adapter?.notifyDataSetChanged()
 
             saveSettings()
 
-            btnMicro?.isEnabled = true
-            btnSend?.isEnabled = true
-            progress?.visibility = View.GONE
-            messageInput?.requestFocus()
+            runOnUiThread {
+                btnMicro?.isEnabled = true
+                btnSend?.isEnabled = true
+                progress?.visibility = View.GONE
+                messageInput?.requestFocus()
+            }
+        } finally {
+            runOnUiThread {
+                restoreUIState()
+            }
         }
     }
 
@@ -1678,10 +1795,12 @@ class ChatActivity : FragmentActivity() {
 
         completions.collect { v ->
             run {
-                if (v.choices[0].delta.content != null) {
+                if (!coroutineContext.isActive) throw CancellationException()
+                else if (v.choices[0].delta.content != null) {
                     response += v.choices[0].delta.content
-                    messages[messages.size - 1]["message"] = "$response █"
+                    messages[messages.size - 1]["message"] = response
                     adapter?.notifyDataSetChanged()
+                    saveSettings()
                 }
             }
         }
@@ -1813,44 +1932,55 @@ class ChatActivity : FragmentActivity() {
         if (preferences!!.getTtsEngine() == "google") {
             tts!!.speak(message, TextToSpeech.QUEUE_FLUSH, null, "")
         } else {
-            CoroutineScope(Dispatchers.Main).launch {
-                val rawAudio = ai!!.speech(
-                    request = SpeechRequest(
-                        model = ModelId("tts-1"),
-                        input = message,
-                        voice = com.aallam.openai.api.audio.Voice(preferences!!.getOpenAIVoice()),
+            speakScope = CoroutineScope(Dispatchers.Main)
+
+            speakScope?.launch {
+                progress?.setOnClickListener {
+                    cancel()
+                    restoreUIState()
+                }
+
+                try {
+                    val rawAudio = ai!!.speech(
+                        request = SpeechRequest(
+                            model = ModelId("tts-1"),
+                            input = message,
+                            voice = com.aallam.openai.api.audio.Voice(preferences!!.getOpenAIVoice()),
+                        )
                     )
-                )
 
-                runOnUiThread {
-                    try {
-                        // create temp file that will hold byte array
-                        val tempMp3 = File.createTempFile("audio", "mp3", cacheDir)
-                        tempMp3.deleteOnExit()
-                        val fos = FileOutputStream(tempMp3)
-                        fos.write(rawAudio)
-                        fos.close()
+                    runOnUiThread {
+                        try {
+                            // create temp file that will hold byte array
+                            val tempMp3 = File.createTempFile("audio", "mp3", cacheDir)
+                            tempMp3.deleteOnExit()
+                            val fos = FileOutputStream(tempMp3)
+                            fos.write(rawAudio)
+                            fos.close()
 
-                        // resetting media player instance to evade problems
-                        mediaPlayer?.reset()
+                            // resetting media player instance to evade problems
+                            mediaPlayer?.reset()
 
-                        // In case you run into issues with threading consider new instance like:
-                        // MediaPlayer mediaPlayer = new MediaPlayer();
+                            // In case you run into issues with threading consider new instance like:
+                            // MediaPlayer mediaPlayer = new MediaPlayer();
 
-                        // Tried passing path directly, but kept getting
-                        // "Prepare failed.: status=0x1"
-                        // so using file descriptor instead
-                        val fis = FileInputStream(tempMp3)
-                        mediaPlayer?.setDataSource(fis.getFD())
-                        mediaPlayer?.prepare()
-                        mediaPlayer?.start()
-                    } catch (ex: IOException) {
-                        MaterialAlertDialogBuilder(this@ChatActivity, R.style.App_MaterialAlertDialog)
-                            .setTitle("Audio error")
-                            .setMessage(ex.stackTraceToString())
-                            .setPositiveButton("Close") { _, _ -> }
-                            .show()
+                            // Tried passing path directly, but kept getting
+                            // "Prepare failed.: status=0x1"
+                            // so using file descriptor instead
+                            val fis = FileInputStream(tempMp3)
+                            mediaPlayer?.setDataSource(fis.getFD())
+                            mediaPlayer?.prepare()
+                            mediaPlayer?.start()
+                        } catch (ex: IOException) {
+                            MaterialAlertDialogBuilder(this@ChatActivity, R.style.App_MaterialAlertDialog)
+                                .setTitle("Audio error")
+                                .setMessage(ex.stackTraceToString())
+                                .setPositiveButton("Close") { _, _ -> }
+                                .show()
+                        }
                     }
+                } catch (e: CancellationException) {
+                    Toast.makeText(this@ChatActivity, "Cancelled", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -1921,6 +2051,10 @@ class ChatActivity : FragmentActivity() {
                     messageInput?.requestFocus()
                 }
             }.start()
+        } catch (e: CancellationException) {
+            runOnUiThread {
+                restoreUIState()
+            }
         } catch (e: Exception) {
             putMessage(
                 when {
@@ -1957,6 +2091,39 @@ class ChatActivity : FragmentActivity() {
             progress?.visibility = View.GONE
 
             messageInput?.requestFocus()
+        } finally {
+            runOnUiThread {
+                restoreUIState()
+            }
         }
+    }
+
+    private fun findLastUserMessage(): String {
+        var lastUserMessage = ""
+
+        for (i in messages.size - 1 downTo 0) {
+            if (messages[i]["isBot"] == false) {
+                lastUserMessage = messages[i]["message"].toString()
+                break
+            }
+        }
+
+        return lastUserMessage
+    }
+
+    private fun removeLastAssistantMessageIfAvailable() {
+        if (messages.isNotEmpty() && messages.size - 1 > 0 && messages[messages.size - 1]["isBot"] == true) {
+            messages.removeAt(messages.size - 1)
+        }
+
+        if (chatMessages.isNotEmpty() && chatMessages.size - 1 > 0 && chatMessages[chatMessages.size - 1].role == Role.Assistant) {
+            chatMessages.removeAt(chatMessages.size - 1)
+        }
+    }
+
+    override fun onRetryClick() {
+        removeLastAssistantMessageIfAvailable()
+        saveSettings()
+        parseMessage(findLastUserMessage(), false)
     }
 }

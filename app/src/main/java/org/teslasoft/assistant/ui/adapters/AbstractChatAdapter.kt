@@ -58,9 +58,9 @@ import java.io.FileInputStream
 import java.util.Base64
 import java.util.Collections
 
-abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActivity, protected open val preferences: Preferences) : BaseAdapter(), EditMessageDialogFragment.StateChangesListener {
+abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActivity?, protected open val preferences: Preferences) : BaseAdapter(), EditMessageDialogFragment.StateChangesListener {
     protected val dataArray: ArrayList<HashMap<String, Any>>? = data
-    protected val mContext: FragmentActivity = context
+    protected val mContext: FragmentActivity? = context
     override fun getCount(): Int {
         return dataArray!!.size
     }
@@ -77,8 +77,15 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
     protected var dalleImage: ImageView? = null
     protected var btnCopy: ImageButton? = null
     protected var btnEdit: ImageButton? = null
+    private var btnRetry: ImageButton? = null
     private var dalleImageStringList = ArrayList<String>(Collections.nCopies(count+1, ""))
     private var imageStringList = ArrayList<String>(Collections.nCopies(count+1, ""))
+
+    private var onRetryListener: OnRetryClickListener? = null
+
+    fun setOnRetryClickListener(listener: OnRetryClickListener) {
+        onRetryListener = listener
+    }
 
     private fun editMessage(position: Int, message: String) {
         dataArray?.get(position)?.set("message", message)
@@ -94,7 +101,7 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
 
         if (preferences.getChatId() !== "") {
             val chatPreferences = ChatPreferences.getChatPreferences()
-            chatPreferences.editMessage(mContext, preferences.getChatId(), position, prompt)
+            chatPreferences.editMessage(mContext ?: return, preferences.getChatId(), position, prompt)
         }
     }
 
@@ -104,19 +111,33 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
 
         if (preferences.getChatId() !== "") {
             val chatPreferences = ChatPreferences.getChatPreferences()
-            chatPreferences.deleteMessage(mContext, preferences.getChatId(), position)
+            chatPreferences.deleteMessage(mContext ?: return, preferences.getChatId(), position)
         }
     }
 
     protected fun openEditDialog(position: Int) {
         val dialog = EditMessageDialogFragment.newInstance(dataArray?.get(position)?.get("message").toString(), position)
         dialog.setStateChangedListener(this)
-        dialog.show(mContext.supportFragmentManager, "EditMessageDialogFragment")
+        dialog.show(mContext?.supportFragmentManager ?: return, "EditMessageDialogFragment")
     }
 
     @SuppressLint("InflateParams", "SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+
+        if (mContext == null) return convertView!!
+
         ui = convertView?.findViewById(R.id.ui)
+        btnRetry = convertView?.findViewById(R.id.btn_retry)
+
+        if (dataArray!!.isNotEmpty() && position == dataArray.size - 1 && dataArray[position]["isBot"] == true) {
+            btnRetry?.visibility = View.VISIBLE
+
+            btnRetry?.setOnClickListener {
+                onRetryListener?.onRetryClick()
+            }
+        } else {
+            btnRetry?.visibility = View.GONE
+        }
 
         ui?.setOnLongClickListener {
             openEditDialog(position)
@@ -130,35 +151,35 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
         btnCopy?.setImageResource(R.drawable.ic_copy)
         btnCopy?.setOnClickListener {
             val clipboard: ClipboardManager = mContext.getSystemService(FragmentActivity.CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("response", dataArray?.get(position)?.get("message").toString())
+            val clip = ClipData.newPlainText("response", dataArray.get(position)?.get("message").toString())
             clipboard.setPrimaryClip(clip)
             Toast.makeText(mContext, "Text copied to clipboard", Toast.LENGTH_SHORT).show()
         }
 
-        if (dataArray?.get(position)?.get("message").toString().contains("data:image")) {
+        if (dataArray[position]["message"].toString().contains("data:image")) {
             dalleImage?.visibility = View.VISIBLE
             message?.visibility = View.GONE
             btnCopy?.visibility = View.GONE
 
             val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(convertDpToPixel(16f, mContext).toInt()))
-            Glide.with(mContext).load(Uri.parse(dataArray?.get(position)?.get("message").toString())).apply(requestOptions).into(dalleImage!!)
+            Glide.with(mContext).load(Uri.parse(dataArray[position]["message"].toString())).apply(requestOptions).into(dalleImage!!)
 
             dalleImage?.setOnClickListener {
                 val sharedPreferences: SharedPreferences = mContext.getSharedPreferences("tmp", Context.MODE_PRIVATE)
                 val editor: SharedPreferences.Editor = sharedPreferences.edit()
-                editor.putString("tmp", dataArray?.get(position)?.get("message").toString())
+                editor.putString("tmp", dataArray[position]["message"].toString())
                 editor.apply()
                 val intent = Intent(mContext, ImageBrowserActivity::class.java).setAction(Intent.ACTION_VIEW)
                 intent.putExtra("tmp", "1")
                 mContext.startActivity(intent)
             }
-        } else if (dataArray?.get(position)?.get("message").toString().contains("~file:")) {
+        } else if (dataArray[position]["message"].toString().contains("~file:")) {
             dalleImage?.visibility = View.VISIBLE
             message?.visibility = View.GONE
             btnCopy?.visibility = View.GONE
 
 
-            val contents: String = dataArray?.get(position)?.get("message").toString()
+            val contents: String = dataArray[position]["message"].toString()
             val fileName: String = contents.replace("~file:", "")
             try {
                 val fullPath = mContext.getExternalFilesDir("images")?.absolutePath + "/" + fileName + ".png"
@@ -168,7 +189,7 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
                 }
 
                 if (dalleImageStringList[position] == "") {
-                    mContext.contentResolver.openFileDescriptor(
+                    mContext.contentResolver?.openFileDescriptor(
                         Uri.fromFile(
                             File(fullPath)
                         ), "r"
@@ -177,11 +198,11 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
                             val c: ByteArray = it.readBytes()
                             dalleImageStringList[position] = "data:image/png;base64," + Base64.getEncoder().encodeToString(c)
 
-                            val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(convertDpToPixel(16f, mContext).toInt()))
+                            val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(convertDpToPixel(16f, mContext ).toInt()))
                             Glide.with(mContext).load(Uri.parse(dalleImageStringList[position])).apply(requestOptions).into(dalleImage!!)
 
                             dalleImage?.setOnClickListener {
-                                val sharedPreferences: SharedPreferences = mContext.getSharedPreferences("tmp", Context.MODE_PRIVATE)
+                                val sharedPreferences: SharedPreferences = mContext.getSharedPreferences("tmp", Context.MODE_PRIVATE) ?: return@setOnClickListener
                                 val editor: SharedPreferences.Editor = sharedPreferences.edit()
                                 editor.putString("tmp", dalleImageStringList[position])
                                 editor.apply()
@@ -214,15 +235,15 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
                         "Stacktrace: ${e.stackTraceToString()}>"
             }
         } else {
-            if (dataArray?.get(position)?.get("isBot") == true) {
+            if (dataArray[position]["isBot"] == true) {
                 val src = dataArray[position]["message"].toString()
                 val markwon: Markwon = Markwon.create(mContext)
                 markwon.setMarkdown(message!!, src)
             } else {
-                message?.text = dataArray?.get(position)?.get("message").toString()
+                message?.text = dataArray[position]["message"].toString()
             }
 
-            if (dataArray?.get(position)?.get("isBot") == false && dataArray[position]["image"] !== null) {
+            if (dataArray[position]["isBot"] == false && dataArray[position]["image"] !== null) {
                 dalleImage?.visibility = View.VISIBLE
 
                 try {
@@ -235,7 +256,7 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
                     }
 
                     if (imageStringList[position] == "") {
-                        mContext.contentResolver.openFileDescriptor(
+                        mContext.contentResolver?.openFileDescriptor(
                             Uri.fromFile(
                                 File(fullPath)
                             ), "r"
@@ -263,8 +284,8 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
                         Glide.with(mContext).load(Uri.parse(imageStringList[position])).apply(requestOptions).into(dalleImage!!)
 
                         dalleImage?.setOnClickListener {
-                            val sharedPreferences: SharedPreferences = mContext.getSharedPreferences("tmp", Context.MODE_PRIVATE)
-                            val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                            val sharedPreferences: SharedPreferences? = mContext.getSharedPreferences("tmp", Context.MODE_PRIVATE)
+                            val editor: SharedPreferences.Editor = sharedPreferences?.edit()!!
                             editor.putString("tmp", imageStringList[position])
                             editor.apply()
                             val intent = Intent(mContext, ImageBrowserActivity::class.java).setAction(Intent.ACTION_VIEW)
@@ -290,7 +311,7 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
     }
 
     private fun convertDpToPixel(dp: Float, context: Context): Float {
-        return dp * (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+        return dp * context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT
     }
 
     protected fun getSurface3Drawable(drawable: Drawable, context: Context) : Drawable {
@@ -323,12 +344,15 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
     }
 
     protected fun isDarkThemeEnabled(): Boolean {
-        return when (mContext.resources.configuration.uiMode and
-                Configuration.UI_MODE_NIGHT_MASK) {
+        return when (mContext?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
             Configuration.UI_MODE_NIGHT_YES -> true
             Configuration.UI_MODE_NIGHT_NO -> false
             Configuration.UI_MODE_NIGHT_UNDEFINED -> false
             else -> false
         }
+    }
+
+    fun interface OnRetryClickListener {
+        fun onRetryClick()
     }
 }

@@ -2,6 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <color name="accent_50">#26262A</color>
     <color name="accent_100">#302f36</color>
+    <color name="accent_100x2">#302f36</color>
     <color name="accent_200">#424250</color>
     <color name="accent_250">#424250</color>
     <color name="accent_300">#424250</color>
