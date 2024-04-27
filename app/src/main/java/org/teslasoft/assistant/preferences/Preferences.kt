@@ -183,6 +183,24 @@ class Preferences private constructor(private var preferences: SharedPreferences
     }
 
     /**
+    * Show chat errors
+    *
+    * @return show chat errors
+    * */
+    fun showChatErrors() : Boolean {
+        return getGlobalBoolean("show_chat_errors", true)
+    }
+
+    /**
+     * Set show chat errors
+     *
+     * @param state show chat errors
+     * */
+    fun setShowChatErrors(state: Boolean) {
+        putGlobalBoolean("show_chat_errors", state, true)
+    }
+
+    /**
      * Retrieves the model name from the shared preferences.
      *
      * @return The model name or "gpt-3.5-turbo" if not found.
@@ -657,6 +675,105 @@ class Preferences private constructor(private var preferences: SharedPreferences
     }
 
     /**
+     * Set dalle version (2 or 3, 2 is default)
+     *
+     * @param version dalle version
+     * */
+    fun setDalleVersion(version: String) {
+        putString("dalle_version", version)
+    }
+
+    /**
+     * Set temperature. Min value 0, max 2
+     *
+     * @param temperature temperature
+     * */
+    fun setTemperature(temperature: Float) {
+        putString("temperature", temperature.toString())
+    }
+
+    /**
+     * Set frequency penalty. Min value -2, max 2
+     *
+     * @param frequencyPenalty frequency penalty
+     * */
+    fun setFrequencyPenalty(frequencyPenalty: Float) {
+        putString("frequency_penalty", frequencyPenalty.toString())
+    }
+
+    /**
+     * Get frequency penalty. Min value -2, max 2
+     *
+     * @return frequency penalty
+     * */
+    fun getFrequencyPenalty() : Float {
+        return getString("frequency_penalty", "0.0").toFloat()
+    }
+
+    /**
+     * Set presence penalty. Min value -2, max 2
+     *
+     * @param presencePenalty presence penalty
+     * */
+    fun setPresencePenalty(presencePenalty: Float) {
+        putString("presence_penalty", presencePenalty.toString())
+    }
+
+    /**
+     * Get presence penalty. Min value -2, max 2
+     *
+     * @return presence penalty
+     * */
+    fun getPresencePenalty() : Float {
+        return getString("presence_penalty", "0.0").toFloat()
+    }
+
+    /**
+     * Get temperature. Min value 0, max 2
+     *
+     * @return temperature
+     * */
+    fun getTemperature() : Float {
+        return getString("temperature", "0.7").toFloat()
+    }
+
+    /**
+     * Set top P. Min value 0 max 1
+     *
+     * @param topP top P
+     * */
+    fun setTopP(topP: Float) {
+        putString("topP", topP.toString())
+    }
+
+    /**
+     * Get top P. Min value 0 max 1
+     *
+     * @return top P
+     * */
+    fun getTopP() : Float {
+        return getString("topP", "1").toFloat()
+    }
+
+    /**
+     * Set seed
+     *
+     * @param seed seed
+     * */
+    fun setSeed(seed: String) {
+        putString("seed", seed)
+    }
+
+    /**
+     * Get seed
+     *
+     * @return seed
+     * */
+    fun getSeed() : String {
+        return getString("seed", "")
+    }
+
+    /**
      * Get Skip chat name dialog
      * */
     fun getSkipChatNameDialog() : Boolean {
@@ -668,15 +785,6 @@ class Preferences private constructor(private var preferences: SharedPreferences
      * */
     fun setSkipChatNameDialog(state: Boolean) {
         putGlobalBoolean("skip_chat_name_dialog", state)
-    }
-
-    /**
-     * Set dalle version (2 or 3, 2 is default)
-     *
-     * @param version dalle version
-     * */
-    fun setDalleVersion(version: String) {
-        putString("dalle_version", version)
     }
 
     /**

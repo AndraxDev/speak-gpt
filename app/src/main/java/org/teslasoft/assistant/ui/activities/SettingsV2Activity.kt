@@ -125,6 +125,7 @@ class SettingsV2Activity : FragmentActivity() {
     private var tileEventLog: TileFragment? = null
     private var tileDebugTestAds: TileFragment? = null
     private var tileChatsAutoSave: TileFragment? = null
+    private var tileShowChatErrors: TileFragment? = null
     private var threadLoading: LinearLayout? = null
     private var btnRemoveAds: MaterialButton? = null
 
@@ -935,6 +936,19 @@ class SettingsV2Activity : FragmentActivity() {
                 chatId,
                 "This feature allows you to enable auto-save chats in assistant window. When auto-save chats is enabled, SpeakGPT will save all chats to the device storage."
             )
+
+            tileShowChatErrors = TileFragment.newInstance(
+                preferences?.showChatErrors() == true,
+                true,
+                "Show chat errors",
+                null,
+                "On",
+                "Off",
+                R.drawable.ic_experiment,
+                false,
+                chatId,
+                "This feature allows you to enable chat errors. When chat errors is enabled, SpeakGPT will show errors in chat of occurred."
+            )
         }
 
         t7.start()
@@ -977,6 +991,7 @@ class SettingsV2Activity : FragmentActivity() {
             .replace(R.id.tile_ads_log, tileAdsLog!!)
             .replace(R.id.tile_event_log, tileEventLog!!)
             .replace(R.id.tile_debug_test_ads, tileDebugTestAds!!)
+            .replace(R.id.tile_show_chat_errors, tileShowChatErrors!!)
 
         return operation
     }
@@ -1386,6 +1401,14 @@ class SettingsV2Activity : FragmentActivity() {
             }
 
             restartActivity()
+        }
+
+        tileShowChatErrors?.setOnCheckedChangeListener { ischecked ->
+            if (ischecked) {
+                preferences?.setShowChatErrors(true)
+            } else {
+                preferences?.setShowChatErrors(false)
+            }
         }
     }
 

@@ -13,8 +13,8 @@ android {
         applicationId "org.teslasoft.assistant"
         minSdk 28
         targetSdk 34
-        versionCode 322
-        versionName "3.22"
+        versionCode 323
+        versionName "3.23"
     }
 
     buildTypes {
@@ -28,8 +28,8 @@ android {
 
         debug {
             debuggable false
-            minifyEnabled false
-            shrinkResources false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             multiDexEnabled true
         }

@@ -146,10 +146,11 @@ import org.teslasoft.assistant.ui.permission.CameraPermissionActivity
 import java.io.ByteArrayOutputStream
 import kotlinx.coroutines.CancellationException
 import org.teslasoft.assistant.ui.adapters.AbstractChatAdapter
+import org.teslasoft.assistant.ui.fragments.dialogs.QuickSettingsBottomSheetDialogFragment
 import kotlin.coroutines.coroutineContext
 
 
-class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnRetryClickListener {
+class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
 
     // Init UI
     private var messageInput: EditText? = null
@@ -648,7 +649,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnRetryClickListene
             }
 
             adapter = ChatAdapter(messages, this, preferences!!)
-            adapter?.setOnRetryClickListener(this)
+            adapter?.setOnUpdateListener(this)
 
             initUI()
             reloadAmoled()
@@ -720,6 +721,21 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnRetryClickListene
 
         btnBack?.setOnClickListener {
             finish()
+        }
+
+        activityTitle?.setOnClickListener {
+            val quickSettingsBottomSheetDialogFragment = QuickSettingsBottomSheetDialogFragment.newInstance(chatId)
+            quickSettingsBottomSheetDialogFragment.setOnUpdateListener(object : QuickSettingsBottomSheetDialogFragment.OnUpdateListener {
+                override fun onUpdate() {
+                    /* for future */
+                }
+
+                override fun onForceUpdate() {
+                    startActivity(Intent(this@ChatActivity, ChatActivity::class.java).putExtra("chatId", chatId).putExtra("name", chatName).setAction(Intent.ACTION_VIEW))
+                    finish()
+                }
+            })
+            quickSettingsBottomSheetDialogFragment.show(supportFragmentManager, "QuickSettingsBottomSheetDialogFragment")
         }
 
         chat?.adapter = adapter
@@ -1538,6 +1554,11 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnRetryClickListene
                 reqList.add(ImagePart(baseImageString!!))
                 val chatCompletionRequest = ChatCompletionRequest(
                     model = ModelId("gpt-4-vision-preview"),
+                    temperature = preferences!!.getTemperature().toDouble(),
+                    topP = preferences!!.getTopP().toDouble(),frequencyPenalty = preferences!!.getFrequencyPenalty().toDouble(),
+                    presencePenalty = preferences!!.getPresencePenalty().toDouble(),
+
+                    seed = if (preferences!!.getSeed() != "") preferences!!.getSeed().toInt() else null,
                     messages = listOf(
                         ChatMessage(
                             role = ChatRole.System,
@@ -1586,6 +1607,10 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnRetryClickListene
                 putMessage("", true)
                 val completionRequest = CompletionRequest(
                     model = ModelId(model),
+                    temperature = preferences!!.getTemperature().toDouble(),
+                    topP = preferences!!.getTopP().toDouble(),
+                    frequencyPenalty = preferences!!.getFrequencyPenalty().toDouble(),
+                    presencePenalty = preferences!!.getPresencePenalty().toDouble(),
                     prompt = request,
                     echo = false
                 )
@@ -1659,6 +1684,10 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnRetryClickListene
 
                     val functionRequest = chatCompletionRequest {
                         model = ModelId(this@ChatActivity.model)
+                        temperature = preferences!!.getTemperature().toDouble()
+                        topP = preferences!!.getTopP().toDouble()
+                        frequencyPenalty = preferences!!.getFrequencyPenalty().toDouble()
+                        presencePenalty = preferences!!.getPresencePenalty().toDouble()
                         messages = cm
                         functions {
                             function {
@@ -1745,11 +1774,10 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnRetryClickListene
                 }
             }
 
-            messages[messages.size - 1]["message"] = "${messages[messages.size - 1]["message"]}\n\nAn error has been occurred during generation. See the error details below:\n\n$response"
-            adapter?.notifyDataSetChanged()
-
-//            putMessage(response, true)
-//            adapter?.notifyDataSetChanged()
+            if (preferences?.showChatErrors() == true) {
+                messages[messages.size - 1]["message"] = "${messages[messages.size - 1]["message"]}\n\nAn error has been occurred during generation. See the error details below:\n\n$response"
+                adapter?.notifyDataSetChanged()
+            }
 
             saveSettings()
 
@@ -1787,6 +1815,11 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnRetryClickListene
 
         val chatCompletionRequest = ChatCompletionRequest(
             model = ModelId(model),
+            temperature = preferences!!.getTemperature().toDouble(),
+            topP = preferences!!.getTopP().toDouble(),
+            frequencyPenalty = preferences!!.getFrequencyPenalty().toDouble(),
+            presencePenalty = preferences!!.getPresencePenalty().toDouble(),
+            seed = if (preferences!!.getSeed() != "") preferences!!.getSeed().toInt() else null,
             messages = msgs
         )
 
@@ -1833,7 +1866,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnRetryClickListene
                 progress?.visibility = View.GONE
                 messageInput?.requestFocus()
 
-                val m = msgs
+                val m = ArrayList(msgs.filter { it.role != ChatRole.System })
 
                 m.add(
                     ChatMessage(
@@ -1844,56 +1877,58 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnRetryClickListene
 
                 val chatCompletionRequest2 = ChatCompletionRequest(
                     model = ModelId("gpt-3.5-turbo-0125"),
-                    maxTokens = 5,
+                    maxTokens = 10,
                     messages = m
                 )
 
-                val completion: ChatCompletion = ai!!.chatCompletion(chatCompletionRequest2)
+                try {
+                    val completion: ChatCompletion = ai!!.chatCompletion(chatCompletionRequest2)
 
-                val newChatName = completion.choices[0].message.content
+                    val newChatName = completion.choices[0].message.content
 
-                ChatPreferences.getChatPreferences().editChat(this, newChatName.toString(), chatName)
-                chatId = Hash.hash(newChatName.toString())
+                    ChatPreferences.getChatPreferences().editChat(this, newChatName.toString(), chatName)
+                    chatId = Hash.hash(newChatName.toString())
 
-                val preferences = Preferences.getPreferences(this, Hash.hash(chatName))
+                    val preferences = Preferences.getPreferences(this, Hash.hash(chatName))
 
-                // Write settings
-                val resolution = preferences.getResolution()
-                val speech = preferences.getAudioModel()
-                val model = preferences.getModel()
-                val maxTokens = preferences.getMaxTokens()
-                val prefix = preferences.getPrefix()
-                val endSeparator = preferences.getEndSeparator()
-                val activationPrompt = preferences.getPrompt()
-                val layout = preferences.getLayout()
-                val silent = preferences.getSilence()
-                val systemMessage1 = preferences.getSystemMessage()
-                val alwaysSpeak = preferences.getNotSilence()
-                val autoLanguageDetect = preferences.getAutoLangDetect()
-                val functionCalling = preferences.getFunctionCalling()
-                val slashCommands = preferences.getImagineCommand()
+                    // Write settings
+                    val resolution = preferences.getResolution()
+                    val speech = preferences.getAudioModel()
+                    val model = preferences.getModel()
+                    val maxTokens = preferences.getMaxTokens()
+                    val prefix = preferences.getPrefix()
+                    val endSeparator = preferences.getEndSeparator()
+                    val activationPrompt = preferences.getPrompt()
+                    val layout = preferences.getLayout()
+                    val silent = preferences.getSilence()
+                    val systemMessage1 = preferences.getSystemMessage()
+                    val alwaysSpeak = preferences.getNotSilence()
+                    val autoLanguageDetect = preferences.getAutoLangDetect()
+                    val functionCalling = preferences.getFunctionCalling()
+                    val slashCommands = preferences.getImagineCommand()
 
-                preferences.setPreferences(Hash.hash(newChatName.toString()), this)
-                preferences.setResolution(resolution)
-                preferences.setAudioModel(speech)
-                preferences.setModel(model)
-                preferences.setMaxTokens(maxTokens)
-                preferences.setPrefix(prefix)
-                preferences.setEndSeparator(endSeparator)
-                preferences.setPrompt(activationPrompt)
-                preferences.setLayout(layout)
-                preferences.setSilence(silent)
-                preferences.setSystemMessage(systemMessage1)
-                preferences.setNotSilence(alwaysSpeak)
-                preferences.setAutoLangDetect(autoLanguageDetect)
-                preferences.setFunctionCalling(functionCalling)
-                preferences.setImagineCommand(slashCommands)
+                    preferences.setPreferences(Hash.hash(newChatName.toString()), this)
+                    preferences.setResolution(resolution)
+                    preferences.setAudioModel(speech)
+                    preferences.setModel(model)
+                    preferences.setMaxTokens(maxTokens)
+                    preferences.setPrefix(prefix)
+                    preferences.setEndSeparator(endSeparator)
+                    preferences.setPrompt(activationPrompt)
+                    preferences.setLayout(layout)
+                    preferences.setSilence(silent)
+                    preferences.setSystemMessage(systemMessage1)
+                    preferences.setNotSilence(alwaysSpeak)
+                    preferences.setAutoLangDetect(autoLanguageDetect)
+                    preferences.setFunctionCalling(functionCalling)
+                    preferences.setImagineCommand(slashCommands)
 
-                activityTitle?.text = newChatName.toString()
+                    activityTitle?.text = newChatName.toString()
 
-                val i = Intent(this, ChatActivity::class.java).setAction(Intent.ACTION_VIEW).putExtra("chatId", Hash.hash(newChatName.toString())).putExtra("name", newChatName.toString())
-                startActivity(i)
-                finish()
+                    val i = Intent(this, ChatActivity::class.java).setAction(Intent.ACTION_VIEW).putExtra("chatId", Hash.hash(newChatName.toString())).putExtra("name", newChatName.toString())
+                    startActivity(i)
+                    finish()
+                } catch (e: Exception) { /* model might not be available */ }
             }
         }
 
@@ -2056,33 +2091,35 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnRetryClickListene
                 restoreUIState()
             }
         } catch (e: Exception) {
-            putMessage(
-                when {
-                    e.stackTraceToString().contains("Your request was rejected") -> {
-                        "Your prompt contains inappropriate content and can not be processed. We strive to make AI safe and relevant for everyone."
-                    }
+            if (preferences?.showChatErrors() == true) {
+                putMessage(
+                    when {
+                        e.stackTraceToString().contains("Your request was rejected") -> {
+                            "Your prompt contains inappropriate content and can not be processed. We strive to make AI safe and relevant for everyone."
+                        }
 
-                    e.stackTraceToString().contains("No address associated with hostname") -> {
-                        "You are currently offline. Please check your connection and try again.";
-                    }
+                        e.stackTraceToString().contains("No address associated with hostname") -> {
+                            "You are currently offline. Please check your connection and try again.";
+                        }
 
-                    e.stackTraceToString().contains("Incorrect API key") -> {
-                        "Your API key is incorrect. Change it in Settings > Change OpenAI key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked.";
-                    }
+                        e.stackTraceToString().contains("Incorrect API key") -> {
+                            "Your API key is incorrect. Change it in Settings > Change OpenAI key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked.";
+                        }
 
-                    e.stackTraceToString().contains("Software caused connection abort") -> {
-                        "An error occurred while generating response. It may be due to a weak connection or high demand. Try again later.";
-                    }
+                        e.stackTraceToString().contains("Software caused connection abort") -> {
+                            "An error occurred while generating response. It may be due to a weak connection or high demand. Try again later.";
+                        }
 
-                    e.stackTraceToString().contains("You exceeded your current quota") -> {
-                        "You exceeded your current quota. If you had free trial usage please add payment info. Also please check your usage limits. You can change your limits in Account settings."
-                    }
+                        e.stackTraceToString().contains("You exceeded your current quota") -> {
+                            "You exceeded your current quota. If you had free trial usage please add payment info. Also please check your usage limits. You can change your limits in Account settings."
+                        }
 
-                    else -> {
-                        e.stackTraceToString()
-                    }
-                }, true
-            )
+                        else -> {
+                            e.stackTraceToString()
+                        }
+                    }, true
+                )
+            }
 
             saveSettings()
 
@@ -2125,5 +2162,37 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnRetryClickListene
         removeLastAssistantMessageIfAvailable()
         saveSettings()
         parseMessage(findLastUserMessage(), false)
+    }
+
+    private fun syncChatProjection() {
+        if (chatMessages == null) chatMessages = arrayListOf()
+
+        for (message: HashMap<String, Any> in messages) {
+            if (!message["message"].toString().contains("data:image")) {
+                if (message["isBot"] == true) {
+                    chatMessages.add(
+                        ChatMessage(
+                            role = ChatRole.Assistant,
+                            content = message["message"].toString()
+                        )
+                    )
+                } else {
+                    chatMessages.add(
+                        ChatMessage(
+                            role = ChatRole.User,
+                            content = message["message"].toString()
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    override fun onMessageEdited() {
+        syncChatProjection()
+    }
+
+    override fun onMessageDeleted() {
+        syncChatProjection()
     }
 }

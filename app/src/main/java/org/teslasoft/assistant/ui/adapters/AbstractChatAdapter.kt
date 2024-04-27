@@ -81,14 +81,15 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
     private var dalleImageStringList = ArrayList<String>(Collections.nCopies(count+1, ""))
     private var imageStringList = ArrayList<String>(Collections.nCopies(count+1, ""))
 
-    private var onRetryListener: OnRetryClickListener? = null
+    private var onUpdateListener: OnUpdateListener? = null
 
-    fun setOnRetryClickListener(listener: OnRetryClickListener) {
-        onRetryListener = listener
+    fun setOnUpdateListener(listener: OnUpdateListener) {
+        onUpdateListener = listener
     }
 
     private fun editMessage(position: Int, message: String) {
         dataArray?.get(position)?.set("message", message)
+        onUpdateListener?.onMessageEdited()
     }
 
     private fun deleteMessage(position: Int) {
@@ -113,9 +114,11 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
             val chatPreferences = ChatPreferences.getChatPreferences()
             chatPreferences.deleteMessage(mContext ?: return, preferences.getChatId(), position)
         }
+
+        onUpdateListener?.onMessageDeleted()
     }
 
-    protected fun openEditDialog(position: Int) {
+    private fun openEditDialog(position: Int) {
         val dialog = EditMessageDialogFragment.newInstance(dataArray?.get(position)?.get("message").toString(), position)
         dialog.setStateChangedListener(this)
         dialog.show(mContext?.supportFragmentManager ?: return, "EditMessageDialogFragment")
@@ -133,7 +136,7 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
             btnRetry?.visibility = View.VISIBLE
 
             btnRetry?.setOnClickListener {
-                onRetryListener?.onRetryClick()
+                onUpdateListener?.onRetryClick()
             }
         } else {
             btnRetry?.visibility = View.GONE
@@ -352,7 +355,9 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
         }
     }
 
-    fun interface OnRetryClickListener {
+    interface OnUpdateListener {
         fun onRetryClick()
+        fun onMessageEdited()
+        fun onMessageDeleted()
     }
 }

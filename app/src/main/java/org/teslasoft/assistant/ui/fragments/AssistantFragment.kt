@@ -96,7 +96,6 @@ import com.aallam.openai.client.OpenAIHost
 import com.aallam.openai.client.RetryStrategy
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import com.google.gson.Gson
@@ -141,7 +140,7 @@ import java.util.Base64
 import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
 
-class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnRetryClickListener {
+class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpdateListener {
 
     // Init UI
     private var btnAssistantVoice: ImageButton? = null
@@ -566,7 +565,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnRet
             messages = ArrayList()
 
             adapter = AssistantAdapter(messages, (mContext as FragmentActivity), preferences!!)
-            adapter?.setOnRetryClickListener(this)
+            adapter?.setOnUpdateListener(this)
 
             assistantConversation?.adapter = adapter
             assistantConversation?.dividerHeight = 0
@@ -1383,11 +1382,10 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnRet
                 }
             }
 
-            messages[messages.size - 1]["message"] = "${messages[messages.size - 1]["message"]}\n\nAn error has been occurred during generation. See the error details below:\n\n$response"
-            adapter?.notifyDataSetChanged()
-
-//            putMessage(response, true)
-//            adapter?.notifyDataSetChanged()
+            if (preferences?.showChatErrors() == true) {
+                messages[messages.size - 1]["message"] = "${messages[messages.size - 1]["message"]}\n\nAn error has been occurred during generation. See the error details below:\n\n$response"
+                adapter?.notifyDataSetChanged()
+            }
 
             saveSettings()
 
@@ -1620,24 +1618,34 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnRet
                 restoreUIState()
             }
         } catch (e: Exception) {
-            when {
-                e.stackTraceToString().contains("Your request was rejected") -> {
-                    putMessage("Your prompt contains inappropriate content and can not be processed. We strive to make AI safe and relevant for everyone.", true)
-                }
-                e.stackTraceToString().contains("No address associated with hostname") -> {
-                    putMessage("You are currently offline. Please check your connection and try again.", true);
-                }
-                e.stackTraceToString().contains("Incorrect API key") -> {
-                    putMessage("Your API key is incorrect. Change it in Settings > Change OpenAI key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked.", true);
-                }
-                e.stackTraceToString().contains("Software caused connection abort") -> {
-                    putMessage("An error occurred while generating response. It may be due to a weak connection or high demand. Try again later.", true);
-                }
-                e.stackTraceToString().contains("You exceeded your current quota") -> {
-                    putMessage("You exceeded your current quota. If you had free trial usage please add payment info. Also please check your usage limits. You can change your limits in Account settings.", true)
-                }
-                else -> {
-                    putMessage(e.stackTraceToString(), true)
+            if (preferences?.showChatErrors() == true) {
+                when {
+                    e.stackTraceToString().contains("Your request was rejected") -> {
+                        putMessage("Your prompt contains inappropriate content and can not be processed. We strive to make AI safe and relevant for everyone.", true)
+                    }
+
+                    e.stackTraceToString().contains("No address associated with hostname") -> {
+                        putMessage("You are currently offline. Please check your connection and try again.", true);
+                    }
+
+                    e.stackTraceToString().contains("Incorrect API key") -> {
+                        putMessage(
+                            "Your API key is incorrect. Change it in Settings > Change OpenAI key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked.",
+                            true
+                        );
+                    }
+
+                    e.stackTraceToString().contains("Software caused connection abort") -> {
+                        putMessage("An error occurred while generating response. It may be due to a weak connection or high demand. Try again later.", true);
+                    }
+
+                    e.stackTraceToString().contains("You exceeded your current quota") -> {
+                        putMessage("You exceeded your current quota. If you had free trial usage please add payment info. Also please check your usage limits. You can change your limits in Account settings.", true)
+                    }
+
+                    else -> {
+                        putMessage(e.stackTraceToString(), true)
+                    }
                 }
             }
 
@@ -1889,7 +1897,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnRet
                     messages.clear()
                     chatMessages.clear()
                     adapter = AssistantAdapter(messages, (mContext as FragmentActivity?), preferences!!)
-                    adapter?.setOnRetryClickListener(this)
+                    adapter?.setOnUpdateListener(this)
                     assistantConversation?.adapter = adapter
                     adapter?.notifyDataSetChanged()
                     saveSettings()
@@ -1929,7 +1937,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnRet
         }
 
         adapter = AssistantAdapter(messages, (mContext as FragmentActivity?), preferences!!)
-        adapter?.setOnRetryClickListener(this)
+        adapter?.setOnUpdateListener(this)
         assistantConversation?.adapter = adapter
         adapter?.notifyDataSetChanged()
         assistantConversation?.post {
@@ -2087,5 +2095,37 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnRet
         removeLastAssistantMessageIfAvailable()
         saveSettings()
         parseMessage(findLastUserMessage(), false)
+    }
+
+    private fun syncChatProjection() {
+        if (chatMessages == null) chatMessages = arrayListOf()
+
+        for (message: HashMap<String, Any> in messages) {
+            if (!message["message"].toString().contains("data:image")) {
+                if (message["isBot"] == true) {
+                    chatMessages.add(
+                        ChatMessage(
+                            role = ChatRole.Assistant,
+                            content = message["message"].toString()
+                        )
+                    )
+                } else {
+                    chatMessages.add(
+                        ChatMessage(
+                            role = ChatRole.User,
+                            content = message["message"].toString()
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    override fun onMessageEdited() {
+        syncChatProjection()
+    }
+
+    override fun onMessageDeleted() {
+        syncChatProjection()
     }
 }
