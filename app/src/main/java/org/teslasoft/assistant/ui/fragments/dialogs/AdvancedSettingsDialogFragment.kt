@@ -71,6 +71,10 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
     private var endSeparator: EditText? = null
     private var prefix: EditText? = null
     private var ftFrame: TextInputLayout? = null
+    private var temperatureSeekbar: com.google.android.material.slider.Slider? = null
+    private var topPSeekbar: com.google.android.material.slider.Slider? = null
+    private var frequencyPenaltySeekbar: com.google.android.material.slider.Slider? = null
+    private var presencePenaltySeekbar: com.google.android.material.slider.Slider? = null
 
     private var listener: StateChangesListener? = null
 
@@ -86,7 +90,7 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        builder = MaterialAlertDialogBuilder(this.requireContext())
+        builder = MaterialAlertDialogBuilder(this.requireContext(), R.style.App_MaterialAlertDialog)
 
         val view: View = this.layoutInflater.inflate(R.layout.fragment_advanced_settings, null)
 
@@ -103,8 +107,49 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
         endSeparator = view.findViewById(R.id.end_separator)
         prefix = view.findViewById(R.id.prefix)
         ftFrame = view.findViewById(R.id.ft_frame)
+        temperatureSeekbar = view.findViewById(R.id.temperature_slider)
+        frequencyPenaltySeekbar = view.findViewById(R.id.frequency_penalty_slider)
+        presencePenaltySeekbar = view.findViewById(R.id.presence_penalty_slider)
+        topPSeekbar = view.findViewById(R.id.top_p_slider)
 
         val preferences: Preferences = Preferences.getPreferences(requireActivity(), arguments?.getString("chatId")!!)
+
+        temperatureSeekbar?.value = preferences.getTemperature() * 10
+        topPSeekbar?.value = preferences.getTopP() * 10
+        frequencyPenaltySeekbar?.value = preferences.getFrequencyPenalty() * 10
+        presencePenaltySeekbar?.value = preferences.getPresencePenalty() * 10
+
+        temperatureSeekbar?.addOnChangeListener { _, value, _ ->
+            preferences.setTemperature(value / 10.0f)
+        }
+
+        temperatureSeekbar?.setLabelFormatter {
+            return@setLabelFormatter "${it/10.0}"
+        }
+
+        topPSeekbar?.addOnChangeListener { _, value, _ ->
+            preferences.setTopP(value / 10.0f)
+        }
+
+        topPSeekbar?.setLabelFormatter {
+            return@setLabelFormatter "${it/10.0}"
+        }
+
+        frequencyPenaltySeekbar?.addOnChangeListener { _, value, _ ->
+            preferences.setFrequencyPenalty(value / 10.0f)
+        }
+
+        frequencyPenaltySeekbar?.setLabelFormatter {
+            return@setLabelFormatter "${it/10.0}"
+        }
+
+        presencePenaltySeekbar?.addOnChangeListener { _, value, _ ->
+            preferences.setPresencePenalty(value / 10.0f)
+        }
+
+        presencePenaltySeekbar?.setLabelFormatter {
+            return@setLabelFormatter "${it/10.0}"
+        }
 
         maxTokens?.setText(preferences.getMaxTokens().toString())
         endSeparator?.setText(preferences.getEndSeparator())

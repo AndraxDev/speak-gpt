@@ -82,7 +82,7 @@ class AddChatDialogFragment : DialogFragment() {
 
     @SuppressLint("SetTextI18n")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        builder = MaterialAlertDialogBuilder(this.requireContext())
+        builder = MaterialAlertDialogBuilder(this.requireContext(), R.style.App_MaterialAlertDialog)
 
         chatPreferences = ChatPreferences.getChatPreferences()
 
@@ -200,6 +200,12 @@ class AddChatDialogFragment : DialogFragment() {
             val dalleVersion = preferences.getDalleVersion()
             val opeAIVoice: String = preferences.getOpenAIVoice()
             val voice: String = preferences.getVoice()
+            val apiEndpointId = preferences.getApiEndpointId()
+            val logitBiasConfigId = preferences.getLogitBiasesConfigId()
+            val temperature = preferences.getTemperature()
+            val topP = preferences.getTopP()
+            val frequencyPenalty = preferences.getFrequencyPenalty()
+            val presencePenalty = preferences.getPresencePenalty()
 
             val newPreferences: Preferences = Preferences.getPreferences(requireActivity(), Hash.hash(chatName))
 
@@ -222,6 +228,12 @@ class AddChatDialogFragment : DialogFragment() {
             newPreferences.setDalleVersion(dalleVersion)
             newPreferences.setOpenAIVoice(opeAIVoice)
             newPreferences.setVoice(voice)
+            newPreferences.setApiEndpointId(apiEndpointId)
+            newPreferences.setLogitBiasesConfigId(logitBiasConfigId)
+            newPreferences.setTemperature(temperature)
+            newPreferences.setTopP(topP)
+            newPreferences.setFrequencyPenalty(frequencyPenalty)
+            newPreferences.setPresencePenalty(presencePenalty)
         } else {
             listener!!.onDuplicate()
         }

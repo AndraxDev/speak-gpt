@@ -64,24 +64,12 @@ class ActivationPromptDialogFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        builder = MaterialAlertDialogBuilder(this.requireContext())
+        builder = MaterialAlertDialogBuilder(this.requireContext(), R.style.App_MaterialAlertDialog)
 
         val view: View = this.layoutInflater.inflate(R.layout.fragment_activation_prompt, null)
 
         promptInput = view.findViewById(R.id.prompt_input)
         promptInput?.setText(requireArguments().getString("prompt"))
-
-        /*promptInput?.requestFocus()
-
-        promptInput?.setOnKeyListener { v, keyCode, event ->
-            run {
-                if (event.action == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_ESCAPE)) {
-                    dismiss()
-                    return@run true
-                }
-                return@run false
-            }
-        }*/
 
         builder!!.setView(view)
             .setCancelable(false)

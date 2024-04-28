@@ -42,7 +42,6 @@ class ApiEndpointsListActivity : FragmentActivity() {
     private var list: ArrayList<HashMap<String, String>> = arrayListOf()
     private var adapter: ApiEndpointListItemAdapter? = null
 
-    private var preferences: Preferences? = null
     private var apiEndpointPreferences: ApiEndpointPreferences? = null
 
     private var onSelectListener: ApiEndpointListItemAdapter.OnSelectListener = object : ApiEndpointListItemAdapter.OnSelectListener {
@@ -120,6 +119,8 @@ class ApiEndpointsListActivity : FragmentActivity() {
     }
 
     private fun reloadList() {
+        if (list == null) list = arrayListOf()
+
         list.clear()
         val apiList = apiEndpointPreferences!!.getApiEndpointsList(this)
 

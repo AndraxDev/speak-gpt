@@ -16,16 +16,25 @@
 
 package org.teslasoft.assistant.ui.activities
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.ListView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
+import com.aallam.ktoken.Encoding
+import com.aallam.ktoken.Tokenizer
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.LogitBiasPreferences
 import org.teslasoft.assistant.preferences.Preferences
+import org.teslasoft.assistant.preferences.dto.LogitBiasObject
 import org.teslasoft.assistant.ui.adapters.LogitBiasItemAdapter
 
 class LogitBiasConfigActivity : FragmentActivity() {
@@ -42,21 +51,29 @@ class LogitBiasConfigActivity : FragmentActivity() {
     private var list: ArrayList<HashMap<String, String>> = arrayListOf()
     private var adapter: LogitBiasItemAdapter? = null
 
-    private var preferences: Preferences? = null
     private var logitBiasPreferences: LogitBiasPreferences? = null
 
     private var onSelectListener: LogitBiasItemAdapter.OnSelectListener = object : LogitBiasItemAdapter.OnSelectListener {
-        override fun onClick(position: Int) { /* unused */ }
+        override fun onClick(position: Int) {
+            fieldLogitBias!!.setText(list[position]["logitBias"].toString())
+            fieldTokenId!!.setText(list[position]["tokenId"].toString())
+        }
 
-        override fun onLongClick(position: Int) { /* unused */ }
+        override fun onLongClick(position: Int) {
+            fieldLogitBias!!.setText(list[position]["logitBias"].toString())
+            fieldTokenId!!.setText(list[position]["tokenId"].toString())
+        }
 
         override fun onDelete(position: Int) {
             logitBiasPreferences!!.removeLogitBias(list[position]["tokenId"] ?: return)
+            list.clear()
             reloadList()
+            // recreate()
         }
 
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -76,6 +93,58 @@ class LogitBiasConfigActivity : FragmentActivity() {
 
         listView?.divider = null
 
+        btnAddPair!!.setOnClickListener {
+            if (fieldLogitBias!!.text.toString() == "" || fieldLogitBias!!.text.toString() == "-" || fieldLogitBias!!.text.toString() == "e") {
+                Toast.makeText(this, "Please fill logit bias field", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (fieldTokenId!!.text.toString() != "" && fieldTokenId!!.text.toString() != "-" && fieldTokenId!!.text.toString() != "e") {
+                val tokenId = fieldTokenId!!.text.toString()
+
+                val logitBias = fieldLogitBias!!.text.toString()
+
+                if (logitBias.toInt() > 100 || logitBias.toInt() < -100) {
+                    Toast.makeText(this, "Logit bias must be in range from -100 to 100", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                if (tokenId.isNotEmpty() && logitBias.isNotEmpty()) {
+                    logitBiasPreferences!!.setLogitBias(LogitBiasObject(tokenId, logitBias))
+                    list.clear()
+                    reloadList()
+                    fieldLogitBias!!.setText("")
+                    fieldTokenId!!.setText("")
+                    fieldToken!!.setText("")
+                }
+            } else if (fieldToken!!.text.toString() != "") {
+                CoroutineScope(Dispatchers.Main).launch {
+                    val tokenizer = Tokenizer.of(encoding = Encoding.CL100K_BASE)
+                    val tokens = tokenizer.encode(fieldToken!!.text.toString())
+                    val logitBias = fieldLogitBias!!.text.toString()
+
+                    for (i in tokens) {
+                        val tokenId = i.toString()
+
+                        if (logitBias.toInt() > 100 || logitBias.toInt() < -100) {
+                            Toast.makeText(this@LogitBiasConfigActivity, "Logit bias must be in range from -100 to 100", Toast.LENGTH_SHORT).show()
+                            return@launch
+                        }
+
+                        if (tokenId.isNotEmpty() && logitBias.isNotEmpty()) {
+                            logitBiasPreferences!!.setLogitBias(LogitBiasObject(tokenId, logitBias))
+                            list.clear()
+                            reloadList()
+                            fieldLogitBias!!.setText("")
+                            fieldTokenId!!.setText("")
+                            fieldToken!!.setText("")
+                        }
+                    }
+                }
+            } else {
+                Toast.makeText(this, "Please fill token or token ID field", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         val extras = intent.extras
 
         if (extras != null) {
@@ -83,6 +152,7 @@ class LogitBiasConfigActivity : FragmentActivity() {
 
             if (configId != null) {
                 logitBiasPreferences = LogitBiasPreferences(this, configId)
+                activityTitle!!.text = extras.getString("label") ?: "Logit Bias Config"
                 initialize()
             } else {
                 finish()
@@ -93,7 +163,11 @@ class LogitBiasConfigActivity : FragmentActivity() {
     }
 
     private fun reloadList() {
-        val logitBiasList = logitBiasPreferences!!.getLogitBiasesList()
+        if (list == null) list = arrayListOf()
+
+        var logitBiasList = logitBiasPreferences!!.getLogitBiasesList()
+
+        if (logitBiasList == null) logitBiasList = arrayListOf()
 
         for (i in logitBiasList) {
             val map = HashMap<String, String>()
@@ -121,7 +195,13 @@ class LogitBiasConfigActivity : FragmentActivity() {
         }
 
         btnHelp!!.setOnClickListener {
-            // Show help dialog
+            MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
+                .setTitle("Help")
+                .setMessage("Logit Bias Config is a feature that allows you to set custom logit bias for specific tokens. Logit bias is a value that is added to the logit of the token. It can be used to increase or decrease the probability of the token in the output sequence. For example, if you set logit bias to 100, the token will be more likely to appear in the output sequence. If you set logit bias to -100, the token will be less likely to appear in the output sequence.")
+                .setPositiveButton("Close") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
         }
     }
 }

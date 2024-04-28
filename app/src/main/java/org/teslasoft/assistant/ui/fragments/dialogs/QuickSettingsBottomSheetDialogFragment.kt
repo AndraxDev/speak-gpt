@@ -32,6 +32,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ApiEndpointPreferences
+import org.teslasoft.assistant.preferences.LogitBiasConfigPreferences
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
 import org.teslasoft.assistant.ui.activities.ApiEndpointsListActivity
@@ -58,6 +59,8 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
     private var apiEndpointPreferences: ApiEndpointPreferences? = null
     private var apiEndpoint: ApiEndpointObject? = null
 
+    private var logitBiasConfigPreferences: LogitBiasConfigPreferences? = null
+
     private var temperatureSeekbar: com.google.android.material.slider.Slider? = null
     private var topPSeekbar: com.google.android.material.slider.Slider? = null
     private var frequencyPenaltySeekbar: com.google.android.material.slider.Slider? = null
@@ -68,20 +71,24 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
     private var chatId: String = ""
 
     private var updateListener: OnUpdateListener? = null
-
     private var shouldForceUpdate: Boolean = false
 
     private var textModel: TextView? = null
-
     private var textHost: TextView? = null
+    private var textLogitBiasesConfig: TextView? = null
 
     private var logitBiasesActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val data: Intent? = result.data
-            val apiEndpointId = data?.getStringExtra("configId")
+            val configId = data?.getStringExtra("configId")
 
-            if (apiEndpointId != null) {
-                preferences?.setLogitBiasesConfigId(apiEndpointId)
+            if (configId != null) {
+                preferences?.setLogitBiasesConfigId(configId)
+                textLogitBiasesConfig?.text = if (configId != ""){
+                    logitBiasConfigPreferences?.getConfigById(configId)?.get("label") ?: "Tap to set"
+                } else {
+                    "Tap to set"
+                }
                 shouldForceUpdate = true
             }
         }
@@ -95,7 +102,7 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
             if (apiEndpointId != null) {
                 preferences?.setApiEndpointId(apiEndpointId)
                 apiEndpoint = apiEndpointPreferences?.getApiEndpoint(requireContext(), apiEndpointId)
-                textHost?.text = apiEndpoint?.host ?: ""
+                textHost?.text = apiEndpoint?.host ?: "Tap to set"
                 shouldForceUpdate = true
             }
         }
@@ -142,6 +149,7 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         preferences = Preferences.getPreferences(requireContext(), chatId)
         apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(requireContext())
         apiEndpoint = apiEndpointPreferences?.getApiEndpoint(requireContext(), preferences?.getApiEndpointId()!!)
+        logitBiasConfigPreferences = LogitBiasConfigPreferences.getLogitBiasConfigPreferences(requireContext())
 
         btnSelectModel = view.findViewById(R.id.btn_select_model)
         btnSelectSystemMessage = view.findViewById(R.id.btn_select_system)
@@ -154,8 +162,14 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         fieldSeed = view.findViewById(R.id.field_seed)
         textModel = view.findViewById(R.id.text_model)
         textHost = view.findViewById(R.id.text_host)
+        textLogitBiasesConfig = view.findViewById(R.id.text_logit_biases_config)
 
-        textHost?.text = apiEndpoint?.host ?: ""
+        textHost?.text = apiEndpoint?.host ?: "Tap to set"
+        textLogitBiasesConfig?.text = if (preferences?.getLogitBiasesConfigId() != ""){
+            logitBiasConfigPreferences?.getConfigById(preferences?.getLogitBiasesConfigId()!!)?.get("label") ?: "Tap to set"
+        } else {
+            "Tap to set"
+        }
 
         temperatureSeekbar?.value = preferences?.getTemperature()!! * 10
         topPSeekbar?.value = preferences?.getTopP()!! * 10

@@ -717,12 +717,12 @@ class SettingsV2Activity : FragmentActivity() {
     private fun createFragments5() {
         val t5 = Thread {
             tileNewLook = TileFragment.newInstance(
-                true,
-                true,
+                false,
+                false,
                 "New UI",
                 null,
                 "On",
-                "Off",
+                null,
                 R.drawable.ic_experiment,
                 true,
                 chatId,

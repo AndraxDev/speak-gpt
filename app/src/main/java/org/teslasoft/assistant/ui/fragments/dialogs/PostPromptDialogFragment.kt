@@ -95,7 +95,7 @@ class PostPromptDialogFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        builder = MaterialAlertDialogBuilder(this.requireContext())
+        builder = MaterialAlertDialogBuilder(this.requireContext(), R.style.App_MaterialAlertDialog)
 
         val view: View = this.layoutInflater.inflate(R.layout.fragment_post_prompt, null)
 

@@ -411,7 +411,7 @@
                 android:background="@drawable/btn_accent_tonal_selector">
 
                 <TextView
-                    android:id="@+id/textView78"
+                    android:id="@+id/text_logit_biases_config"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"

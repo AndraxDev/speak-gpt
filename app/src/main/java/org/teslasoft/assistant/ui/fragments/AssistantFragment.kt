@@ -471,6 +471,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                     } else {
                         restoreUIState()
                         assistantMessage?.setText(recognizedText)
+                        showKeyboard()
                     }
                 }
             }
@@ -792,6 +793,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 } else {
                     restoreUIState()
                     assistantMessage?.setText(transcription)
+                    showKeyboard()
                 }
             }
         } catch (e: Exception) {
@@ -993,6 +995,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                     }
 
                     baseImageString = "data:image/$imageType;base64,$base64Image"
+                    showKeyboard()
                 }
             }
         } else {
@@ -1225,6 +1228,11 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 reqList.add(ImagePart(baseImageString!!))
                 val chatCompletionRequest = ChatCompletionRequest(
                     model = ModelId("gpt-4-vision-preview"),
+                    temperature = preferences!!.getTemperature().toDouble(),
+                    topP = preferences!!.getTopP().toDouble(),
+                    frequencyPenalty = preferences!!.getFrequencyPenalty().toDouble(),
+                    presencePenalty = preferences!!.getPresencePenalty().toDouble(),
+                    logitBias = if (preferences?.getLogitBiasesConfigId() == null || preferences?.getLogitBiasesConfigId() == "null" || preferences?.getLogitBiasesConfigId() == "") null else logitBiasPreferences?.getLogitBiasesMap(),
                     messages = listOf(
                         ChatMessage(
                             role = ChatRole.System,
@@ -1278,6 +1286,11 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 val completionRequest = CompletionRequest(
                     model = ModelId(model),
                     prompt = request,
+                    temperature = preferences!!.getTemperature().toDouble(),
+                    topP = preferences!!.getTopP().toDouble(),
+                    frequencyPenalty = preferences!!.getFrequencyPenalty().toDouble(),
+                    presencePenalty = preferences!!.getPresencePenalty().toDouble(),
+                    logitBias = if (preferences?.getLogitBiasesConfigId() == null || preferences?.getLogitBiasesConfigId() == "null" || preferences?.getLogitBiasesConfigId() == "") null else logitBiasPreferences?.getLogitBiasesMap(),
                     echo = false
                 )
 
@@ -1477,6 +1490,11 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
 
         val chatCompletionRequest = chatCompletionRequest {
             model = ModelId(this@AssistantFragment.model)
+            temperature = preferences!!.getTemperature().toDouble()
+            topP = preferences!!.getTopP().toDouble()
+            frequencyPenalty = preferences!!.getFrequencyPenalty().toDouble()
+            presencePenalty = preferences!!.getPresencePenalty().toDouble()
+            logitBias = if (preferences?.getLogitBiasesConfigId() == null || preferences?.getLogitBiasesConfigId() == "null" || preferences?.getLogitBiasesConfigId() == "") null else logitBiasPreferences?.getLogitBiasesMap()
             messages = msgs
         }
 
@@ -2045,6 +2063,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         } else {
             restoreUIState()
             assistantMessage?.setText(prompt)
+            showKeyboard()
         }
     }
 
@@ -2095,6 +2114,10 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 val opeAIVoice: String = globalPreferences.getOpenAIVoice()
                 val voice: String = globalPreferences.getVoice()
                 val apiEndpointId = globalPreferences.getApiEndpointId()
+                val temperature = globalPreferences.getTemperature()
+                val topP = globalPreferences.getTopP()
+                val frequencyPenalty = globalPreferences.getFrequencyPenalty()
+                val presencePenalty = globalPreferences.getPresencePenalty()
 
                 preferences = Preferences.getPreferences(mContext ?: return, chatID)
                 preferences!!.setPreferences(Hash.hash(chatName), mContext ?: return)
@@ -2117,6 +2140,10 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 preferences!!.setOpenAIVoice(opeAIVoice)
                 preferences!!.setVoice(voice)
                 preferences!!.setApiEndpointId(apiEndpointId)
+                preferences!!.setTemperature(temperature)
+                preferences!!.setTopP(topP)
+                preferences!!.setFrequencyPenalty(frequencyPenalty)
+                preferences!!.setPresencePenalty(presencePenalty)
             }
         }
     }

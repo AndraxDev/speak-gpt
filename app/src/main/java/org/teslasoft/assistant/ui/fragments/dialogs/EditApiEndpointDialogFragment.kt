@@ -64,7 +64,7 @@ class EditApiEndpointDialogFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        builder = MaterialAlertDialogBuilder(this.requireContext())
+        builder = MaterialAlertDialogBuilder(this.requireContext(), R.style.App_MaterialAlertDialog)
 
         val view: View = this.layoutInflater.inflate(R.layout.fragment_edit_api_endpoint, null)
 
@@ -85,7 +85,7 @@ class EditApiEndpointDialogFragment : DialogFragment() {
             .setCancelable(false)
             .setPositiveButton("Save") { _, _ -> validateForm() }
             .setNeutralButton("Delete") { _, _ -> run {
-                MaterialAlertDialogBuilder(this.requireContext())
+                MaterialAlertDialogBuilder(this.requireContext(), R.style.App_MaterialAlertDialog)
                     .setTitle("Delete API endpoint")
                     .setMessage("Are you sure you want to delete this API endpoint?")
                     .setPositiveButton("Yes") { _, _ -> listener!!.onDelete(requireArguments().getInt("position"), Hash.hash(requireArguments().getString("label")!!)) }

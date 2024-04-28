@@ -1571,7 +1571,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                     temperature = preferences!!.getTemperature().toDouble(),
                     topP = preferences!!.getTopP().toDouble(),frequencyPenalty = preferences!!.getFrequencyPenalty().toDouble(),
                     presencePenalty = preferences!!.getPresencePenalty().toDouble(),
-
+                    logitBias = if (preferences?.getLogitBiasesConfigId() == null || preferences?.getLogitBiasesConfigId() == "null" || preferences?.getLogitBiasesConfigId() == "") null else logitBiasPreferences?.getLogitBiasesMap(),
                     seed = if (preferences!!.getSeed() != "") preferences!!.getSeed().toInt() else null,
                     messages = listOf(
                         ChatMessage(
@@ -1626,6 +1626,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                     frequencyPenalty = preferences!!.getFrequencyPenalty().toDouble(),
                     presencePenalty = preferences!!.getPresencePenalty().toDouble(),
                     prompt = request,
+                    logitBias = if (preferences?.getLogitBiasesConfigId() == null || preferences?.getLogitBiasesConfigId() == "null" || preferences?.getLogitBiasesConfigId() == "") null else logitBiasPreferences?.getLogitBiasesMap(),
                     echo = false
                 )
 
@@ -1834,6 +1835,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
             frequencyPenalty = preferences!!.getFrequencyPenalty().toDouble(),
             presencePenalty = preferences!!.getPresencePenalty().toDouble(),
             seed = if (preferences!!.getSeed() != "") preferences!!.getSeed().toInt() else null,
+            logitBias = if (preferences?.getLogitBiasesConfigId() == null || preferences?.getLogitBiasesConfigId() == "null" || preferences?.getLogitBiasesConfigId() == "") null else logitBiasPreferences?.getLogitBiasesMap(),
             messages = msgs
         )
 
@@ -1921,6 +1923,11 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                     val functionCalling = preferences.getFunctionCalling()
                     val slashCommands = preferences.getImagineCommand()
                     val apiEndpointId = preferences.getApiEndpointId()
+                    val logitBiasConfigId = preferences.getLogitBiasesConfigId()
+                    val temperature = preferences.getTemperature()
+                    val topP = preferences.getTopP()
+                    val frequencyPenalty = preferences.getFrequencyPenalty()
+                    val presencePenalty = preferences.getPresencePenalty()
 
                     preferences.setPreferences(Hash.hash(newChatName.toString()), this)
                     preferences.setResolution(resolution)
@@ -1938,6 +1945,11 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                     preferences.setFunctionCalling(functionCalling)
                     preferences.setImagineCommand(slashCommands)
                     preferences.setApiEndpointId(apiEndpointId)
+                    preferences.setLogitBiasesConfigId(logitBiasConfigId)
+                    preferences.setTemperature(temperature)
+                    preferences.setTopP(topP)
+                    preferences.setFrequencyPenalty(frequencyPenalty)
+                    preferences.setPresencePenalty(presencePenalty)
 
                     activityTitle?.text = newChatName.toString()
 

@@ -61,6 +61,9 @@ class LogitBiasConfigPreferences private constructor(private var preferences: Sh
 
         list.add(hashMapOf("label" to label, "id" to Hash.hash(label)))
 
+        // Bugfix for R8 minifier, yes It make no sense for regular programmer, but it's a bug in R8 minifier
+        if (list == null) list = arrayListOf()
+
         putString("configs", gson.toJson(list))
 
         for (listener in listeners) {
@@ -97,7 +100,7 @@ class LogitBiasConfigPreferences private constructor(private var preferences: Sh
 
     fun getAllConfigs(): ArrayList<HashMap<String, String>> {
         val gson = Gson()
-        val json = getString("configs", "")
+        val json = getString("configs", "[]")
         val type: Type = TypeToken.getParameterized(ArrayList::class.java, HashMap::class.java).type
 
         var list =  try {
@@ -109,7 +112,14 @@ class LogitBiasConfigPreferences private constructor(private var preferences: Sh
         // R8 bug fix
         if (list == null) list = arrayListOf()
 
-        return list
+        return list ?: arrayListOf()
+    }
+
+    fun getConfigById(configId: String): HashMap<String, String>? {
+        val list = getAllConfigs()
+        return list.find {
+            it["id"] == configId
+        }
     }
 
     fun interface OnLogitBiasConfigChangeListener {

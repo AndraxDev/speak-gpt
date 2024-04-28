@@ -59,8 +59,8 @@ class LogitBiasPreferences(context: Context, id: String) {
     }
 
     fun removeLogitBias(id: String) {
-        preferences?.edit()?.remove(id + "_tokenId")?.apply()
-        preferences?.edit()?.remove(id + "_logitBias")?.apply()
+        preferences?.edit()?.remove(Hash.hash(id) + "_tokenId")?.apply()
+        preferences?.edit()?.remove(Hash.hash(id) + "_logitBias")?.apply()
 
         for (listener in listeners) {
             listener.onLogitBiasChange()
@@ -86,6 +86,18 @@ class LogitBiasPreferences(context: Context, id: String) {
         }
 
         return logitBiases
+    }
+
+    fun getLogitBiasesMap(): HashMap<String, Int> {
+        val logitBiases = getLogitBiasesList()
+
+        val map = HashMap<String, Int>()
+
+        for (i in logitBiases) {
+            map[i.tokenId] = i.logitBias.toInt()
+        }
+
+        return map
     }
 
     fun interface OnLogitBiasChangeListener {

@@ -66,8 +66,8 @@ class LogitBiasItemAdapter(private val dataArray: ArrayList<HashMap<String, Stri
 
         val item = dataArray[position]
 
-        textToken?.text = item["token"]
-        textLogitBias?.text = item["logit_bias"]
+        textToken?.text = "Token ID: ${item["tokenId"]}"
+        textLogitBias?.text = "Logit bias: ${item["logitBias"]}"
 
         ui?.setOnClickListener {
             listener?.onClick(position)

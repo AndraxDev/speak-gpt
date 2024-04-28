@@ -64,7 +64,7 @@ class EditMessageDialogFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        builder = MaterialAlertDialogBuilder(this.requireContext())
+        builder = MaterialAlertDialogBuilder(this.requireContext(), R.style.App_MaterialAlertDialog)
 
         val view: View = this.layoutInflater.inflate(R.layout.fragment_message_edit, null)
 
@@ -77,7 +77,7 @@ class EditMessageDialogFragment : DialogFragment() {
             .setCancelable(false)
             .setPositiveButton("Save") { _, _ -> listener!!.onEdit(promptInput?.text.toString(), requireArguments().getInt("position")) }
             .setNeutralButton("Delete") { _, _ -> run {
-                MaterialAlertDialogBuilder(this.requireContext())
+                MaterialAlertDialogBuilder(this.requireContext(), R.style.App_MaterialAlertDialog)
                     .setTitle("Delete message")
                     .setMessage("Are you sure you want to delete this message?")
                     .setPositiveButton("Yes") { _, _ -> listener!!.onDelete(requireArguments().getInt("position")) }
