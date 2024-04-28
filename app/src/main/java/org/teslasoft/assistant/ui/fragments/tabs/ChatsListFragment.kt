@@ -225,11 +225,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
 
     private fun initLogics() {
         btnSettings?.setOnClickListener {
-            if (preferences!!.getExperimentalUI()) {
-                startActivity(Intent(mContext?: return@setOnClickListener, SettingsV2Activity::class.java).setAction(Intent.ACTION_VIEW))
-            } else {
-                startActivity(Intent(mContext?: return@setOnClickListener, SettingsActivity::class.java).setAction(Intent.ACTION_VIEW))
-            }
+            startActivity(Intent(mContext?: return@setOnClickListener, SettingsV2Activity::class.java).setAction(Intent.ACTION_VIEW))
         }
 
         btnAdd?.setOnClickListener {

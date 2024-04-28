@@ -112,8 +112,11 @@ import kotlinx.serialization.json.*
 import okio.FileSystem
 import okio.Path.Companion.toPath
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.ApiEndpointPreferences
 import org.teslasoft.assistant.preferences.ChatPreferences
+import org.teslasoft.assistant.preferences.LogitBiasPreferences
 import org.teslasoft.assistant.preferences.Preferences
+import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
 import org.teslasoft.assistant.ui.activities.MainActivity
 import org.teslasoft.assistant.ui.activities.SettingsActivity
 import org.teslasoft.assistant.ui.activities.SettingsV2Activity
@@ -197,6 +200,9 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
     private var model = ""
     private var endSeparator = ""
     private var prefix = ""
+    private var apiEndpointPreferences: ApiEndpointPreferences? = null
+    private var logitBiasPreferences: LogitBiasPreferences? = null
+    private var apiEndpointObject: ApiEndpointObject? = null
 
     // Init DALL-e
     private var resolution = "512x152"
@@ -452,14 +458,19 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                     btnAssistantSend?.isEnabled = false
                     assistantLoading?.visibility = View.VISIBLE
 
-                    CoroutineScope(Dispatchers.Main).launch {
-                        assistantLoading?.setOnClickListener {
-                            cancel()
-                        }
+                    if (preferences?.autoSend() == true) {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            assistantLoading?.setOnClickListener {
+                                cancel()
+                            }
 
-                        try {
-                            generateResponse(prefix + recognizedText + endSeparator, true)
-                        } catch (e: CancellationException) { /* ignore */ }
+                            try {
+                                generateResponse(prefix + recognizedText + endSeparator, true)
+                            } catch (e: CancellationException) { /* ignore */ }
+                        }
+                    } else {
+                        restoreUIState()
+                        assistantMessage?.setText(recognizedText)
                     }
                 }
             }
@@ -548,7 +559,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
     @SuppressLint("ClickableViewAccessibility")
     @Suppress("unchecked")
     private fun initSettings() {
-        key = preferences!!.getApiKey(mContext ?: return)
+        key = apiEndpointObject?.apiKey
 
         endSeparator = preferences!!.getEndSeparator()
         prefix = preferences!!.getPrefix()
@@ -752,29 +763,35 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 assistantLoading?.visibility = View.GONE
                 btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
             } else {
-                putMessage(prefix + transcription + endSeparator, false)
+                if (preferences?.autoSend() == true) {
+                    putMessage(prefix + transcription + endSeparator, false)
 
-                chatMessages.add(
-                    ChatMessage(
-                        role = ChatRole.User,
-                        content = prefix + transcription + endSeparator
+                    chatMessages.add(
+                        ChatMessage(
+                            role = ChatRole.User,
+                            content = prefix + transcription + endSeparator
+                        )
                     )
-                )
 
-                saveSettings()
+                    saveSettings()
 
-                btnAssistantVoice?.isEnabled = false
-                btnAssistantSend?.isEnabled = false
-                assistantLoading?.visibility = View.VISIBLE
+                    btnAssistantVoice?.isEnabled = false
+                    btnAssistantSend?.isEnabled = false
+                    assistantLoading?.visibility = View.VISIBLE
 
-                CoroutineScope(Dispatchers.Main).launch {
-                    assistantLoading?.setOnClickListener {
-                        cancel()
+                    CoroutineScope(Dispatchers.Main).launch {
+                        assistantLoading?.setOnClickListener {
+                            cancel()
+                        }
+
+                        try {
+                            generateResponse(prefix + transcription + endSeparator, true)
+                        } catch (e: CancellationException) { /* ignore */
+                        }
                     }
-
-                    try {
-                        generateResponse(prefix + transcription + endSeparator, true)
-                    } catch (e: CancellationException) { /* ignore */ }
+                } else {
+                    restoreUIState()
+                    assistantMessage?.setText(transcription)
                 }
             }
         } catch (e: Exception) {
@@ -869,7 +886,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 timeout = Timeout(socket = 30.seconds),
                 organization = null,
                 headers = emptyMap(),
-                host = OpenAIHost(preferences!!.getCustomHost()),
+                host = OpenAIHost(apiEndpointObject?.host!!),
                 proxy = null,
                 retry = RetryStrategy()
             )
@@ -940,6 +957,43 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 }
             } else {
                 runFromContextMenu()
+            }
+        } else if ((mContext as Activity?)?.intent?.action == Intent.ACTION_SEND && ((mContext as Activity?)?.intent?.type == "image/png" || (mContext as Activity?)?.intent?.type == "image/jpeg")) {
+            val uri = (mContext as Activity?)?.intent?.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
+            if (uri != null) {
+                val bitmap = readFile(uri)
+                if (bitmap != null) {
+                    attachedImage?.visibility = View.VISIBLE
+                    selectedImage?.setImageBitmap(roundCorners(bitmap, 80f))
+                    imageIsSelected = true
+
+                    val mimeType = mContext?.contentResolver?.getType(uri)
+                    val format = when {
+                        mimeType.equals("image/png", ignoreCase = true) -> {
+                            selectedImageType = "png"
+                            Bitmap.CompressFormat.PNG
+                        }
+                        else -> {
+                            selectedImageType = "jpg"
+                            Bitmap.CompressFormat.JPEG
+                        }
+                    }
+
+                    // Step 3: Convert the Bitmap to a Base64-encoded string
+                    val outputStream = ByteArrayOutputStream()
+                    bitmap.compress(format, 100, outputStream) // Note: Adjust the quality as necessary
+                    val base64Image = android.util.Base64.encodeToString(outputStream.toByteArray(), android.util.Base64.DEFAULT)
+
+                    // Step 4: Generate the data URL
+                    val imageType = when(format) {
+                        Bitmap.CompressFormat.JPEG -> "jpeg"
+                        Bitmap.CompressFormat.PNG -> "png"
+                        // Add more mappings as necessary
+                        else -> ""
+                    }
+
+                    baseImageString = "data:image/$imageType;base64,$base64Image"
+                }
             }
         } else {
             runFromContextMenu()
@@ -1693,6 +1747,9 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
 
         if (isInitialized) {
             preferences = Preferences.getPreferences(mContext ?: return, chatID)
+            apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(mContext ?: return)
+            logitBiasPreferences = LogitBiasPreferences(mContext ?: return, preferences?.getLogitBiasesConfigId()!!)
+            apiEndpointObject = apiEndpointPreferences?.getApiEndpoint(mContext ?: return, preferences?.getApiEndpointId()!!)
         }
     }
 
@@ -1701,6 +1758,10 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         chatID = id
         saveSettings()
         preferences = Preferences.getPreferences(mContext ?: return, chatID)
+
+        apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(mContext ?: return)
+        LogitBiasPreferences(mContext ?: return, preferences?.getLogitBiasesConfigId()!!)
+        apiEndpointObject = apiEndpointPreferences?.getApiEndpoint(mContext ?: return, preferences?.getApiEndpointId()!!)
         btnSaveToChat?.isEnabled = false
         btnSaveToChat?.setImageResource(R.drawable.ic_done)
 
@@ -1710,6 +1771,9 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
     private fun saveChatState() {
         chatID = "temp_state"
         preferences = Preferences.getPreferences(mContext ?: return, "")
+        apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(mContext ?: return)
+        LogitBiasPreferences(mContext ?: return, preferences?.getLogitBiasesConfigId()!!)
+        apiEndpointObject = apiEndpointPreferences?.getApiEndpoint(mContext ?: return, preferences?.getApiEndpointId()!!)
         saveSettings()
     }
 
@@ -1791,6 +1855,10 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         super.onViewCreated(view, savedInstanceState)
 
         preferences = Preferences.getPreferences(mContext ?: return, "")
+
+        apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(mContext ?: return)
+        LogitBiasPreferences(mContext ?: return, preferences?.getLogitBiasesConfigId()!!)
+        apiEndpointObject = apiEndpointPreferences?.getApiEndpoint(mContext ?: return, preferences?.getApiEndpointId()!!)
 
         mediaPlayer = MediaPlayer()
 
@@ -1972,7 +2040,12 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
     }
 
     private fun run(prompt: String) {
-        parseMessage(prompt)
+        if (preferences?.autoSend() == true) {
+            parseMessage(prompt)
+        } else {
+            restoreUIState()
+            assistantMessage?.setText(prompt)
+        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -1989,6 +2062,10 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
             chatPreferences.clearChatById(mContext ?: return, "temp_state")
 
             preferences = Preferences.getPreferences(mContext ?: return, "")
+
+            apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(mContext ?: return)
+            LogitBiasPreferences(mContext ?: return, preferences?.getLogitBiasesConfigId()!!)
+            apiEndpointObject = apiEndpointPreferences?.getApiEndpoint(mContext ?: return, preferences?.getApiEndpointId()!!)
 
             if (preferences?.getChatsAutosave() == true) {
                 val chatName = "_autoname_${chatPreferences.getAvailableChatIdForAutoname(mContext ?: return)}"
@@ -2017,6 +2094,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 val dalleVersion = globalPreferences.getDalleVersion()
                 val opeAIVoice: String = globalPreferences.getOpenAIVoice()
                 val voice: String = globalPreferences.getVoice()
+                val apiEndpointId = globalPreferences.getApiEndpointId()
 
                 preferences = Preferences.getPreferences(mContext ?: return, chatID)
                 preferences!!.setPreferences(Hash.hash(chatName), mContext ?: return)
@@ -2038,6 +2116,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 preferences!!.setDalleVersion(dalleVersion)
                 preferences!!.setOpenAIVoice(opeAIVoice)
                 preferences!!.setVoice(voice)
+                preferences!!.setApiEndpointId(apiEndpointId)
             }
         }
     }

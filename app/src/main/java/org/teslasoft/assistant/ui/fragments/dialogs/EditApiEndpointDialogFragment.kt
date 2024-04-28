@@ -122,6 +122,7 @@ class EditApiEndpointDialogFragment : DialogFragment() {
             )
         } else {
             listener!!.onEdit(
+                requireArguments().getString("label")!!,
                 ApiEndpointObject(
                     fieldLabel?.text.toString(),
                     fieldHost?.text.toString(),
@@ -138,7 +139,7 @@ class EditApiEndpointDialogFragment : DialogFragment() {
 
     interface StateChangesListener {
         fun onAdd(apiEndpoint: ApiEndpointObject)
-        fun onEdit(apiEndpoint: ApiEndpointObject, position: Int)
+        fun onEdit(oldLabel: String, apiEndpoint: ApiEndpointObject, position: Int)
         fun onDelete(position: Int, id: String)
         fun onError(message: String, position: Int)
     }

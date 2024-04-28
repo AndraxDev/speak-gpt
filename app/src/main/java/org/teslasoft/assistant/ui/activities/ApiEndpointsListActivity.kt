@@ -66,17 +66,23 @@ class ApiEndpointsListActivity : FragmentActivity() {
             reloadList()
         }
 
-        override fun onEdit(apiEndpoint: ApiEndpointObject, position: Int) {
+        override fun onEdit(oldLabel: String, apiEndpoint: ApiEndpointObject, position: Int) {
+            if (oldLabel == "Default" && apiEndpoint.label != "Default") {
+                Toast.makeText(this@ApiEndpointsListActivity, "Default API endpoint label can not be edited", Toast.LENGTH_SHORT).show()
+                return
+            }
             apiEndpointPreferences!!.editEndpoint(this@ApiEndpointsListActivity, list[position]["label"]?: return, apiEndpoint)
             reloadList()
         }
 
         override fun onDelete(position: Int, id: String) {
-            if (position > 0) {
+            if (list != null && position >= 0 && list[position]["label"] == "Default") {
+                Toast.makeText(this@ApiEndpointsListActivity, "Default API endpoint can not be deleted", Toast.LENGTH_SHORT).show()
+            } else if (/* R8 fucker */ list != null && list.size > 1) {
                 apiEndpointPreferences!!.deleteApiEndpoint(this@ApiEndpointsListActivity, id)
                 reloadList()
             } else {
-                Toast.makeText(this@ApiEndpointsListActivity, "Default API endpoint can not be deleted", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ApiEndpointsListActivity, "At least 1 API endpoint must be set", Toast.LENGTH_SHORT).show()
             }
         }
 

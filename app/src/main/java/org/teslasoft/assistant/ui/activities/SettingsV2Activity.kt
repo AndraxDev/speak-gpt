@@ -17,6 +17,7 @@
 package org.teslasoft.assistant.ui.activities
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.role.RoleManager
 import android.content.Context
 import android.content.Intent
@@ -37,6 +38,7 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
@@ -54,10 +56,12 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.ApiEndpointPreferences
 import org.teslasoft.assistant.preferences.ChatPreferences
 import org.teslasoft.assistant.preferences.DeviceInfoProvider
 import org.teslasoft.assistant.preferences.Logger
 import org.teslasoft.assistant.preferences.Preferences
+import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
 import org.teslasoft.assistant.ui.fragments.TileFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.ActivationPromptDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.AdvancedSettingsDialogFragment
@@ -93,7 +97,7 @@ class SettingsV2Activity : FragmentActivity() {
     private var tileAccountFragment: TileFragment? = null
     private var tileAssistant: TileFragment? = null
     private var tileApiKey: TileFragment? = null
-    private var tileCustomHost: TileFragment? = null
+    private var tileAutoSend: TileFragment? = null
     private var tileVoice: TileFragment? = null
     private var tileVoiceLanguage: TileFragment? = null
     private var tileImageModel: TileFragment? = null
@@ -130,6 +134,9 @@ class SettingsV2Activity : FragmentActivity() {
     private var btnRemoveAds: MaterialButton? = null
 
     private var teslasoftIDCircledButton: TeslasoftIDCircledButton? = null
+
+    private var apiEndpoint: ApiEndpointObject? = null
+    private var apiEndpointPreferences: ApiEndpointPreferences? = null
 
     private var adId = "<Loading...>"
     private var installationId = ""
@@ -221,20 +228,6 @@ class SettingsV2Activity : FragmentActivity() {
 
             tileVoice?.updateSubtitle(voice)
         }
-
-    private var hostChangedListener: HostnameEditorDialog.StateChangesListener = object : HostnameEditorDialog.StateChangesListener {
-        override fun onFormError(name: String) {
-            host = "https://api.openai.com/v1/"
-            tileCustomHost?.updateSubtitle(host)
-            preferences?.setCustomHost(host)
-        }
-
-        override fun onSelected(name: String) {
-            host = name
-            tileCustomHost?.updateSubtitle(name)
-            preferences?.setCustomHost(name)
-        }
-    }
 
     private var apiChangedListener: ApiKeyDialog.StateChangesListener = object : ApiKeyDialog.StateChangesListener {
         override fun onSelected(name: String) {
@@ -351,6 +344,8 @@ class SettingsV2Activity : FragmentActivity() {
         }
 
         preferences = Preferences.getPreferences(this, chatId)
+        apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(this)
+        apiEndpoint = apiEndpointPreferences?.getApiEndpoint(this, preferences?.getApiEndpointId()!!)
 
         model = preferences?.getModel() ?: "gpt-3.5-turbo"
         activationPrompt = preferences?.getPrompt() ?: ""
@@ -358,7 +353,8 @@ class SettingsV2Activity : FragmentActivity() {
         language = preferences?.getLanguage() ?: "en"
         resolution = preferences?.getResolution() ?: "256x256"
         voice = if (preferences?.getTtsEngine() == "google") preferences?.getVoice() ?: "" else preferences?.getOpenAIVoice() ?: ""
-        host = preferences?.getCustomHost() ?: ""
+
+        host = apiEndpoint?.host ?: ""
         ttsEngine = preferences?.getTtsEngine() ?: "google"
 
         initTeslasoftID()
@@ -461,27 +457,27 @@ class SettingsV2Activity : FragmentActivity() {
             tileApiKey = TileFragment.newInstance(
                 false,
                 false,
-                "API key",
-                null,
-                "****************",
-                null,
-                R.drawable.ic_key,
-                false,
-                chatId,
-                "This feature allows you to set your OpenAI API key."
-            )
-
-            tileCustomHost = TileFragment.newInstance(
-                false,
-                false,
                 "API endpoint",
                 null,
                 host,
                 null,
-                R.drawable.ic_user,
+                R.drawable.ic_key,
                 false,
                 chatId,
-                "This feature allows you to set custom OpenAI API endpoint."
+                "This feature allows you to set your API endpoint."
+            )
+
+            tileAutoSend = TileFragment.newInstance(
+                preferences?.autoSend()!!,
+                true,
+                "Auto send",
+                "Auto send",
+                "On",
+                "Off",
+                R.drawable.ic_send,
+                false,
+                chatId,
+                "This feature allows you to enable or disable messages auto send. When auto send is enabled, SpeakGPT will automatically send messages without pressing 'Send' button once listening is finished."
             )
 
             tileVoice = TileFragment.newInstance(
@@ -721,14 +717,14 @@ class SettingsV2Activity : FragmentActivity() {
     private fun createFragments5() {
         val t5 = Thread {
             tileNewLook = TileFragment.newInstance(
-                preferences?.getExperimentalUI() == true,
+                true,
                 true,
                 "New UI",
                 null,
                 "On",
                 "Off",
                 R.drawable.ic_experiment,
-                false,
+                true,
                 chatId,
                 "This feature allows you to enable new experimental UI. New UI is more compact and intuitive."
             )
@@ -959,7 +955,7 @@ class SettingsV2Activity : FragmentActivity() {
         val operation = supportFragmentManager.beginTransaction().replace(R.id.tile_account, tileAccountFragment!!)
             .replace(R.id.tile_assistant, tileAssistant!!)
             .replace(R.id.tile_api, tileApiKey!!)
-            .replace(R.id.tile_host, tileCustomHost!!)
+            .replace(R.id.tile_autosend, tileAutoSend!!)
             .replace(R.id.tile_voice, tileVoice!!)
             .replace(R.id.tile_voice_language, tileVoiceLanguage!!)
             .replace(R.id.tile_image_model, tileImageModel!!)
@@ -1091,6 +1087,20 @@ class SettingsV2Activity : FragmentActivity() {
         }
     }
 
+    private var apiEndpointActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            val apiEndpointId = data?.getStringExtra("apiEndpointId")
+
+            if (apiEndpointId != null) {
+                apiEndpoint = apiEndpointPreferences?.getApiEndpoint(this, apiEndpointId)
+                host = apiEndpoint?.host ?: ""
+                preferences?.setApiEndpointId(apiEndpointId)
+                tileApiKey?.updateSubtitle(host)
+            }
+        }
+    }
+
     private fun initializeLogic() {
         btnBack?.setOnClickListener {
             finish()
@@ -1104,16 +1114,16 @@ class SettingsV2Activity : FragmentActivity() {
         }
 
         tileApiKey?.setOnTileClickListener {
-            val apiKeyDialog: ApiKeyDialog = ApiKeyDialog.newInstance("")
-            apiKeyDialog.setStateChangedListener(apiChangedListener)
-            apiKeyDialog.show(supportFragmentManager.beginTransaction(), "ApiKeyDialog")
+            apiEndpointActivityResultLauncher.launch(Intent(this, ApiEndpointsListActivity::class.java))
         }
 
-        tileCustomHost?.setOnTileClickListener {
-            val hostnameEditorDialog: HostnameEditorDialog = HostnameEditorDialog.newInstance(preferences?.getCustomHost()!!)
-            hostnameEditorDialog.setStateChangedListener(hostChangedListener)
-            hostnameEditorDialog.show(supportFragmentManager.beginTransaction(), "HostEditorDialog")
-        }
+        tileAutoSend?.setOnCheckedChangeListener { ischecked -> run {
+            if (ischecked) {
+                preferences?.setAutoSend(true)
+            } else {
+                preferences?.setAutoSend(false)
+            }
+        }}
 
         tileAssistant?.setOnTileClickListener {
             val intent = Intent(Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS)

@@ -145,6 +145,9 @@ import org.teslasoft.assistant.preferences.GlobalPreferences
 import org.teslasoft.assistant.ui.permission.CameraPermissionActivity
 import java.io.ByteArrayOutputStream
 import kotlinx.coroutines.CancellationException
+import org.teslasoft.assistant.preferences.ApiEndpointPreferences
+import org.teslasoft.assistant.preferences.LogitBiasPreferences
+import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
 import org.teslasoft.assistant.ui.adapters.AbstractChatAdapter
 import org.teslasoft.assistant.ui.fragments.dialogs.QuickSettingsBottomSheetDialogFragment
 import kotlin.coroutines.coroutineContext
@@ -199,6 +202,9 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
     private var model = ""
     private var endSeparator = ""
     private var prefix = ""
+    private var apiEndpointPreferences: ApiEndpointPreferences? = null
+    private var logitBiasPreferences: LogitBiasPreferences? = null
+    private var apiEndpointObject: ApiEndpointObject? = null
 
     private var stopper = false
 
@@ -292,18 +298,23 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                     btnSend?.isEnabled = false
                     progress?.visibility = View.VISIBLE
 
-                    onSpeechResultsScope = CoroutineScope(Dispatchers.Main)
-                    onSpeechResultsScope?.launch {
-                        progress?.setOnClickListener {
-                            cancel()
-                            restoreUIState()
-                        }
+                    if (preferences?.autoSend() == true) {
+                        onSpeechResultsScope = CoroutineScope(Dispatchers.Main)
+                        onSpeechResultsScope?.launch {
+                            progress?.setOnClickListener {
+                                cancel()
+                                restoreUIState()
+                            }
 
-                        try {
-                            generateResponse(prefix + recognizedText + endSeparator, true)
-                        } catch (e: CancellationException) {
-                            Toast.makeText(this@ChatActivity, "Cancelled", Toast.LENGTH_SHORT).show()
+                            try {
+                                generateResponse(prefix + recognizedText + endSeparator, true)
+                            } catch (e: CancellationException) {
+                                Toast.makeText(this@ChatActivity, "Cancelled", Toast.LENGTH_SHORT).show()
+                            }
                         }
+                    } else {
+                        restoreUIState()
+                        messageInput?.setText(recognizedText)
                     }
                 }
             }
@@ -318,6 +329,9 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
 
         if (chatId != "") {
             preferences = Preferences.getPreferences(this, chatId)
+            apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(this)
+            logitBiasPreferences = LogitBiasPreferences(this, preferences?.getLogitBiasesConfigId()!!)
+            apiEndpointObject = apiEndpointPreferences?.getApiEndpoint(this, preferences?.getApiEndpointId()!!)
         }
     }
 
@@ -609,7 +623,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
     /** SYSTEM INITIALIZATION START **/
     @Suppress("unchecked")
     private fun initSettings() {
-        key = preferences!!.getApiKey(this)
+        key = apiEndpointObject?.apiKey!!
 
         endSeparator = preferences!!.getEndSeparator()
         prefix = preferences!!.getPrefix()
@@ -984,16 +998,8 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
         }
 
         btnSettings?.setOnClickListener {
-            val i = if (preferences!!.getExperimentalUI()) {
-                Intent(this, SettingsV2Activity::class.java).setAction(Intent.ACTION_VIEW)
-            } else {
-                Intent(this, SettingsActivity::class.java).setAction(Intent.ACTION_VIEW)
-            }
-
-            i.putExtra("chatId", chatId)
-
             settingsLauncher.launch(
-                i
+                Intent(this, SettingsV2Activity::class.java).setAction(Intent.ACTION_VIEW).putExtra("chatId", chatId)
             )
         }
 
@@ -1167,34 +1173,39 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                 progress?.visibility = View.GONE
                 btnMicro?.setImageResource(R.drawable.ic_microphone)
             } else {
-                putMessage(prefix + transcription + endSeparator, false)
+                if (preferences?.autoSend() == true) {
+                    putMessage(prefix + transcription + endSeparator, false)
 
-                chatMessages.add(
-                    ChatMessage(
-                        role = ChatRole.User,
-                        content = prefix + transcription + endSeparator
+                    chatMessages.add(
+                        ChatMessage(
+                            role = ChatRole.User,
+                            content = prefix + transcription + endSeparator
+                        )
                     )
-                )
 
-                saveSettings()
+                    saveSettings()
 
-                btnMicro?.isEnabled = false
-                btnSend?.isEnabled = false
-                progress?.visibility = View.VISIBLE
+                    btnMicro?.isEnabled = false
+                    btnSend?.isEnabled = false
+                    progress?.visibility = View.VISIBLE
 
-                processRecordingScope = CoroutineScope(Dispatchers.Main)
+                    processRecordingScope = CoroutineScope(Dispatchers.Main)
 
-                processRecordingScope?.launch {
-                    progress?.setOnClickListener {
-                        cancel()
-                        restoreUIState()
+                    processRecordingScope?.launch {
+                        progress?.setOnClickListener {
+                            cancel()
+                            restoreUIState()
+                        }
+
+                        try {
+                            generateResponse(prefix + transcription + endSeparator, true)
+                        } catch (cancelledException: CancellationException) {
+                            Toast.makeText(this@ChatActivity, "Cancelled", Toast.LENGTH_SHORT).show()
+                        }
                     }
-
-                    try {
-                        generateResponse(prefix + transcription + endSeparator, true)
-                    } catch (cancelledException: CancellationException) {
-                        Toast.makeText(this@ChatActivity, "Cancelled", Toast.LENGTH_SHORT).show()
-                    }
+                } else {
+                    restoreUIState()
+                    messageInput?.setText(transcription)
                 }
             }
         } catch (e: Exception) {
@@ -1289,7 +1300,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                 timeout = Timeout(socket = 30.seconds),
                 organization = null,
                 headers = emptyMap(),
-                host = OpenAIHost(preferences!!.getCustomHost()),
+                host = OpenAIHost(apiEndpointObject?.host!!),
                 proxy = null,
                 retry = RetryStrategy()
             )
@@ -1309,6 +1320,9 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
         }
 
         preferences = Preferences.getPreferences(this, chatId)
+        apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(this)
+        logitBiasPreferences = LogitBiasPreferences(this, preferences?.getLogitBiasesConfigId()!!)
+        apiEndpointObject = apiEndpointPreferences?.getApiEndpoint(this, preferences?.getApiEndpointId()!!)
 
         preloadAmoled()
         reloadAmoled()
@@ -1906,6 +1920,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                     val autoLanguageDetect = preferences.getAutoLangDetect()
                     val functionCalling = preferences.getFunctionCalling()
                     val slashCommands = preferences.getImagineCommand()
+                    val apiEndpointId = preferences.getApiEndpointId()
 
                     preferences.setPreferences(Hash.hash(newChatName.toString()), this)
                     preferences.setResolution(resolution)
@@ -1922,6 +1937,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                     preferences.setAutoLangDetect(autoLanguageDetect)
                     preferences.setFunctionCalling(functionCalling)
                     preferences.setImagineCommand(slashCommands)
+                    preferences.setApiEndpointId(apiEndpointId)
 
                     activityTitle?.text = newChatName.toString()
 

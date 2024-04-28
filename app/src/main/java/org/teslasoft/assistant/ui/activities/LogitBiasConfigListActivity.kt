@@ -53,9 +53,11 @@ class LogitBiasConfigListActivity : FragmentActivity() {
         }
 
         override fun onLongClick(position: Int) {
-            val dialog: EditLogitBiasConfigDialogFragment = EditLogitBiasConfigDialogFragment.newInstance(list[position]["label"] ?: return, position)
-            dialog.setListener(editDialogListener)
-            dialog.show(supportFragmentManager, "EditLogitBiasConfigDialogFragment")
+            if (position > 0) {
+                val dialog: EditLogitBiasConfigDialogFragment = EditLogitBiasConfigDialogFragment.newInstance(list[position]["label"] ?: return, position)
+                dialog.setListener(editDialogListener)
+                dialog.show(supportFragmentManager, "EditLogitBiasConfigDialogFragment")
+            }
         }
 
         override fun onEditBiases(position: Int) {
@@ -116,7 +118,20 @@ class LogitBiasConfigListActivity : FragmentActivity() {
 
     private fun reloadList() {
         list.clear()
-        list = logitBiasConfigPreferences!!.getAllConfigs()
+
+        val li = ArrayList<HashMap<String, String>>()
+
+        li.add(hashMapOf("label" to "Disable this feature", "id" to ""))
+
+        for (i in logitBiasConfigPreferences!!.getAllConfigs()) {
+            li.add(i)
+        }
+
+        list = if (li == null) {
+            arrayListOf(hashMapOf("label" to "Disable this feature", "id" to ""))
+        } else {
+            li
+        }
 
         // R8 bug fix
         if (list == null) list = arrayListOf()

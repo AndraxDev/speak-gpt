@@ -81,6 +81,12 @@ class LogitBiasConfigItemAdapter(private val dataArray: ArrayList<HashMap<String
             listener?.onEditBiases(position)
         }
 
+        if (position == 0) {
+            btnEditLogitBiases?.visibility = View.GONE
+        } else {
+            btnEditLogitBiases?.visibility = View.VISIBLE
+        }
+
         return mView!!
     }
 

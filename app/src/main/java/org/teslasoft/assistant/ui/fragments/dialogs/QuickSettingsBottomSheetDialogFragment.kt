@@ -16,6 +16,7 @@
 
 package org.teslasoft.assistant.ui.fragments.dialogs
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
@@ -30,7 +31,9 @@ import androidx.core.widget.addTextChangedListener
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.ApiEndpointPreferences
 import org.teslasoft.assistant.preferences.Preferences
+import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
 import org.teslasoft.assistant.ui.activities.ApiEndpointsListActivity
 import org.teslasoft.assistant.ui.activities.LogitBiasConfigListActivity
 
@@ -52,6 +55,8 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
     private var btnSelectSystemMessage: ConstraintLayout? = null
     private var btnSelectLogitBias: ConstraintLayout? = null
     private var btnSelectApiEndpoint: ConstraintLayout? = null
+    private var apiEndpointPreferences: ApiEndpointPreferences? = null
+    private var apiEndpoint: ApiEndpointObject? = null
 
     private var temperatureSeekbar: com.google.android.material.slider.Slider? = null
     private var topPSeekbar: com.google.android.material.slider.Slider? = null
@@ -68,12 +73,32 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
     private var textModel: TextView? = null
 
-    private var logitBiasesActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    private var textHost: TextView? = null
 
+    private var logitBiasesActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            val apiEndpointId = data?.getStringExtra("configId")
+
+            if (apiEndpointId != null) {
+                preferences?.setLogitBiasesConfigId(apiEndpointId)
+                shouldForceUpdate = true
+            }
+        }
     }
 
     private var apiEndpointActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            val apiEndpointId = data?.getStringExtra("apiEndpointId")
 
+            if (apiEndpointId != null) {
+                preferences?.setApiEndpointId(apiEndpointId)
+                apiEndpoint = apiEndpointPreferences?.getApiEndpoint(requireContext(), apiEndpointId)
+                textHost?.text = apiEndpoint?.host ?: ""
+                shouldForceUpdate = true
+            }
+        }
     }
 
     private var systemChangedListener: SystemMessageDialogFragment.StateChangesListener =
@@ -115,6 +140,8 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
         chatId = requireArguments().getString("chatId")!!
         preferences = Preferences.getPreferences(requireContext(), chatId)
+        apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(requireContext())
+        apiEndpoint = apiEndpointPreferences?.getApiEndpoint(requireContext(), preferences?.getApiEndpointId()!!)
 
         btnSelectModel = view.findViewById(R.id.btn_select_model)
         btnSelectSystemMessage = view.findViewById(R.id.btn_select_system)
@@ -126,6 +153,9 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         topPSeekbar = view.findViewById(R.id.top_p_slider)
         fieldSeed = view.findViewById(R.id.field_seed)
         textModel = view.findViewById(R.id.text_model)
+        textHost = view.findViewById(R.id.text_host)
+
+        textHost?.text = apiEndpoint?.host ?: ""
 
         temperatureSeekbar?.value = preferences?.getTemperature()!! * 10
         topPSeekbar?.value = preferences?.getTopP()!! * 10

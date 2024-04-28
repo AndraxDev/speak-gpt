@@ -16,28 +16,21 @@
 
 package org.teslasoft.assistant.ui.onboarding
 
-import android.app.ActivityManager
-import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
-import android.net.Uri
 import android.os.Bundle
-import android.os.Process
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.EditText
 import android.widget.Toast
 
 import androidx.fragment.app.FragmentActivity
 
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 import org.teslasoft.assistant.ui.activities.MainActivity
 import org.teslasoft.assistant.R
-import org.teslasoft.assistant.preferences.GlobalPreferences
+import org.teslasoft.assistant.preferences.ApiEndpointPreferences
 import org.teslasoft.assistant.preferences.Preferences
+import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
+import org.teslasoft.assistant.util.Hash
 
 class ActivationActivity : FragmentActivity() {
 
@@ -53,34 +46,22 @@ class ActivationActivity : FragmentActivity() {
         keyInput = findViewById(R.id.key_input)
         hostInput = findViewById(R.id.host_input)
 
-        val processName = getProcessName(this)
-        try {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
-                WebView.setDataDirectorySuffix(processName!!)
-            }
-        } catch (ignored: Exception) { /* unused */ }
-
         btnNext?.setOnClickListener {
             if (keyInput?.text.toString() == "") {
                 Toast.makeText(this, "Please enter an API key", Toast.LENGTH_SHORT).show()
             } else if (hostInput?.text.toString() == "") {
                 Toast.makeText(this, "Please enter API endpoint", Toast.LENGTH_SHORT).show()
             } else {
-                val gPreferences = GlobalPreferences.getPreferences(this)
+                val apiEndpointObject = ApiEndpointObject("Default", hostInput?.text.toString(), keyInput?.text.toString())
+                val apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(this)
+                apiEndpointPreferences.setApiEndpoint(this, apiEndpointObject)
+                val gPreferences = Preferences.getPreferences(this, "")
+                gPreferences.setApiEndpointId(Hash.hash("Default"))
                 gPreferences.setApiKey(keyInput?.text.toString(), this)
                 gPreferences.setCustomHost(hostInput?.text.toString())
                 startActivity(Intent(this, MainActivity::class.java).setAction(Intent.ACTION_VIEW))
                 finish()
             }
         }
-    }
-
-    private fun getProcessName(context: Context?): String? {
-        if (context == null) return null
-        val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        for (processInfo in manager.runningAppProcesses) {
-            if (processInfo.pid == Process.myPid()) return processInfo.processName
-        }
-        return null
     }
 }

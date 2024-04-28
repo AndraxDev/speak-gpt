@@ -413,6 +413,7 @@ class Preferences private constructor(private var preferences: SharedPreferences
      *
      * @return experimental UI mode
      */
+    @Deprecated("This feature is no longer supported")
     fun getExperimentalUI() : Boolean {
         return getGlobalBoolean("experimentalUI", true)
     }
@@ -422,6 +423,7 @@ class Preferences private constructor(private var preferences: SharedPreferences
      *
      * @param mode experimental UI mode
      */
+    @Deprecated("This feature is no longer supported")
     fun setExperimentalUI(mode: Boolean) {
         putGlobalBoolean("experimentalUI", mode)
     }
@@ -805,6 +807,24 @@ class Preferences private constructor(private var preferences: SharedPreferences
     }
 
     /**
+     * Automatically send messages after voice input is complete
+     *
+     * @return auto send
+     * */
+    fun autoSend() : Boolean {
+        return getGlobalBoolean("auto_send", true)
+    }
+
+    /**
+     * Automatically send messages after voice input is complete
+     *
+     * @param state auto send
+     * */
+    fun setAutoSend(state: Boolean) {
+        putGlobalBoolean("auto_send", state, true)
+    }
+
+    /**
      * Get Premium license key
      * */
     fun getPremiumKey(context: Context) : String {
@@ -856,6 +876,24 @@ class Preferences private constructor(private var preferences: SharedPreferences
      * */
     fun setApiEndpointId(id: String) {
         putString("api_endpoint_id", id)
+    }
+
+    /**
+     * Get logit biases config ID
+     *
+     * @return logit biases config ID
+     * */
+    fun getLogitBiasesConfigId() : String {
+        return getString("logit_biases_config_id", "")
+    }
+
+    /**
+     * Set logit biases config ID
+     *
+     * @param id logit biases config ID
+     * */
+    fun setLogitBiasesConfigId(id: String) {
+        putString("logit_biases_config_id", id)
     }
 
     /**

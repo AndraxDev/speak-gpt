@@ -338,10 +338,9 @@ class SettingsActivity : FragmentActivity() {
     private fun initSettings() {
         preferences = Preferences.getPreferences(this, chatId)
 
-        if (preferences?.getExperimentalUI() == true) {
-            startActivity(Intent(this, SettingsV2Activity::class.java).setAction(Intent.ACTION_VIEW).putExtra("chatId", chatId))
-            finish()
-        }
+        startActivity(Intent(this, SettingsV2Activity::class.java).setAction(Intent.ACTION_VIEW).putExtra("chatId", chatId))
+        finish()
+        return
 
         if (preferences?.getAdsEnabled()!!) {
             MobileAds.initialize(this) { /* unused */ }

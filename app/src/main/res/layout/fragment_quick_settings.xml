@@ -71,7 +71,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
-            android:background="@drawable/btn_accent_selector_v2"
+            android:background="@drawable/btn_accent_tonal_selector"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout26">
@@ -83,6 +83,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="12dp"
                 android:text="Creative"
+                android:textColor="@color/text"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/temperature_slider" />
@@ -133,7 +134,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
-            android:background="@drawable/btn_accent_selector_v2"
+            android:background="@drawable/btn_accent_tonal_selector"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
@@ -176,7 +177,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
-            android:background="@drawable/btn_accent_selector_v2"
+            android:background="@drawable/btn_accent_tonal_selector"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout6">
@@ -220,7 +221,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
-            android:background="@drawable/btn_accent_selector_v2"
+            android:background="@drawable/btn_accent_tonal_selector"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout4">
@@ -304,7 +305,7 @@
             android:layout_width="0dp"
             android:layout_height="64dp"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="24dp"
             android:orientation="horizontal"
             android:weightSum="2"
@@ -318,7 +319,7 @@
                 android:layout_height="64dp"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:background="@drawable/btn_accent_selector_v2">
+                android:background="@drawable/btn_accent_tonal_selector">
 
                 <TextView
                     android:id="@+id/textView71"
@@ -335,11 +336,20 @@
 
                 <TextView
                     android:id="@+id/text_model"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:freezesText="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
                     android:text="debug.model.name"
-                    android:textColor="@color/text_subtitle"
+                    android:textColor="@color/text"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView71" />
 
@@ -351,7 +361,7 @@
                 android:layout_height="64dp"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:background="@drawable/btn_accent_selector_v2">
+                android:background="@drawable/btn_accent_tonal_selector">
 
                 <TextView
                     android:id="@+id/textView73"
@@ -372,7 +382,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:text="Tap to edit"
-                    android:textColor="@color/text_subtitle"
+                    android:textColor="@color/text"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView73" />
 
@@ -398,7 +408,7 @@
                 android:layout_height="64dp"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:background="@drawable/btn_accent_selector_v2">
+                android:background="@drawable/btn_accent_tonal_selector">
 
                 <TextView
                     android:id="@+id/textView78"
@@ -406,7 +416,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:text="Tap to set"
-                    android:textColor="@color/text_subtitle"
+                    android:textColor="@color/text"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView94" />
 
@@ -430,15 +440,24 @@
                 android:layout_height="64dp"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:background="@drawable/btn_accent_selector_v2">
+                android:background="@drawable/btn_accent_tonal_selector">
 
                 <TextView
                     android:id="@+id/text_host"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:freezesText="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
                     android:text="debug.model.name"
-                    android:textColor="@color/text_subtitle"
+                    android:textColor="@color/text"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView95" />
 

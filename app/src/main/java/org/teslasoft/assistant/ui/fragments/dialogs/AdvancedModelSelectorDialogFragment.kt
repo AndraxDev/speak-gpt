@@ -38,7 +38,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.ApiEndpointPreferences
 import org.teslasoft.assistant.preferences.Preferences
+import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
 import org.teslasoft.assistant.ui.adapters.ModelListAdapter
 import kotlin.time.Duration.Companion.seconds
 
@@ -100,14 +102,16 @@ class AdvancedModelSelectorDialogFragment : DialogFragment() {
         progressBar?.visibility = View.VISIBLE
 
         val preferences = Preferences.getPreferences(requireActivity(), requireArguments().getString("chatId").toString())
+        val apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(requireActivity())
+        val apiEndpointObject: ApiEndpointObject = apiEndpointPreferences.getApiEndpoint(requireActivity(), preferences.getApiEndpointId())
 
         val config = OpenAIConfig(
-            token = preferences.getApiKey(requireActivity()),
+            token = apiEndpointObject.apiKey,
             logging = LoggingConfig(LogLevel.None, Logger.Simple),
             timeout = Timeout(socket = 30.seconds),
             organization = null,
             headers = emptyMap(),
-            host = OpenAIHost(preferences.getCustomHost()),
+            host = OpenAIHost(apiEndpointObject.host),
             proxy = null,
             retry = RetryStrategy()
         )
