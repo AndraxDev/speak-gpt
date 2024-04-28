@@ -51,6 +51,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.ApiEndpointPreferences
 import org.teslasoft.assistant.preferences.ChatPreferences
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.activities.ChatActivity
@@ -336,14 +337,22 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
     }
 
     private fun preInit() {
-        if (preferences!!.getApiKey(mContext?: return) == "") {
-            if (preferences!!.getOldApiKey() == "") {
-                mContext?.getSharedPreferences("chat_list", Context.MODE_PRIVATE)?.edit()?.putString("data", "[]")?.apply()
-                startActivity(Intent(mContext?: return, WelcomeActivity::class.java).setAction(Intent.ACTION_VIEW))
-                (mContext as Activity?)?.finish()
-                isDestroyed = true
+        val apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(mContext?: return)
+
+        if (apiEndpointPreferences.getApiEndpoint(mContext ?: return, preferences!!.getApiEndpointId()).apiKey == "") {
+            if (preferences!!.getApiKey(mContext?: return) == "") {
+                if (preferences!!.getOldApiKey() == "") {
+                    mContext?.getSharedPreferences("chat_list", Context.MODE_PRIVATE)?.edit()?.putString("data", "[]")?.apply()
+                    startActivity(Intent(mContext?: return, WelcomeActivity::class.java).setAction(Intent.ACTION_VIEW))
+                    (mContext as Activity?)?.finish()
+                    isDestroyed = true
+                } else {
+                    preferences!!.secureApiKey(mContext?: return)
+                    apiEndpointPreferences.migrateFromLegacyEndpoint(mContext?: return)
+                    initSettings()
+                }
             } else {
-                preferences!!.secureApiKey(mContext?: return)
+                apiEndpointPreferences.migrateFromLegacyEndpoint(mContext?: return)
                 initSettings()
             }
         } else {

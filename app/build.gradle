@@ -13,8 +13,8 @@ android {
         applicationId "org.teslasoft.assistant"
         minSdk 28
         targetSdk 34
-        versionCode 323
-        versionName "3.23"
+        versionCode 324
+        versionName "3.24"
     }
 
     buildTypes {
@@ -70,6 +70,7 @@ dependencies {
     implementation 'cat.ereza:customactivityoncrash:2.4.0'
     implementation 'org.conscrypt:conscrypt-android:2.5.2'
     implementation 'com.google.android.gms:play-services-ads:23.0.0'
+    implementation 'com.aallam.ktoken:ktoken:0.3.0'
 
     implementation platform('com.google.firebase:firebase-bom:32.8.1') {
         exclude group: 'com.google.android.gms', module: 'play-services-ads-lite'

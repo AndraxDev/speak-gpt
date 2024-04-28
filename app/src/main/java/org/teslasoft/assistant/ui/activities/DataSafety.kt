@@ -58,7 +58,7 @@ class DataSafety : FragmentActivity() {
         btnPrivacyPolicy?.setOnClickListener {
             val intent = Intent()
             intent.action = Intent.ACTION_VIEW
-            intent.data = android.net.Uri.parse("https://teslasoft.org/privacy")
+            intent.data = android.net.Uri.parse("https://assistant.teslasoft.org/privacy")
             startActivity(intent)
         }
     }

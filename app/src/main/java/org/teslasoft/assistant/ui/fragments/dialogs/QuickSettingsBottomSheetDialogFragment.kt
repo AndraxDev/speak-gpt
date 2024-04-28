@@ -1,20 +1,38 @@
+/**************************************************************************
+ * Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ **************************************************************************/
+
 package org.teslasoft.assistant.ui.fragments.dialogs
 
 import android.app.Dialog
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SeekBar
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatSeekBar
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.addTextChangedListener
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
+import org.teslasoft.assistant.ui.activities.ApiEndpointsListActivity
+import org.teslasoft.assistant.ui.activities.LogitBiasConfigListActivity
 
 class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
@@ -32,6 +50,8 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
     private var btnSelectModel: ConstraintLayout? = null
     private var btnSelectSystemMessage: ConstraintLayout? = null
+    private var btnSelectLogitBias: ConstraintLayout? = null
+    private var btnSelectApiEndpoint: ConstraintLayout? = null
 
     private var temperatureSeekbar: com.google.android.material.slider.Slider? = null
     private var topPSeekbar: com.google.android.material.slider.Slider? = null
@@ -47,6 +67,14 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
     private var shouldForceUpdate: Boolean = false
 
     private var textModel: TextView? = null
+
+    private var logitBiasesActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+
+    }
+
+    private var apiEndpointActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+
+    }
 
     private var systemChangedListener: SystemMessageDialogFragment.StateChangesListener =
         SystemMessageDialogFragment.StateChangesListener { prompt ->
@@ -90,6 +118,8 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
         btnSelectModel = view.findViewById(R.id.btn_select_model)
         btnSelectSystemMessage = view.findViewById(R.id.btn_select_system)
+        btnSelectLogitBias = view.findViewById(R.id.btn_set_logit_biases)
+        btnSelectApiEndpoint = view.findViewById(R.id.btn_select_api_endpoint)
         temperatureSeekbar = view.findViewById(R.id.temperature_slider)
         frequencyPenaltySeekbar = view.findViewById(R.id.frequency_penalty_slider)
         presencePenaltySeekbar = view.findViewById(R.id.presence_penalty_slider)
@@ -155,6 +185,14 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
         presencePenaltySeekbar?.setLabelFormatter {
             return@setLabelFormatter "${it/10.0}"
+        }
+
+        btnSelectLogitBias?.setOnClickListener {
+            logitBiasesActivityResultLauncher.launch(Intent(requireContext(), LogitBiasConfigListActivity::class.java))
+        }
+
+        btnSelectApiEndpoint?.setOnClickListener {
+            apiEndpointActivityResultLauncher.launch(Intent(requireContext(), ApiEndpointsListActivity::class.java))
         }
     }
 

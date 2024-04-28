@@ -18,6 +18,7 @@ package org.teslasoft.assistant.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
+import org.teslasoft.assistant.util.Hash
 
 class Preferences private constructor(private var preferences: SharedPreferences, private var gp: SharedPreferences, private var chatId: String) {
     companion object {
@@ -430,6 +431,7 @@ class Preferences private constructor(private var preferences: SharedPreferences
      *
      * @return The custom host URL as a string. If no custom host URL is set, it returns the default value "https://api.openai.com".
      */
+    @Deprecated("Use ApiEndpointPreferences instead")
     fun getCustomHost() : String {
         return getGlobalString("custom_host", "https://api.openai.com/v1/")
     }
@@ -439,6 +441,7 @@ class Preferences private constructor(private var preferences: SharedPreferences
      *
      * @param host The custom host URL to be set.
      */
+    @Deprecated("Use ApiEndpointPreferences instead")
     fun setCustomHost(host: String) {
         putGlobalString("custom_host", host)
     }
@@ -821,6 +824,7 @@ class Preferences private constructor(private var preferences: SharedPreferences
      * @param context The context to access the encrypted shared preferences.
      * @return The decrypted API key or an empty String if not found.
      */
+    @Deprecated("Use ApiEndpointPreferences instead")
     fun getApiKey(context: Context) : String {
         return EncryptedPreferences.getEncryptedPreference(context, "api", "api_key")
     }
@@ -831,8 +835,27 @@ class Preferences private constructor(private var preferences: SharedPreferences
      * @param key The API key to be stored in an encrypted form.
      * @param context The context to access the encrypted shared preferences.
      */
+    @Deprecated("Use ApiEndpointPreferences instead")
     fun setApiKey(key: String, context: Context) {
         EncryptedPreferences.setEncryptedPreference(context, "api", "api_key", key)
+    }
+
+    /**
+     * Now users can set API endpoints per chat
+     *
+     * @return API endpoint ID
+     * */
+    fun getApiEndpointId() : String {
+        return getString("api_endpoint_id", Hash.hash("Default"))
+    }
+
+    /**
+     * Now users can set API endpoints per chat
+     *
+     * @param id API endpoint ID
+     * */
+    fun setApiEndpointId(id: String) {
+        putString("api_endpoint_id", id)
     }
 
     /**

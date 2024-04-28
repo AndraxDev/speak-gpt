@@ -78,6 +78,24 @@
         </activity>
 
         <activity
+            android:name=".ui.activities.ApiEndpointsListActivity"
+            android:exported="false"
+            android:theme="@style/UI.Fade">
+        </activity>
+
+        <activity
+            android:name=".ui.activities.LogitBiasConfigActivity"
+            android:exported="false"
+            android:theme="@style/UI.Fade">
+        </activity>
+
+        <activity
+            android:name=".ui.activities.LogitBiasConfigListActivity"
+            android:exported="false"
+            android:theme="@style/UI.Fade">
+        </activity>
+
+        <activity
             android:name="org.teslasoft.core.CrashHandlerActivity"
             android:exported="false"
             android:theme="@style/UI.Fade">
