@@ -1,6 +1,6 @@
 # SpeakGPT
 
-SpeakGPT is an advanced and highly intuitive open-source AI assistant that utilizes the powerful large language models (LLM) to provide you with unparalleled performance and functionality. Officially it supports GPT models, LLAMA, MIXTRAL, GEMMA, Vision, DALL-E and other models.
+SpeakGPT is an advanced and highly intuitive open-source AI assistant that utilizes the powerful large language models (LLM) to provide you with unparalleled performance and functionality. Officially it supports GPT models, LLAMA, MIXTRAL, GEMMA, Gemini (regular and pro) Vision, DALL-E and other models.
 
 > This project is a part of my Bachelor Thesis. Attribution is required to use this work. Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
 >
@@ -63,6 +63,7 @@ Repo can be found [here](https://github.com/AndraxDev/speak-gpt-web)
 - [x] Custom fine-tuned models are supported
 - [x] AMOLED dark mode
 - [x] Custom API provider support
+- [x] Customize models params like temperature, topP, frequencyPenalty, presencePenalty and logit_bias
 
 ## Task list
 
@@ -85,12 +86,12 @@ Repo can be found [here](https://github.com/AndraxDev/speak-gpt-web)
 - [o] Function calling features
 - [x] AMOLED dark mode
 - [x] Custom API provider support
+- [x] Customize models params like temperature, topP, frequencyPenalty, presencePenalty and logit_bias
 
 ### ❌ Planned to add (Share your ideas in Issues)
 
 - [ ] Device routines (like set alarm or open app)
 - [ ] Sync chat history
-- [ ] Browse model so SpeakGPT can provide information from Internet
 - [ ] Add models exchange portal like prompts store
 
 ## API key safety:
