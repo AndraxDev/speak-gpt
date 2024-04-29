@@ -1,6 +1,6 @@
 # SpeakGPT
 
-SpeakGPT is an advanced and highly intuitive open-source AI assistant that utilizes the powerful large language models (LLM) to provide you with unparalleled performance and functionality. Officially it supports GPT models, LLAMA, MIXTRAL, GEMMA, Vision, DALL-E and other models.
+SpeakGPT is an advanced and highly intuitive open-source AI assistant that utilizes the powerful large language models (LLM) to provide you with unparalleled performance and functionality. Officially it supports OpenAI models (including Vision and DALL-E 2/3 to send and create images) but you can use [Groq](https://console.groq.com/docs/models) to use LLaMA3 8b/70b, Mixtral 8x7b and Gemma 7b.
 
 > This project is a part of my Bachelor Thesis. Attribution is required to use this work. Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
 >
