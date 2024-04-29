@@ -1816,10 +1816,9 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
         var response = ""
         putMessage("", true)
 
-        val msgs: ArrayList<ChatMessage> = chatMessages.clone() as ArrayList<ChatMessage>
+        val msgs: ArrayList<ChatMessage> = arrayListOf()
 
         val systemMessage = preferences!!.getSystemMessage()
-
         if (systemMessage != "") {
             msgs.add(
                 ChatMessage(
@@ -1828,6 +1827,8 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                 )
             )
         }
+
+        msgs.addAll(chatMessages)
 
         val chatCompletionRequest = ChatCompletionRequest(
             model = ModelId(model),

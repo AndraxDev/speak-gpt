@@ -1477,7 +1477,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         var response = ""
         putMessage("", true)
 
-        val msgs: ArrayList<ChatMessage> = chatMessages.clone() as ArrayList<ChatMessage>
+        val msgs: ArrayList<ChatMessage> = arrayListOf()
 
         val systemMessage = preferences!!.getSystemMessage()
 
@@ -1489,6 +1489,8 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 )
             )
         }
+
+        msgs.addAll(chatMessages)
 
         val chatCompletionRequest = chatCompletionRequest {
             model = ModelId(this@AssistantFragment.model)
