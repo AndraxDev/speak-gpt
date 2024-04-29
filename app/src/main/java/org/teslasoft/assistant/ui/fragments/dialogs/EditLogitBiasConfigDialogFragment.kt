@@ -91,7 +91,7 @@ class EditLogitBiasConfigDialogFragment : DialogFragment() {
             if (requireArguments().getString("label") == "") {
                 listener!!.onAdd(fieldLogitBiasLabel?.text.toString())
             } else {
-                listener!!.onEdit(requireArguments().getInt("position"), fieldLogitBiasLabel?.text.toString())
+                listener!!.onEdit(requireArguments().getInt("position"), fieldLogitBiasLabel?.text.toString(), Hash.hash(requireArguments().getString("label")!!), Hash.hash(fieldLogitBiasLabel?.text.toString()))
             }
         }
     }
@@ -102,7 +102,7 @@ class EditLogitBiasConfigDialogFragment : DialogFragment() {
 
     interface StateChangesListener {
         fun onAdd(label: String)
-        fun onEdit(position: Int, label: String)
+        fun onEdit(position: Int, label: String, oldId: String, newId: String)
         fun onDelete(position: Int, id: String)
         fun onError(message: String, position: Int)
     }

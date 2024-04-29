@@ -32,6 +32,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ApiEndpointPreferences
+import org.teslasoft.assistant.preferences.FavoriteModelsPreferences
 import org.teslasoft.assistant.preferences.LogitBiasConfigPreferences
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
@@ -76,6 +77,7 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
     private var textModel: TextView? = null
     private var textHost: TextView? = null
     private var textLogitBiasesConfig: TextView? = null
+    private var favoriteModelsPreferences: FavoriteModelsPreferences? = null
 
     private var logitBiasesActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -122,6 +124,13 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         textModel?.text = model
     }
 
+    private var modelSelectedListenerV2: AdvancedFavoriteModelSelectorDialogFragment.OnModelSelectedListener = AdvancedFavoriteModelSelectorDialogFragment.OnModelSelectedListener { model ->
+        preferences?.setModel(model)
+        updateListener?.onUpdate()
+        shouldForceUpdate = true
+        textModel?.text = model
+    }
+
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
 
@@ -150,6 +159,7 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(requireContext())
         apiEndpoint = apiEndpointPreferences?.getApiEndpoint(requireContext(), preferences?.getApiEndpointId()!!)
         logitBiasConfigPreferences = LogitBiasConfigPreferences.getLogitBiasConfigPreferences(requireContext())
+        favoriteModelsPreferences = FavoriteModelsPreferences.getPreferences(requireContext())
 
         btnSelectModel = view.findViewById(R.id.btn_select_model)
         btnSelectSystemMessage = view.findViewById(R.id.btn_select_system)
@@ -184,9 +194,19 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         }
 
         btnSelectModel?.setOnClickListener {
-            val dialog = AdvancedModelSelectorDialogFragment.newInstance(model!!, chatId)
-            dialog.setModelSelectedListener(modelSelectedListener)
-            dialog.show(parentFragmentManager, "AdvancedModelSelectorDialogFragment")
+            var favorites = favoriteModelsPreferences?.getFavoriteModels()
+
+            if (favorites == null) favorites = arrayListOf()
+
+            if (favorites.isEmpty()) {
+                val dialog = AdvancedModelSelectorDialogFragment.newInstance(model!!, chatId)
+                dialog.setModelSelectedListener(modelSelectedListener)
+                dialog.show(parentFragmentManager, "AdvancedModelSelectorDialogFragment")
+            } else {
+                val dialog = AdvancedFavoriteModelSelectorDialogFragment.newInstance(model!!, chatId)
+                dialog.setModelSelectedListener(modelSelectedListenerV2)
+                dialog.show(parentFragmentManager, "AdvancedFavoriteModelSelectorDialogFragment")
+            }
         }
 
         btnSelectSystemMessage?.setOnClickListener {

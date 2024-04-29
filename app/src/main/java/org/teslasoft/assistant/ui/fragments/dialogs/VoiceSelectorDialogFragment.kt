@@ -25,6 +25,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputLayout
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.VoiceListAdapter
@@ -60,6 +61,8 @@ class VoiceSelectorDialogFragment : DialogFragment() {
     private var tts: android.speech.tts.TextToSpeech? = null
 
     private var progressBar: ProgressBar? = null
+
+    private var fieldSearchLayout: TextInputLayout? = null
 
     private var voiceSelectedListener: VoiceListAdapter.OnItemClickListener =
         VoiceListAdapter.OnItemClickListener { model ->
@@ -112,6 +115,9 @@ class VoiceSelectorDialogFragment : DialogFragment() {
 
         voiceList = view.findViewById(R.id.voices_list)
         progressBar = view.findViewById(R.id.progressBar)
+        fieldSearchLayout = view.findViewById(R.id.field_search)
+
+        fieldSearchLayout?.visibility = View.GONE
 
         progressBar?.visibility = View.VISIBLE
 

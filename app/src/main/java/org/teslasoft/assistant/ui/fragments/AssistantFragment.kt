@@ -52,8 +52,10 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -1228,10 +1230,10 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 reqList.add(ImagePart(baseImageString!!))
                 val chatCompletionRequest = ChatCompletionRequest(
                     model = ModelId("gpt-4-vision-preview"),
-                    temperature = preferences!!.getTemperature().toDouble(),
-                    topP = preferences!!.getTopP().toDouble(),
-                    frequencyPenalty = preferences!!.getFrequencyPenalty().toDouble(),
-                    presencePenalty = preferences!!.getPresencePenalty().toDouble(),
+                    temperature = if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
+                    topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble(),
+                    frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
+                    presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble(),
                     logitBias = if (preferences?.getLogitBiasesConfigId() == null || preferences?.getLogitBiasesConfigId() == "null" || preferences?.getLogitBiasesConfigId() == "") null else logitBiasPreferences?.getLogitBiasesMap(),
                     messages = listOf(
                         ChatMessage(
@@ -1286,10 +1288,10 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 val completionRequest = CompletionRequest(
                     model = ModelId(model),
                     prompt = request,
-                    temperature = preferences!!.getTemperature().toDouble(),
-                    topP = preferences!!.getTopP().toDouble(),
-                    frequencyPenalty = preferences!!.getFrequencyPenalty().toDouble(),
-                    presencePenalty = preferences!!.getPresencePenalty().toDouble(),
+                    temperature = if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
+                    topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble(),
+                    frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
+                    presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble(),
                     logitBias = if (preferences?.getLogitBiasesConfigId() == null || preferences?.getLogitBiasesConfigId() == "null" || preferences?.getLogitBiasesConfigId() == "") null else logitBiasPreferences?.getLogitBiasesMap(),
                     echo = false
                 )
@@ -1490,10 +1492,10 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
 
         val chatCompletionRequest = chatCompletionRequest {
             model = ModelId(this@AssistantFragment.model)
-            temperature = preferences!!.getTemperature().toDouble()
-            topP = preferences!!.getTopP().toDouble()
-            frequencyPenalty = preferences!!.getFrequencyPenalty().toDouble()
-            presencePenalty = preferences!!.getPresencePenalty().toDouble()
+            temperature = if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble()
+            topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble()
+            frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble()
+            presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble()
             logitBias = if (preferences?.getLogitBiasesConfigId() == null || preferences?.getLogitBiasesConfigId() == "null" || preferences?.getLogitBiasesConfigId() == "") null else logitBiasPreferences?.getLogitBiasesMap()
             messages = msgs
         }
@@ -2068,7 +2070,17 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return BottomSheetDialog(mContext ?: return onCreateDialog(savedInstanceState), R.style.AssistantWindowTheme)
+
+        val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(mContext ?: return onCreateDialog(savedInstanceState), R.style.AssistantWindowTheme)
+
+//        bottomSheetDialog.setOnShowListener {
+//            val bottomSheet: ConstraintLayout = bottomSheetDialog.findViewById(R.id.window)!!
+//            val fadeIn = AnimationUtils.loadAnimation(context, R.anim.fade_in)
+//            bottomSheet.animation = fadeIn
+//            fadeIn.start()
+//        }
+
+        return bottomSheetDialog
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

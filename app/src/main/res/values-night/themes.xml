@@ -33,5 +33,6 @@
         <item name="colorSecondary">@color/accent_900</item>
         <item name="colorOnSecondary">@color/window_background</item>
         <item name="colorAccent">@color/accent_900</item>
+<!--        <item name="android:windowAnimationStyle">@style/AssistantWindowAnimation</item>-->
     </style>
 </resources>

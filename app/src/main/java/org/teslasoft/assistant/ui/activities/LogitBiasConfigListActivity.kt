@@ -77,8 +77,9 @@ class LogitBiasConfigListActivity : FragmentActivity() {
             reloadList()
         }
 
-        override fun onEdit(position: Int, label: String) {
+        override fun onEdit(position: Int, label: String, oldId: String, newId: String) {
             logitBiasConfigPreferences!!.editConfig(list[position]["label"] ?: return, label)
+            logitBiasConfigPreferences!!.movePreferences(oldId, newId, this@LogitBiasConfigListActivity)
             reloadList()
         }
 
@@ -136,7 +137,7 @@ class LogitBiasConfigListActivity : FragmentActivity() {
 
         var tmp = logitBiasConfigPreferences!!.getAllConfigs()
 
-        if (tmp == null) tmp = arrayListOf()
+        if (tmp == null) tmp = arrayListOf() /** RolePlay message: *marquee strip with content "FUCK FUCK FUCK FUCK FUCK"* */
 
         for (i in tmp ?: arrayListOf()) {
             li.add(i)

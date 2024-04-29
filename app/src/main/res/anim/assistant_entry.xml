@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shareInterpolator="false"
+    android:ordering="together">
+
+    <translate
+        android:fromYDelta="100%p"
+        android:toYDelta="0"
+        android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+        android:duration="500" />
+    <alpha
+        android:startOffset="250"
+        android:fromAlpha="0.0"
+        android:toAlpha="1.0"
+        android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+        android:duration="250"/>
+</set>

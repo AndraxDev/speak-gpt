@@ -125,4 +125,19 @@ class LogitBiasConfigPreferences private constructor(private var preferences: Sh
     fun interface OnLogitBiasConfigChangeListener {
         fun onLogitBiasConfigChange()
     }
+
+    fun movePreferences(oldId: String, newId: String, context: Context) {
+        val oldPrefs = context.getSharedPreferences("logit_bias_config_$oldId", Context.MODE_PRIVATE)
+        val newPrefs = context.getSharedPreferences("logit_bias_config_$newId", Context.MODE_PRIVATE)
+
+        val oldPrefsEditor = oldPrefs.edit()
+        val newPrefsEditor = newPrefs.edit()
+
+        oldPrefs.all.forEach {
+            newPrefsEditor.putString(it.key, it.value.toString())
+        }
+
+        newPrefsEditor.apply()
+        oldPrefsEditor.clear().apply()
+    }
 }

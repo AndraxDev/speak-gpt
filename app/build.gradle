@@ -13,8 +13,8 @@ android {
         applicationId "org.teslasoft.assistant"
         minSdk 28
         targetSdk 34
-        versionCode 324
-        versionName "3.24"
+        versionCode 325
+        versionName "3.25"
     }
 
     buildTypes {

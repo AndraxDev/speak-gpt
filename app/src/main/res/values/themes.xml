@@ -20,10 +20,27 @@
         <item name="colorSecondary">@color/accent_100</item>
         <item name="colorOnSecondary">@color/black</item>
         <item name="colorAccent">@color/accent_900</item>
+        <item name="android:windowAnimationStyle">@style/AssistantWindowAnimation</item>
+    </style>
+
+    <style name="AssistantWindowAnimation" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/assistant_entry</item>
+        <item name="android:windowExitAnimation">@anim/assistant_exit</item>
+        <item name="android:activityOpenEnterAnimation">@anim/assistant_entry</item>
+        <item name="android:activityOpenExitAnimation">@anim/assistant_exit</item>
+        <item name="android:activityCloseEnterAnimation">@anim/assistant_entry</item>
+        <item name="android:activityCloseExitAnimation">@anim/assistant_exit</item>
+        <item name="android:inAnimation">@anim/assistant_entry</item>
+        <item name="android:outAnimation">@anim/assistant_exit</item>
+        <item name="android:fragmentOpenEnterAnimation">@anim/assistant_entry</item>
+        <item name="android:fragmentOpenExitAnimation">@anim/assistant_exit</item>
+        <item name="android:fragmentCloseEnterAnimation">@anim/assistant_entry</item>
+        <item name="android:fragmentCloseExitAnimation">@anim/assistant_exit</item>
     </style>
 
     <style name="AssistantWindowStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
+<!--        <item name="android:windowAnimationStyle">@style/AssistantWindowAnimation</item>-->
     </style>
 
     <style name="UI.Fade" parent="Theme.App">
@@ -44,6 +61,7 @@
     </style>
 
     <style name="Theme.Assistant" parent="@style/Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowAnimationStyle">@style/Theme.Anim.Fade.Material</item>
         <item name="android:windowBackground">@color/transparent</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsTranslucent">true</item>

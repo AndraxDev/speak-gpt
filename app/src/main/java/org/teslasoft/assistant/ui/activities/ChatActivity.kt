@@ -1568,9 +1568,10 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                 reqList.add(ImagePart(baseImageString!!))
                 val chatCompletionRequest = ChatCompletionRequest(
                     model = ModelId("gpt-4-vision-preview"),
-                    temperature = preferences!!.getTemperature().toDouble(),
-                    topP = preferences!!.getTopP().toDouble(),frequencyPenalty = preferences!!.getFrequencyPenalty().toDouble(),
-                    presencePenalty = preferences!!.getPresencePenalty().toDouble(),
+                    temperature = if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
+                    topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble(),
+                    frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
+                    presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble(),
                     logitBias = if (preferences?.getLogitBiasesConfigId() == null || preferences?.getLogitBiasesConfigId() == "null" || preferences?.getLogitBiasesConfigId() == "") null else logitBiasPreferences?.getLogitBiasesMap(),
                     seed = if (preferences!!.getSeed() != "") preferences!!.getSeed().toInt() else null,
                     messages = listOf(
@@ -1621,10 +1622,10 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                 putMessage("", true)
                 val completionRequest = CompletionRequest(
                     model = ModelId(model),
-                    temperature = preferences!!.getTemperature().toDouble(),
-                    topP = preferences!!.getTopP().toDouble(),
-                    frequencyPenalty = preferences!!.getFrequencyPenalty().toDouble(),
-                    presencePenalty = preferences!!.getPresencePenalty().toDouble(),
+                    temperature = if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
+                    topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble(),
+                    frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
+                    presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble(),
                     prompt = request,
                     logitBias = if (preferences?.getLogitBiasesConfigId() == null || preferences?.getLogitBiasesConfigId() == "null" || preferences?.getLogitBiasesConfigId() == "") null else logitBiasPreferences?.getLogitBiasesMap(),
                     echo = false
@@ -1699,10 +1700,10 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
 
                     val functionRequest = chatCompletionRequest {
                         model = ModelId(this@ChatActivity.model)
-                        temperature = preferences!!.getTemperature().toDouble()
-                        topP = preferences!!.getTopP().toDouble()
-                        frequencyPenalty = preferences!!.getFrequencyPenalty().toDouble()
-                        presencePenalty = preferences!!.getPresencePenalty().toDouble()
+                        temperature = if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble()
+                        topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble()
+                        frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble()
+                        presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble()
                         messages = cm
                         functions {
                             function {
@@ -1830,10 +1831,10 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
 
         val chatCompletionRequest = ChatCompletionRequest(
             model = ModelId(model),
-            temperature = preferences!!.getTemperature().toDouble(),
-            topP = preferences!!.getTopP().toDouble(),
-            frequencyPenalty = preferences!!.getFrequencyPenalty().toDouble(),
-            presencePenalty = preferences!!.getPresencePenalty().toDouble(),
+            temperature = if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
+            topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble(),
+            frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
+            presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble(),
             seed = if (preferences!!.getSeed() != "") preferences!!.getSeed().toInt() else null,
             logitBias = if (preferences?.getLogitBiasesConfigId() == null || preferences?.getLogitBiasesConfigId() == "null" || preferences?.getLogitBiasesConfigId() == "") null else logitBiasPreferences?.getLogitBiasesMap(),
             messages = msgs

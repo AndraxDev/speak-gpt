@@ -34,7 +34,7 @@ import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 
 /** ListView adapter to display list of voices */
-class ModelListAdapter(private val context: Context, private val items: ArrayList<String>, private var chatId: String, private var apiEndpointId: String) : BaseAdapter() {
+class FavoriteModelListAdapter(private val context: Context, private val items: ArrayList<Map<String, String>>, private var chatId: String, private var apiEndpointId: String) : BaseAdapter() {
 
     private var listener: OnItemClickListener? = null
 
@@ -63,35 +63,35 @@ class ModelListAdapter(private val context: Context, private val items: ArrayLis
             viewHolder = view.tag as ViewHolder
         }
 
-        val item = getItem(position) as String
-        viewHolder.textView.text = item
+        val item = getItem(position) as Map<String, String>
+        viewHolder.textView.text = item.get("modelId")
 
         val preferences: Preferences = Preferences.getPreferences(context, chatId)
 
-        if (preferences.getModel() == item) {
+        if (preferences.getModel() == item.get("modelId")) {
             viewHolder.voiceBg.background = getDarkAccentDrawableV2(
                 ContextCompat.getDrawable(context, R.drawable.btn_accent_tonal_selector_v4)!!, context)
 
             viewHolder.textView.setTextColor(ContextCompat.getColor(context, R.color.accent_250))
 
-            viewHolder.modelAction.setImageResource(R.drawable.ic_like_item_inv)
+            viewHolder.modelAction.setImageResource(R.drawable.ic_close_item_inv)
         } else {
             viewHolder.voiceBg.background = getDarkAccentDrawable(
                 ContextCompat.getDrawable(context, R.drawable.btn_accent_tonal_selector_v3)!!, context)
 
             viewHolder.textView.setTextColor(ContextCompat.getColor(context, R.color.text))
 
-            viewHolder.modelAction.setImageResource(R.drawable.ic_like_item)
+            viewHolder.modelAction.setImageResource(R.drawable.ic_close_item)
         }
 
-        viewHolder.modelAction.tooltipText = "Add to favorites"
+        viewHolder.modelAction.tooltipText = "Remove from favorites"
 
         viewHolder.voiceBg.setOnClickListener {
-            listener?.onItemClick(item)
+            listener?.onItemClick(item.get("modelId")!!, item.get("endpointId")!!)
         }
 
         viewHolder.modelAction.setOnClickListener {
-            listener?.onActionClick(item, apiEndpointId, position)
+            listener?.onActionClick(item.get("modelId")!!, item.get("endpointId")!!, position)
         }
 
         return view
@@ -122,7 +122,7 @@ class ModelListAdapter(private val context: Context, private val items: ArrayLis
     }
 
     interface OnItemClickListener {
-        fun onItemClick(model: String)
+        fun onItemClick(model: String, endpointId: String)
         fun onActionClick(model: String, endpointId: String, position: Int)
     }
 
