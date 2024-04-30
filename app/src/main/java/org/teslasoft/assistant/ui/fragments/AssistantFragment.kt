@@ -33,6 +33,9 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.RectF
+import android.graphics.drawable.Animatable2
+import android.graphics.drawable.AnimatedVectorDrawable
+import android.graphics.drawable.Drawable
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.net.Uri
@@ -52,10 +55,8 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -110,7 +111,11 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.add
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.put
+import kotlinx.serialization.json.putJsonArray
+import kotlinx.serialization.json.putJsonObject
 import okio.FileSystem
 import okio.Path.Companion.toPath
 import org.teslasoft.assistant.R
@@ -145,6 +150,7 @@ import java.util.Base64
 import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
 
+
 class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpdateListener {
 
     // Init UI
@@ -171,6 +177,8 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
     private var visionActions: LinearLayout? = null
     private var btnVisionActionCamera: ImageButton? = null
     private var btnVisionActionGallery: ImageButton? = null
+
+    private var animation: AnimatedVectorDrawable? = null
 
     // Init chat
     private var messages: ArrayList<HashMap<String, Any>> = arrayListOf()
@@ -420,11 +428,15 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
 
         override fun onEndOfSpeech() {
             isRecording = false
+            animation?.stop()
+            animation?.reset()
             btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
         }
 
         override fun onError(error: Int) {
             isRecording = false
+            animation?.stop()
+            animation?.reset()
             btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
         }
 
@@ -436,9 +448,13 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 btnAssistantSend?.isEnabled = true
                 assistantLoading?.visibility = View.GONE
                 isRecording = false
+                animation?.stop()
+                animation?.reset()
                 btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
             } else {
                 isRecording = false
+                animation?.stop()
+                animation?.reset()
                 btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
                 val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                 if (!matches.isNullOrEmpty()) {
@@ -623,6 +639,8 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
                 if (preferences!!.getAudioModel() == "google") recognizer?.stopListening()
                 isRecording = false
+                animation?.stop()
+                animation?.reset()
             }
 
             return@setOnLongClickListener true
@@ -670,6 +688,8 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                     } catch (e: IOException) {
                         btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
                         isRecording = false
+                        animation?.stop()
+                        animation?.reset()
                         MaterialAlertDialogBuilder(
                             mContext ?: return,
                             R.style.App_MaterialAlertDialog
@@ -685,6 +705,8 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                     cancelState = false
                     btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
                     isRecording = false
+                    animation?.stop()
+                    animation?.reset()
                 }
             }
         } else {
@@ -703,6 +725,8 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                     } catch (e: IOException) {
                         btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
                         isRecording = false
+                        animation?.stop()
+                        animation?.reset()
                         MaterialAlertDialogBuilder(mContext ?: return@apply, R.style.App_MaterialAlertDialog)
                             .setTitle("Audio error")
                             .setMessage("Failed to initialize microphone")
@@ -715,6 +739,8 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                     cancelState = false
                     btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
                     isRecording = false
+                    animation?.stop()
+                    animation?.reset()
                 }
             }
         }
@@ -745,6 +771,8 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
             cancelState = false
             btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
             isRecording = false
+            animation?.stop()
+            animation?.reset()
         }
     }
 
@@ -761,6 +789,8 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
 
             if (transcription.trim() == "") {
                 isRecording = false
+                animation?.stop()
+                animation?.reset()
                 btnAssistantVoice?.isEnabled = true
                 btnAssistantSend?.isEnabled = true
                 assistantLoading?.visibility = View.GONE
@@ -810,10 +840,13 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         if (isRecording) {
             btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
             isRecording = false
+            animation?.stop()
+            animation?.reset()
             stopWhisper()
         } else {
             btnAssistantVoice?.setImageResource(R.drawable.ic_stop_recording)
             isRecording = true
+            animation?.start()
 
             if (ContextCompat.checkSelfPermission(
                     mContext ?: return, Manifest.permission.RECORD_AUDIO
@@ -843,6 +876,8 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
             btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
             recognizer?.stopListening()
             isRecording = false
+            animation?.stop()
+            animation?.reset()
         } else {
             try {
                 if (mediaPlayer!!.isPlaying) {
@@ -867,6 +902,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
             }
 
             isRecording = true
+            animation?.start()
         }
     }
 
@@ -1909,6 +1945,16 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         visionActions = view.findViewById(R.id.vision_action_selector)
         btnVisionActionCamera = view.findViewById(R.id.action_camera)
         btnVisionActionGallery = view.findViewById(R.id.action_gallery)
+
+        animation = btnAssistantVoice?.background as AnimatedVectorDrawable
+        
+        animation?.registerAnimationCallback(object : Animatable2.AnimationCallback() {
+            override fun onAnimationEnd(drawable: Drawable?) {
+                if (isRecording) {
+                    animation?.start()
+                }
+            }
+        })
 
         btnSaveToChat?.setImageResource(R.drawable.ic_storage)
         btnExit?.setImageResource(R.drawable.ic_back)

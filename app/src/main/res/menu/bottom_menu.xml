@@ -15,7 +15,7 @@
     <item
         android:id="@+id/menu_tips"
         android:enabled="true"
-        android:icon="@drawable/ic_tips"
-        android:title="@string/menu_tips"/>
+        android:icon="@drawable/ic_explore"
+        android:title="Explore"/>
 
 </menu>

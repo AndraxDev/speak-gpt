@@ -125,7 +125,37 @@
         </activity>
 
         <activity
+            android:name=".ui.activities.ConfigIdActivity"
+            android:exported="true"
+            android:theme="@style/Theme.App"
+            android:launchMode="singleTask">
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="assistant.teslasoft.org"
+                    android:pathPrefix="/explore"
+                    android:scheme="https" />
+
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="assistant.teslasoft.org"/>
+                <data android:pathPrefix="/explore"/>
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".ui.activities.ReportAbuseActivity"
+            android:exported="false"
+            android:theme="@style/UI.Fade"
+            android:launchMode="singleTask">
+        </activity>
+
+        <activity
+            android:name=".ui.activities.TipsActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
             android:launchMode="singleTask">

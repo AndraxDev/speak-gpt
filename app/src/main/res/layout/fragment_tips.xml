@@ -9,7 +9,7 @@
         android:id="@+id/activity_tips_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="16dp"
         android:text="@string/title_tips"
         android:textColor="@color/text_title"
         android:textSize="24sp"

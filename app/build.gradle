@@ -13,8 +13,8 @@ android {
         applicationId "org.teslasoft.assistant"
         minSdk 28
         targetSdk 34
-        versionCode 326
-        versionName "3.26"
+        versionCode 400
+        versionName "4.0"
     }
 
     buildTypes {
@@ -48,7 +48,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'com.google.code.gson:gson:2.10.1'
-    implementation 'com.aallam.openai:openai-client:3.7.1'
+    implementation 'com.aallam.openai:openai-client:3.7.2'
     implementation 'io.ktor:ktor-client-android:2.3.10'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0'

@@ -85,21 +85,18 @@ class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragme
 
         modelName.text = model
 
-        textModel.text = when (model) {
-            "gpt-4" -> "GPT 4"
-            "gpt-4-1106-preview" -> "GPT 4 Turbo"
-            "gpt-4-turbo-2024-04-09" -> "GPT 4 Turbo"
-            "gpt-4-0125-preview" -> "GPT 4 Turbo"
-            "gpt-4-turbo-preview" -> "GPT 4 Turbo"
-            "gpt-4-32k" -> "GPT 4"
-            "gpt-3.5-turbo" -> "GPT 3.5"
-            "gpt-3.5-turbo-1106" -> "GPT 3.5"
-            "gpt-3.5-turbo-0125" -> "GPT 3.5 (0125)"
-            "gemma-7b-it" -> "GROQ"
-            "llama2-70b-4096" -> "GROQ"
-            "mixtral-8x7b-32768" -> "GROQ"
-            else -> "FT"
-        }
+        textModel.text = "CUSTOM"
+
+        textModel.text = if (model.lowercase().contains("gemini")) "GEMINI" else textModel.text
+        textModel.text = if (model.lowercase().contains("gemma")) "GEMMA" else textModel.text
+        textModel.text = if (model.lowercase().contains("mistral") || model.lowercase().contains("mixtral")) "MISTRAL" else textModel.text
+        textModel.text = if (model.lowercase().contains("perplexity")) "PERPLEXITY" else textModel.text
+        textModel.text = if (model.lowercase().contains("claude")) "CLAUDE" else textModel.text
+        textModel.text = if (model.lowercase().contains("llama")) "META" else textModel.text
+        textModel.text = if (model.lowercase().contains("gpt-4") && model.lowercase().contains("turbo")) "GPT 4 Turbo" else textModel.text
+        textModel.text = if (model.lowercase().contains("gpt-4") && !model.lowercase().contains("turbo")) "GPT 4" else textModel.text
+        textModel.text = if (model.lowercase().contains("gpt-3.5") && model.lowercase().contains("turbo") && model.lowercase().contains("0125")) "GPT 3.5 (0125)" else textModel.text
+        textModel.text = if (model.lowercase().contains("gpt-3.5") && model.lowercase().contains("turbo") && !model.lowercase().contains("0125")) "GPT 3.5 Turbo" else textModel.text
 
         selector.setBackgroundResource(R.drawable.btn_accent_tonal_selector_tint)
 
@@ -111,23 +108,23 @@ class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragme
             ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_v3)!!, mContext.requireActivity())
 
         when (textModel.text) {
-            "GPT 4" -> {
+            "GPT 4", "GEMINI" -> {
                 updateCard(selector, icon, R.color.tint_red, R.color.gpt_icon_red)
             }
-            "GPT 3.5" -> {
+            "GPT 3.5 Turbo", "GEMMA" -> {
                 updateCard(selector, icon, R.color.tint_yellow, R.color.gpt_icon_yellow)
             }
-            "GPT 3.5 (0125)" -> {
+            "GPT 3.5 (0125)", "PERPLEXITY" -> {
                 updateCard(selector, icon, R.color.tint_purple, R.color.gpt_icon_purple)
             }
-            "GPT 4 Turbo" -> {
+            "GPT 4 Turbo", "CLAUDE" -> {
                 updateCard(selector, icon, R.color.tint_green, R.color.gpt_icon_green)
             }
-            "FT" -> {
-                updateCard(selector, icon, R.color.tint_blue, R.color.gpt_icon_blue)
-            }
-            "GROQ" -> {
+            "MISTRAL", "META" -> {
                 updateCard(selector, icon, R.color.tint_orange, R.color.gpt_icon_orange)
+            }
+            "CUSTOM" -> {
+                updateCard(selector, icon, R.color.tint_blue, R.color.gpt_icon_blue)
             }
             else -> {
                 icon.setImageResource(R.drawable.chatgpt_icon)

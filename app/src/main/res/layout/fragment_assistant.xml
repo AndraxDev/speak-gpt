@@ -66,10 +66,9 @@
 
         <ImageButton
             android:id="@+id/btn_assistant_voice"
-            android:layout_width="84dp"
-            android:layout_height="84dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/mtrl_shape1"
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:background="@drawable/avd_anim_v3"
             android:contentDescription="@string/btn_speak"
             android:elevation="0.02dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -82,12 +81,12 @@
             style="?android:attr/progressBarStyle"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="40dp"
             android:background="@drawable/assistant_clear"
             android:clickable="false"
             android:elevation="0.03dip"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_assistant_voice"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:visibility="visible" />
@@ -107,14 +106,14 @@
 
         <LinearLayout
             android:id="@+id/assistant_actions"
-            android:layout_width="164dp"
-            android:layout_height="48dp"
-            android:layout_marginBottom="18dp"
+            android:layout_width="192dp"
+            android:layout_height="56dp"
+            android:layout_marginBottom="35dp"
             android:background="@drawable/btn_accent_assistant_actions"
             android:clickable="false"
             android:elevation="0.01dp"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_assistant_voice"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -127,7 +126,7 @@
                     android:id="@+id/btn_assistant_settings"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="12dp"
                     android:background="@drawable/btn_accent_assistant_actions"
                     android:contentDescription="@string/btn_settings"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -139,7 +138,7 @@
                     android:id="@+id/btn_assistant_show_keyboard"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="12dp"
                     android:background="@drawable/btn_accent_assistant_actions"
                     android:contentDescription="@string/btn_show_keyboard"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -261,7 +260,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="36dp"
             android:background="@drawable/btn_accent_tonal"
             android:clickable="false"
             android:orientation="horizontal"
@@ -269,7 +268,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            tools:visibility="visible">
+            tools:visibility="invisible">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"

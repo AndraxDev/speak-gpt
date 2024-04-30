@@ -51,7 +51,7 @@
             android:id="@+id/textView59"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="28dp"
             android:text="Debug"
             android:textColor="@color/text_title"
             android:textSize="24sp"
@@ -162,14 +162,14 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment_tips_"
-            android:name="org.teslasoft.assistant.ui.fragments.tabs.TipsFragment"
+            android:name="org.teslasoft.assistant.ui.fragments.tabs.ExploreFragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:layout="@layout/fragment_tips" />
+            tools:layout="@layout/fragment_explore" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

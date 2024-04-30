@@ -37,17 +37,17 @@
             android:id="@+id/textModel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
+            android:alpha="0.5"
             android:text="FT"
             android:textColor="@color/marker"
-            android:textSize="32sp"
+            android:textSize="18sp"
             android:textStyle="bold"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/linearLayout27"
+            app:layout_constraintEnd_toEndOf="@+id/linearLayout27" />
 
         <LinearLayout
+            android:id="@+id/linearLayout27"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -72,7 +72,6 @@
                 android:id="@+id/chat_first_message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="2dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="TextView"
