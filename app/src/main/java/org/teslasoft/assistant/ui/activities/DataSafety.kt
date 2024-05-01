@@ -21,6 +21,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.button.MaterialButton
+import org.teslasoft.assistant.Config
 import org.teslasoft.assistant.R
 
 class DataSafety : FragmentActivity() {
@@ -58,7 +59,7 @@ class DataSafety : FragmentActivity() {
         btnPrivacyPolicy?.setOnClickListener {
             val intent = Intent()
             intent.action = Intent.ACTION_VIEW
-            intent.data = android.net.Uri.parse("https://assistant.teslasoft.org/privacy")
+            intent.data = android.net.Uri.parse("https://${Config.API_SERVER_NAME}/privacy")
             startActivity(intent)
         }
     }

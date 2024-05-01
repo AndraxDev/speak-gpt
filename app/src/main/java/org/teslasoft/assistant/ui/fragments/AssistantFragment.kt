@@ -2118,17 +2118,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-
-        val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog(mContext ?: return onCreateDialog(savedInstanceState), R.style.AssistantWindowTheme)
-
-//        bottomSheetDialog.setOnShowListener {
-//            val bottomSheet: ConstraintLayout = bottomSheetDialog.findViewById(R.id.window)!!
-//            val fadeIn = AnimationUtils.loadAnimation(context, R.anim.fade_in)
-//            bottomSheet.animation = fadeIn
-//            fadeIn.start()
-//        }
-
-        return bottomSheetDialog
+        return BottomSheetDialog(mContext ?: return onCreateDialog(savedInstanceState), R.style.AssistantWindowTheme)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

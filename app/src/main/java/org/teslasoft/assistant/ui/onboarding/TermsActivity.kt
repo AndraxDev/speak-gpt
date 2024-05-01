@@ -79,10 +79,10 @@ class TermsActivity : FragmentActivity() {
             }
         }
 
-        when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+        /*when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
             Configuration.UI_MODE_NIGHT_YES -> webView?.loadUrl("file:///android_asset/www/privacy.html")
             Configuration.UI_MODE_NIGHT_NO -> webView?.loadUrl("file:///android_asset/www/privacy_light.html")
-        }
+        }*/
 
         btnNext?.setOnClickListener {
             startActivity(Intent(this, ActivationActivity::class.java).setAction(Intent.ACTION_VIEW))

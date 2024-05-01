@@ -33,6 +33,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
+import org.teslasoft.assistant.Config
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ApiEndpointPreferences
 import org.teslasoft.assistant.preferences.FavoriteModelsPreferences
@@ -289,6 +290,11 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
             logitBiasConfigPreferences?.getConfigById(preferences?.getLogitBiasesConfigId()!!)?.get("label") ?: "Tap to set"
         } else {
             "Tap to set"
+        }
+
+        btnCostInfo?.setOnClickListener {
+            val webViewDialog = WebViewDialog.newInstance("https://${Config.API_SERVER_NAME}/costInfo", "Cost Info")
+            webViewDialog.show(parentFragmentManager, "WebViewDialog@CostInfo")
         }
 
         usageIn = requireArguments().getInt("usageIn")
