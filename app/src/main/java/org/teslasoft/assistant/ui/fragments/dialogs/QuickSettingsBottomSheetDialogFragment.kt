@@ -16,6 +16,7 @@
 
 package org.teslasoft.assistant.ui.fragments.dialogs
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.DialogInterface
@@ -29,6 +30,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.addTextChangedListener
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ApiEndpointPreferences
@@ -38,15 +41,22 @@ import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
 import org.teslasoft.assistant.ui.activities.ApiEndpointsListActivity
 import org.teslasoft.assistant.ui.activities.LogitBiasConfigListActivity
+import org.teslasoft.assistant.ui.adapters.ModelListAdapter
+import org.teslasoft.assistant.util.Hash
+import org.teslasoft.core.api.network.RequestNetwork
 
 class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
     companion object {
-        fun newInstance(chatId: String): QuickSettingsBottomSheetDialogFragment {
+        fun newInstance(chatId: String, usageIn: Int, usageOut: Int, priceIn: Float, priceOut: Float): QuickSettingsBottomSheetDialogFragment {
             val quickSettingsBottomSheetDialogFragment = QuickSettingsBottomSheetDialogFragment()
 
             val args = Bundle()
             args.putString("chatId", chatId)
+            args.putInt("usageIn", usageIn)
+            args.putInt("usageOut", usageOut)
+            args.putFloat("priceIn", priceIn)
+            args.putFloat("priceOut", priceOut)
             quickSettingsBottomSheetDialogFragment.arguments = args
 
             return quickSettingsBottomSheetDialogFragment
@@ -68,6 +78,10 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
     private var presencePenaltySeekbar: com.google.android.material.slider.Slider? = null
     private var fieldSeed: TextInputEditText? = null
 
+    private var textUsage: TextView? = null
+    private var textCost: TextView? = null
+    private var btnCostInfo: MaterialButton? = null
+
     private var preferences: Preferences? = null
     private var chatId: String = ""
 
@@ -78,6 +92,46 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
     private var textHost: TextView? = null
     private var textLogitBiasesConfig: TextView? = null
     private var favoriteModelsPreferences: FavoriteModelsPreferences? = null
+
+    private var priceIn = 0.0f
+    private var priceOut = 0.0f
+    private var usageIn = 0
+    private var usageOut = 0
+
+    private var requestNetwork: RequestNetwork? = null
+
+    private var requestListener: RequestNetwork.RequestListener = object : RequestNetwork.RequestListener {
+        override fun onResponse(tag: String, message: String) {
+            val gson = com.google.gson.Gson()
+
+            try {
+                val models: Map<String, Any> = gson.fromJson(message, Map::class.java) as Map<String, Any>
+
+                var modelsList: List<Map<String, Any>> = models["data"] as ArrayList<Map<String, Any>>
+
+                if (modelsList == null) modelsList = arrayListOf()
+
+                for (model in modelsList) {
+                    val m = model.toMap()
+                    if (preferences?.getModel() == m["id"]) {
+                        priceIn = (m["pricing"] as Map<String, Any>)["prompt"].toString().toFloat()
+                        priceOut = (m["pricing"] as Map<String, Any>)["completion"].toString().toFloat()
+                        val costIn = priceIn * usageIn
+                        val costOut = priceOut * usageOut
+                        val costTotal = costIn + costOut
+                        textCost?.text = String.format("Cost: $%.5f in / $%.5f out\nTotal: $%.5f", costIn, costOut, costTotal)
+                        break
+                    }
+                }
+            } catch (e: Exception) {
+                performStaticCostParse(preferences?.getModel()!!)
+            }
+        }
+
+        override fun onErrorResponse(tag: String, message: String) {
+            textCost?.text = "Cost: Error calculating cost. Please check your connection."
+        }
+    }
 
     private var logitBiasesActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -131,6 +185,61 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         textModel?.text = model
     }
 
+    @SuppressLint("SetTextI18n", "DefaultLocale")
+    private fun performStaticCostParse(model: String): HashMap<String, Float> {
+        var inPrice = 0.0
+        var outPrice = 0.0
+
+        when {
+            (model.contains("gpt-4") && (model.contains("turbo") || model.contains("vision"))) || model == "gpt-4-0125-preview" || model == "gpt-4-1106-preview" || model == "gpt-4-vision-preview" -> {
+                inPrice = 0.00001
+                outPrice = 0.00003
+            }
+            model.contains("gpt-4-32k") -> {
+                inPrice = 0.00006
+                outPrice = 0.00012
+            }
+            model.contains("gpt-4") -> {
+                inPrice = 0.00003
+                outPrice = 0.00006
+            }
+            model.contains("gpt-3.5") && model.contains("0125") -> {
+                inPrice = 0.0000005
+                outPrice = 0.0000015
+            }
+            (model.contains("gpt-3.5") && model.contains("instruct")) || model == "gpt-3.5-turbo-0613" || model == "gpt-3.5-turbo-0301" -> {
+                inPrice = 0.0000015
+                outPrice = 0.000002
+            }
+            model.contains("davinci") -> {
+                inPrice = 0.000002
+                outPrice = 0.000002
+            }
+            model.contains("babbage") -> {
+                inPrice = 0.0000004
+                outPrice = 0.0000004
+            }
+            model == "gpt-3.5-turbo-1106" -> {
+                inPrice = 0.000001
+                outPrice = 0.000002
+            }
+            model == "gpt-3.5-turbo-16k-0613" -> {
+                inPrice = 0.000003
+                outPrice = 0.000004
+            }
+        }
+
+        if (inPrice == 0.0 && outPrice == 0.0) {
+            textCost?.text = "Cost: <SpeakGPT hasn't enough data to calculate cost for this model: ${preferences?.getModel()}. Look for documentation and calculate cost manually based on the usage above.>"
+        } else {
+            val costIn = inPrice * usageIn
+            val costOut = outPrice * usageOut
+            val costTotal = costIn + costOut
+            textCost?.text = String.format("Cost: $%.5f in / $%.5f out\nTotal: $%.5f", costIn, costOut, costTotal)
+        }
+        return hashMapOf()
+    }
+
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
 
@@ -143,14 +252,11 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         updateListener = listener
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return super.onCreateDialog(savedInstanceState)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_quick_settings, container, false)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -174,12 +280,26 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         textHost = view.findViewById(R.id.text_host)
         textLogitBiasesConfig = view.findViewById(R.id.text_logit_biases_config)
 
+        textUsage = view.findViewById(R.id.text_usage)
+        textCost = view.findViewById(R.id.text_cost)
+        btnCostInfo = view.findViewById(R.id.btn_cost_info)
+
         textHost?.text = apiEndpoint?.host ?: "Tap to set"
         textLogitBiasesConfig?.text = if (preferences?.getLogitBiasesConfigId() != ""){
             logitBiasConfigPreferences?.getConfigById(preferences?.getLogitBiasesConfigId()!!)?.get("label") ?: "Tap to set"
         } else {
             "Tap to set"
         }
+
+        usageIn = requireArguments().getInt("usageIn")
+        usageOut = requireArguments().getInt("usageOut")
+
+        requestNetwork = RequestNetwork(requireActivity())
+        requestNetwork?.setHeaders(hashMapOf("Authorization" to "Bearer " + apiEndpoint?.apiKey))
+        requestNetwork?.startRequestNetwork("GET", apiEndpoint?.host + "models", "A", requestListener)
+
+        textUsage?.text = "Usage (tokens): $usageIn in / $usageOut out"
+        textCost?.text = "Cost: Loading..."
 
         temperatureSeekbar?.value = preferences?.getTemperature()!! * 10
         topPSeekbar?.value = preferences?.getTopP()!! * 10

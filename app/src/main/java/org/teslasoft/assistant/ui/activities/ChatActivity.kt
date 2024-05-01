@@ -135,6 +135,8 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Base64
 import androidx.core.content.FileProvider
+import com.aallam.ktoken.Encoding
+import com.aallam.ktoken.Tokenizer
 import com.aallam.openai.api.chat.ContentPart
 import com.aallam.openai.api.chat.ImagePart
 import com.aallam.openai.api.chat.TextPart
@@ -180,6 +182,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
 
     // Init chat
     private var messages: ArrayList<HashMap<String, Any>> = arrayListOf()
+    private var messagesUsageProjection: ArrayList<HashMap<String, Any>> = arrayListOf()
     private var adapter: ChatAdapter? = null
     private var chatMessages: ArrayList<ChatMessage> = arrayListOf()
     private var chatId = ""
@@ -195,6 +198,12 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
     private var cancelState = false
     private var disableAutoScroll = false
     private var imageIsSelected = false
+    private var inCost: Float = 0.0f
+    private var outCost: Float = 0.0f
+    private var usageIn: Int = 0
+    private var usageOut: Int = 0
+    private var priceIn: Float = 0.0f
+    private var priceOut: Float = 0.0f
 
     // init AI
     private var ai: OpenAI? = null
@@ -246,6 +255,60 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
         btnSend?.isEnabled = true
         isRecording = false
         btnMicro?.setImageResource(R.drawable.ic_microphone)
+    }
+
+    private suspend fun tokenizeArray() {
+        messagesUsageProjection = arrayListOf()
+        messagesUsageProjection.clear()
+
+        if (chatMessages == null) chatMessages = arrayListOf()
+
+        for (m in chatMessages) {
+            val tokenizer = Tokenizer.of(encoding = Encoding.CL100K_BASE)
+            val tokens = tokenizer.encode(m.content.toString()).size
+
+            messagesUsageProjection.add(
+                hashMapOf(
+                    "isBot" to (m.role == Role.Assistant),
+                    "tokens" to if (m.content.toString().trim().startsWith("~file:")) 0 else tokens
+                )
+            )
+        }
+    }
+
+    private fun calculateCost() {
+        CoroutineScope(Dispatchers.Main).launch {
+            tokenizeArray()
+
+            usageIn = 0
+            usageOut = 0
+            inCost = 0.0f
+            outCost = 0.0f
+
+            var i = messagesUsageProjection.size - 1
+
+            while (i > 0) {
+                var j = 0
+                var c = 0
+
+                while (j < i) {
+                    c += messagesUsageProjection[j]["tokens"] as Int
+                    j++
+                }
+
+                usageIn += c
+                i--
+            }
+
+            for (m in messagesUsageProjection) {
+                val msgUsage = if (m["isBot"] == true) m["tokens"] as Int else 0
+
+                usageOut += msgUsage
+            }
+
+            inCost = usageIn * priceIn
+            outCost = usageOut * priceOut
+        }
     }
 
     private val speechListener = object : RecognitionListener {
@@ -662,6 +725,8 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                 }
             }
 
+            calculateCost()
+
             adapter = ChatAdapter(messages, this, preferences!!)
             adapter?.setOnUpdateListener(this)
 
@@ -738,7 +803,14 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
         }
 
         activityTitle?.setOnClickListener {
-            val quickSettingsBottomSheetDialogFragment = QuickSettingsBottomSheetDialogFragment.newInstance(chatId)
+            val quickSettingsBottomSheetDialogFragment = QuickSettingsBottomSheetDialogFragment
+                .newInstance(
+                    chatId,
+                    usageIn,
+                    usageOut,
+                    priceIn,
+                    priceOut
+                )
             quickSettingsBottomSheetDialogFragment.setOnUpdateListener(object : QuickSettingsBottomSheetDialogFragment.OnUpdateListener {
                 override fun onUpdate() {
                     /* for future */
@@ -1355,6 +1427,9 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                     progress?.setOnClickListener {
                         cancel()
                         restoreUIState()
+                        saveSettings()
+                        syncChatProjection()
+                        calculateCost()
                     }
 
                     try {
@@ -1407,6 +1482,8 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
 
         editor.putString("chat", json)
         editor.apply()
+
+        // calculateCost()
     }
 
     private fun parseMessage(message: String, shouldAdd: Boolean = true) {
@@ -1464,12 +1541,16 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                             content = m
                         )
                     )
+                    syncChatProjection()
                 }
 
                 CoroutineScope(Dispatchers.Main).launch {
                     progress?.setOnClickListener {
                         cancel()
                         restoreUIState()
+                        saveSettings()
+                        syncChatProjection()
+                        calculateCost()
                     }
 
                     try {
@@ -1489,6 +1570,9 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
             progress?.setOnClickListener {
                 cancel()
                 restoreUIState()
+                saveSettings()
+                syncChatProjection()
+                calculateCost()
             }
 
             try {
@@ -1605,14 +1689,12 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                 messages[messages.size - 1]["message"] = "${response.dropLast(4)}\n"
                 adapter?.notifyDataSetChanged()
 
-                chatMessages.add(ChatMessage(
-                    role = ChatRole.Assistant,
-                    content = response
-                ))
+                syncChatProjection()
 
                 pronounce(shouldPronounce, response)
 
                 saveSettings()
+                calculateCost()
 
                 btnMicro?.isEnabled = true
                 btnSend?.isEnabled = true
@@ -1648,14 +1730,12 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                 messages[messages.size - 1]["message"] = "$response\n"
                 adapter?.notifyDataSetChanged()
 
-                chatMessages.add(ChatMessage(
-                    role = ChatRole.Assistant,
-                    content = response
-                ))
-
-                pronounce(shouldPronounce, response)
+                syncChatProjection()
 
                 saveSettings()
+                calculateCost()
+
+                pronounce(shouldPronounce, response)
 
                 btnMicro?.isEnabled = true
                 btnSend?.isEnabled = true
@@ -1756,6 +1836,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                 }
             }
         } catch (e: CancellationException) {
+            calculateCost()
             runOnUiThread {
                 restoreUIState()
             }
@@ -1796,6 +1877,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
             }
 
             saveSettings()
+            calculateCost()
 
             runOnUiThread {
                 btnMicro?.isEnabled = true
@@ -1804,6 +1886,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                 messageInput?.requestFocus()
             }
         } finally {
+            calculateCost()
             runOnUiThread {
                 restoreUIState()
             }
@@ -1859,16 +1942,12 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
         messages[messages.size - 1]["message"] = "$response\n"
         adapter?.notifyDataSetChanged()
 
-        chatMessages.add(
-            ChatMessage(
-                role = ChatRole.Assistant,
-                content = response
-            )
-        )
+        syncChatProjection()
 
         pronounce(shouldPronounce, response)
 
         saveSettings()
+        calculateCost()
 
         btnMicro?.isEnabled = true
         btnSend?.isEnabled = true
@@ -2197,6 +2276,10 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
     private fun syncChatProjection() {
         if (chatMessages == null) chatMessages = arrayListOf()
 
+        if (chatMessages.isNotEmpty()) chatMessages.clear()
+
+        if (chatMessages == null) chatMessages = arrayListOf()
+
         for (message: HashMap<String, Any> in messages) {
             if (!message["message"].toString().contains("data:image")) {
                 if (message["isBot"] == true) {
@@ -2216,6 +2299,8 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                 }
             }
         }
+
+        calculateCost()
     }
 
     override fun onMessageEdited() {

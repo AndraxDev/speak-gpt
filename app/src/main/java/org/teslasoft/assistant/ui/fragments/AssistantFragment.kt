@@ -2265,6 +2265,8 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
 
     private fun syncChatProjection() {
         if (chatMessages == null) chatMessages = arrayListOf()
+        if (chatMessages.isNotEmpty()) chatMessages.clear()
+        if (chatMessages == null) chatMessages = arrayListOf()
 
         for (message: HashMap<String, Any> in messages) {
             if (!message["message"].toString().contains("data:image")) {
