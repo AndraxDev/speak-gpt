@@ -268,7 +268,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         refreshButton = view.findViewById(R.id.btn_reconnect)
         btnDetails = view.findViewById(R.id.btn_show_details)
         noInternetLayout = view.findViewById(R.id.no_internet)
-        progressbar = view.findViewById(R.id.progress_bar)
+        progressbar = view.findViewById(R.id.loading)
         catAll = view.findViewById(R.id.cat_all)
         catDevelopment = view.findViewById(R.id.cat_development)
         catMusic = view.findViewById(R.id.cat_music)

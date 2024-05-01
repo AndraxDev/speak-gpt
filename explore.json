@@ -1,0 +1,102 @@
+[
+  {
+    "icon": "gpt.png",
+    "name": "GPT 3.5 Turbo",
+    "desc": "GPT-3.5 Turbo is OpenAI's fastest model. It can understand and generate natural language or code, and is optimized for chat and traditional completion tasks.",
+    "owner": "OpenAI",
+    "apiEndpoint": "https://api.openai.com/v1/",
+    "apiEndpointName": "OpenAI",
+    "model": "gpt-3.5-turbo",
+    "suggestedChatName": "GPT 3.5 Turbo"
+  },
+  {
+    "icon": "gpt.png",
+    "name": "GPT 4 Turbo",
+    "desc": "GPT-4 Turbo is OpenAI latest generation model. It's more capable, has an updated knowledge cutoff of April 2023 and introduces a 128k context window (the equivalent of 300 pages of text in a single prompt). The model is also 3X cheaper for input tokens and 2X cheaper for output tokens compared to the original GPT-4 model. The maximum number of output tokens for this model is 4096.",
+    "owner": "OpenAI",
+    "apiEndpoint": "https://api.openai.com/v1/",
+    "apiEndpointName": "OpenAI",
+    "model": "gpt-4-turbo-preview",
+    "suggestedChatName": "GPT 4 Turbo"
+  },
+  {
+    "icon": "gpt.png",
+    "name": "Gemini 1.0 Pro",
+    "desc": "Google's flagship text generation model. Designed to handle natural language tasks, multiturn text and code chat, and code generation.",
+    "owner": "OpenRouter",
+    "apiEndpoint": "https://openrouter.ai/api/v1/",
+    "apiEndpointName": "OpenRouter",
+    "model": "google/gemini-pro",
+    "suggestedChatName": "Chat with Gemini"
+  },
+  {
+    "icon": "gpt.png",
+    "name": "Gemini 1.5 Pro",
+    "desc": "Google's latest multimodal model, supporting image and video in text or chat prompts. Optimized for language tasks including code generation, text generation, text editing, problem solving, recommendations, information extraction, data extraction or generation, AI agents.",
+    "owner": "OpenRouter",
+    "apiEndpoint": "https://openrouter.ai/api/v1/",
+    "apiEndpointName": "OpenRouter",
+    "model": "google/gemini-pro-1.5",
+    "suggestedChatName": "Chat with Gemini"
+  },
+  {
+    "icon": "gpt.png",
+    "name": "Perplexity Online",
+    "desc": "Sonar is Perplexity's latest model family. It surpasses their earlier models in cost-efficiency, speed, and performance. This is the online version of Sonar 8x7B. It is focused on delivering helpful, up-to-date, and factual responses.",
+    "owner": "OpenRouter",
+    "apiEndpoint": "https://openrouter.ai/api/v1/",
+    "apiEndpointName": "OpenRouter",
+    "model": "perplexity/sonar-medium-online",
+    "suggestedChatName": "Perplexity Online"
+  },
+  {
+    "icon": "gpt.png",
+    "name": "Claude 3 Opus",
+    "desc": "Claude 3 Opus is Anthropic's most powerful model for highly complex tasks. It boasts top-level performance, intelligence, fluency, and understanding.",
+    "owner": "OpenRouter",
+    "apiEndpoint": "https://openrouter.ai/api/v1/",
+    "apiEndpointName": "OpenRouter",
+    "model": "anthropic/claude-3-opus",
+    "suggestedChatName": "Claude 3 Opus"
+  },
+  {
+    "icon": "gpt.png",
+    "name": "LLama 3",
+    "desc": "Meta's latest class of model (Llama 3) launched with a variety of sizes & flavors. This 70B instruct-tuned version was optimized for high quality dialogue use cases. It has demonstrated strong performance compared to leading closed-source models in human evaluations.",
+    "owner": "OpenRouter",
+    "apiEndpoint": "https://openrouter.ai/api/v1/",
+    "apiEndpointName": "OpenRouter",
+    "model": "meta-llama/llama-3-70b-instruct",
+    "suggestedChatName": "LLama 3"
+  },
+  {
+    "icon": "gpt.png",
+    "name": "LLama 2",
+    "desc": "The flagship, 70 billion parameter language model from Meta, fine tuned for chat completions. Llama 2 is an auto-regressive language model that uses an optimized transformer architecture. The tuned versions use supervised fine-tuning (SFT) and reinforcement learning with human feedback (RLHF) to align to human preferences for helpfulness and safety.",
+    "owner": "OpenRouter",
+    "apiEndpoint": "https://openrouter.ai/api/v1/",
+    "apiEndpointName": "OpenRouter",
+    "model": "meta-llama/llama-2-70b-chat",
+    "suggestedChatName": "LLama 2"
+  },
+  {
+    "icon": "gpt.png",
+    "name": "Google Gemma",
+    "desc": "Gemma by Google is an advanced, open-source language model family, leveraging the latest in decoder-only, text-to-text technology. It offers English language capabilities across text generation tasks like question answering, summarization, and reasoning. The Gemma 7B variant is comparable in performance to leading open source models.",
+    "owner": "OpenRouter",
+    "apiEndpoint": "https://openrouter.ai/api/v1/",
+    "apiEndpointName": "OpenRouter",
+    "model": "google/gemma-7b-it",
+    "suggestedChatName": "Google Gemma"
+  },
+  {
+    "icon": "gpt.png",
+    "name": "Mistral Large",
+    "desc": "This is Mistral AI's closed-source, flagship model. It's powered by a closed-source prototype and excels at reasoning, code, JSON, chat, and more.",
+    "owner": "OpenRouter",
+    "apiEndpoint": "https://openrouter.ai/api/v1/",
+    "apiEndpointName": "OpenRouter",
+    "model": "mistralai/mistral-large",
+    "suggestedChatName": "Mistral Large"
+  }
+]
