@@ -1697,14 +1697,22 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 url.openStream()
             }
 
-            Thread {
+            var path = ""
+
+            val th = Thread {
                 val bytes: ByteArray = org.apache.commons.io.IOUtils.toByteArray(`is`)
 
                 writeImageToCache(bytes)
 
                 val encoded = Base64.getEncoder().encodeToString(bytes)
 
-                val path = "data:image/png;base64,$encoded"
+                path = "data:image/png;base64,$encoded"
+            }
+
+            th.start()
+
+            withContext(Dispatchers.IO) {
+                th.join()
 
                 (mContext as Activity?)?.runOnUiThread {
                     putMessage(path, true)
@@ -1724,7 +1732,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                     assistantLoading?.visibility = View.GONE
                     isProcessing = false
                 }
-            }.start()
+            }
         } catch (e: CancellationException) {
             (mContext as Activity?)?.runOnUiThread {
                 restoreUIState()

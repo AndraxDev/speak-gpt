@@ -27,15 +27,23 @@ import android.content.res.Configuration
 import android.content.res.Configuration.KEYBOARD_QWERTY
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
+import android.graphics.Rect
+import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.os.StrictMode
 import android.provider.DocumentsContract
+import android.provider.MediaStore
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
@@ -43,6 +51,7 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.Voice
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Base64
 import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
@@ -61,9 +70,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
+import com.aallam.ktoken.Encoding
+import com.aallam.ktoken.Tokenizer
 import com.aallam.openai.api.audio.SpeechRequest
 import com.aallam.openai.api.audio.TranscriptionRequest
 import com.aallam.openai.api.chat.ChatCompletion
@@ -71,11 +83,15 @@ import com.aallam.openai.api.chat.ChatCompletionChunk
 import com.aallam.openai.api.chat.ChatCompletionRequest
 import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatRole
+import com.aallam.openai.api.chat.ContentPart
 import com.aallam.openai.api.chat.FunctionMode
+import com.aallam.openai.api.chat.ImagePart
 import com.aallam.openai.api.chat.Parameters
+import com.aallam.openai.api.chat.TextPart
 import com.aallam.openai.api.chat.chatCompletionRequest
 import com.aallam.openai.api.completion.CompletionRequest
 import com.aallam.openai.api.completion.TextCompletion
+import com.aallam.openai.api.core.Role
 import com.aallam.openai.api.file.FileSource
 import com.aallam.openai.api.http.Timeout
 import com.aallam.openai.api.image.ImageCreation
@@ -94,9 +110,12 @@ import com.google.android.material.elevation.SurfaceColors
 import com.google.gson.Gson
 import com.google.mlkit.nl.languageid.LanguageIdentification
 import com.google.mlkit.nl.languageid.LanguageIdentifier
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.add
@@ -108,14 +127,22 @@ import okio.FileSystem
 import okio.Path.Companion.toPath
 import org.jetbrains.annotations.TestOnly
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.ApiEndpointPreferences
 import org.teslasoft.assistant.preferences.ChatPreferences
+import org.teslasoft.assistant.preferences.GlobalPreferences
+import org.teslasoft.assistant.preferences.LogitBiasPreferences
 import org.teslasoft.assistant.preferences.Preferences
+import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
+import org.teslasoft.assistant.ui.adapters.AbstractChatAdapter
 import org.teslasoft.assistant.ui.adapters.ChatAdapter
+import org.teslasoft.assistant.ui.fragments.dialogs.QuickSettingsBottomSheetDialogFragment
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
+import org.teslasoft.assistant.ui.permission.CameraPermissionActivity
 import org.teslasoft.assistant.ui.permission.MicrophonePermissionActivity
 import org.teslasoft.assistant.util.Hash
 import org.teslasoft.assistant.util.LocaleParser
 import java.io.BufferedReader
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
@@ -124,35 +151,8 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.net.URL
 import java.util.Locale
-import kotlin.time.Duration.Companion.seconds
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.PorterDuffXfermode
-import android.graphics.Rect
-import android.graphics.RectF
-import android.graphics.PorterDuff
-import android.os.Environment
-import android.provider.MediaStore
-import android.util.Base64
-import androidx.core.content.FileProvider
-import com.aallam.ktoken.Encoding
-import com.aallam.ktoken.Tokenizer
-import com.aallam.openai.api.chat.ContentPart
-import com.aallam.openai.api.chat.ImagePart
-import com.aallam.openai.api.chat.TextPart
-import com.aallam.openai.api.core.Role
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.isActive
-import org.teslasoft.assistant.preferences.GlobalPreferences
-import org.teslasoft.assistant.ui.permission.CameraPermissionActivity
-import java.io.ByteArrayOutputStream
-import kotlinx.coroutines.CancellationException
-import org.teslasoft.assistant.preferences.ApiEndpointPreferences
-import org.teslasoft.assistant.preferences.LogitBiasPreferences
-import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
-import org.teslasoft.assistant.ui.adapters.AbstractChatAdapter
-import org.teslasoft.assistant.ui.fragments.dialogs.QuickSettingsBottomSheetDialogFragment
 import kotlin.coroutines.coroutineContext
+import kotlin.time.Duration.Companion.seconds
 
 
 class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
@@ -2166,15 +2166,20 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
             val `is` = withContext(Dispatchers.IO) {
                 url.openStream()
             }
-            Thread {
+            var file = ""
+            val th = Thread {
                 val bytes: ByteArray = org.apache.commons.io.IOUtils.toByteArray(`is`)
 
                 writeImageToCache(bytes)
 
                 val encoded = java.util.Base64.getEncoder().encodeToString(bytes)
 
-                val file = Hash.hash(encoded)
+                file = Hash.hash(encoded)
+            }
 
+            th.start()
+            withContext(Dispatchers.IO) {
+                th.join()
                 runOnUiThread {
                     putMessage("~file:$file", true)
 
@@ -2194,7 +2199,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
 
                     messageInput?.requestFocus()
                 }
-            }.start()
+            }
         } catch (e: CancellationException) {
             runOnUiThread {
                 restoreUIState()
