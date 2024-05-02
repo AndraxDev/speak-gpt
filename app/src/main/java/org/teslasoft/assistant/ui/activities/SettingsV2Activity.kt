@@ -66,6 +66,7 @@ import org.teslasoft.assistant.ui.fragments.TileFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.ActivationPromptDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.AdvancedSettingsDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.ApiKeyDialog
+import org.teslasoft.assistant.ui.fragments.dialogs.CustomizeAssistantDialog
 import org.teslasoft.assistant.ui.fragments.dialogs.HostnameEditorDialog
 import org.teslasoft.assistant.ui.fragments.dialogs.LanguageSelectorDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.SelectResolutionFragment
@@ -120,6 +121,7 @@ class SettingsV2Activity : FragmentActivity() {
     private var tileDocumentation: TileFragment? = null
     private var tileAmoledMode: TileFragment? = null
     private var tileLockAssistantWindow: TileFragment? = null
+    private var tileCustomize: TileFragment? = null
     private var tileDeleteData: TileFragment? = null
     private var tileSendDiagnosticData: TileFragment? = null
     private var tileRevokeAuthorization: TileFragment? = null
@@ -228,6 +230,21 @@ class SettingsV2Activity : FragmentActivity() {
 
             tileVoice?.updateSubtitle(voice)
         }
+
+    private var customizeAssistantDialogListener: CustomizeAssistantDialog.CustomizeAssistantDialogListener = object : CustomizeAssistantDialog.CustomizeAssistantDialogListener {
+        override fun onEdit(assistantName: String, avatarType: String, avatarId: String) {
+            preferences?.setAssistantName(assistantName)
+            preferences?.setAvatarType(avatarType)
+            preferences?.setAvatarId(avatarId)
+        }
+
+        override fun onError(assistantName: String, avatarType: String, avatarId: String, error: String, dialog: CustomizeAssistantDialog) {
+            Toast.makeText(this@SettingsV2Activity, error, Toast.LENGTH_SHORT).show()
+            dialog.show(supportFragmentManager.beginTransaction(), "CustomizeAssistantDialog")
+        }
+
+        override fun onCancel() { /* unused */ }
+    }
 
     private var apiChangedListener: ApiKeyDialog.StateChangesListener = object : ApiKeyDialog.StateChangesListener {
         override fun onSelected(name: String) {
@@ -801,6 +818,19 @@ class SettingsV2Activity : FragmentActivity() {
                 "This feature allows you to lock assistant window. When assistant window is locked, it can not be closed by pressing back button or swiping window down. But you can use 'exit' button. This feature can prevent accidental closing of assistant window and losing unsaved conversation."
             )
 
+            tileCustomize = TileFragment.newInstance(
+                false,
+                false,
+                "Customize Assistant",
+                null,
+                "Customize Assistant",
+                null,
+                R.drawable.ic_experiment,
+                false,
+                chatId,
+                "This feature allows you change assistant's name and avatar for individual chat or globally."
+            )
+
             tileDeleteData = TileFragment.newInstance(
                 false,
                 false,
@@ -975,6 +1005,7 @@ class SettingsV2Activity : FragmentActivity() {
             .replace(R.id.tile_new_look, tileNewLook!!)
             .replace(R.id.tile_amoled_mode, tileAmoledMode!!)
             .replace(R.id.tile_lock_assistant, tileLockAssistantWindow!!)
+            .replace(R.id.tile_customize, tileCustomize!!)
             .replace(R.id.tile_chats_autosave, tileChatsAutoSave!!)
             .replace(R.id.tile_about_app, tileAboutApp!!)
             .replace(R.id.tile_clear_chat, tileClearChat!!)
@@ -1419,6 +1450,12 @@ class SettingsV2Activity : FragmentActivity() {
             } else {
                 preferences?.setShowChatErrors(false)
             }
+        }
+
+        tileCustomize?.setOnTileClickListener {
+            val customizeAssistantDialogFragment: CustomizeAssistantDialog = CustomizeAssistantDialog.newInstance(chatId, preferences?.getAssistantName() ?: "", preferences?.getAvatarType() ?: "", preferences?.getAvatarId() ?: "")
+            customizeAssistantDialogFragment.setCustomizeAssistantDialogListener(customizeAssistantDialogListener)
+            customizeAssistantDialogFragment.show(supportFragmentManager.beginTransaction(), "CustomizeAssistantDialog")
         }
     }
 

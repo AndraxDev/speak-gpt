@@ -566,6 +566,61 @@ class Preferences private constructor(private var preferences: SharedPreferences
         putString("prompt", prompt)
     }
 
+
+    /**
+     * Sets the assistant name in the shared preferences.
+     *
+     * @param name The assistant name value to be stored.
+     */
+    fun setAssistantName(name: String) {
+        putString("assistant_name", name)
+    }
+
+    /**
+     * Retrieves the assistant name from the shared preferences.
+     *
+     * @return The assistant name value or "Assistant" if not found.
+     */
+    fun getAssistantName() : String {
+        return getString("assistant_name", "SpeakGPT")
+    }
+
+    /**
+     * Sets the avatar type in the shared preferences.
+     *
+     * @param type The avatar value (file/builtin/url) to be stored.
+     */
+    fun setAvatarType(type: String) {
+        putString("avatar_type", type)
+    }
+
+    /**
+     * Retrieves the avatar type from the shared preferences.
+     *
+     * @return The avatar type value or "Assistant" if not found.
+     */
+    fun getAvatarType() : String {
+        return getString("avatar_type", "builtin")
+    }
+
+    /**
+     * Sets the avatar Id in the shared preferences.
+     *
+     * @param id The avatar Id value to be stored.
+     */
+    fun setAvatarId(id: String) {
+        putString("avatar_id", id)
+    }
+
+    /**
+     * Retrieves the avatar Id from the shared preferences.
+     *
+     * @return The avatar Id value or "speakgpt" if not found.
+     */
+    fun getAvatarId() : String {
+        return getString("avatar_id", "speakgpt")
+    }
+
     /**
      * Retrieves the language from the shared preferences.
      *

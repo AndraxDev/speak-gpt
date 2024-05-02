@@ -33,11 +33,11 @@ import org.teslasoft.assistant.R
 
 class CustomizeAssistantDialog : DialogFragment() {
     companion object {
-        fun newInstance(isEdit: Boolean, name: String, avatarType: String, avatarId: String) : CustomizeAssistantDialog {
+        fun newInstance(chatId: String, name: String, avatarType: String, avatarId: String) : CustomizeAssistantDialog {
             val customizeAssistantDialog = CustomizeAssistantDialog()
 
             val args = Bundle()
-            args.putBoolean("isEdit", isEdit)
+            args.putString("chatId", chatId)
             args.putString("name", name)
             args.putString("avatarType", avatarType)
             args.putString("avatarId", avatarId)
@@ -59,6 +59,12 @@ class CustomizeAssistantDialog : DialogFragment() {
     private var btnView5: ImageButton? = null
     private var btnSelectFile: MaterialButton? = null
     private var previewFile: ImageView? = null
+
+    private var listener: CustomizeAssistantDialogListener? = null
+
+    fun setCustomizeAssistantDialogListener(listener: CustomizeAssistantDialogListener) {
+        this.listener = listener
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_customize, container, false)
@@ -85,5 +91,11 @@ class CustomizeAssistantDialog : DialogFragment() {
             .setNegativeButton("Cancel") { _, _ ->  }
 
         return builder!!.create()
+    }
+
+    interface CustomizeAssistantDialogListener {
+        fun onEdit(assistantName: String, avatarType: String, avatarId: String)
+        fun onError(assistantName: String, avatarType: String, avatarId: String, error: String, dialog: CustomizeAssistantDialog)
+        fun onCancel()
     }
 }
