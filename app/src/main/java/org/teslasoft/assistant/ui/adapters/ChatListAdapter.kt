@@ -145,7 +145,7 @@ class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragme
         }
 
         selector.setOnLongClickListener {
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(dataArray?.get(position)?.get("name").toString(), false, false, false)
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(true, dataArray?.get(position)?.get("name").toString(), false, false, false, "", "")
             chatDialogFragment.setStateChangedListener((mContext as ChatsListFragment).chatListUpdatedListener)
             chatDialogFragment.show(mContext.parentFragmentManager.beginTransaction(), "AddChatDialog")
 

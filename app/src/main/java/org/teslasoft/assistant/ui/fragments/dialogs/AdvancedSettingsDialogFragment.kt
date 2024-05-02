@@ -77,7 +77,6 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
     private var topPSeekbar: com.google.android.material.slider.Slider? = null
     private var frequencyPenaltySeekbar: com.google.android.material.slider.Slider? = null
     private var presencePenaltySeekbar: com.google.android.material.slider.Slider? = null
-    private var favoriteModelsPreferences: FavoriteModelsPreferences? = null
 
     private var listener: StateChangesListener? = null
 
@@ -424,6 +423,10 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
         see_all_models?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
         see_all_models?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
+
+        see_favorite_models?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
+        see_favorite_models?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
 
         gpt_35_turbo?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())

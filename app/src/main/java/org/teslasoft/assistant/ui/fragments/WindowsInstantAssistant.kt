@@ -175,7 +175,7 @@ class WindowsInstantAssistant : Fragment() {
         override fun onError(fromFile: Boolean) {
             Toast.makeText(requireActivity(), "Please fill name field", Toast.LENGTH_SHORT).show()
 
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false, true, true)
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, true, true, "", "")
             chatDialogFragment.setStateChangedListener(this)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -191,7 +191,7 @@ class WindowsInstantAssistant : Fragment() {
         override fun onDuplicate() {
             Toast.makeText(requireActivity(), "Name must be unique", Toast.LENGTH_SHORT).show()
 
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false, true, true)
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, true, true, "", "")
             chatDialogFragment.setStateChangedListener(this)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -1374,7 +1374,7 @@ class WindowsInstantAssistant : Fragment() {
                 parseMessage((v as EditText).text.toString())
                 return@run true
             } else if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_S && event.isCtrlPressed) {
-                val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false, true, true)
+                val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, true, true, "", "")
                 chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
                 chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
                 return@run true
@@ -1386,7 +1386,7 @@ class WindowsInstantAssistant : Fragment() {
         }}
 
         btnSaveToChat?.setOnClickListener {
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false, true, true)
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, true, true, "", "")
             chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }

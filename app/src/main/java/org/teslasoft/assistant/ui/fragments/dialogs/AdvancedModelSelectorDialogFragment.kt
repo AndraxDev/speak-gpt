@@ -16,7 +16,9 @@
 
 package org.teslasoft.assistant.ui.fragments.dialogs
 
+import android.app.Activity
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -26,7 +28,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import com.aallam.openai.api.http.Timeout
 import com.aallam.openai.api.logging.LogLevel
@@ -85,6 +86,7 @@ class AdvancedModelSelectorDialogFragment : DialogFragment() {
     private var modelListAdapter: ModelListAdapter? = null
 
     private var availableModels: ArrayList<String> = arrayListOf()
+
     private var availableModelsProjection: ArrayList<String> = arrayListOf()
 
     private var progressBar: ProgressBar? = null
@@ -97,9 +99,23 @@ class AdvancedModelSelectorDialogFragment : DialogFragment() {
 
     private var fieldSearch: TextInputEditText? = null
 
+    private var mContext: Context? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        mContext = context
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+
+        mContext = null
+    }
+
     private var modelSelectedListener: ModelListAdapter.OnItemClickListener = object : ModelListAdapter.OnItemClickListener {
         override fun onItemClick(model: String) {
-            val preferences = Preferences.getPreferences(requireActivity(), requireArguments().getString("chatId").toString())
+            val preferences = Preferences.getPreferences(mContext ?: return, requireArguments().getString("chatId").toString())
 
             preferences.setModel(model)
             modelListAdapter?.notifyDataSetChanged()
@@ -109,7 +125,7 @@ class AdvancedModelSelectorDialogFragment : DialogFragment() {
 
         override fun onActionClick(model: String, endpointId: String, position: Int) {
             val m = FavoriteModelObject(model, endpointId)
-            Toast.makeText(requireActivity(), "Added to favorites", Toast.LENGTH_SHORT).show()
+            Toast.makeText(mContext ?: return, "Added to favorites", Toast.LENGTH_SHORT).show()
             favoriteModelsPreferences?.addFavoriteModel(m)
         }
     }
@@ -166,6 +182,10 @@ class AdvancedModelSelectorDialogFragment : DialogFragment() {
         progressBar = view.findViewById(R.id.progressBar)
         fieldSearch = view.findViewById(R.id.field_search_text)
 
+        builder!!.setView(view)
+            .setCancelable(false)
+            .setNegativeButton(android.R.string.cancel, null)
+
         fieldSearch?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { /* unused */ }
 
@@ -180,10 +200,10 @@ class AdvancedModelSelectorDialogFragment : DialogFragment() {
 
         progressBar?.visibility = View.VISIBLE
 
-        preferences = Preferences.getPreferences(requireActivity(), requireArguments().getString("chatId").toString())
-        apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(requireActivity())
-        apiEndpointObject = apiEndpointPreferences?.getApiEndpoint(requireActivity(), preferences?.getApiEndpointId()!!)
-        favoriteModelsPreferences = FavoriteModelsPreferences.getPreferences(requireActivity())
+        preferences = Preferences.getPreferences(mContext ?: return builder!!.create(), requireArguments().getString("chatId").toString())
+        apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(mContext ?: return builder!!.create())
+        apiEndpointObject = apiEndpointPreferences?.getApiEndpoint(mContext ?: return builder!!.create(), preferences?.getApiEndpointId()!!)
+        favoriteModelsPreferences = FavoriteModelsPreferences.getPreferences(mContext ?: return builder!!.create())
 
         val config = OpenAIConfig(
             token = apiEndpointObject?.apiKey!!,
@@ -217,15 +237,11 @@ class AdvancedModelSelectorDialogFragment : DialogFragment() {
                 modelListAdapter?.notifyDataSetChanged()
                 progressBar?.visibility = View.GONE
             } catch (e: Exception) {
-                requestNetwork = RequestNetwork(requireActivity())
+                requestNetwork = RequestNetwork((mContext as Activity?) ?: return@launch)
                 requestNetwork?.setHeaders(hashMapOf("Authorization" to "Bearer " + apiEndpointObject?.apiKey))
                 requestNetwork?.startRequestNetwork("GET", apiEndpointObject?.host + "models", "A", requestListener)
             }
         }
-
-        builder!!.setView(view)
-            .setCancelable(false)
-            .setNegativeButton(android.R.string.cancel, null)
 
         return builder!!.create()
     }

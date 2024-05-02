@@ -14,11 +14,12 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/btn_accent_tonal_selector_v8"
-        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <ImageView
             android:id="@+id/set_icon"
@@ -36,7 +37,7 @@
             android:id="@+id/set_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="GPT 4 Turbo"
+            android:text="%name%"
             android:textColor="@color/accent_900"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -51,49 +52,86 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="12dp"
             android:layout_marginEnd="16dp"
-            android:text="GPT-4 Turbo is OpenAI latest generation model. It’s more capable, has an updated knowledge cutoff of April 2023 and introduces a 128k context window (the equivalent of 300 pages of text in a single prompt). The model is also 3X cheaper for input tokens and 2X cheaper for output tokens compared to the original GPT-4 model. The maximum number of output tokens for this model is 4096."
+            android:text="%desc%"
             android:textColor="@color/text"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/set_name" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_create_chat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="12dp"
-            android:text="Create chat"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/btn_use_globally" />
-
         <TextView
             android:id="@+id/set_owner"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="2dp"
             android:layout_marginEnd="16dp"
-            android:background="@drawable/btn_accent_tonal_selector"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="8dp"
-            android:text="Provided by: OpenAI"
-            android:textColor="@color/text"
+            android:text="Provided by: %apiProvider%"
+            android:textColor="@color/text_subtitle"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/set_description" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/set_model" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_use_globally"
+            android:id="@+id/btn_get_api_key"
             style="@style/Widget.Material3.Button.TonalButton"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="12dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="12dp"
-            android:text="Use globally"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_create_chat"
+            android:text="Get API key"
+            app:icon="@drawable/ic_open_in_browser"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/set_owner" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout28"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="12dp"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_get_api_key">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_use_globally"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:text="Use globally" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_create_chat"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:text="Start a chat" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/set_model"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            android:text="AI model: %model%"
+            android:textColor="@color/text_subtitle"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/set_description" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

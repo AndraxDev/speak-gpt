@@ -42,14 +42,17 @@ import org.teslasoft.assistant.util.Hash
 class AddChatDialogFragment : DialogFragment() {
 
     companion object {
-        fun newInstance(name: String, fromFile: Boolean, disableAutoName: Boolean, saveChat: Boolean) : AddChatDialogFragment {
+        fun newInstance(isEdit: Boolean, name: String, fromFile: Boolean, disableAutoName: Boolean, saveChat: Boolean, endpointId: String, model: String) : AddChatDialogFragment {
             val addChatDialogFragment = AddChatDialogFragment()
 
             val args = Bundle()
+            args.putBoolean("isEdit", isEdit)
             args.putString("name", name)
             args.putBoolean("fromFile", fromFile)
             args.putBoolean("disableAutoName", disableAutoName)
             args.putBoolean("saveChat", saveChat)
+            args.putString("endpointId", endpointId)
+            args.putString("model", model)
 
             addChatDialogFragment.arguments = args
 
@@ -97,7 +100,7 @@ class AddChatDialogFragment : DialogFragment() {
 
         val dialogTitle: TextView = view.findViewById(R.id.dialog_title)
 
-        if (requireArguments().getString("name") != "") {
+        if (requireArguments().getBoolean("isEdit")) {
             dialogTitle.text = requireActivity().resources.getString(R.string.title_edit_chat)
 
             nameInput?.setText(requireArguments().getString("name"))
@@ -114,7 +117,13 @@ class AddChatDialogFragment : DialogFragment() {
         } else {
             dialogTitle.text = requireActivity().resources.getString(R.string.title_new_chat)
 
-            nameInput?.setText("New chat ${chatPreferences?.getAvailableChatId(requireActivity())}")
+            if (requireArguments().getString("name") != "") {
+                var n = chatPreferences?.getAvailableChatId(requireActivity()).toString()
+                if (n == "1") n = "" else n = " $n"
+                nameInput?.setText("${requireArguments().getString("name")}$n")
+            } else {
+                nameInput?.setText("New chat ${chatPreferences?.getAvailableChatId(requireActivity())}")
+            }
 
             autoName?.setOnCheckedChangeListener { _, isChecked -> run {
                 nameInput?.isEnabled = !isChecked
@@ -184,7 +193,7 @@ class AddChatDialogFragment : DialogFragment() {
             // Write settings
             val resolution = preferences.getResolution()
             val speech = preferences.getAudioModel()
-            val model = preferences.getModel()
+            val model = if (requireArguments().getString("model") != "") requireArguments().getString("model") else preferences.getModel()
             val maxTokens = preferences.getMaxTokens()
             val prefix = preferences.getPrefix()
             val endSeparator = preferences.getEndSeparator()
@@ -200,7 +209,7 @@ class AddChatDialogFragment : DialogFragment() {
             val dalleVersion = preferences.getDalleVersion()
             val opeAIVoice: String = preferences.getOpenAIVoice()
             val voice: String = preferences.getVoice()
-            val apiEndpointId = preferences.getApiEndpointId()
+            val apiEndpointId = if (requireArguments().getString("endpointId") != "") requireArguments().getString("endpointId") else preferences.getApiEndpointId()
             val logitBiasConfigId = preferences.getLogitBiasesConfigId()
             val temperature = preferences.getTemperature()
             val topP = preferences.getTopP()
@@ -212,7 +221,7 @@ class AddChatDialogFragment : DialogFragment() {
             newPreferences.setPreferences(Hash.hash(chatName), requireActivity())
             newPreferences.setResolution(resolution)
             newPreferences.setAudioModel(speech)
-            newPreferences.setModel(model)
+            newPreferences.setModel(model!!)
             newPreferences.setMaxTokens(maxTokens)
             newPreferences.setPrefix(prefix)
             newPreferences.setEndSeparator(endSeparator)
@@ -228,7 +237,7 @@ class AddChatDialogFragment : DialogFragment() {
             newPreferences.setDalleVersion(dalleVersion)
             newPreferences.setOpenAIVoice(opeAIVoice)
             newPreferences.setVoice(voice)
-            newPreferences.setApiEndpointId(apiEndpointId)
+            newPreferences.setApiEndpointId(apiEndpointId!!)
             newPreferences.setLogitBiasesConfigId(logitBiasConfigId)
             newPreferences.setTemperature(temperature)
             newPreferences.setTopP(topP)

@@ -17,7 +17,6 @@
 package org.teslasoft.assistant.ui.fragments.tabs
 
 import android.app.Activity
-import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -28,6 +27,7 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.button.MaterialButton
@@ -36,11 +36,18 @@ import com.google.android.material.elevation.SurfaceColors
 import com.google.gson.Gson
 import org.teslasoft.assistant.Config
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.ApiEndpointPreferences
+import org.teslasoft.assistant.preferences.Preferences
+import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
+import org.teslasoft.assistant.ui.activities.ChatActivity
 import org.teslasoft.assistant.ui.activities.TipsActivity
 import org.teslasoft.assistant.ui.adapters.AISetAdapter
+import org.teslasoft.assistant.ui.fragments.dialogs.AddChatDialogFragment
+import org.teslasoft.assistant.ui.fragments.dialogs.EditApiEndpointDialogFragment
+import org.teslasoft.assistant.util.Hash
 import org.teslasoft.core.api.network.RequestNetwork
 
-class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetAdapter.OnInteractionListener {
     private var mContext: Context? = null
 
     private var btnTips: ImageButton? = null
@@ -54,6 +61,8 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private var btnRetry: MaterialButton? = null
     private var btnErrorDetails: MaterialButton? = null
     private var noInternet: LinearLayout? = null
+    private var apiEndpointPreferences: ApiEndpointPreferences? = null
+    private var preferences: Preferences? = null
 
     private var error = ""
 
@@ -63,6 +72,8 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             refreshLayout?.isRefreshing = false
             loading?.visibility = View.GONE
             noInternet?.visibility = View.GONE
+            setsList?.visibility = View.VISIBLE
+            refreshLayout?.visibility = View.VISIBLE
             val gson = Gson()
 
             try {
@@ -75,6 +86,8 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             } catch (e: Exception) {
                 error = e.message ?: "Unknown error"
                 noInternet?.visibility = View.VISIBLE
+                setsList?.visibility = View.GONE
+                refreshLayout?.visibility = View.GONE
             }
         }
 
@@ -83,6 +96,8 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             noInternet?.visibility = View.VISIBLE
             refreshLayout?.isRefreshing = false
             loading?.visibility = View.GONE
+            setsList?.visibility = View.GONE
+            refreshLayout?.visibility = View.GONE
         }
     }
 
@@ -113,6 +128,9 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         btnErrorDetails = view.findViewById(R.id.btn_show_details)
         noInternet = view.findViewById(R.id.no_internet)
 
+        preferences = Preferences.getPreferences(mContext ?: return, "")
+        apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(mContext ?: return)
+
         refreshLayout?.setColorSchemeResources(R.color.accent_900)
         refreshLayout?.setProgressBackgroundColorSchemeColor(
             SurfaceColors.SURFACE_2.getColor(mContext ?: return)
@@ -127,6 +145,7 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         aiSets = arrayListOf()
 
         setsAdapter = AISetAdapter(mContext ?: return, aiSets)
+        setsAdapter?.setOnInteractionListener(this)
 
         setsList?.adapter = setsAdapter
 
@@ -160,5 +179,104 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     override fun onRefresh() {
         runRequest()
+    }
+
+    override fun onUseGloballyClick(model: String, endpointUrl: String, endpointName: String) {
+        performAction(model, endpointUrl, endpointName, "") { en, _, m ->
+            setGlobally(en, "", m)
+        }
+    }
+
+    override fun onCreateChatClick(model: String, endpointUrl: String, endpointName: String, suggestedChatName: String) {
+        performAction(model, endpointUrl, endpointName, suggestedChatName) { en, scn, m ->
+            createChat(en, scn, m)
+        }
+    }
+
+    override fun onGetApiKeyClicked(apiKeyUrl: String) {
+        val i = Intent().setAction(Intent.ACTION_VIEW)
+        i.data = android.net.Uri.parse(apiKeyUrl)
+        startActivity(i)
+    }
+
+    private fun setGlobally(endpointName: String, suggestedChatName: String, model: String) {
+        preferences?.setApiEndpointId(Hash.hash(endpointName))
+        preferences?.setModel(model)
+        Toast.makeText(mContext, "API endpoint set globally", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun createChat(endpointName: String, suggestedChatName: String, model: String) {
+        val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, suggestedChatName, false, true, true, Hash.hash(endpointName), model)
+        chatDialogFragment.setStateChangedListener(object : AddChatDialogFragment.StateChangesListener {
+            override fun onAdd(name: String, id: String, fromFile: Boolean) {
+                val i = Intent(
+                    mContext ?: return,
+                    ChatActivity::class.java
+                ).setAction(Intent.ACTION_VIEW)
+
+                i.putExtra("name", name)
+                i.putExtra("chatId", id)
+
+                startActivity(i)
+            }
+
+            override fun onEdit(name: String, id: String) {
+                val i = Intent(
+                    mContext ?: return,
+                    ChatActivity::class.java
+                ).setAction(Intent.ACTION_VIEW)
+
+                i.putExtra("name", name)
+                i.putExtra("chatId", id)
+
+                startActivity(i)
+            }
+
+            override fun onError(fromFile: Boolean) {
+                chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
+            }
+
+            override fun onCanceled() {
+                /* unused */
+            }
+
+            override fun onDelete() {
+                /* unused */
+            }
+
+            override fun onDuplicate() {
+                /* unused */
+            }
+        })
+        chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
+    }
+
+    private fun performAction(model: String, endpointUrl: String, endpointName: String, suggestedChatName: String, function: (endpointName: String, suggestedChatName: String, model: String) -> Unit) {
+        val apiObject = apiEndpointPreferences?.getApiEndpointByUrlOrNull(mContext ?: return, endpointUrl)
+
+        if (apiObject != null) {
+            function(apiObject.label, suggestedChatName, model)
+        } else {
+            val apiEndpointDialog: EditApiEndpointDialogFragment = EditApiEndpointDialogFragment.newInstance(endpointName, endpointUrl, "", -1)
+            apiEndpointDialog.setListener(object : EditApiEndpointDialogFragment.StateChangesListener {
+                override fun onAdd(apiEndpoint: ApiEndpointObject) {
+                    apiEndpointPreferences?.setApiEndpoint(mContext ?: return, apiEndpoint)
+                    function(apiEndpoint.label, suggestedChatName, model)
+                }
+
+                override fun onEdit(oldLabel: String, apiEndpoint: ApiEndpointObject, position: Int) {
+                    /* unused */
+                }
+
+                override fun onDelete(position: Int, id: String) {
+                    /* unused */
+                }
+
+                override fun onError(message: String, position: Int) {
+                    apiEndpointDialog.show(parentFragmentManager, "EditApiEndpointDialogFragment")
+                }
+            })
+            apiEndpointDialog.show(parentFragmentManager, "EditApiEndpointDialogFragment")
+        }
     }
 }

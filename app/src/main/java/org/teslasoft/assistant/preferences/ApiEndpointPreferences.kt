@@ -113,6 +113,16 @@ class ApiEndpointPreferences private constructor(private var preferences: Shared
         return list
     }
 
+    fun getApiEndpointByUrlOrNull(context: Context, url: String): ApiEndpointObject? {
+        val list = getApiEndpointsList(context)
+        for (endpoint in list) {
+            if (endpoint.host == url) {
+                return endpoint
+            }
+        }
+        return null
+    }
+
     fun interface OnApiEndpointChangeListener {
         fun onApiEndpointChange()
     }

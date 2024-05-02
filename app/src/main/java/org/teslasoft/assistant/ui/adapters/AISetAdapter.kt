@@ -18,6 +18,7 @@ package org.teslasoft.assistant.ui.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +26,12 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.button.MaterialButton
+import org.teslasoft.assistant.Config
 import org.teslasoft.assistant.R
 
 class AISetAdapter(private val mContext: Context, private val dataArray: ArrayList<Map<String, String>>) : BaseAdapter() {
@@ -35,8 +41,16 @@ class AISetAdapter(private val mContext: Context, private val dataArray: ArrayLi
     private var setName: TextView? = null
     private var setDescription: TextView? = null
     private var setOwner: TextView? = null
+    private var setModel: TextView? = null
     private var btnUseGlobally: MaterialButton? = null
     private var btnCreateChat: MaterialButton? = null
+    private var btnGetApiKey: MaterialButton? = null
+
+    private var listener: OnInteractionListener? = null
+
+    fun setOnInteractionListener(listener: OnInteractionListener) {
+        this.listener = listener
+    }
 
     override fun getCount(): Int {
         return dataArray.size
@@ -65,21 +79,44 @@ class AISetAdapter(private val mContext: Context, private val dataArray: ArrayLi
         setName = mView?.findViewById(R.id.set_name)
         setDescription = mView?.findViewById(R.id.set_description)
         setOwner = mView?.findViewById(R.id.set_owner)
+        setModel = mView?.findViewById(R.id.set_model)
         btnUseGlobally = mView?.findViewById(R.id.btn_use_globally)
         btnCreateChat = mView?.findViewById(R.id.btn_create_chat)
+        btnGetApiKey = mView?.findViewById(R.id.btn_get_api_key)
 
         setName?.text = dataArray[position]["name"]
         setDescription?.text = dataArray[position]["desc"]
         setOwner?.text = "Provided by: ${dataArray[position]["owner"]}"
+        setModel?.text = "AI Model: ${dataArray[position]["model"]}"
+
+        val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(dpToPx(28f).toInt()))
+        Glide.with(mContext)
+            .load("https://" + Config.API_SERVER_NAME + "/api/v1/exp/" + dataArray[position]["icon"])
+            .apply(requestOptions)
+            .into(setIcon!!)
 
         btnCreateChat?.setOnClickListener {
-            // Create a chat
+            listener?.onCreateChatClick(dataArray[position]["model"] ?: "", dataArray[position]["apiEndpoint"] ?: "", dataArray[position]["apiEndpointName"] ?: "", dataArray[position]["suggestedChatName"] ?: "")
         }
 
         btnUseGlobally?.setOnClickListener {
-            // Use globally
+            listener?.onUseGloballyClick(dataArray[position]["model"] ?: "", dataArray[position]["apiEndpoint"] ?: "", dataArray[position]["apiEndpointName"] ?: "")
+        }
+
+        btnGetApiKey?.setOnClickListener {
+            listener?.onGetApiKeyClicked(dataArray[position]["apiKeyUrl"] ?: "")
         }
 
         return mView!!
+    }
+
+    interface OnInteractionListener {
+        fun onUseGloballyClick(model: String, endpointUrl: String, endpointName: String)
+        fun onCreateChatClick(model: String, endpointUrl: String, endpointName: String, suggestedChatName: String)
+        fun onGetApiKeyClicked(apiKeyUrl: String)
+    }
+
+    private fun dpToPx(dp: Float): Float {
+        return dp * mContext.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT
     }
 }

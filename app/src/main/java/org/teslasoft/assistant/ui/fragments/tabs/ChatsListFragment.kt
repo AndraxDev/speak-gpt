@@ -124,7 +124,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
         override fun onError(fromFile: Boolean) {
             Toast.makeText(mContext ?: return, "Please fill name field", Toast.LENGTH_SHORT).show()
 
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", fromFile, false, false)
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", fromFile, false, false, "", "")
             chatDialogFragment.setStateChangedListener(this)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -140,7 +140,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
         override fun onDuplicate() {
             Toast.makeText(mContext ?: return, "Name must be unique", Toast.LENGTH_SHORT).show()
 
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false, false, false)
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, false, false, "", "")
             chatDialogFragment.setStateChangedListener(this)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -229,7 +229,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
         }
 
         btnAdd?.setOnClickListener {
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance("", false, false, false)
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, false, false, "", "")
             chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -279,7 +279,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
 
                     if (isValidJson(selectedFile)) {
                         val chatDialogFragment: AddChatDialogFragment =
-                            AddChatDialogFragment.newInstance("", true, false, false)
+                            AddChatDialogFragment.newInstance(false, "", true, false, false, "", "")
                         chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
                         chatDialogFragment.show(
                             parentFragmentManager.beginTransaction(),

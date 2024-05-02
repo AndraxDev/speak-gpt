@@ -77,7 +77,7 @@ class EditApiEndpointDialogFragment : DialogFragment() {
         fieldLabel?.setText(requireArguments().getString("label"))
         fieldHost?.setText(requireArguments().getString("host"))
 
-        if (requireArguments().getString("label") == "") {
+        if (requireArguments().getInt("position") == -1) {
             textDialogTitle?.text = "Add API endpoint"
         }
 
@@ -112,7 +112,7 @@ class EditApiEndpointDialogFragment : DialogFragment() {
             fieldApiKey?.setText(requireArguments().getString("apiKey"))
         }
 
-        if (requireArguments().getString("label") == "") {
+        if (requireArguments().getInt("position") == -1) {
             listener!!.onAdd(
                 ApiEndpointObject(
                     fieldLabel?.text.toString(),
