@@ -187,6 +187,35 @@ class ChatPreferences private constructor() {
         return x.toString()
     }
 
+    /**
+     * Generates a unique chat ID for a new chat.
+     *
+     * @param context The context of the application.
+     * @param prefix The prefix to use for the chat name.
+     * @return A unique chat ID as a String.
+     */
+    fun getAvailableChatIdByPrefix(context: Context, prefix: String) : String {
+        var x = 1
+
+        val list = getChatList(context)
+
+        while (true) {
+            var isFound = false
+            for (map: HashMap<String, String> in list) {
+                if (map["name"] == "$prefix $x") {
+                    isFound = true
+                    break
+                }
+            }
+
+            if (!isFound) break
+
+            x++
+        }
+
+        return x.toString()
+    }
+
     fun editMessage(context: Context, chatId: String, position: Int, newMessage: String) {
         val list = getChatById(context, chatId)
 

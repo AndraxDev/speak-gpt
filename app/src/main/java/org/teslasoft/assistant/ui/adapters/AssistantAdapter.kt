@@ -18,17 +18,32 @@ package org.teslasoft.assistant.ui.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
+import android.graphics.Rect
+import android.graphics.RectF
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.DrawableCompat
 
 import androidx.fragment.app.FragmentActivity
 
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
+import org.teslasoft.assistant.util.StaticAvatarParser
+import java.io.BufferedReader
+import java.io.File
+import java.io.InputStreamReader
 
 class AssistantAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActivity?, override val preferences: Preferences) : AbstractChatAdapter(data, context, preferences) {
     @SuppressLint("InflateParams", "SetTextI18n")
@@ -67,12 +82,60 @@ class AssistantAdapter(data: ArrayList<HashMap<String, Any>>?, context: Fragment
             }
         }
 
-        // btnCopy?.background = getSurface3Drawable(AppCompatResources.getDrawable(mContext, R.drawable.btn_accent_tonal)!!, mContext)
-
         super.getView(position, mView, parent)
 
-        icon?.setImageResource(R.drawable.assistant)
+        if (preferences.getAvatarType() == "builtin") {
+            icon?.setImageResource(StaticAvatarParser.parse(preferences.getAvatarId()))
+            DrawableCompat.setTint(icon?.getDrawable()!!, ContextCompat.getColor(mContext, R.color.accent_900))
+        } else {
+            readAndDisplay(Uri.fromFile(File(mContext.getExternalFilesDir("images")?.absolutePath + "/avatar_" + preferences.getAvatarId() + ".png")))
+        }
 
         return mView
+    }
+
+    private fun readAndDisplay(uri: Uri) {
+        val bitmap = readFile(uri)
+
+        if (bitmap != null) {
+            icon?.setImageBitmap(roundCorners(bitmap, 80f))
+        }
+    }
+
+    private fun readFile(uri: Uri) : Bitmap? {
+        return mContext?.contentResolver?.openInputStream(uri)?.use { inputStream ->
+            BufferedReader(InputStreamReader(inputStream)).use { _ ->
+                BitmapFactory.decodeStream(inputStream)
+            }
+        }
+    }
+
+    private fun roundCorners(bitmap: Bitmap, cornerRadius: Float): Bitmap {
+        // Create a bitmap with the same size as the original.
+        val output = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
+
+        // Prepare a canvas with the new bitmap.
+        val canvas = Canvas(output)
+
+        // The paint used to draw the original bitmap onto the new one.
+        val paint = Paint().apply {
+            isAntiAlias = true
+            color = -0xbdbdbe
+        }
+
+        // The rectangle bounds for the original bitmap.
+        val rect = Rect(0, 0, bitmap.width, bitmap.height)
+        val rectF = RectF(rect)
+
+        // Draw rounded rectangle as background.
+        canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, paint)
+
+        // Change the paint mode to draw the original bitmap on top.
+        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+
+        // Draw the original bitmap.
+        canvas.drawBitmap(bitmap, rect, rect, paint)
+
+        return output
     }
 }

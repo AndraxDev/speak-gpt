@@ -1453,7 +1453,7 @@ class SettingsV2Activity : FragmentActivity() {
         }
 
         tileCustomize?.setOnTileClickListener {
-            val customizeAssistantDialogFragment: CustomizeAssistantDialog = CustomizeAssistantDialog.newInstance(chatId, preferences?.getAssistantName() ?: "", preferences?.getAvatarType() ?: "", preferences?.getAvatarId() ?: "")
+            val customizeAssistantDialogFragment: CustomizeAssistantDialog = CustomizeAssistantDialog.newInstance(chatId, preferences?.getAssistantName() ?: "SpeakGPT", preferences?.getAvatarType() ?: "builtin", preferences?.getAvatarId() ?: "gpt")
             customizeAssistantDialogFragment.setCustomizeAssistantDialogListener(customizeAssistantDialogListener)
             customizeAssistantDialogFragment.show(supportFragmentManager.beginTransaction(), "CustomizeAssistantDialog")
         }

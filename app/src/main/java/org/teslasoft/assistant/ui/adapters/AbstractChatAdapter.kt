@@ -23,6 +23,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
+import android.graphics.Rect
+import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.DisplayMetrics
@@ -52,9 +60,17 @@ import org.teslasoft.assistant.preferences.ChatPreferences
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.activities.ImageBrowserActivity
 import org.teslasoft.assistant.ui.fragments.dialogs.EditMessageDialogFragment
+import org.teslasoft.assistant.util.Hash
+import org.teslasoft.assistant.util.StaticAvatarParser
+import java.io.BufferedReader
+import java.io.ByteArrayOutputStream
 
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStreamReader
 import java.util.Base64
 import java.util.Collections
 

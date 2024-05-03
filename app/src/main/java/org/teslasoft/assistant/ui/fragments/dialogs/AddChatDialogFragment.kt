@@ -42,7 +42,7 @@ import org.teslasoft.assistant.util.Hash
 class AddChatDialogFragment : DialogFragment() {
 
     companion object {
-        fun newInstance(isEdit: Boolean, name: String, fromFile: Boolean, disableAutoName: Boolean, saveChat: Boolean, endpointId: String, model: String) : AddChatDialogFragment {
+        fun newInstance(isEdit: Boolean, name: String, fromFile: Boolean, disableAutoName: Boolean, saveChat: Boolean, endpointId: String, model: String, avatarType: String, avatarId: String, assistantName: String) : AddChatDialogFragment {
             val addChatDialogFragment = AddChatDialogFragment()
 
             val args = Bundle()
@@ -53,6 +53,9 @@ class AddChatDialogFragment : DialogFragment() {
             args.putBoolean("saveChat", saveChat)
             args.putString("endpointId", endpointId)
             args.putString("model", model)
+            args.putString("avatarType", avatarType)
+            args.putString("avatarId", avatarId)
+            args.putString("assistantName", assistantName)
 
             addChatDialogFragment.arguments = args
 
@@ -118,7 +121,7 @@ class AddChatDialogFragment : DialogFragment() {
             dialogTitle.text = requireActivity().resources.getString(R.string.title_new_chat)
 
             if (requireArguments().getString("name") != "") {
-                var n = chatPreferences?.getAvailableChatId(requireActivity()).toString()
+                var n = chatPreferences?.getAvailableChatIdByPrefix(requireActivity(), requireArguments().getString("name").toString()).toString()
                 if (n == "1") n = "" else n = " $n"
                 nameInput?.setText("${requireArguments().getString("name")}$n")
             } else {
@@ -215,6 +218,9 @@ class AddChatDialogFragment : DialogFragment() {
             val topP = preferences.getTopP()
             val frequencyPenalty = preferences.getFrequencyPenalty()
             val presencePenalty = preferences.getPresencePenalty()
+            val avatarType = if (requireArguments().getString("avatarType") != "") requireArguments().getString("avatarType") else preferences.getAvatarType()
+            val avatarId = if (requireArguments().getString("avatarId") != "") requireArguments().getString("avatarId") else preferences.getAvatarId()
+            val assistantName = if (requireArguments().getString("assistantName") != "") requireArguments().getString("assistantName") else preferences.getAssistantName()
 
             val newPreferences: Preferences = Preferences.getPreferences(requireActivity(), Hash.hash(chatName))
 
@@ -243,6 +249,9 @@ class AddChatDialogFragment : DialogFragment() {
             newPreferences.setTopP(topP)
             newPreferences.setFrequencyPenalty(frequencyPenalty)
             newPreferences.setPresencePenalty(presencePenalty)
+            newPreferences.setAvatarType(avatarType!!)
+            newPreferences.setAvatarId(avatarId!!)
+            newPreferences.setAssistantName(assistantName!!)
         } else {
             listener!!.onDuplicate()
         }

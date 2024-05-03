@@ -96,11 +96,11 @@ class AISetAdapter(private val mContext: Context, private val dataArray: ArrayLi
             .into(setIcon!!)
 
         btnCreateChat?.setOnClickListener {
-            listener?.onCreateChatClick(dataArray[position]["model"] ?: "", dataArray[position]["apiEndpoint"] ?: "", dataArray[position]["apiEndpointName"] ?: "", dataArray[position]["suggestedChatName"] ?: "")
+            listener?.onCreateChatClick(dataArray[position]["model"] ?: "", dataArray[position]["apiEndpoint"] ?: "", dataArray[position]["apiEndpointName"] ?: "", dataArray[position]["suggestedChatName"] ?: "", dataArray[position]["avatarType"] ?: "", dataArray[position]["avatarId"] ?: "", dataArray[position]["assistantName"] ?: "")
         }
 
         btnUseGlobally?.setOnClickListener {
-            listener?.onUseGloballyClick(dataArray[position]["model"] ?: "", dataArray[position]["apiEndpoint"] ?: "", dataArray[position]["apiEndpointName"] ?: "")
+            listener?.onUseGloballyClick(dataArray[position]["model"] ?: "", dataArray[position]["apiEndpoint"] ?: "", dataArray[position]["apiEndpointName"] ?: "", dataArray[position]["avatarType"] ?: "", dataArray[position]["avatarId"] ?: "", dataArray[position]["assistantName"] ?: "")
         }
 
         btnGetApiKey?.setOnClickListener {
@@ -111,8 +111,8 @@ class AISetAdapter(private val mContext: Context, private val dataArray: ArrayLi
     }
 
     interface OnInteractionListener {
-        fun onUseGloballyClick(model: String, endpointUrl: String, endpointName: String)
-        fun onCreateChatClick(model: String, endpointUrl: String, endpointName: String, suggestedChatName: String)
+        fun onUseGloballyClick(model: String, endpointUrl: String, endpointName: String, avatarType: String, avatarId: String, assistantName: String)
+        fun onCreateChatClick(model: String, endpointUrl: String, endpointName: String, suggestedChatName: String, avatarType: String, avatarId: String, assistantName: String)
         fun onGetApiKeyClicked(apiKeyUrl: String)
     }
 

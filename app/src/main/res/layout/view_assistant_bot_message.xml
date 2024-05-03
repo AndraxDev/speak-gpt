@@ -14,6 +14,7 @@
         android:layout_marginTop="6dp"
         android:background="@drawable/btn_accent_tonal"
         android:clickable="false"
+        android:padding="6dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/linearLayout3"
         app:srcCompat="@drawable/ic_launcher_foreground" />

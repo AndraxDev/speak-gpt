@@ -368,7 +368,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         override fun onError(fromFile: Boolean) {
             Toast.makeText(mContext ?: return, "Please fill name field", Toast.LENGTH_SHORT).show()
 
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, false, true, "", "")
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, false, true, "", "", "", "", "")
             chatDialogFragment.setStateChangedListener(this)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -384,7 +384,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         override fun onDuplicate() {
             Toast.makeText(mContext ?: return, "Name must be unique", Toast.LENGTH_SHORT).show()
 
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, false, true, "", "")
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, false, true, "", "", "", "", "")
             chatDialogFragment.setStateChangedListener(this)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -1817,6 +1817,8 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
             logitBiasPreferences = LogitBiasPreferences(mContext ?: return, preferences?.getLogitBiasesConfigId()!!)
             apiEndpointObject = apiEndpointPreferences?.getApiEndpoint(mContext ?: return, preferences?.getApiEndpointId()!!)
         }
+
+        savedInstanceState = null
     }
 
     private fun save(id: String) {
@@ -2018,7 +2020,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         }
 
         btnSaveToChat?.setOnClickListener {
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, false, true, "", "")
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, false, true, "", "", "", "", "")
             chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -2026,6 +2028,8 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         btnExit?.setOnClickListener {
             (mContext as Activity?)?.finishAndRemoveTask()
         }
+
+        assistantTitle?.text = preferences?.getAssistantName()
 
         assistantTitle?.setOnClickListener {
             val intent = Intent(mContext ?: return@setOnClickListener, MainActivity::class.java).setAction(Intent.ACTION_VIEW)
@@ -2176,6 +2180,9 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 val topP = globalPreferences.getTopP()
                 val frequencyPenalty = globalPreferences.getFrequencyPenalty()
                 val presencePenalty = globalPreferences.getPresencePenalty()
+                val avatarType = globalPreferences.getAvatarType()
+                val avatarId = globalPreferences.getAvatarId()
+                val assistantName = globalPreferences.getAssistantName()
 
                 preferences = Preferences.getPreferences(mContext ?: return, chatID)
                 preferences!!.setPreferences(Hash.hash(chatName), mContext ?: return)
@@ -2202,6 +2209,9 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 preferences!!.setTopP(topP)
                 preferences!!.setFrequencyPenalty(frequencyPenalty)
                 preferences!!.setPresencePenalty(presencePenalty)
+                preferences!!.setAvatarType(avatarType)
+                preferences!!.setAvatarId(avatarId)
+                preferences!!.setAssistantName(assistantName)
             }
         }
     }

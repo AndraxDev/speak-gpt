@@ -592,6 +592,7 @@ class Preferences private constructor(private var preferences: SharedPreferences
      */
     fun setAvatarType(type: String) {
         putString("avatar_type", type)
+        listeners.forEach { it.onPreferencesChanged("avatar_type", type) }
     }
 
     /**
@@ -603,12 +604,18 @@ class Preferences private constructor(private var preferences: SharedPreferences
         return getString("avatar_type", "builtin")
     }
 
+    fun getAvatarTypeByChatId(chatId: String, context: Context) : String {
+        val sharedPreferences = context.getSharedPreferences("settings.$chatId", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("avatar_type", "builtin").toString()
+    }
+
     /**
      * Sets the avatar Id in the shared preferences.
      *
      * @param id The avatar Id value to be stored.
      */
     fun setAvatarId(id: String) {
+        listeners.forEach { it.onPreferencesChanged("avatar_id", id) }
         putString("avatar_id", id)
     }
 
@@ -618,7 +625,12 @@ class Preferences private constructor(private var preferences: SharedPreferences
      * @return The avatar Id value or "speakgpt" if not found.
      */
     fun getAvatarId() : String {
-        return getString("avatar_id", "speakgpt")
+        return getString("avatar_id", "gpt")
+    }
+
+    fun getAvatarIdByChatId(chatId: String, context: Context) : String {
+        val sharedPreferences = context.getSharedPreferences("settings.$chatId", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("avatar_id", "gpt").toString()
     }
 
     /**

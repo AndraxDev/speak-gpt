@@ -181,15 +181,15 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
         runRequest()
     }
 
-    override fun onUseGloballyClick(model: String, endpointUrl: String, endpointName: String) {
-        performAction(model, endpointUrl, endpointName, "") { en, _, m ->
-            setGlobally(en, "", m)
+    override fun onUseGloballyClick(model: String, endpointUrl: String, endpointName: String, avatarType: String, avatarId: String, assistantName: String) {
+        performAction(model, endpointUrl, endpointName, "", avatarType, avatarId, assistantName) { en, _, m, at, ai, an ->
+            setGlobally(en, "", m, at, ai, an)
         }
     }
 
-    override fun onCreateChatClick(model: String, endpointUrl: String, endpointName: String, suggestedChatName: String) {
-        performAction(model, endpointUrl, endpointName, suggestedChatName) { en, scn, m ->
-            createChat(en, scn, m)
+    override fun onCreateChatClick(model: String, endpointUrl: String, endpointName: String, suggestedChatName: String, avatarType: String, avatarId: String, assistantName: String) {
+        performAction(model, endpointUrl, endpointName, suggestedChatName, avatarType, avatarId, assistantName) { en, scn, m, at, ai, an ->
+            createChat(en, scn, m, at, ai, an)
         }
     }
 
@@ -199,14 +199,17 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
         startActivity(i)
     }
 
-    private fun setGlobally(endpointName: String, suggestedChatName: String, model: String) {
+    private fun setGlobally(endpointName: String, suggestedChatName: String, model: String, avatarType: String, avatarId: String, assistantName: String) {
         preferences?.setApiEndpointId(Hash.hash(endpointName))
         preferences?.setModel(model)
+        preferences?.setAvatarType(avatarType)
+        preferences?.setAvatarId(avatarId)
+        preferences?.setAssistantName(assistantName)
         Toast.makeText(mContext, "API endpoint set globally", Toast.LENGTH_SHORT).show()
     }
 
-    private fun createChat(endpointName: String, suggestedChatName: String, model: String) {
-        val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, suggestedChatName, false, true, true, Hash.hash(endpointName), model)
+    private fun createChat(endpointName: String, suggestedChatName: String, model: String, avatarType: String, avatarId: String, assistantName: String) {
+        val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, suggestedChatName, false, true, true, Hash.hash(endpointName), model, avatarType, avatarId, assistantName)
         chatDialogFragment.setStateChangedListener(object : AddChatDialogFragment.StateChangesListener {
             override fun onAdd(name: String, id: String, fromFile: Boolean) {
                 val i = Intent(
@@ -251,17 +254,17 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
         chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
     }
 
-    private fun performAction(model: String, endpointUrl: String, endpointName: String, suggestedChatName: String, function: (endpointName: String, suggestedChatName: String, model: String) -> Unit) {
+    private fun performAction(model: String, endpointUrl: String, endpointName: String, suggestedChatName: String, avatarType: String, avatarId: String, assistantName: String, function: (endpointName: String, suggestedChatName: String, model: String, avatarType: String, avatarId: String, assistantName: String) -> Unit) {
         val apiObject = apiEndpointPreferences?.getApiEndpointByUrlOrNull(mContext ?: return, endpointUrl)
 
         if (apiObject != null) {
-            function(apiObject.label, suggestedChatName, model)
+            function(apiObject.label, suggestedChatName, model, avatarType, avatarId, assistantName)
         } else {
             val apiEndpointDialog: EditApiEndpointDialogFragment = EditApiEndpointDialogFragment.newInstance(endpointName, endpointUrl, "", -1)
             apiEndpointDialog.setListener(object : EditApiEndpointDialogFragment.StateChangesListener {
                 override fun onAdd(apiEndpoint: ApiEndpointObject) {
                     apiEndpointPreferences?.setApiEndpoint(mContext ?: return, apiEndpoint)
-                    function(apiEndpoint.label, suggestedChatName, model)
+                    function(apiEndpoint.label, suggestedChatName, model, avatarType, avatarId, assistantName)
                 }
 
                 override fun onEdit(oldLabel: String, apiEndpoint: ApiEndpointObject, position: Int) {

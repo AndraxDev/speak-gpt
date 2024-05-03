@@ -46,7 +46,7 @@
         android:background="@color/accent_900"
         android:gravity="center"
         android:padding="16dp"
-        android:text="Select Avatar"
+        android:text="Select an avatar"
         android:textColor="@color/window_background"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
