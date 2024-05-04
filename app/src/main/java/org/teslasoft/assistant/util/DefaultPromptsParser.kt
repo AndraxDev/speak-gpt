@@ -17,12 +17,8 @@
 package org.teslasoft.assistant.util
 
 import android.content.Context
-import android.speech.tts.TextToSpeech
-import android.util.Log
-import android.widget.Toast
 import com.google.mlkit.nl.languageid.LanguageIdentification
 import com.google.mlkit.nl.languageid.LanguageIdentifier
-import java.util.Locale
 
 class DefaultPromptsParser {
     private var explanationPrompt = HashMap<String, String>()

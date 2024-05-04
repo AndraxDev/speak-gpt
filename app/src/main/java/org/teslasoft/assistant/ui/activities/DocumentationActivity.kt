@@ -71,14 +71,18 @@ class DocumentationActivity : FragmentActivity() {
 
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack()!!) {
-            window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
-            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+            if (android.os.Build.VERSION.SDK_INT <= 34) {
+                window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+                window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+            }
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
             root?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
             btnBack?.setBackgroundResource(R.drawable.btn_accent_icon_large_amoled)
         } else {
-            window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
-            window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
+            if (android.os.Build.VERSION.SDK_INT <= 34) {
+                window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
+                window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
+            }
             window.setBackgroundDrawableResource(R.color.window_background)
             root?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
             btnBack?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_icon_large, theme)!!)

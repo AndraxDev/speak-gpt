@@ -28,14 +28,12 @@ import android.provider.Settings
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.FragmentActivity
-
 import cat.ereza.customactivityoncrash.CustomActivityOnCrash
-
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.DeviceInfoProvider
+import org.teslasoft.assistant.preferences.Logger
 import org.teslasoft.assistant.ui.activities.MainActivity
 import java.time.Instant
 import java.time.format.DateTimeFormatter
@@ -51,8 +49,10 @@ class CrashHandlerActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        window.statusBarColor = getColor(R.color.amoled_window_background)
-        window.navigationBarColor = getColor(R.color.amoled_window_background)
+        if (android.os.Build.VERSION.SDK_INT <= 34) {
+            window.statusBarColor = getColor(R.color.amoled_window_background)
+            window.navigationBarColor = getColor(R.color.amoled_window_background)
+        }
 
         val appVersion = try {
             val pInfo: PackageInfo = if (Build.VERSION.SDK_INT >= 33) {
@@ -101,10 +101,12 @@ class CrashHandlerActivity : FragmentActivity() {
 
             textError = findViewById(R.id.text_error)
             textError!!.setTextIsSelectable(true)
-            textError!!.text = "\nAn app has been crashed and needs to be restarted.\n\n===== BEGIN SYSTEM INFO =====\nAndroid version: ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT} ${Build.VERSION.CODENAME})\nROM version: ${Build.VERSION.INCREMENTAL}\nApp version: $appVersion ($versionCode)\nDevice model: ${Build.MODEL}\nAndroid device ID: ${Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)}\nInstallation ID: ${IID}\nEffective time: ${
+            textError!!.text = "\nApp has been crashed and needs to be restarted.\n\n===== BEGIN SYSTEM INFO =====\nAndroid version: ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT} ${Build.VERSION.CODENAME})\nROM version: ${Build.VERSION.INCREMENTAL}\nApp version: $appVersion ($versionCode)\nDevice model: ${Build.MODEL}\nAndroid device ID: ${Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)}\nInstallation ID: ${IID}\nEffective time: ${
                 DateTimeFormatter.ISO_INSTANT.format(
                     Instant.now())}\n===== END SYSTEM INFO =====\n\n===== BEGIN OF CRASH =====\n$error\n===== END OF CRASH =====\n"
 
+            Logger.clearCrashLog(this)
+            Logger.log(this, "crash", "CrashHandler", "error", textError!!.text.toString())
             if (error == "") {
                 finishAndRemoveTask()
             }
@@ -125,7 +127,7 @@ class CrashHandlerActivity : FragmentActivity() {
 
         Toast.makeText(
             applicationContext,
-            "Copied to clipboard",
+            R.string.label_copy,
             Toast.LENGTH_SHORT
         ).show()
     }

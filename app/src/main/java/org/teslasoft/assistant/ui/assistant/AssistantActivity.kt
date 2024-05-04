@@ -18,13 +18,9 @@ package org.teslasoft.assistant.ui.assistant
 
 import android.os.Bundle
 import android.os.StrictMode
-import android.widget.Toast
-
 import androidx.fragment.app.FragmentActivity
-
 import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.preferences.Preferences
-
 import org.teslasoft.assistant.ui.fragments.AssistantFragment
 
 class AssistantActivity : FragmentActivity() {

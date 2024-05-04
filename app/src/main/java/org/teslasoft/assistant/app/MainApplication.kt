@@ -17,12 +17,9 @@
 package org.teslasoft.assistant.app
 
 import android.app.Application
-
 import cat.ereza.customactivityoncrash.config.CaocConfig
-
 import com.google.android.material.color.DynamicColors
 import org.conscrypt.Conscrypt
-
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Logger
 import java.security.Security

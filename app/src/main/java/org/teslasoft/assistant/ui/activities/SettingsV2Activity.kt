@@ -29,7 +29,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
-import android.telephony.TelephonyManager
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -65,9 +64,7 @@ import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
 import org.teslasoft.assistant.ui.fragments.TileFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.ActivationPromptDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.AdvancedSettingsDialogFragment
-import org.teslasoft.assistant.ui.fragments.dialogs.ApiKeyDialog
 import org.teslasoft.assistant.ui.fragments.dialogs.CustomizeAssistantDialog
-import org.teslasoft.assistant.ui.fragments.dialogs.HostnameEditorDialog
 import org.teslasoft.assistant.ui.fragments.dialogs.LanguageSelectorDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.SelectResolutionFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.SystemMessageDialogFragment
@@ -81,19 +78,7 @@ import org.teslasoft.core.auth.widget.TeslasoftIDCircledButton
 import java.io.IOException
 import java.util.Locale
 
-
 class SettingsV2Activity : FragmentActivity() {
-
-    private var chatId = ""
-    private var preferences: Preferences? = null
-    private var model = ""
-    private var activationPrompt = ""
-    private var systemMessage = ""
-    private var language = "en"
-    private var resolution = ""
-    private var voice = ""
-    private var host = ""
-    private var ttsEngine = "google"
 
     private var tileAccountFragment: TileFragment? = null
     private var tileAssistant: TileFragment? = null
@@ -134,28 +119,31 @@ class SettingsV2Activity : FragmentActivity() {
     private var tileShowChatErrors: TileFragment? = null
     private var threadLoading: LinearLayout? = null
     private var btnRemoveAds: MaterialButton? = null
-
+    private var root: ScrollView? = null
+    private var textGlobal: TextView? = null
+    private var ad: LinearLayout? = null
+    private var btnBack: ImageButton? = null
     private var teslasoftIDCircledButton: TeslasoftIDCircledButton? = null
-
-    private var apiEndpoint: ApiEndpointObject? = null
-    private var apiEndpointPreferences: ApiEndpointPreferences? = null
 
     private var adId = "<Loading...>"
     private var installationId = ""
     private var androidId = ""
-
-    private var root: ScrollView? = null
-    private var textGlobal: TextView? = null
-
-    private var ad: LinearLayout? = null
-
-    private var btnBack: ImageButton? = null
+    private var testAdsReady: Boolean = false
+    private var areFragmentsInitialized = false
+    private var chatId = ""
+    private var preferences: Preferences? = null
+    private var model = ""
+    private var activationPrompt = ""
+    private var systemMessage = ""
+    private var language = "en"
+    private var resolution = ""
+    private var voice = ""
+    private var host = ""
+    private var ttsEngine = "google"
+    private var apiEndpoint: ApiEndpointObject? = null
 
     private var teslasoftIDClient: TeslasoftIDClient? = null
-
-    private var testAdsReady: Boolean = false
-
-    private var areFragmentsInitialized = false
+    private var apiEndpointPreferences: ApiEndpointPreferences? = null
 
     private var modelChangedListener: AdvancedSettingsDialogFragment.StateChangesListener = object : AdvancedSettingsDialogFragment.StateChangesListener {
         override fun onSelected(name: String, maxTokens: String, endSeparator: String, prefix: String) {
@@ -168,7 +156,7 @@ class SettingsV2Activity : FragmentActivity() {
         }
 
         override fun onFormError(name: String, maxTokens: String, endSeparator: String, prefix: String) {
-            if (name == "") Toast.makeText(this@SettingsV2Activity, "Error, no model name is provided", Toast.LENGTH_SHORT).show()
+            if (name == "") Toast.makeText(this@SettingsV2Activity, getString(R.string.model_error_empty), Toast.LENGTH_SHORT).show()
             else if (name.contains("gpt-4")) Toast.makeText(this@SettingsV2Activity, "Error, GPT4 support maximum of 8192 tokens", Toast.LENGTH_SHORT).show()
             else Toast.makeText(this@SettingsV2Activity, "Error, more than 2048 tokens is not supported", Toast.LENGTH_SHORT).show()
             val advancedSettingsDialogFragment: AdvancedSettingsDialogFragment = AdvancedSettingsDialogFragment.newInstance(name, chatId)
@@ -181,12 +169,11 @@ class SettingsV2Activity : FragmentActivity() {
         override fun onSelected(name: String) {
             preferences?.setLanguage(name)
             language = name
-
             tileVoiceLanguage?.updateSubtitle(Locale.forLanguageTag(name).displayLanguage)
         }
 
         override fun onFormError(name: String) {
-            Toast.makeText(this@SettingsV2Activity, "Please select language", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@SettingsV2Activity, getString(R.string.language_error_empty), Toast.LENGTH_SHORT).show()
             val languageSelectorDialogFragment: LanguageSelectorDialogFragment = LanguageSelectorDialogFragment.newInstance(name, chatId)
             languageSelectorDialogFragment.setStateChangedListener(this)
             languageSelectorDialogFragment.show(supportFragmentManager.beginTransaction(), "LanguageSelectorDialog")
@@ -196,14 +183,12 @@ class SettingsV2Activity : FragmentActivity() {
     private var resolutionChangedListener: SelectResolutionFragment.StateChangesListener = object : SelectResolutionFragment.StateChangesListener {
         override fun onSelected(name: String) {
             preferences?.setResolution(name)
-
             resolution = name
-
             tileImageResolution?.updateSubtitle(name)
         }
 
         override fun onFormError(name: String) {
-            Toast.makeText(this@SettingsV2Activity, "Please select resolution", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@SettingsV2Activity, getString(R.string.image_resolution_error_empty), Toast.LENGTH_SHORT).show()
             val resolutionSelectorDialogFragment: SelectResolutionFragment = SelectResolutionFragment.newInstance(name, chatId)
             resolutionSelectorDialogFragment.setStateChangedListener(this)
             resolutionSelectorDialogFragment.show(supportFragmentManager.beginTransaction(), "ResolutionSelectorDialog")
@@ -213,14 +198,12 @@ class SettingsV2Activity : FragmentActivity() {
     private var promptChangedListener: ActivationPromptDialogFragment.StateChangesListener =
         ActivationPromptDialogFragment.StateChangesListener { prompt ->
             activationPrompt = prompt
-
             preferences?.setPrompt(prompt)
         }
 
     private var systemChangedListener: SystemMessageDialogFragment.StateChangesListener =
         SystemMessageDialogFragment.StateChangesListener { prompt ->
             systemMessage = prompt
-
             preferences?.setSystemMessage(prompt)
         }
 
@@ -244,19 +227,6 @@ class SettingsV2Activity : FragmentActivity() {
         }
 
         override fun onCancel() { /* unused */ }
-    }
-
-    private var apiChangedListener: ApiKeyDialog.StateChangesListener = object : ApiKeyDialog.StateChangesListener {
-        override fun onSelected(name: String) {
-            preferences?.setApiKey(name, this@SettingsV2Activity)
-        }
-
-        override fun onFormError(name: String) {
-            Toast.makeText(this@SettingsV2Activity, "Please enter API key", Toast.LENGTH_SHORT).show()
-            val apiKeyDialog: ApiKeyDialog = ApiKeyDialog.newInstance(name)
-            apiKeyDialog.setStateChangedListener(this)
-            apiKeyDialog.show(supportFragmentManager.beginTransaction(), "ApiKeyDialog")
-        }
     }
 
     private var settingsListener: SettingsListener = object : SettingsListener {
@@ -341,7 +311,6 @@ class SettingsV2Activity : FragmentActivity() {
         btnRemoveAds = findViewById(R.id.btn_remove_ads)
 
         threadLoading?.visibility = View.VISIBLE
-
         btnRemoveAds?.visibility = View.GONE
 
         val extras: Bundle? = intent.extras
@@ -448,66 +417,66 @@ class SettingsV2Activity : FragmentActivity() {
             tileAccountFragment = TileFragment.newInstance(
                 false,
                 false,
-                "Account",
+                getString(R.string.tile_account_title),
                 null,
-                "Manage OpenAI account",
+                getString(R.string.tile_account_subtitle),
                 null,
                 R.drawable.ic_user,
                 false,
                 chatId,
-                "This feature allows you to manage your OpenAI account."
+                getString(R.string.tile_account_desc)
             )
 
             tileAssistant = TileFragment.newInstance(
                 isDefaultAssistantApp(this@SettingsV2Activity),
                 false,
-                "Default assistant",
+                getString(R.string.tile_assistant_title),
                 null,
-                "On",
-                "Off",
+                getString(R.string.on),
+                getString(R.string.off),
                 R.drawable.ic_assistant,
                 false,
                 chatId,
-                "This feature allows you to set SpeakGPT as your default assistant."
+                getString(R.string.tile_assistant_desc)
             )
 
             tileApiKey = TileFragment.newInstance(
                 false,
                 false,
-                "API endpoint",
+                getString(R.string.tile_api_endpoint_title),
                 null,
                 host,
                 null,
                 R.drawable.ic_key,
                 false,
                 chatId,
-                "This feature allows you to set your API endpoint."
+                getString(R.string.tile_api_endpoint_desc)
             )
 
             tileAutoSend = TileFragment.newInstance(
                 preferences?.autoSend()!!,
                 true,
-                "Auto send",
-                "Auto send",
-                "On",
-                "Off",
+                getString(R.string.tile_autosend_title),
+                null,
+                getString(R.string.on),
+                getString(R.string.off),
                 R.drawable.ic_send,
                 false,
                 chatId,
-                "This feature allows you to enable or disable messages auto send. When auto send is enabled, SpeakGPT will automatically send messages without pressing 'Send' button once listening is finished."
+                getString(R.string.tile_autosend_desc)
             )
 
             tileVoice = TileFragment.newInstance(
                 false,
                 false,
-                "Voice",
+                getString(R.string.tile_tts_voice_title),
                 null,
                 voice,
                 null,
                 R.drawable.ic_voice,
                 false,
                 chatId,
-                "This feature allows you to set your TTS voice."
+                getString(R.string.tile_tts_voice_desc)
             )
         }
 
@@ -520,66 +489,65 @@ class SettingsV2Activity : FragmentActivity() {
             tileVoiceLanguage = TileFragment.newInstance(
                 false,
                 false,
-                "Voice language",
+                getString(R.string.tile_voice_lang_title),
                 null,
                 Locale.forLanguageTag(preferences?.getLanguage()!!).displayLanguage,
                 null,
                 R.drawable.ic_language,
                 false,
                 chatId,
-                "This feature allows you to set your TTS voice language."
+                getString(R.string.tile_voice_lang_desc)
             )
 
             tileImageModel = TileFragment.newInstance(
                 preferences?.getDalleVersion() == "3",
                 true,
-                "Use DALL-e 3",
+                getString(R.string.tile_dalle_3),
                 null,
-                "On",
-                "DALL-e 2 is used",
+                getString(R.string.on),
+                getString(R.string.tile_dalle_2),
                 R.drawable.ic_image,
                 false,
                 chatId,
-                "This feature allows you to set image generation model."
+                getString(R.string.tile_dalle_desc)
             )
 
             tileImageResolution = TileFragment.newInstance(
                 false,
                 false,
-                "Image resolution",
+                getString(R.string.tile_image_resolution_title),
                 null,
                 preferences?.getResolution()!!,
                 null,
                 R.drawable.ic_image,
                 false,
                 chatId,
-                "This feature allows you to set image resolution. Please note that DALL-e 3 supports only 1024x1024."
+                getString(R.string.tile_image_resolution_desc)
             )
 
             tileTTS = TileFragment.newInstance(
                 preferences?.getTtsEngine() == "openai",
                 true,
-                "Use OpenAI TTS",
+                getString(R.string.tile_openai_tts),
                 null,
-                "On",
-                "Google TTS is used",
+                getString(R.string.on),
+                getString(R.string.tile_google_tts),
                 R.drawable.ic_tts,
                 false,
                 chatId,
-                "This feature allows you to set TTS engine. OpenAI TTS is paid."
+                getString(R.string.tile_tts_desc)
             )
 
             tileSTT = TileFragment.newInstance(
                 preferences?.getAudioModel() == "whisper",
                 true,
-                "Use Whisper",
-                null,
-                "On",
-                "Google STT is used",
+                getString(R.string.tile_whisper_stt),
+                null,getString(R.string.on),
+                getString(R.string.tile_google_stt),
                 R.drawable.ic_microphone,
                 false,
                 chatId,
-                "This feature allows you to set STT engine. Whisper is paid."
+                getString(R.string.tile_stt_desc)
             )
         }
 
@@ -592,66 +560,66 @@ class SettingsV2Activity : FragmentActivity() {
             tileSilentMode = TileFragment.newInstance(
                 preferences?.getSilence() == true,
                 true,
-                "Silent mode",
+                getString(R.string.tile_silent_mode_title),
                 null,
-                "On",
-                "Off",
+                getString(R.string.on),
+                getString(R.string.off),
                 R.drawable.ic_mute,
                 preferences?.getNotSilence() == true,
                 chatId,
-                "This feature allows you let SpeakGPT never pronounce answers."
+                getString(R.string.tile_silent_mode_desc)
             )
 
             tileAlwaysSpeak = TileFragment.newInstance(
                 preferences?.getNotSilence() == true,
                 true,
-                "Always speak",
+                getString(R.string.tile_always_speak_title),
                 null,
-                "On",
-                "Off",
+                getString(R.string.on),
+                getString(R.string.off),
                 R.drawable.ic_volume_up,
                 preferences?.getSilence() == true,
                 chatId,
-                "This feature allows you let SpeakGPT always pronounce answers."
+                getString(R.string.tile_always_speak_desc)
             )
 
             tileTextModel = TileFragment.newInstance(
                 false,
                 false,
-                "Text model",
+                getString(R.string.tile_text_model_title),
                 null,
                 model,
                 null,
                 R.drawable.chatgpt_icon,
                 false,
                 chatId,
-                "This feature allows you to set text generation model as well as model's params."
+                getString(R.string.tile_text_generation_model_desc)
             )
 
             tileActivationMessage = TileFragment.newInstance(
                 false,
                 false,
-                "Activation prompt",
+                getString(R.string.tile_activation_prompt_title),
                 null,
-                "Tap to set",
+                getString(R.string.label_tap_to_set),
                 null,
                 R.drawable.ic_play,
                 false,
                 chatId,
-                "This feature allows you to set activation prompt which will be sent as a first user message."
+                getString(R.string.tile_activation_prompt_desc)
             )
 
             tileSystemMessage = TileFragment.newInstance(
                 false,
                 false,
-                "System message",
+                getString(R.string.tile_system_message_title),
                 null,
-                "Tap to set",
+                getString(R.string.label_tap_to_set),
                 null,
                 R.drawable.ic_play,
                 false,
                 chatId,
-                "This feature allows you to set system message which will be sent as a system message."
+                getString(R.string.tile_system_message_desc)
             )
         }
 
@@ -664,27 +632,27 @@ class SettingsV2Activity : FragmentActivity() {
             tileLangDetect = TileFragment.newInstance(
                 preferences?.getAutoLangDetect() == true,
                 true,
-                "Automatic language detection",
+                getString(R.string.tile_ale_title),
                 null,
-                "On",
-                "Off",
+                getString(R.string.on),
+                getString(R.string.off),
                 R.drawable.ic_language,
                 false,
                 chatId,
-                "This feature allows you to enable automatic language detection of speech."
+                getString(R.string.tile_ale_desc)
             )
 
             tileChatLayout = TileFragment.newInstance(
                 preferences?.getLayout() == "classic",
                 true,
-                "Classic chat layout",
+                getString(R.string.tile_classic_layout_title),
                 null,
-                "On",
-                "Off",
+                getString(R.string.on),
+                getString(R.string.off),
                 R.drawable.ic_chat,
                 false,
                 chatId,
-                "This feature allows you to set classic chat layout."
+                getString(R.string.tile_classic_layout_desc)
             )
 
             tileFunctionCalling = TileFragment.newInstance(
@@ -692,8 +660,8 @@ class SettingsV2Activity : FragmentActivity() {
                 true,
                 "Function calling",
                 null,
-                "On",
-                "Off",
+                getString(R.string.on),
+                getString(R.string.off),
                 R.drawable.ic_experiment,
                 false,
                 chatId,
@@ -703,27 +671,27 @@ class SettingsV2Activity : FragmentActivity() {
             tileSlashCommands = TileFragment.newInstance(
                 preferences?.getImagineCommand() == true,
                 true,
-                "Slash commands",
+                getString(R.string.tile_sh_title),
                 null,
-                "On",
-                "Off",
+                getString(R.string.on),
+                getString(R.string.off),
                 R.drawable.ic_experiment,
                 false,
                 chatId,
-                "This feature allows you to enable slash commands. Please note that this feature is experimental and unstable. Example: /imagine a cat."
+                getString(R.string.tile_sh_desc)
             )
 
             tileDesktopMode = TileFragment.newInstance(
                 preferences?.getDesktopMode() == true,
                 true,
-                "Desktop mode",
+                getString(R.string.tile_desktop_mode_title),
                 null,
-                "On",
-                "Off",
+                getString(R.string.on),
+                getString(R.string.off),
                 R.drawable.ic_desktop,
                 false,
                 chatId,
-                "This feature allows you to enable desktop mode. When desktop mode is enabled, SpeakGPT will use keyboard shortcuts and message input will be automatically focused. Press 'Enter' to send message, 'Shift + Enter' to add new line and 'Shift+Esc' to close chat. Not recommended to use on phones unless you want keyboard to be opened every time you open the chat."
+                getString(R.string.tile_desktop_mode_desc)
             )
         }
 
@@ -736,66 +704,66 @@ class SettingsV2Activity : FragmentActivity() {
             tileNewLook = TileFragment.newInstance(
                 false,
                 false,
-                "New UI",
+                getString(R.string.tile_new_ui_title),
                 null,
-                "On",
+                getString(R.string.on),
                 null,
                 R.drawable.ic_experiment,
                 true,
                 chatId,
-                "This feature allows you to enable new experimental UI. New UI is more compact and intuitive."
+                getString(R.string.tile_new_ui_desc)
             )
 
             tileAboutApp = TileFragment.newInstance(
                 false,
                 false,
-                "About app",
+                getString(R.string.tile_about_app_title),
                 null,
-                "About SpeakGPT",
+                getString(R.string.tile_about_app_subtitle),
                 null,
                 R.drawable.ic_info,
                 false,
                 chatId,
-                "This feature allows you to open about SpeakGPT page."
+                getString(R.string.tile_about_app_desc)
             )
 
             tileClearChat = TileFragment.newInstance(
                 false,
                 false,
-                "Clear chat",
+                getString(R.string.tile_clear_chat_title),
                 null,
-                "Clear chat history",
+                getString(R.string.tile_clear_chat_subtitle),
                 null,
                 R.drawable.ic_close,
                 chatId == "",
                 chatId,
-                "This feature allows you to clear chat history."
+                getString(R.string.tile_clear_chat_desc)
             )
 
             tileDocumentation = TileFragment.newInstance(
                 false,
                 false,
-                "Documentation",
+                getString(R.string.tile_documentation_title),
                 null,
-                "Open documentation",
+                getString(R.string.tile_documentation_subtitle),
                 null,
                 R.drawable.ic_book,
                 false,
                 chatId,
-                "This feature allows you to open SpeakGPT documentation."
+                getString(R.string.tile_documentation_desc)
             )
 
             tileAmoledMode = TileFragment.newInstance(
                 preferences?.getAmoledPitchBlack() == true && isDarkThemeEnabled(),
                 true,
-                "AMOLED mode",
+                getString(R.string.tile_amoled_mode_title),
                 null,
-                "On",
-                "Off",
+                getString(R.string.on),
+                getString(R.string.off),
                 R.drawable.ic_experiment,
                 !isDarkThemeEnabled(),
                 chatId,
-                "This feature allows you to enable AMOLED mode for supported displays. It can significantly save battery. AMOLED mode is only available in dark theme."
+                getString(R.string.tile_amoled_mode_desc)
             )
         }
 
@@ -808,40 +776,40 @@ class SettingsV2Activity : FragmentActivity() {
             tileLockAssistantWindow = TileFragment.newInstance(
                 preferences?.getLockAssistantWindow() == true,
                 true,
-                "Lock assistant window",
+                getString(R.string.tile_las_title),
                 null,
-                "On",
-                "Off",
+                getString(R.string.on),
+                getString(R.string.off),
                 R.drawable.ic_lock,
                 false,
                 chatId,
-                "This feature allows you to lock assistant window. When assistant window is locked, it can not be closed by pressing back button or swiping window down. But you can use 'exit' button. This feature can prevent accidental closing of assistant window and losing unsaved conversation."
+                getString(R.string.tile_las_desc)
             )
 
             tileCustomize = TileFragment.newInstance(
                 false,
                 false,
-                "Customize Assistant",
+                getString(R.string.tile_assistant_customize_title),
                 null,
-                "Customize Assistant",
+                getString(R.string.tile_assistant_customize_title),
                 null,
                 R.drawable.ic_experiment,
                 false,
                 chatId,
-                "This feature allows you change assistant's name and avatar for individual chat or globally."
+                getString(R.string.tile_assistant_customize_desc)
             )
 
             tileDeleteData = TileFragment.newInstance(
                 false,
                 false,
-                "Delete data",
+                getString(R.string.tile_delete_data_title),
                 null,
-                "Delete diagnostics data",
+                getString(R.string.tile_delete_data_subtitle),
                 null,
                 R.drawable.ic_delete,
                 false,
                 chatId,
-                "This feature allows you to delete all diagnostics data collected by SpeakGPT. This action can not be undone."
+                getString(R.string.tile_delete_data_desc)
             )
 
             val IID = if (installationId == "00000000-0000-0000-0000-000000000000" || installationId == "") "<Not assigned>" else installationId
@@ -851,10 +819,10 @@ class SettingsV2Activity : FragmentActivity() {
             tileSendDiagnosticData = TileFragment.newInstance(
                 usageEnabled,
                 false,
-                "Usage and diagnostics",
-                "Usage and diagnostics",
-                "On",
-                "Off",
+                getString(R.string.tile_uad_title),
+                null,
+                getString(R.string.on),
+                getString(R.string.off),
                 R.drawable.ic_send,
                 false,
                 chatId,
@@ -864,27 +832,27 @@ class SettingsV2Activity : FragmentActivity() {
             tileGetNewInstallationId = TileFragment.newInstance(
                 false,
                 false,
-                "Get new installation ID",
+                getString(R.string.tile_assign_iid_title),
                 null,
-                "Get new installation ID",
+                getString(R.string.tile_assign_iid_title),
                 null,
                 R.drawable.ic_privacy,
                 false,
                 chatId,
-                "This feature allows you to get new installation ID."
+                getString(R.string.tile_assign_iid_desc)
             )
 
             tileRevokeAuthorization = TileFragment.newInstance(
                 false,
                 false,
-                "Revoke authorization",
+                getString(R.string.tile_revoke_authorization_title),
                 null,
                 if (installationId == "00000000-0000-0000-0000-000000000000" || installationId == "") "Authorization revoked" else "Revoke authorization",
                 null,
                 R.drawable.ic_close,
                 installationId == "00000000-0000-0000-0000-000000000000" || installationId == "",
                 chatId,
-                "This feature allows you to revoke authorization. After you revoke your authorization this app will stop collecting data and delete data from their servers. Logging will be disabled so it will be harder to find and report bugs."
+                getString(R.string.tile_revoke_authorization_desc)
             )
         }
 
@@ -901,79 +869,79 @@ class SettingsV2Activity : FragmentActivity() {
             tileCrashLog = TileFragment.newInstance(
                 false,
                 false,
-                "Crash log",
-                "Crash log",
+                getString(R.string.tile_crash_log_title),
+                null,
                 logView,
                 logView,
                 R.drawable.ic_bug,
                 installationId == "00000000-0000-0000-0000-000000000000" || installationId == "",
                 chatId,
-                "This feature allows you to view crash log."
+                getString(R.string.tile_crash_log_desc)
             )
 
             tileAdsLog = TileFragment.newInstance(
                 false,
                 false,
-                "Ads log",
-                "Ads log",
+                getString(R.string.tile_ads_log_title),
+                null,
                 logView,
                 logView,
                 R.drawable.ic_bug,
                 installationId == "00000000-0000-0000-0000-000000000000" || installationId == "",
                 chatId,
-                "This feature allows you to view ads log. Usually you don't need to use this feature."
+                getString(R.string.tile_ads_log_desc)
             )
 
             tileEventLog = TileFragment.newInstance(
                 false,
                 false,
-                "Event log",
-                "Event log",
+                getString(R.string.tile_events_log_title),
+                null,
                 logView,
                 logView,
                 R.drawable.ic_bug,
                 installationId == "00000000-0000-0000-0000-000000000000" || installationId == "",
                 chatId,
-                "This feature allows you to view event log. We do not collect this log as it may contain sensitive information. Use this log if you want to report a bug."
+                getString(R.string.tile_events_log_desc)
             )
 
             tileDebugTestAds = TileFragment.newInstance(
                 preferences?.getDebugTestAds()!!,
                 true,
                 "debug.test.ads",
-                "debug.test.ads",
-                "On",
-                "Off",
+                null,
+                getString(R.string.on),
+                getString(R.string.off),
                 R.drawable.ic_bug,
                 !testAdsReady,
                 chatId,
-                "This feature allows you to enable test ads. Use this feature while development process to avoid ads policy violations. Available only for Teslasoft ID accounts with dev permissions. Ads ID: $adId"
+                "[DEVS ONLY] This feature allows you to enable test ads. Use this feature while development process to avoid ads policy violations. Available only for Teslasoft ID accounts with dev permissions. Ads ID: $adId"
             )
 
             tileChatsAutoSave = TileFragment.newInstance(
                 preferences?.getChatsAutosave() == true,
                 true,
-                "Auto-save chats",
+                getString(R.string.tile_autosave_title),
                 null,
-                "On",
-                "Off",
+                getString(R.string.on),
+                getString(R.string.off),
                 R.drawable.ic_experiment,
                 false,
                 chatId,
-                "This feature allows you to enable auto-save chats in assistant window. When auto-save chats is enabled, SpeakGPT will save all chats to the device storage."
+                getString(R.string.tile_autosave_desc)
             )
 
             tileShowChatErrors = TileFragment.newInstance(
                 preferences?.showChatErrors() == true,
                 true,
-                "Show chat errors",
+                getString(R.string.tile_show_chat_errors_title),
                 null,
-                "On",
-                "Off",
+                getString(R.string.on),
+                getString(R.string.off),
                 R.drawable.ic_experiment,
                 false,
                 chatId,
-                "This feature allows you to enable chat errors. When chat errors is enabled, SpeakGPT will show errors in chat of occurred."
+                getString(R.string.tile_show_chat_errors_desc)
             )
         }
 
@@ -1051,7 +1019,7 @@ class SettingsV2Activity : FragmentActivity() {
                     "<Google Play Services error>"
                 }
 
-                tileDebugTestAds?.setFunctionDesc("This feature allows you to enable test ads. Use this feature while development process to avoid ads policy violations. Available only for Teslasoft ID accounts with dev permissions. Ads ID: $adId\nAndroid ID: $androidId")
+                tileDebugTestAds?.setFunctionDesc("[DEVS ONLY] This feature allows you to enable test ads. Use this feature while development process to avoid ads policy violations. Available only for Teslasoft ID accounts with dev permissions. Ads ID: $adId\nAndroid ID: $androidId")
             }
         }
         crearEventoHilo.start()
@@ -1331,15 +1299,15 @@ class SettingsV2Activity : FragmentActivity() {
 
         tileClearChat?.setOnTileClickListener {
             MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
-                .setTitle("Confirm")
-                .setMessage("Are you sure? This action can not be undone.")
-                .setPositiveButton("Clear") { _, _ ->
+                .setTitle(R.string.label_clear_chat)
+                .setMessage(R.string.msg_clear_chat)
+                .setPositiveButton(R.string.yes) { _, _ ->
                     run {
                         ChatPreferences.getChatPreferences().clearChat(this, chatId)
-                        Toast.makeText(this, "Cleared", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, getString(R.string.submsg_chat_cleared), Toast.LENGTH_SHORT).show()
                     }
                 }
-                .setNegativeButton("Cancel") { _, _ -> }
+                .setNegativeButton(R.string.no) { _, _ -> }
                 .show()
         }
 
@@ -1349,39 +1317,39 @@ class SettingsV2Activity : FragmentActivity() {
 
         tileDeleteData?.setOnTileClickListener {
             MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
-                .setTitle("Delete data")
-                .setMessage("Are you sure you want to delete your data? After data deletion request is sent all logs will be deleted and all analytics data sent to us will be deleted from our servers.")
-                .setPositiveButton("Delete") { _, _ ->
+                .setTitle(R.string.label_delete_data)
+                .setMessage(R.string.msg_delete_data)
+                .setPositiveButton(R.string.yes) { _, _ ->
                     run {
                         Logger.deleteAllLogs(this)
                         // TODO: Send deletion request when API will be ready
-                        Toast.makeText(this, "Data deleted", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, getString(R.string.submsg_data_deletion), Toast.LENGTH_SHORT).show()
                         resetDeviceId()
                     }
                 }
-                .setNegativeButton("Cancel") { _, _ -> }
+                .setNegativeButton(R.string.no) { _, _ -> }
                 .show()
         }
 
         tileSendDiagnosticData?.setOnTileClickListener {
             if (getSharedPreferences("consent", MODE_PRIVATE).getBoolean("usage", false)) {
                 MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
-                    .setTitle("Usage and diagnostics")
-                    .setMessage("Would you like to opt out from usage and diagnostics data collection? This data is used to improve SpeakGPT and fix bugs. Please note that SpeakGPT may still create logs on your device. Logs are saved locally. If you want to prevent this app from writing logs, please revoke authorization.")
-                    .setPositiveButton("Opt out") { _, _ ->
+                    .setTitle(R.string.label_uad)
+                    .setMessage(R.string.msg_uad)
+                    .setPositiveButton(R.string.yes) { _, _ ->
                         run {
                             getSharedPreferences("consent", MODE_PRIVATE).edit().putBoolean("usage", false).apply()
                             tileSendDiagnosticData?.setChecked(false)
                             restartActivity()
                         }
                     }
-                    .setNegativeButton("Cancel") { _, _ -> }
+                    .setNegativeButton(R.string.no) { _, _ -> }
                     .show()
             } else {
                 MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
-                    .setTitle("Usage and diagnostics")
-                    .setMessage("Would you like to enable usage and diagnostics data collection? We may collect crash logs, usage info, events in order to improve SpeakGPT and fix bugs.")
-                    .setPositiveButton("Agree and enable") { _, _ ->
+                    .setTitle(R.string.label_uad_optin)
+                    .setMessage(R.string.mgs_uad_optin)
+                    .setPositiveButton(R.string.btn_agree_and_enable) { _, _ ->
                         run {
                             getSharedPreferences("consent", MODE_PRIVATE).edit().putBoolean("usage", true).apply()
                             DeviceInfoProvider.assignInstallationId(this)
@@ -1389,36 +1357,36 @@ class SettingsV2Activity : FragmentActivity() {
                             restartActivity()
                         }
                     }
-                    .setNegativeButton("Cancel") { _, _ -> }
+                    .setNegativeButton(R.string.cancel) { _, _ -> }
                     .show()
             }
         }
 
         tileRevokeAuthorization?.setOnTileClickListener {
             MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
-                .setTitle("Revoke authorization")
-                .setMessage("Are you sure you want to revoke authorization? After you revoke your authorization this app will stop collecting data and delete data from their servers. This action will prevent this app from writing logs (even locally). Installation ID will be removed. Once you enable usage and diagnostics this setting will be reset. This option may prevent you from bug reporting.")
-                .setPositiveButton("Revoke") { _, _ ->
+                .setTitle(R.string.label_revoke_authorization)
+                .setMessage("Are you sure you want to revoke authorization? After you revoke your authorization this app will stop collecting data and delete data from their servers. This action will prevent this app from writing logs (even locally). Installation ID will be removed. Once you enable usage and diagnostics this setting will be reset. This option may prevent you from bug reporting. Would you like to continue?")
+                .setPositiveButton(R.string.yes) { _, _ ->
                     run {
                         DeviceInfoProvider.revokeAuthorization(this)
                         restartActivity()
                     }
                 }
-                .setNegativeButton("Cancel") { _, _ -> }
+                .setNegativeButton(R.string.no) { _, _ -> }
                 .show()
         }
 
         tileGetNewInstallationId?.setOnTileClickListener {
             MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
-                .setTitle("Get new installation ID")
-                .setMessage("After this action a new installation ID will be assigned. Authorization will be granted and SpeakGPT will continue to write logs. Logs will not be sent to us unless 'Usage and diagnostics' option is enabled. Are you sure you want to continue?")
-                .setPositiveButton("Get new ID") { _, _ ->
+                .setTitle(R.string.label_iid_assign)
+                .setMessage(R.string.msg_iid_assign)
+                .setPositiveButton(R.string.btn_iid_assign) { _, _ ->
                     run {
                         DeviceInfoProvider.resetInstallationId(this)
                         restartActivity()
                     }
                 }
-                .setNegativeButton("Cancel") { _, _ -> }
+                .setNegativeButton(R.string.cancel) { _, _ -> }
                 .show()
         }
 
@@ -1481,15 +1449,15 @@ class SettingsV2Activity : FragmentActivity() {
 
     private fun resetDeviceId() {
         MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
-            .setTitle("Reset installation ID?")
-            .setMessage("Would you like to reset installation ID additionally? After you do this all info we collected will no longer be associated with your device.")
-            .setPositiveButton("Reset") { _, _ ->
+            .setTitle(R.string.label_iid_reset)
+            .setMessage(R.string.msg_iid_reset)
+            .setPositiveButton(R.string.btn_reset) { _, _ ->
                 run {
                     DeviceInfoProvider.resetInstallationId(this)
                     restartActivity()
                 }
             }
-            .setNegativeButton("Cancel") { _, _ -> }
+            .setNegativeButton(R.string.cancel) { _, _ -> }
             .show()
     }
 
@@ -1505,15 +1473,19 @@ class SettingsV2Activity : FragmentActivity() {
 
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack() == true) {
-            window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
-            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+            if (android.os.Build.VERSION.SDK_INT <= 34) {
+                window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+                window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+            }
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
             root?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
             btnBack?.setBackgroundResource(R.drawable.btn_accent_icon_large_amoled)
             threadLoading?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
         } else {
-            window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
-            window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
+            if (android.os.Build.VERSION.SDK_INT <= 34) {
+                window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
+                window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
+            }
             window.setBackgroundDrawableResource(R.color.window_background)
             root?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
             btnBack?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_icon_large, theme)!!)

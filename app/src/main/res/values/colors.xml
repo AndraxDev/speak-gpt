@@ -44,8 +44,8 @@
     <color name="icon_foreground">@color/accent_900</color>
     <color name="bottom_navbar">@color/accent_900</color>
     <color name="button">@color/accent_900</color>
-    <color name="error">#FFDB4437</color>
-    <color name="success">#136005</color>
+    <color name="error">#452220</color>
+    <color name="success">#263E22</color>
     <color name="gray">#99999999</color>
     <color name="window_background">#fdfbff</color>
     <color name="disabled">#DD666666</color>
@@ -66,7 +66,7 @@
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/accent_900</color>
     <color name="system_bars">@color/accent_100</color>
     <color name="marker">#15000000</color>
-    <color name="warn_bg">#33DB4437</color>
+    <color name="warn_bg">#33CA746C</color>
     <color name="disabled_background">#66666666</color>
     <color name="disabled_icon">#FF666666</color>
 

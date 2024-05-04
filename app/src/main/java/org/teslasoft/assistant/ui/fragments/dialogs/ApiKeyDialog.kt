@@ -29,6 +29,7 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.teslasoft.assistant.R
 
+@Deprecated("Deprecated in favor of API endpoints model.", ReplaceWith("org.teslasoft.assistant.ui.fragments.dialogs.EditApiEndpointDialogFragment"))
 class ApiKeyDialog : DialogFragment() {
     companion object {
         fun newInstance(name: String) : ApiKeyDialog {
@@ -87,8 +88,8 @@ class ApiKeyDialog : DialogFragment() {
 
         builder!!.setView(view)
             .setCancelable(false)
-            .setPositiveButton("OK") { _, _ -> validateForm() }
-            .setNegativeButton("Cancel") { _, _ ->  }
+            .setPositiveButton(R.string.btn_ok) { _, _ -> validateForm() }
+            .setNegativeButton(R.string.btn_cancel) { _, _ -> }
 
         return builder!!.create()
     }

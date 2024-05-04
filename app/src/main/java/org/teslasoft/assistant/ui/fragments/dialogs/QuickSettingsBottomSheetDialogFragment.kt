@@ -18,7 +18,6 @@ package org.teslasoft.assistant.ui.fragments.dialogs
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -31,7 +30,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.addTextChangedListener
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import org.teslasoft.assistant.Config
 import org.teslasoft.assistant.R
@@ -42,8 +40,6 @@ import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
 import org.teslasoft.assistant.ui.activities.ApiEndpointsListActivity
 import org.teslasoft.assistant.ui.activities.LogitBiasConfigListActivity
-import org.teslasoft.assistant.ui.adapters.ModelListAdapter
-import org.teslasoft.assistant.util.Hash
 import org.teslasoft.core.api.network.RequestNetwork
 
 class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
@@ -130,7 +126,7 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         }
 
         override fun onErrorResponse(tag: String, message: String) {
-            textCost?.text = "Cost: Error calculating cost. Please check your connection."
+            textCost?.text = getString(R.string.msg_error_calculating_cost)
         }
     }
 
@@ -142,9 +138,9 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
             if (configId != null) {
                 preferences?.setLogitBiasesConfigId(configId)
                 textLogitBiasesConfig?.text = if (configId != ""){
-                    logitBiasConfigPreferences?.getConfigById(configId)?.get("label") ?: "Tap to set"
+                    logitBiasConfigPreferences?.getConfigById(configId)?.get("label") ?: getString(R.string.label_tap_to_set)
                 } else {
-                    "Tap to set"
+                    getString(R.string.label_tap_to_set)
                 }
                 shouldForceUpdate = true
             }
@@ -159,7 +155,7 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
             if (apiEndpointId != null) {
                 preferences?.setApiEndpointId(apiEndpointId)
                 apiEndpoint = apiEndpointPreferences?.getApiEndpoint(requireContext(), apiEndpointId)
-                textHost?.text = apiEndpoint?.host ?: "Tap to set"
+                textHost?.text = apiEndpoint?.host ?: getString(R.string.label_tap_to_set)
                 shouldForceUpdate = true
             }
         }
@@ -231,12 +227,12 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         }
 
         if (inPrice == 0.0 && outPrice == 0.0) {
-            textCost?.text = "Cost: <SpeakGPT hasn't enough data to calculate cost for this model: ${preferences?.getModel()}. Look for documentation and calculate cost manually based on the usage above.>"
+            textCost?.text = getString(R.string.msg_cost_not_enough_data)
         } else {
             val costIn = inPrice * usageIn
             val costOut = outPrice * usageOut
             val costTotal = costIn + costOut
-            textCost?.text = String.format("Cost: $%.5f in / $%.5f out\nTotal: $%.5f", costIn, costOut, costTotal)
+            textCost?.text = String.format(getString(R.string.cost_template), costIn, costOut, costTotal)
         }
         return hashMapOf()
     }
@@ -285,11 +281,11 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         textCost = view.findViewById(R.id.text_cost)
         btnCostInfo = view.findViewById(R.id.btn_cost_info)
 
-        textHost?.text = apiEndpoint?.host ?: "Tap to set"
+        textHost?.text = apiEndpoint?.host ?: getString(R.string.label_tap_to_set)
         textLogitBiasesConfig?.text = if (preferences?.getLogitBiasesConfigId() != ""){
-            logitBiasConfigPreferences?.getConfigById(preferences?.getLogitBiasesConfigId()!!)?.get("label") ?: "Tap to set"
+            logitBiasConfigPreferences?.getConfigById(preferences?.getLogitBiasesConfigId()!!)?.get("label") ?: getString(R.string.label_tap_to_set)
         } else {
-            "Tap to set"
+            getString(R.string.label_tap_to_set)
         }
 
         btnCostInfo?.setOnClickListener {
@@ -304,8 +300,8 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         requestNetwork?.setHeaders(hashMapOf("Authorization" to "Bearer " + apiEndpoint?.apiKey))
         requestNetwork?.startRequestNetwork("GET", apiEndpoint?.host + "models", "A", requestListener)
 
-        textUsage?.text = "Usage (tokens): $usageIn in / $usageOut out"
-        textCost?.text = "Cost: Loading..."
+        textUsage?.text = getString(R.string.cost_counter_usage).format(usageIn.toString(), usageOut.toString())
+        textCost?.text = getString(R.string.cost_loading)
 
         temperatureSeekbar?.value = preferences?.getTemperature()!! * 10
         topPSeekbar?.value = preferences?.getTopP()!! * 10

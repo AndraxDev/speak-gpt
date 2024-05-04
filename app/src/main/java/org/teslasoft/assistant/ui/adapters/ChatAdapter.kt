@@ -35,9 +35,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
-
 import androidx.fragment.app.FragmentActivity
-
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.util.StaticAvatarParser
@@ -73,10 +71,7 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActiv
         val username: TextView = mView.findViewById(R.id.username)
         dalleImage = mView.findViewById(R.id.dalle_image)
         btnCopy = mView.findViewById(R.id.btn_copy)
-
         btnEdit = mView.findViewById(R.id.btn_edit)
-
-        // btnCopy?.background = getSurface3Drawable(AppCompatResources.getDrawable(mContext, R.drawable.btn_accent_tonal)!!, mContext)
 
         super.getView(position, mView, parent)
 
@@ -114,7 +109,7 @@ class ChatAdapter(data: ArrayList<HashMap<String, Any>>?, context: FragmentActiv
                 ui?.setBackgroundColor(getSurfaceColor(mContext))
             } else {
                 icon?.setImageResource(R.drawable.ic_user)
-                username.text = "User"
+                username.text = mContext.getString(R.string.chat_role_user)
                 btnCopy?.visibility = View.VISIBLE
                 ui?.setBackgroundColor(getSurface2Color(mContext))
             }

@@ -36,7 +36,6 @@ import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 
-
 class TileFragment : Fragment() {
 
     companion object {

@@ -22,16 +22,12 @@ import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
-
 import okio.IOException
-import org.teslasoft.assistant.Config
-
 import java.lang.String.valueOf
 import java.security.KeyStore
 import java.security.SecureRandom
 import java.util.*
 import java.util.concurrent.TimeUnit
-
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSocketFactory
 import javax.net.ssl.TrustManagerFactory

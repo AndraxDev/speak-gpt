@@ -44,7 +44,6 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.util.Base64
 
-
 class ImageBrowserActivity : FragmentActivity() {
 
     private var image: ImageView? = null
@@ -60,8 +59,10 @@ class ImageBrowserActivity : FragmentActivity() {
 
         setContentView(R.layout.activity_imageview)
 
-        window.navigationBarColor = 0xFF000000.toInt()
-        window.statusBarColor = 0xFF000000.toInt()
+        if (android.os.Build.VERSION.SDK_INT <= 34) {
+            window.navigationBarColor = 0xFF000000.toInt()
+            window.statusBarColor = 0xFF000000.toInt()
+        }
 
         image = findViewById(R.id.image)
         btnDownload = findViewById(R.id.btn_download)
@@ -149,12 +150,12 @@ class ImageBrowserActivity : FragmentActivity() {
                     )
                 }
             }
-            Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.message_saved), Toast.LENGTH_SHORT).show()
         } catch (e: FileNotFoundException) {
-            Toast.makeText(this, "Save failed", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.message_save_failed), Toast.LENGTH_SHORT).show()
             e.printStackTrace()
         } catch (e: IOException) {
-            Toast.makeText(this, "Save failed", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.message_save_failed), Toast.LENGTH_SHORT).show()
             e.printStackTrace()
         }
     }

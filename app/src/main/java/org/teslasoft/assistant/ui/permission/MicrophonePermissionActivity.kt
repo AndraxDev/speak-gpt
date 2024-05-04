@@ -20,13 +20,10 @@ import android.Manifest
 import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.os.Bundle
-
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
-
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-
 import org.teslasoft.assistant.R
 
 class MicrophonePermissionActivity : FragmentActivity() {
@@ -42,8 +39,8 @@ class MicrophonePermissionActivity : FragmentActivity() {
                 finish()
             } else {
                 MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
-                    .setTitle("Permission denied")
-                    .setMessage("You can not use this feature because app do not have microphone access.")
+                    .setTitle(R.string.label_permission_denied)
+                    .setMessage(R.string.msg_microphone_denied)
                     .setCancelable(false)
                     .setPositiveButton(android.R.string.ok) { _: DialogInterface?, _: Int ->
                         this.setResult(RESULT_CANCELED)
@@ -61,12 +58,12 @@ class MicrophonePermissionActivity : FragmentActivity() {
             finish()
         } else if (shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
             MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
-                .setTitle("Use microphone")
-                .setMessage("SpeakGPT allows you to interact with ChatGPT via voice activation. To enable voice activation please allow this app to use your device microphone. Allow microphone access?")
+                .setTitle(R.string.label_use_microphone)
+                .setMessage(R.string.msg_use_microphone)
                 .setCancelable(false)
-                .setPositiveButton("Allow") { _: DialogInterface?, _: Int ->
+                .setPositiveButton(R.string.btn_allow) { _: DialogInterface?, _: Int ->
                     requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
-                }.setNegativeButton("No thanks") { _: DialogInterface?, _: Int ->
+                }.setNegativeButton(R.string.btn_no_thanks) { _: DialogInterface?, _: Int ->
                     this.setResult(RESULT_CANCELED)
                     finish()
                 }.show()

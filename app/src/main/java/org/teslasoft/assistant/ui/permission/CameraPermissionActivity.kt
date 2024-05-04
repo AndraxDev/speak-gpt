@@ -20,13 +20,10 @@ import android.Manifest
 import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.os.Bundle
-
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
-
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-
 import org.teslasoft.assistant.R
 
 class CameraPermissionActivity : FragmentActivity() {
@@ -42,8 +39,8 @@ class CameraPermissionActivity : FragmentActivity() {
                 finish()
             } else {
                 MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
-                    .setTitle("Permission denied")
-                    .setMessage("You can not use this feature because app do not have camera access.")
+                    .setTitle(R.string.label_permission_denied)
+                    .setMessage(R.string.msg_camera_denied)
                     .setCancelable(false)
                     .setPositiveButton(android.R.string.ok) { _: DialogInterface?, _: Int ->
                         this.setResult(RESULT_CANCELED)
@@ -61,12 +58,12 @@ class CameraPermissionActivity : FragmentActivity() {
             finish()
         } else if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
             MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
-                .setTitle("Use camera")
-                .setMessage("SpeakGPT allows you to interact with ChatGPT Vision using your photos taken directly from camera in this app. To enable camera for GPT Vision please allow us to use your camera. You can still pick your existing pictures from gallery without camera permission. Allow camera access?")
+                .setTitle(R.string.label_use_camera)
+                .setMessage(R.string.msg_use_camera)
                 .setCancelable(false)
-                .setPositiveButton("Allow") { _: DialogInterface?, _: Int ->
+                .setPositiveButton(R.string.btn_allow) { _: DialogInterface?, _: Int ->
                     requestPermissionLauncher.launch(Manifest.permission.CAMERA)
-                }.setNegativeButton("No thanks") { _: DialogInterface?, _: Int ->
+                }.setNegativeButton(R.string.btn_no_thanks) { _: DialogInterface?, _: Int ->
                     this.setResult(RESULT_CANCELED)
                     finish()
                 }.show()

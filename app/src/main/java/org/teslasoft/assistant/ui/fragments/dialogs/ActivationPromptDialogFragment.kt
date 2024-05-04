@@ -19,17 +19,13 @@ package org.teslasoft.assistant.ui.fragments.dialogs
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-
 import org.teslasoft.assistant.R
 
 class ActivationPromptDialogFragment : DialogFragment() {
@@ -47,11 +43,8 @@ class ActivationPromptDialogFragment : DialogFragment() {
     }
 
     private var builder: AlertDialog.Builder? = null
-
     private var context: Context? = null
-
     private var promptInput: EditText? = null
-
     private var listener: StateChangesListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,8 +66,8 @@ class ActivationPromptDialogFragment : DialogFragment() {
 
         builder!!.setView(view)
             .setCancelable(false)
-            .setPositiveButton("OK") { _, _ -> validateForm() }
-            .setNegativeButton("Cancel") { _, _ ->  }
+            .setPositiveButton(R.string.btn_save) { _, _ -> validateForm() }
+            .setNegativeButton(R.string.btn_cancel) { _, _ ->  }
 
         return builder!!.create()
     }

@@ -12,14 +12,14 @@
     <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
 
     <uses-sdk tools:overrideLibrary="org.teslasoft.core.auth"/>
+
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
 
     <queries>
         <intent>
-            <action
-                android:name="android.speech.RecognitionService" />
+            <action android:name="android.speech.RecognitionService" />
         </intent>
         <intent>
             <action android:name="android.intent.action.TTS_SERVICE" />
@@ -36,8 +36,7 @@
         android:theme="@style/Theme.App"
         android:name=".app.MainApplication"
         android:installLocation="auto"
-        android:enableOnBackInvokedCallback="true"
-        tools:targetApi="tiramisu">
+        android:enableOnBackInvokedCallback="true" >
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
@@ -59,11 +58,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:host="assistant.teslasoft.org"
-                    android:pathPrefix="/chat"
-                    android:scheme="https" />
-
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:host="assistant.teslasoft.org"/>
@@ -80,6 +74,7 @@
         <activity
             android:name=".ui.activities.ApiEndpointsListActivity"
             android:exported="false"
+            android:label="@string/title_api_endpoints"
             android:theme="@style/UI.Fade">
         </activity>
 
@@ -92,12 +87,14 @@
         <activity
             android:name=".ui.activities.LogitBiasConfigListActivity"
             android:exported="false"
+            android:label="@string/label_logit_bias"
             android:theme="@style/UI.Fade">
         </activity>
 
         <activity
             android:name="org.teslasoft.core.CrashHandlerActivity"
             android:exported="false"
+            android:label="App has been crashed"
             android:theme="@style/UI.Fade">
         </activity>
 
@@ -112,11 +109,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:host="assistant.teslasoft.org"
-                    android:pathPrefix="/prompts"
-                    android:scheme="https" />
-
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:host="assistant.teslasoft.org"/>
@@ -125,32 +117,10 @@
         </activity>
 
         <activity
-            android:name=".ui.activities.ConfigIdActivity"
-            android:exported="true"
-            android:theme="@style/Theme.App"
-            android:launchMode="singleTask">
-
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="assistant.teslasoft.org"
-                    android:pathPrefix="/explore"
-                    android:scheme="https" />
-
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-                <data android:host="assistant.teslasoft.org"/>
-                <data android:pathPrefix="/explore"/>
-            </intent-filter>
-        </activity>
-
-        <activity
             android:name=".ui.activities.ReportAbuseActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
+            android:label="@string/title_report_abuse"
             android:launchMode="singleTask">
         </activity>
 
@@ -158,6 +128,7 @@
             android:name=".ui.activities.TipsActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
+            android:label="@string/menu_tips"
             android:launchMode="singleTask">
         </activity>
 
@@ -165,6 +136,7 @@
             android:name=".ui.activities.ThanksActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
+            android:label="@string/title_thank_you_for_your_support"
             android:launchMode="singleTask">
         </activity>
 
@@ -172,6 +144,7 @@
             android:name=".ui.activities.RemoveAdsActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
+            android:label="@string/title_remove_ads"
             android:launchMode="singleTask">
         </activity>
 
@@ -179,6 +152,7 @@
             android:name=".ui.activities.DocumentationActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
+            android:label="@string/title_documentation"
             android:launchMode="singleTask">
         </activity>
 
@@ -186,6 +160,7 @@
             android:name="org.teslasoft.assistant.ui.onboarding.WelcomeActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
+            android:label="@string/title_welcome_to_speakgpt"
             android:launchMode="singleTask">
         </activity>
 
@@ -197,6 +172,7 @@
             android:allowTaskReparenting="true"
             android:allowEmbedded="true"
             android:excludeFromRecents="true"
+            android:label="@string/title_speakgpt_mobile_assistant"
             android:launchMode="singleTask">
 
             <intent-filter>
@@ -246,11 +222,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:host="assistant.teslasoft.org"
-                    android:pathPrefix="/assistant"
-                    android:scheme="https" />
-
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:host="assistant.teslasoft.org"/>
@@ -258,9 +229,11 @@
             </intent-filter>
         </activity>
 
+        <!-- DEPRECATED -->
         <activity
             android:name=".ui.assistant.WindowsProxy"
             android:exported="true"
+            android:enabled="false"
             android:theme="@style/UI.Fade"
             android:launchMode="singleTask">
 
@@ -296,6 +269,7 @@
             android:name=".ui.activities.AboutActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
+            android:label="@string/title_about_app"
             android:launchMode="singleTask">
         </activity>
 
@@ -303,6 +277,7 @@
             android:name="org.teslasoft.assistant.ui.onboarding.TermsActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
+            android:label="@string/title_terms_of_service"
             android:launchMode="singleTask">
         </activity>
 
@@ -310,6 +285,7 @@
             android:name="org.teslasoft.assistant.ui.onboarding.ActivationActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
+            android:label="@string/title_setup_api_endpoint"
             android:launchMode="singleTask">
         </activity>
 
@@ -317,6 +293,7 @@
             android:name=".ui.activities.SettingsActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
+            android:label="@string/settings"
             android:launchMode="singleTask">
         </activity>
 
@@ -324,6 +301,7 @@
             android:name=".ui.activities.SettingsV2Activity"
             android:exported="false"
             android:theme="@style/UI.Fade"
+            android:label="@string/settings"
             android:launchMode="singleTask">
         </activity>
 
@@ -331,6 +309,7 @@
             android:name=".ui.activities.DataSafety"
             android:exported="false"
             android:theme="@style/UI.Fade"
+            android:label="@string/label_privacy_policy"
             android:launchMode="singleTask">
         </activity>
 
@@ -338,12 +317,14 @@
             android:name=".ui.activities.LogsActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
+            android:label="@string/title_logs"
             android:launchMode="singleTask">
         </activity>
 
         <activity
             android:name=".ui.debug.DebugActivity"
-            android:exported="true"
+            android:exported="false"
+            android:enabled="false"
             android:theme="@style/UI.Fade"
             android:launchMode="singleTask">
         </activity>
@@ -352,6 +333,7 @@
             android:name=".ui.permission.MicrophonePermissionActivity"
             android:exported="false"
             android:theme="@style/Theme.Transparent"
+            android:label="@string/label_microphone_permission_requested"
             android:launchMode="singleTask">
         </activity>
 
@@ -359,6 +341,7 @@
             android:name=".ui.permission.CameraPermissionActivity"
             android:exported="false"
             android:theme="@style/Theme.Transparent"
+            android:label="@string/label_camera_permission_requested"
             android:launchMode="singleTask">
         </activity>
 
@@ -366,6 +349,7 @@
             android:name=".ui.activities.ImageBrowserActivity"
             android:exported="false"
             android:theme="@style/UI.Fade"
+            android:label="@string/label_generated_image"
             android:launchMode="singleTask">
         </activity>
 

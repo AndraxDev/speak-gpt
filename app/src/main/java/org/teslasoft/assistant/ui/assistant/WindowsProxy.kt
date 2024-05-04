@@ -23,6 +23,7 @@ import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.fragments.WindowsInstantAssistant
 
+@Deprecated("This class is deprecated and will be removed in the future.")
 class WindowsProxy : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

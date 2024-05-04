@@ -14,7 +14,6 @@
  * limitations under the License.
  **************************************************************************/
 
-
 package org.teslasoft.assistant.ui.activities
 
 import android.Manifest
@@ -154,7 +153,6 @@ import java.util.Locale
 import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration.Companion.seconds
 
-
 class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
 
     // Init UI
@@ -250,11 +248,13 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
     }
 
     private fun restoreUIState() {
-        progress?.visibility = View.GONE
-        btnMicro?.isEnabled = true
-        btnSend?.isEnabled = true
-        isRecording = false
-        btnMicro?.setImageResource(R.drawable.ic_microphone)
+        runOnUiThread {
+            progress?.visibility = View.GONE
+            btnMicro?.isEnabled = true
+            btnSend?.isEnabled = true
+            isRecording = false
+            btnMicro?.setImageResource(R.drawable.ic_microphone)
+        }
     }
 
     private suspend fun tokenizeArray() {
@@ -372,7 +372,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                             try {
                                 generateResponse(prefix + recognizedText + endSeparator, true)
                             } catch (e: CancellationException) {
-                                Toast.makeText(this@ChatActivity, "Cancelled", Toast.LENGTH_SHORT).show()
+                                restoreUIState()
                             }
                         }
                     } else {
@@ -464,8 +464,10 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() && GlobalPreferences.getPreferences(this).getAmoledPitchBlack()) {
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
-            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme)
-            window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme)
+            if (android.os.Build.VERSION.SDK_INT <= 34) {
+                window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme)
+                window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme)
+            }
             keyboardFrame?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme))
             actionBar?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme))
             activityTitle?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme))
@@ -520,8 +522,10 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
             )
         } else {
             window.setBackgroundDrawableResource(R.color.window_background)
-            window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
-            window.navigationBarColor = SurfaceColors.SURFACE_2.getColor(this)
+            if (android.os.Build.VERSION.SDK_INT <= 34) {
+                window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
+                window.navigationBarColor = SurfaceColors.SURFACE_2.getColor(this)
+            }
             keyboardFrame?.setBackgroundColor(SurfaceColors.SURFACE_2.getColor(this))
             actionBar?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
             activityTitle?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
@@ -1145,9 +1149,9 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                             this@ChatActivity,
                             R.style.App_MaterialAlertDialog
                         )
-                            .setTitle("Audio error")
-                            .setMessage("Failed to initialize microphone")
-                            .setPositiveButton("Close") { _, _ -> }
+                            .setTitle(R.string.label_audio_error)
+                            .setMessage(R.string.msg_audio_error)
+                            .setPositiveButton(R.string.btn_close) { _, _ -> }
                             .show()
                     }
 
@@ -1178,9 +1182,9 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                             this@ChatActivity,
                             R.style.App_MaterialAlertDialog
                         )
-                            .setTitle("Audio error")
-                            .setMessage("Failed to initialize microphone")
-                            .setPositiveButton("Close") { _, _ -> }
+                            .setTitle(R.string.label_audio_error)
+                            .setMessage(R.string.msg_audio_error)
+                            .setPositiveButton(R.string.btn_close) { _, _ -> }
                             .show()
                     }
 
@@ -1217,7 +1221,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                 try {
                     processRecording()
                 } catch (e: CancellationException) {
-                    Toast.makeText(this@ChatActivity, "Cancelled", Toast.LENGTH_SHORT).show()
+                    restoreUIState()
                 }
             }
         } else {
@@ -1272,7 +1276,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                         try {
                             generateResponse(prefix + transcription + endSeparator, true)
                         } catch (cancelledException: CancellationException) {
-                            Toast.makeText(this@ChatActivity, "Cancelled", Toast.LENGTH_SHORT).show()
+                            restoreUIState()
                         }
                     }
                 } else {
@@ -1387,8 +1391,9 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
 
         if (extras != null) {
             chatId = extras.getString("chatId", "")
-
             chatName = extras.getString("name", "")
+
+            this.title = chatName
         }
 
         preferences = Preferences.getPreferences(this, chatId)
@@ -1435,7 +1440,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                     try {
                         generateResponse(prompt, false)
                     } catch (cancelledException: CancellationException) {
-                        Toast.makeText(this@ChatActivity, "Cancelled", Toast.LENGTH_SHORT).show()
+                        restoreUIState()
                     }
                 }
             }
@@ -1461,9 +1466,9 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
         }
 
         MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
-            .setTitle("Debug")
+            .setTitle(R.string.label_debug)
             .setMessage(string)
-            .setPositiveButton("Close") { _, _ -> }
+            .setPositiveButton(R.string.btn_close) { _, _ -> }
             .show()
     }
 
@@ -1556,7 +1561,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                     try {
                         generateResponse(m, false)
                     } catch (cancelledException: CancellationException) {
-                        Toast.makeText(this@ChatActivity, "Cancelled", Toast.LENGTH_SHORT).show()
+                        restoreUIState()
                     }
                 }
             }
@@ -1578,7 +1583,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
             try {
                 generateImage(str)
             } catch (cancelledException: CancellationException) {
-                Toast.makeText(this@ChatActivity, "Cancelled", Toast.LENGTH_SHORT).show()
+                restoreUIState()
             }
         }
     }
@@ -1843,28 +1848,28 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
         } catch (e: Exception) {
             val response = when {
                 e.stackTraceToString().contains("does not exist") -> {
-                    "Looks like this model (${model}) is not available to you right now. It can be because of high demand or this model is currently in limited beta. If you are using a fine-tuned model, please make sure you entered correct model name. Usually model starts with 'model_name:ft-' and contains original model name, organization name and timestamp. Example: ada:ft-organization_name:model_name-YYYY-MM-DD-hh-mm-ss."
+                    String.format(getString(R.string.prompt_model_not_available), model)
                 }
                 e.stackTraceToString().contains("Connect timeout has expired") || e.stackTraceToString().contains("SocketTimeoutException") -> {
-                    "Could not connect to the server. It may happen when your Internet speed is slow or too many users are using this model at the same time. Try to switch to another model."
+                    getString(R.string.prompt_timed_out)
                 }
                 e.stackTraceToString().contains("This model's maximum") -> {
-                    "Too many tokens. It is an internal error, please report it. Also try to truncate your input. Sometimes it may help."
+                    getString(R.string.prompt_max_tokens_error)
                 }
                 e.stackTraceToString().contains("No address associated with hostname") -> {
-                    "You are currently offline. Please check your connection and try again."
+                    getString(R.string.prompt_offline)
                 }
                 e.stackTraceToString().contains("Incorrect API key") -> {
-                    "Your API key is incorrect. Change it in Settings > Change API key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked."
+                    getString(R.string.prompt_key_invalid)
                 }
                 e.stackTraceToString().contains("you must provide a model") -> {
-                    "No valid model is set in settings. Please change the model and try again."
+                    getString(R.string.prompt_no_model)
                 }
                 e.stackTraceToString().contains("Software caused connection abort") -> {
-                    "\n\n[error] An error occurred while generating response. It may be due to a weak connection or high demand. Try to switch to another model or try again later."
+                    getString(R.string.prompt_error_unknown)
                 }
                 e.stackTraceToString().contains("You exceeded your current quota") -> {
-                    "You exceeded your current quota. If you had free trial usage please add payment info. Also please check your usage limits. You can change your limits in Account settings."
+                    getString(R.string.prompt_quota_reached)
                 }
                 else -> {
                     e.stackTraceToString() + "\n\n" + e.message
@@ -1872,7 +1877,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
             }
 
             if (preferences?.showChatErrors() == true) {
-                messages[messages.size - 1]["message"] = "${messages[messages.size - 1]["message"]}\n\nAn error has been occurred during generation. See the error details below:\n\n$response"
+                messages[messages.size - 1]["message"] = "${messages[messages.size - 1]["message"]}\n\n${getString(R.string.prompt_show_error)}\n\n$response"
                 adapter?.notifyDataSetChanged()
             }
 
@@ -2105,26 +2110,20 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                             // resetting media player instance to evade problems
                             mediaPlayer?.reset()
 
-                            // In case you run into issues with threading consider new instance like:
-                            // MediaPlayer mediaPlayer = new MediaPlayer();
-
-                            // Tried passing path directly, but kept getting
-                            // "Prepare failed.: status=0x1"
-                            // so using file descriptor instead
                             val fis = FileInputStream(tempMp3)
-                            mediaPlayer?.setDataSource(fis.getFD())
+                            mediaPlayer?.setDataSource(fis.fd)
                             mediaPlayer?.prepare()
                             mediaPlayer?.start()
                         } catch (ex: IOException) {
                             MaterialAlertDialogBuilder(this@ChatActivity, R.style.App_MaterialAlertDialog)
-                                .setTitle("Audio error")
+                                .setTitle(R.string.label_audio_error)
+                                .setPositiveButton(R.string.btn_close) { _, _ -> }
                                 .setMessage(ex.stackTraceToString())
-                                .setPositiveButton("Close") { _, _ -> }
                                 .show()
                         }
                     }
                 } catch (e: CancellationException) {
-                    Toast.makeText(this@ChatActivity, "Cancelled", Toast.LENGTH_SHORT).show()
+                    restoreUIState()
                 }
             }
         }
@@ -2209,23 +2208,23 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                 putMessage(
                     when {
                         e.stackTraceToString().contains("Your request was rejected") -> {
-                            "Your prompt contains inappropriate content and can not be processed. We strive to make AI safe and relevant for everyone."
+                            getString(R.string.prompt_rejected)
                         }
 
                         e.stackTraceToString().contains("No address associated with hostname") -> {
-                            "You are currently offline. Please check your connection and try again.";
+                            getString(R.string.prompt_offline)
                         }
 
                         e.stackTraceToString().contains("Incorrect API key") -> {
-                            "Your API key is incorrect. Change it in Settings > Change OpenAI key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked.";
+                            getString(R.string.prompt_key_invalid)
                         }
 
                         e.stackTraceToString().contains("Software caused connection abort") -> {
-                            "An error occurred while generating response. It may be due to a weak connection or high demand. Try again later.";
+                            getString(R.string.prompt_error_unknown)
                         }
 
                         e.stackTraceToString().contains("You exceeded your current quota") -> {
-                            "You exceeded your current quota. If you had free trial usage please add payment info. Also please check your usage limits. You can change your limits in Account settings."
+                            getString(R.string.prompt_quota_reached)
                         }
 
                         else -> {

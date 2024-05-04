@@ -31,7 +31,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.Animation
@@ -65,7 +64,6 @@ import org.teslasoft.assistant.ui.fragments.tabs.ChatsListFragment
 import org.teslasoft.assistant.ui.fragments.tabs.PromptsFragment
 import org.teslasoft.core.api.network.RequestNetwork
 import java.io.IOException
-
 
 class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener {
     private var navigationBar: BottomNavigationView? = null
@@ -170,12 +168,12 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                     debuggerWindow?.visibility = View.GONE
                 } else {
                     MaterialAlertDialogBuilder(this@MainActivity)
-                        .setTitle("Confirm exit")
-                        .setMessage("Do you want to exit?")
-                        .setPositiveButton("Yes") { _, _ ->
+                        .setTitle(R.string.label_confirm_exit)
+                        .setMessage(R.string.msg_confirm_exit)
+                        .setPositiveButton(R.string.yes) { _, _ ->
                             finish()
                         }
-                        .setNegativeButton("No") { _, _ -> }
+                        .setNegativeButton(R.string.no) { _, _ -> }
                         .show()
                 }
             }
@@ -186,12 +184,12 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                         debuggerWindow?.visibility = View.GONE
                     } else {
                         MaterialAlertDialogBuilder(this@MainActivity)
-                            .setTitle("Confirm exit")
-                            .setMessage("Do you want to exit?")
-                            .setPositiveButton("Yes") { _, _ ->
+                            .setTitle(R.string.label_confirm_exit)
+                            .setMessage(R.string.msg_confirm_exit)
+                            .setPositiveButton(R.string.yes) { _, _ ->
                                 finish()
                             }
-                            .setNegativeButton("No") { _, _ -> }
+                            .setNegativeButton(R.string.no) { _, _ -> }
                             .show()
                     }
                 }
@@ -227,7 +225,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
             DeviceInfoProvider.assignInstallationId(this)
 
             runOnUiThread {
-
                 navigationBar!!.setOnItemSelectedListener(NavigationBarView.OnItemSelectedListener { item: MenuItem ->
                     if (!isAnimating) {
                         isAnimating = true
@@ -262,6 +259,8 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                 val installationId = DeviceInfoProvider.getInstallationId(this)
                 val androidId = DeviceInfoProvider.getAndroidId(this)
 
+                Logger.clearAdsLog(this)
+
                 if (preferences!!.getAdsEnabled()) {
                     requestNetwork = RequestNetwork(this)
                     requestNetwork?.startRequestNetwork("GET", "${API_ENDPOINT}/checkForDonation?did=${installationId}", "IID", requestListener)
@@ -287,7 +286,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                         } else {
                             MaterialAlertDialogBuilder(this)
                                 .setMessage("This component is disabled by the component manager.")
-                                .setPositiveButton("Close") { _, _ -> }
+                                .setPositiveButton(R.string.btn_close) { _, _ -> }
                                 .show()
                         }
                     }
@@ -410,8 +409,10 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
 
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack()!!) {
-            window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme)
-            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+            if (android.os.Build.VERSION.SDK_INT <= 34) {
+                window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme)
+                window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+            }
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
             root?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
             navigationBar!!.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme))
@@ -442,8 +443,10 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                 btnSwitchAds?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_600, theme))
             }
         } else {
-            window.navigationBarColor = SurfaceColors.SURFACE_3.getColor(this)
-            window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
+            if (android.os.Build.VERSION.SDK_INT <= 34) {
+                window.navigationBarColor = SurfaceColors.SURFACE_3.getColor(this)
+                window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
+            }
             window.setBackgroundDrawableResource(R.color.window_background)
             root?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
             navigationBar!!.setBackgroundColor(SurfaceColors.SURFACE_3.getColor(this))
@@ -481,12 +484,16 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
 
     private fun preloadAmoled() {
         if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack()!!) {
-            window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
-            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+            if (android.os.Build.VERSION.SDK_INT <= 34) {
+                window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
+                window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+            }
             threadLoader?.background = ResourcesCompat.getDrawable(resources, R.color.amoled_window_background, null)
         } else {
-            window.navigationBarColor = SurfaceColors.SURFACE_3.getColor(this)
-            window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
+            if (android.os.Build.VERSION.SDK_INT <= 34) {
+                window.navigationBarColor = SurfaceColors.SURFACE_3.getColor(this)
+                window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
+            }
             threadLoader?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
         }
     }
@@ -628,7 +635,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     }
 
     private fun animationListenerCallback(
-        fragmentManager: FragmentManager,
         layout1: ConstraintLayout,
         layout2: ConstraintLayout,
         layoutToShow: ConstraintLayout,
@@ -640,15 +646,15 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         layoutToShow.alpha = 0f
 
         if (fragment1 != null) {
-            hideFragment(fragmentManager, fragment1)
+            hideFragment(supportFragmentManager, fragment1)
         }
 
         if (fragment2 != null) {
-            hideFragment(fragmentManager, fragment2)
+            hideFragment(supportFragmentManager, fragment2)
         }
 
         if (fragmentToShow != null) {
-            showFragment(fragmentManager, fragmentToShow)
+            showFragment(supportFragmentManager, fragmentToShow)
         }
 
         layoutToShow.animate()?.setDuration(150)?.alpha(1f)
@@ -698,7 +704,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                 Thread {
                     runOnUiThread {
                         animationListenerCallback(
-                            supportFragmentManager,
                             fragmentPrompts!!,
                             fragmentTips!!,
                             fragmentChats!!,
@@ -717,7 +722,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                 Thread {
                     runOnUiThread {
                         animationListenerCallback(
-                            supportFragmentManager,
                             fragmentTips!!,
                             fragmentChats!!,
                             fragmentPrompts!!,
@@ -736,7 +740,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                 Thread {
                     runOnUiThread {
                         animationListenerCallback(
-                            supportFragmentManager,
                             fragmentPrompts!!,
                             fragmentChats!!,
                             fragmentTips!!,

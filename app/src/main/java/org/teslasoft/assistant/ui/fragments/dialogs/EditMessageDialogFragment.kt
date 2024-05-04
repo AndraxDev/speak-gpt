@@ -23,12 +23,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-
 import org.teslasoft.assistant.R
 
 class EditMessageDialogFragment : DialogFragment() {
@@ -75,16 +72,16 @@ class EditMessageDialogFragment : DialogFragment() {
 
         builder!!.setView(view)
             .setCancelable(false)
-            .setPositiveButton("Save") { _, _ -> listener!!.onEdit(promptInput?.text.toString(), requireArguments().getInt("position")) }
-            .setNeutralButton("Delete") { _, _ -> run {
+            .setPositiveButton(R.string.btn_save) { _, _ -> listener!!.onEdit(promptInput?.text.toString(), requireArguments().getInt("position")) }
+            .setNeutralButton(R.string.btn_delete) { _, _ -> run {
                 MaterialAlertDialogBuilder(this.requireContext(), R.style.App_MaterialAlertDialog)
-                    .setTitle("Delete message")
-                    .setMessage("Are you sure you want to delete this message?")
-                    .setPositiveButton("Yes") { _, _ -> listener!!.onDelete(requireArguments().getInt("position")) }
-                    .setNegativeButton("No") { _, _ ->  }
+                    .setTitle(R.string.label_delete_message)
+                    .setMessage(R.string.msg_delete_message)
+                    .setPositiveButton(R.string.yes) { _, _ -> listener!!.onDelete(requireArguments().getInt("position")) }
+                    .setNegativeButton(R.string.no) { _, _ ->  }
                     .show()
-            } }
-            .setNegativeButton("Cancel") { _, _ ->  }
+            }}
+            .setNegativeButton(R.string.btn_cancel) { _, _ ->  }
 
         return builder!!.create()
     }

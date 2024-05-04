@@ -7,14 +7,18 @@ plugins {
 
 android {
     namespace 'org.teslasoft.assistant'
-    compileSdk 34
+    compileSdkPreview "VanillaIceCream"
+
+    defaultConfig {
+        targetSdkPreview "VanillaIceCream"
+    }
 
     defaultConfig {
         applicationId "org.teslasoft.assistant"
         minSdk 28
-        targetSdk 34
-        versionCode 400
-        versionName "4.0"
+        targetSdk 35
+        versionCode 401
+        versionName "4.1"
     }
 
     buildTypes {
@@ -46,7 +50,7 @@ android {
 dependencies {
     implementation 'androidx.core:core-ktx:1.13.1'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'com.google.android.material:material:1.12.0'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.aallam.openai:openai-client:3.7.2'
     implementation 'io.ktor:ktor-client-android:2.3.10'
@@ -72,7 +76,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-ads:23.0.0'
     implementation 'com.aallam.ktoken:ktoken:0.3.0'
 
-    implementation platform('com.google.firebase:firebase-bom:32.8.1') {
+    implementation platform('com.google.firebase:firebase-bom:33.0.0') {
         exclude group: 'com.google.android.gms', module: 'play-services-ads-lite'
     }
 }

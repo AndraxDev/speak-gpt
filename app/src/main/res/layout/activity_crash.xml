@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+/**************************************************************************
+* Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*  http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+**************************************************************************/
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
@@ -39,7 +57,7 @@
                     android:layout_height="match_parent"
                     android:gravity="left|center_vertical"
                     android:orientation="horizontal"
-                    tools:ignore="RtlHardcoded">
+                    tools:ignore="RtlHardcoded,UselessParent">
 
                     <LinearLayout
                         android:layout_width="72dp"
@@ -56,10 +74,10 @@
                             <ImageView
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
+                                android:contentDescription="@string/app_name"
                                 android:src="@mipmap/ic_launcher_round" />
 
                         </LinearLayout>
-
                     </LinearLayout>
 
                     <LinearLayout
@@ -87,11 +105,8 @@
                                 android:textStyle="bold" />
 
                         </LinearLayout>
-
                     </LinearLayout>
-
                 </LinearLayout>
-
             </LinearLayout>
 
             <LinearLayout
@@ -129,15 +144,10 @@
                                 android:textAppearance="?android:attr/textAppearanceSmall"
                                 android:textColor="@color/accent_900"
                                 android:textSize="12sp" />
-
                         </LinearLayout>
-
                     </LinearLayout>
-
                 </ScrollView>
-
             </LinearLayout>
-
         </LinearLayout>
 
         <View
@@ -153,6 +163,7 @@
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="84dp"
+            android:baselineAligned="false"
             android:orientation="horizontal"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
@@ -194,15 +205,12 @@
                     android:layout_height="48dp"
                     android:background="@drawable/btn_accent"
                     android:onClick="restart"
-                    android:text="Restart app"
+                    android:text="@string/crash_restart_app"
                     android:textAllCaps="false"
                     android:textColor="@color/window_background" />
 
             </LinearLayout>
-
         </LinearLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </LinearLayout>
 

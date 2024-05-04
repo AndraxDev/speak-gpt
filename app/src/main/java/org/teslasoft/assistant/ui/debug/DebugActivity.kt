@@ -21,15 +21,13 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.Voice
 import android.widget.EditText
 import android.widget.TextView
-
 import androidx.fragment.app.FragmentActivity
-
 import com.google.android.material.button.MaterialButton
-
-import org.teslasoft.assistant.R
+import org.jetbrains.annotations.TestOnly
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.util.LocaleParser
 
+@TestOnly
 class DebugActivity : FragmentActivity() {
     private var btnDebug: MaterialButton? = null
     private var fieldDebug: EditText? = null

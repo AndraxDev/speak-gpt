@@ -22,15 +22,11 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import android.widget.RadioButton
-
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.DialogFragment
-
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.elevation.SurfaceColors
-
 import org.teslasoft.assistant.R
 
 class LanguageSelectorDialogFragment : DialogFragment() {
@@ -89,8 +85,8 @@ class LanguageSelectorDialogFragment : DialogFragment() {
 
         builder!!.setView(view)
             .setCancelable(false)
-            .setPositiveButton("OK") { _, _ -> validateForm() }
-            .setNegativeButton("Cancel") { _, _ ->  }
+            .setPositiveButton(R.string.btn_save) { _, _ -> validateForm() }
+            .setNegativeButton(R.string.btn_cancel) { _, _ ->  }
 
         language = requireArguments().getString("name").toString()
 

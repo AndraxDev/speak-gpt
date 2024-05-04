@@ -23,15 +23,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
-import android.graphics.Rect
-import android.graphics.RectF
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.DisplayMetrics
 import android.view.View
@@ -41,36 +32,22 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
-
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.elevation.SurfaceColors
-
 import io.noties.markwon.Markwon
-
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ChatPreferences
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.activities.ImageBrowserActivity
 import org.teslasoft.assistant.ui.fragments.dialogs.EditMessageDialogFragment
-import org.teslasoft.assistant.util.Hash
-import org.teslasoft.assistant.util.StaticAvatarParser
-import java.io.BufferedReader
-import java.io.ByteArrayOutputStream
-
 import java.io.File
 import java.io.FileInputStream
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.InputStreamReader
 import java.util.Base64
 import java.util.Collections
 
@@ -170,9 +147,9 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
         btnCopy?.setImageResource(R.drawable.ic_copy)
         btnCopy?.setOnClickListener {
             val clipboard: ClipboardManager = mContext.getSystemService(FragmentActivity.CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("response", dataArray.get(position)?.get("message").toString())
+            val clip = ClipData.newPlainText("response", dataArray[position]["message"].toString())
             clipboard.setPrimaryClip(clip)
-            Toast.makeText(mContext, "Text copied to clipboard", Toast.LENGTH_SHORT).show()
+            Toast.makeText(mContext, mContext.getString(R.string.label_copy), Toast.LENGTH_SHORT).show()
         }
 
         if (dataArray[position]["message"].toString().contains("data:image")) {
@@ -333,11 +310,6 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
         return dp * context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT
     }
 
-    protected fun getSurface3Drawable(drawable: Drawable, context: Context) : Drawable {
-        DrawableCompat.setTint(DrawableCompat.wrap(drawable), get3SurfaceColor(context))
-        return drawable
-    }
-
     protected fun getSurfaceColor(context: Context): Int {
         return if (isDarkThemeEnabled() && preferences.getAmoledPitchBlack()) {
             ResourcesCompat.getColor(context.resources, R.color.amoled_accent_50, null)
@@ -351,14 +323,6 @@ abstract class AbstractChatAdapter(data: ArrayList<HashMap<String, Any>>?, conte
             ResourcesCompat.getColor(context.resources, R.color.amoled_window_background, null)
         } else {
             SurfaceColors.SURFACE_0.getColor(context)
-        }
-    }
-
-    private fun get3SurfaceColor(context: Context): Int {
-        return if (isDarkThemeEnabled() && preferences.getAmoledPitchBlack()) {
-            ResourcesCompat.getColor(context.resources, R.color.amoled_accent_100, null)
-        } else {
-            SurfaceColors.SURFACE_3.getColor(context)
         }
     }
 

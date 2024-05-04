@@ -29,7 +29,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.LogitBiasConfigPreferences
-import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.LogitBiasConfigItemAdapter
 import org.teslasoft.assistant.ui.fragments.dialogs.EditLogitBiasConfigDialogFragment
 import org.teslasoft.assistant.util.Hash
@@ -108,8 +107,10 @@ class LogitBiasConfigListActivity : FragmentActivity() {
 
         setContentView(R.layout.activity_logit_bias_config_list)
 
-        window.statusBarColor = getColor(R.color.accent_250)
-        window.navigationBarColor = getColor(R.color.accent_250)
+        if (android.os.Build.VERSION.SDK_INT <= 34) {
+            window.statusBarColor = getColor(R.color.accent_250)
+            window.navigationBarColor = getColor(R.color.accent_250)
+        }
 
         btnAdd = findViewById(R.id.btn_add)
         btnBack = findViewById(R.id.btn_back)
@@ -131,7 +132,7 @@ class LogitBiasConfigListActivity : FragmentActivity() {
 
         if (li == null) li = arrayListOf() // FUCK
 
-        li.add(hashMapOf("label" to "Disable this feature", "id" to ""))
+        li.add(hashMapOf("label" to getString(R.string.label_disable_this_feature), "id" to ""))
 
         if (li == null) li = arrayListOf() // FUCK
 
@@ -144,7 +145,7 @@ class LogitBiasConfigListActivity : FragmentActivity() {
         }
 
         list = if (li == null) { /* still fuck */
-            arrayListOf(hashMapOf("label" to "Disable this feature", "id" to ""))
+            arrayListOf(hashMapOf("label" to getString(R.string.label_disable_this_feature), "id" to ""))
         } else {
             li
         }
@@ -176,11 +177,9 @@ class LogitBiasConfigListActivity : FragmentActivity() {
 
         btnHelp!!.setOnClickListener {
             MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
-                .setTitle("Help")
-                .setMessage("Logit Bias Config is a feature that allows you to set custom logit bias for specific tokens. Logit bias is a value that is added to the logit of the token. It can be used to increase or decrease the probability of the token in the output sequence. For example, if you set logit bias to 100, the token will be more likely to appear in the output sequence. If you set logit bias to -100, the token will be less likely to appear in the output sequence.")
-                .setPositiveButton("Close") { dialog, _ ->
-                    dialog.dismiss()
-                }
+                .setTitle(R.string.help)
+                .setMessage(R.string.logit_bias_help)
+                .setPositiveButton(R.string.btn_close) { _, _ -> }
                 .show()
         }
     }

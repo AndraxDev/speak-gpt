@@ -17,7 +17,6 @@
 package org.teslasoft.assistant
 
 class Config {
-
     companion object {
         const val DOMAIN = "teslasoft.org"
         const val API_SERVER_NAME = "assistant.teslasoft.org"

@@ -59,59 +59,34 @@ import org.teslasoft.core.api.network.RequestNetwork
 import java.net.MalformedURLException
 import java.net.URL
 
-
 class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListener {
 
     private var activityTitle: TextView? = null
-
     private var content: ConstraintLayout? = null
-
     private var progressBar: ProgressBar? = null
-
     private var noInternetLayout: ConstraintLayout? = null
-
     private var btnReconnect: MaterialButton? = null
-
     private var btnShowDetails: MaterialButton? = null
-
     private var promptBy: TextView? = null
-
     private var promptText: EditText? = null
-
     private var textCat: TextView? = null
-
     private var refreshPage: SwipeRefreshLayout? = null
-
     private var requestNetwork: RequestNetwork? = null
-
     private var btnCopy: MaterialButton? = null
-
     private var btnLike: MaterialButton? = null
-
     private var btnTry: MaterialButton? = null
-
     private var btnFlag: ImageButton? = null
-
     private var promptBg: ConstraintLayout? = null
-
     private var promptActions: ConstraintLayout? = null
 
     private var id = ""
-
     private var title = ""
-
     private var networkError = ""
-
     private var likeState = false
-
     private var settings: SharedPreferences? = null
-
     private var promptFor: String? = null
-
     private var btnBack: ImageButton? = null
-
     private var root: ConstraintLayout? = null
-
     private var ad: LinearLayout? = null
 
     private val dataListener: RequestNetwork.RequestListener = object : RequestNetwork.RequestListener {
@@ -170,7 +145,6 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
             likeState = true
 
             settings?.edit()?.putBoolean(id, true)?.apply()
-
             btnLike?.setIconResource(R.drawable.ic_like)
 
             loadData()
@@ -179,7 +153,7 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
         override fun onErrorResponse(tag: String, message: String) {
             btnLike?.isEnabled = true
 
-            Toast.makeText(this@PromptViewActivity, "Sorry, action failed", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@PromptViewActivity, getString(R.string.label_sorry_action_failed), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -189,7 +163,6 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
             likeState = false
 
             settings?.edit()?.putBoolean(id, false)?.apply()
-
             btnLike?.setIconResource(R.drawable.ic_like_outline)
 
             loadData()
@@ -198,7 +171,7 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
         override fun onErrorResponse(tag: String, message: String) {
             btnLike?.isEnabled = true
 
-            Toast.makeText(this@PromptViewActivity, "Sorry, action failed", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@PromptViewActivity, getString(R.string.label_sorry_action_failed), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -212,16 +185,15 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
 
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() &&  Preferences.getPreferences(this, "").getAmoledPitchBlack()) {
-            window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
-            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme)
+            if (android.os.Build.VERSION.SDK_INT <= 34) {
+                window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+                window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme)
+            }
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
 
             root?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
-
             activityTitle?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme))
-
             promptBg?.setBackgroundResource(R.drawable.btn_accent_24_amoled)
-
             promptActions?.setBackgroundResource(R.drawable.btn_accent_24_amoled)
 
             btnBack?.background = getDarkAccentDrawable(
@@ -238,12 +210,13 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
                 )!!, this
             )
         } else {
-            window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
-            window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
+            if (android.os.Build.VERSION.SDK_INT <= 34) {
+                window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
+                window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
+            }
             window.setBackgroundDrawableResource(R.color.window_background)
 
             root?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
-
             activityTitle?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
 
             promptBg?.background = getDarkDrawable(
@@ -302,6 +275,8 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
             id = extras.getString("id", "")
             title = extras.getString("title", "")
 
+            this@PromptViewActivity.setTitle(extras.getString("title", ""))
+
             if (id == "" || title == "") {
                 checkForURI()
             } else {
@@ -328,7 +303,9 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
     private fun allowLaunch() {
         setContentView(R.layout.activity_view_prompt)
 
-        window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
+        if (android.os.Build.VERSION.SDK_INT <= 34) {
+            window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
+        }
 
         initUI()
 
@@ -356,7 +333,6 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
         textCat = findViewById(R.id.text_cat)
         btnBack = findViewById(R.id.btn_back)
         root = findViewById(R.id.root)
-
         promptBg = findViewById(R.id.prompt_bg)
         promptActions = findViewById(R.id.prompt_actions)
 
@@ -399,7 +375,6 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
             SurfaceColors.SURFACE_2.getColor(this)
         )
         refreshPage?.setSize(SwipeRefreshLayout.LARGE)
-
         refreshPage?.setOnRefreshListener(this)
 
         if (likeState) {
@@ -413,7 +388,7 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
             val clip = ClipData.newPlainText("prompt", promptText?.text.toString())
             clipboard.setPrimaryClip(clip)
 
-            Toast.makeText(this, "Text copied to clipboard", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.label_copy), Toast.LENGTH_SHORT).show()
         }
 
         btnLike?.setOnClickListener {
@@ -501,9 +476,9 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
 
         btnShowDetails?.setOnClickListener {
             MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
-                .setTitle("Error details")
+                .setTitle(R.string.label_error_details)
                 .setMessage(networkError)
-                .setPositiveButton("Close") { _, _ -> }
+                .setPositiveButton(R.string.btn_close) { _, _ -> }
                 .show()
         }
 

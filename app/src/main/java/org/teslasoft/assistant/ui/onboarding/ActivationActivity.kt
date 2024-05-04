@@ -20,11 +20,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.Toast
-
 import androidx.fragment.app.FragmentActivity
-
 import com.google.android.material.button.MaterialButton
-
 import org.teslasoft.assistant.ui.activities.MainActivity
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ApiEndpointPreferences

@@ -23,8 +23,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.Toast
-
 import androidx.fragment.app.Fragment
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -32,7 +30,6 @@ import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
-
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Logger
 import org.teslasoft.assistant.preferences.Preferences
@@ -41,9 +38,7 @@ import org.teslasoft.assistant.util.TestDevicesAds
 class TipsFragment : Fragment() {
 
     private var ad: LinearLayout? = null
-
     private var onAttach: Boolean = false
-
     private var mContext: Context? = null
 
     override fun onCreateView(

@@ -34,7 +34,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.teslasoft.assistant.Config
 import org.teslasoft.assistant.R
 
-
 class WebViewDialog : DialogFragment() {
 
     companion object {

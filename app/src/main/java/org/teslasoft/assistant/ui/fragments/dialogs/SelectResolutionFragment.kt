@@ -118,8 +118,8 @@ class SelectResolutionFragment : DialogFragment() {
 
         builder!!.setView(view)
             .setCancelable(false)
-            .setPositiveButton("OK") { _, _ -> validateForm() }
-            .setNegativeButton("Cancel") { _, _ ->  }
+            .setPositiveButton(R.string.btn_save) { _, _ -> validateForm() }
+            .setNegativeButton(R.string.btn_cancel) { _, _ ->  }
 
         return builder!!.create()
     }

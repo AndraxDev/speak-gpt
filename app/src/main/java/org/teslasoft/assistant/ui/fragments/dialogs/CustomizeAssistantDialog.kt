@@ -37,7 +37,6 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -47,7 +46,6 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import org.teslasoft.assistant.R
-import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.util.Hash
 import org.teslasoft.assistant.util.StaticAvatarParser
 import java.io.BufferedReader
@@ -168,9 +166,7 @@ class CustomizeAssistantDialog : DialogFragment() {
         }
 
         btnView4?.setOnClickListener {
-            // previewFile?.setImageResource(R.drawable.avatar4)
-            // selectedAvatarType = "builtin"
-            // selectedAvatarId = "avatar4"
+            // TODO: Wait for a better times...
         }
 
         btnView5?.setOnClickListener {
@@ -185,14 +181,14 @@ class CustomizeAssistantDialog : DialogFragment() {
 
         builder!!.setView(view)
             .setCancelable(false)
-            .setPositiveButton("Save") { _, _ -> run {
+            .setPositiveButton(R.string.btn_save) { _, _ -> run {
                 if (fieldAssistantName?.text.toString().isNotEmpty()) {
                     listener?.onEdit(fieldAssistantName?.text.toString(), selectedAvatarType, selectedAvatarId)
                 } else {
-                    listener?.onEdit("SpeakGPT", selectedAvatarType, selectedAvatarId)
+                    listener?.onEdit(getString(R.string.app_name), selectedAvatarType, selectedAvatarId)
                 }
             }}
-            .setNegativeButton("Cancel") { _, _ -> listener?.onCancel() }
+            .setNegativeButton(R.string.btn_cancel) { _, _ -> listener?.onCancel() }
 
         return builder!!.create()
     }

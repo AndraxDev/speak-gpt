@@ -150,7 +150,6 @@ import java.util.Base64
 import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
 
-
 class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpdateListener {
 
     // Init UI
@@ -366,7 +365,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         }
 
         override fun onError(fromFile: Boolean) {
-            Toast.makeText(mContext ?: return, "Please fill name field", Toast.LENGTH_SHORT).show()
+            Toast.makeText(mContext ?: return, getString(R.string.chat_error_empty), Toast.LENGTH_SHORT).show()
 
             val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, false, true, "", "", "", "", "")
             chatDialogFragment.setStateChangedListener(this)
@@ -382,7 +381,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         }
 
         override fun onDuplicate() {
-            Toast.makeText(mContext ?: return, "Name must be unique", Toast.LENGTH_SHORT).show()
+            Toast.makeText(mContext ?: return, getString(R.string.chat_error_unique), Toast.LENGTH_SHORT).show()
 
             val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, false, true, "", "", "", "", "")
             chatDialogFragment.setStateChangedListener(this)
@@ -694,9 +693,9 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                             mContext ?: return,
                             R.style.App_MaterialAlertDialog
                         )
-                            .setTitle("Audio error")
-                            .setMessage("Failed to initialize microphone")
-                            .setPositiveButton("Close") { _, _ -> }
+                            .setTitle(getString(R.string.label_audio_error))
+                            .setMessage(getString(R.string.msg_audio_error))
+                            .setPositiveButton(R.string.btn_close) { _, _ -> }
                             .show()
                     }
 
@@ -728,9 +727,9 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                         animation?.stop()
                         animation?.reset()
                         MaterialAlertDialogBuilder(mContext ?: return@apply, R.style.App_MaterialAlertDialog)
-                            .setTitle("Audio error")
-                            .setMessage("Failed to initialize microphone")
-                            .setPositiveButton("Close") { _, _ -> }
+                            .setTitle(getString(R.string.label_audio_error))
+                            .setMessage(getString(R.string.msg_audio_error))
+                            .setPositiveButton(R.string.btn_close) { _, _ -> }
                             .show()
                     }
 
@@ -829,7 +828,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 }
             }
         } catch (e: Exception) {
-            Toast.makeText(mContext, "Failed to record audio", Toast.LENGTH_SHORT).show()
+            Toast.makeText(mContext, getString(R.string.label_record_error), Toast.LENGTH_SHORT).show()
             btnAssistantVoice?.isEnabled = true
             btnAssistantSend?.isEnabled = true
             assistantLoading?.visibility = View.GONE
@@ -1459,28 +1458,28 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         } catch (e: Exception) {
             val response = when {
                 e.stackTraceToString().contains("does not exist") -> {
-                    "Looks like this model (${model}) is not available to you right now. It can be because of high demand or this model is currently in limited beta. If you are using a fine-tuned model, please make sure you entered correct model name. Usually model starts with 'model_name:ft-' and contains original model name, organization name and timestamp. Example: ada:ft-organization_name:model_name-YYYY-MM-DD-hh-mm-ss."
+                    String.format(getString(R.string.prompt_model_not_available), model)
                 }
                 e.stackTraceToString().contains("Connect timeout has expired") || e.stackTraceToString().contains("SocketTimeoutException") -> {
-                    "Could not connect to the server. It may happen when your Internet speed is slow or too many users are using this model at the same time. Try to switch to another model."
+                    getString(R.string.prompt_timed_out)
                 }
                 e.stackTraceToString().contains("This model's maximum") -> {
-                    "Too many tokens. It is an internal error, please report it. Also try to truncate your input. Sometimes it may help."
+                    getString(R.string.prompt_max_tokens_error)
                 }
                 e.stackTraceToString().contains("No address associated with hostname") -> {
-                    "You are currently offline. Please check your connection and try again."
+                    getString(R.string.prompt_offline)
                 }
                 e.stackTraceToString().contains("Incorrect API key") -> {
-                    "Your API key is incorrect. Change it in Settings > Change API key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked."
-                }
-                e.stackTraceToString().contains("Software caused connection abort") -> {
-                    "\n\n[error] An error occurred while generating response. It may be due to a weak connection or high demand. Try to switch to another model or try again later."
+                    getString(R.string.prompt_key_invalid)
                 }
                 e.stackTraceToString().contains("you must provide a model") -> {
-                    "No valid model is set in settings. Please change the model and try again."
+                    getString(R.string.prompt_no_model)
+                }
+                e.stackTraceToString().contains("Software caused connection abort") -> {
+                    getString(R.string.prompt_error_unknown)
                 }
                 e.stackTraceToString().contains("You exceeded your current quota") -> {
-                    "You exceeded your current quota. If you had free trial usage please add payment info. Also please check your usage limits. You can change your limits in Account settings."
+                    getString(R.string.prompt_quota_reached)
                 }
                 else -> {
                     e.stackTraceToString()
@@ -1488,7 +1487,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
             }
 
             if (preferences?.showChatErrors() == true) {
-                messages[messages.size - 1]["message"] = "${messages[messages.size - 1]["message"]}\n\nAn error has been occurred during generation. See the error details below:\n\n$response"
+                messages[messages.size - 1]["message"] = "${messages[messages.size - 1]["message"]}\n\n${getString(R.string.prompt_show_error)}\n\n$response"
                 adapter?.notifyDataSetChanged()
             }
 
@@ -1632,21 +1631,15 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                             // resetting mediaplayer instance to evade problems
                             mediaPlayer?.reset()
 
-                            // In case you run into issues with threading consider new instance like:
-                            // MediaPlayer mediaPlayer = new MediaPlayer();
-
-                            // Tried passing path directly, but kept getting
-                            // "Prepare failed.: status=0x1"
-                            // so using file descriptor instead
                             val fis = FileInputStream(tempMp3)
-                            mediaPlayer?.setDataSource(fis.getFD())
+                            mediaPlayer?.setDataSource(fis.fd)
                             mediaPlayer?.prepare()
                             mediaPlayer?.start()
                         } catch (ex: IOException) {
                             MaterialAlertDialogBuilder(mContext ?: return@runOnUiThread, R.style.App_MaterialAlertDialog)
-                                .setTitle("Audio error")
+                                .setTitle(R.string.label_audio_error)
                                 .setMessage(ex.stackTraceToString())
-                                .setPositiveButton("Close") { _, _ -> }
+                                .setPositiveButton(R.string.btn_close) { _, _ -> }
                                 .show()
                         }
                     }
@@ -1741,26 +1734,26 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
             if (preferences?.showChatErrors() == true) {
                 when {
                     e.stackTraceToString().contains("Your request was rejected") -> {
-                        putMessage("Your prompt contains inappropriate content and can not be processed. We strive to make AI safe and relevant for everyone.", true)
+                        putMessage( getString(R.string.prompt_rejected), true)
                     }
 
                     e.stackTraceToString().contains("No address associated with hostname") -> {
-                        putMessage("You are currently offline. Please check your connection and try again.", true);
+                        putMessage(getString(R.string.prompt_offline), true);
                     }
 
                     e.stackTraceToString().contains("Incorrect API key") -> {
                         putMessage(
-                            "Your API key is incorrect. Change it in Settings > Change OpenAI key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked.",
+                            getString(R.string.prompt_key_invalid),
                             true
                         );
                     }
 
                     e.stackTraceToString().contains("Software caused connection abort") -> {
-                        putMessage("An error occurred while generating response. It may be due to a weak connection or high demand. Try again later.", true);
+                        putMessage(getString(R.string.prompt_error_unknown), true);
                     }
 
                     e.stackTraceToString().contains("You exceeded your current quota") -> {
-                        putMessage("You exceeded your current quota. If you had free trial usage please add payment info. Also please check your usage limits. You can change your limits in Account settings.", true)
+                        putMessage(getString(R.string.prompt_quota_reached), true)
                     }
 
                     else -> {

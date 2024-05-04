@@ -30,7 +30,6 @@ import org.teslasoft.assistant.R
 import org.teslasoft.assistant.util.Hash
 
 class EditLogitBiasConfigDialogFragment : DialogFragment() {
-
     companion object {
         fun newInstance(label: String, position: Int) : EditLogitBiasConfigDialogFragment {
             val editLogitBiasConfigDialogFragment = EditLogitBiasConfigDialogFragment()
@@ -70,23 +69,23 @@ class EditLogitBiasConfigDialogFragment : DialogFragment() {
 
         builder!!.setView(view)
             .setCancelable(false)
-            .setPositiveButton("Save") { _, _ -> validateForm() }
-            .setNeutralButton("Delete") { _, _ -> run {
+            .setPositiveButton(R.string.btn_save) { _, _ -> validateForm() }
+            .setNeutralButton(R.string.btn_delete) { _, _ -> run {
                 MaterialAlertDialogBuilder(this.requireContext(), R.style.App_MaterialAlertDialog)
-                    .setTitle("Delete config")
-                    .setMessage("Are you sure you want to delete this config?")
-                    .setPositiveButton("Yes") { _, _ -> listener!!.onDelete(requireArguments().getInt("position"), Hash.hash(requireArguments().getString("label")!!)) }
-                    .setNegativeButton("No") { _, _ ->  }
+                    .setTitle(R.string.label_delete_logit_bias_config)
+                    .setMessage(R.string.msg_delete_logit_bias_config)
+                    .setPositiveButton(R.string.yes) { _, _ -> listener!!.onDelete(requireArguments().getInt("position"), Hash.hash(requireArguments().getString("label")!!)) }
+                    .setNegativeButton(R.string.no) { _, _ ->  }
                     .show()
             } }
-            .setNegativeButton("Cancel") { _, _ ->  }
+            .setNegativeButton(R.string.btn_cancel) { _, _ ->  }
 
         return builder!!.create()
     }
 
     fun validateForm() {
         if (fieldLogitBiasLabel?.text.toString().isEmpty()) {
-            listener!!.onError("Label be empty", requireArguments().getInt("position"))
+            listener!!.onError(getString(R.string.label_error_logit_bias_config_name_empty), requireArguments().getInt("position"))
         } else {
             if (requireArguments().getString("label") == "") {
                 listener!!.onAdd(fieldLogitBiasLabel?.text.toString())

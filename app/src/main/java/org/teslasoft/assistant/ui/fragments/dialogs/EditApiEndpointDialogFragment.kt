@@ -22,7 +22,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -32,7 +31,6 @@ import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
 import org.teslasoft.assistant.util.Hash
 
 class EditApiEndpointDialogFragment : DialogFragment() {
-
     companion object {
         fun newInstance(label: String, host: String, apiKey: String, position: Int) : EditApiEndpointDialogFragment {
             val editApiEndpointDialogFragment = EditApiEndpointDialogFragment()
@@ -78,33 +76,33 @@ class EditApiEndpointDialogFragment : DialogFragment() {
         fieldHost?.setText(requireArguments().getString("host"))
 
         if (requireArguments().getInt("position") == -1) {
-            textDialogTitle?.text = "Add API endpoint"
+            textDialogTitle?.text = getString(R.string.label_add_api_endpoint)
         }
 
         builder!!.setView(view)
             .setCancelable(false)
-            .setPositiveButton("Save") { _, _ -> validateForm() }
-            .setNeutralButton("Delete") { _, _ -> run {
+            .setPositiveButton(R.string.btn_save) { _, _ -> validateForm() }
+            .setNeutralButton(R.string.btn_delete) { _, _ -> run {
                 MaterialAlertDialogBuilder(this.requireContext(), R.style.App_MaterialAlertDialog)
-                    .setTitle("Delete API endpoint")
-                    .setMessage("Are you sure you want to delete this API endpoint?")
-                    .setPositiveButton("Yes") { _, _ -> listener!!.onDelete(requireArguments().getInt("position"), Hash.hash(requireArguments().getString("label")!!)) }
-                    .setNegativeButton("No") { _, _ ->  }
+                    .setTitle(R.string.label_delete_api_endpoint)
+                    .setMessage(R.string.message_delete_api_endpoint)
+                    .setPositiveButton(R.string.yes) { _, _ -> listener!!.onDelete(requireArguments().getInt("position"), Hash.hash(requireArguments().getString("label")!!)) }
+                    .setNegativeButton(R.string.no) { _, _ ->  }
                     .show()
             } }
-            .setNegativeButton("Cancel") { _, _ ->  }
+            .setNegativeButton(R.string.btn_cancel) { _, _ ->  }
 
         return builder!!.create()
     }
 
     fun validateForm() {
         if (fieldLabel?.text.toString().isEmpty()) {
-            listener!!.onError("Label cannot be empty", requireArguments().getInt("position"))
+            listener!!.onError(getString(R.string.label_error_api_endpoint_empty), requireArguments().getInt("position"))
             return
         }
 
         if (fieldHost?.text.toString().isEmpty()) {
-            listener!!.onError("Host cannot be empty", requireArguments().getInt("position"))
+            listener!!.onError(getString(R.string.label_error_api_endpoint_empty), requireArguments().getInt("position"))
             return
         }
 

@@ -25,7 +25,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 
@@ -68,12 +67,16 @@ class ThanksActivity : FragmentActivity() {
 
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() &&  Preferences.getPreferences(this, "").getAmoledPitchBlack()) {
-            window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
-            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+            if (android.os.Build.VERSION.SDK_INT <= 34) {
+                window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+                window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+            }
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
         } else {
-            window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.window_background, theme)
-            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.window_background, theme)
+            if (android.os.Build.VERSION.SDK_INT <= 34) {
+                window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.window_background, theme)
+                window.statusBarColor = ResourcesCompat.getColor(resources, R.color.window_background, theme)
+            }
             window.setBackgroundDrawableResource(R.color.window_background)
         }
     }

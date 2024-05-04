@@ -48,21 +48,23 @@ import org.teslasoft.assistant.util.Hash
 import org.teslasoft.core.api.network.RequestNetwork
 
 class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetAdapter.OnInteractionListener {
-    private var mContext: Context? = null
 
     private var btnTips: ImageButton? = null
-
-    private var setsList: ListView? = null
-    private var aiSets: ArrayList<Map<String, String>> = ArrayList()
-    private var setsAdapter: AISetAdapter? = null
-    private var requestNetwork: RequestNetwork? = null
     private var refreshLayout: SwipeRefreshLayout? = null
     private var loading: ProgressBar? = null
     private var btnRetry: MaterialButton? = null
     private var btnErrorDetails: MaterialButton? = null
     private var noInternet: LinearLayout? = null
+
+    private var setsList: ListView? = null
+    private var aiSets: ArrayList<Map<String, String>> = ArrayList()
+    private var setsAdapter: AISetAdapter? = null
+    private var requestNetwork: RequestNetwork? = null
+
     private var apiEndpointPreferences: ApiEndpointPreferences? = null
     private var preferences: Preferences? = null
+
+    private var mContext: Context? = null
 
     private var error = ""
 
@@ -163,9 +165,9 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
 
         btnErrorDetails?.setOnClickListener {
             MaterialAlertDialogBuilder(mContext ?: return@setOnClickListener, R.style.App_MaterialAlertDialog)
-                .setTitle("Error details")
+                .setTitle(getString(R.string.label_error_details))
                 .setMessage(error)
-                .setPositiveButton("Close") { _, _ -> }
+                .setPositiveButton(R.string.btn_close) { _, _ -> }
                 .show()
         }
     }
@@ -205,7 +207,7 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
         preferences?.setAvatarType(avatarType)
         preferences?.setAvatarId(avatarId)
         preferences?.setAssistantName(assistantName)
-        Toast.makeText(mContext, "API endpoint set globally", Toast.LENGTH_SHORT).show()
+        Toast.makeText(mContext, getString(R.string.label_api_endpoint_set_globally), Toast.LENGTH_SHORT).show()
     }
 
     private fun createChat(endpointName: String, suggestedChatName: String, model: String, avatarType: String, avatarId: String, assistantName: String) {

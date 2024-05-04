@@ -34,63 +34,49 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ListView
 import android.widget.Toast
-
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
-
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ApiEndpointPreferences
 import org.teslasoft.assistant.preferences.ChatPreferences
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.activities.ChatActivity
-import org.teslasoft.assistant.ui.activities.SettingsActivity
 import org.teslasoft.assistant.ui.activities.SettingsV2Activity
 import org.teslasoft.assistant.ui.adapters.ChatListAdapter
 import org.teslasoft.assistant.ui.fragments.dialogs.AddChatDialogFragment
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
-
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
 class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
 
-    private var chats: ArrayList<HashMap<String, String>> = arrayListOf()
+
 
     private var adapter: ChatListAdapter? = null
-
     private var chatsList: ListView? = null
-
     private var btnSettings: ImageButton? = null
-
     private var btnAdd: ExtendedFloatingActionButton? = null
-
     private var btnImport: FloatingActionButton? = null
-
     private var bgSearch: ConstraintLayout? = null
-
-    private var selectedFile: String = ""
-
     private var fieldSearch: EditText? = null
 
+    private var selectedFile: String = ""
     private var searchTerm: String = ""
-
     private var isAttached: Boolean = false
+    private var isDestroyed: Boolean = false
+    private var chats: ArrayList<HashMap<String, String>> = arrayListOf()
 
     private var preferences: Preferences? = null
-
-    private var isDestroyed: Boolean = false
 
     private var mContext: Context? = null
 
@@ -122,7 +108,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
         }
 
         override fun onError(fromFile: Boolean) {
-            Toast.makeText(mContext ?: return, "Please fill name field", Toast.LENGTH_SHORT).show()
+            Toast.makeText(mContext ?: return, R.string.chat_error_empty, Toast.LENGTH_SHORT).show()
 
             val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", fromFile, false, false, "", "", "", "", "")
             chatDialogFragment.setStateChangedListener(this)
@@ -138,7 +124,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
         }
 
         override fun onDuplicate() {
-            Toast.makeText(mContext ?: return, "Name must be unique", Toast.LENGTH_SHORT).show()
+            Toast.makeText(mContext ?: return, R.string.chat_error_unique, Toast.LENGTH_SHORT).show()
 
             val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, false, false, "", "", "", "", "")
             chatDialogFragment.setStateChangedListener(this)
@@ -287,9 +273,9 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
                         )
                     } else {
                         MaterialAlertDialogBuilder(mContext?: return@also, R.style.App_MaterialAlertDialog)
-                            .setTitle("Error")
-                            .setMessage("An error is occurred while analyzing file. The file might be corrupted or invalid.")
-                            .setPositiveButton("Close") { _, _ -> }
+                            .setTitle(getString(R.string.label_error))
+                            .setMessage(getString(R.string.msg_error_importing_chat))
+                            .setPositiveButton(R.string.btn_close) { _, _ -> }
                             .show()
                     }
                 }

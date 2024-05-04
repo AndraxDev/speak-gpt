@@ -26,7 +26,6 @@ import androidx.fragment.app.FragmentActivity
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ApiEndpointPreferences
-import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
 import org.teslasoft.assistant.ui.adapters.ApiEndpointListItemAdapter
 import org.teslasoft.assistant.ui.fragments.dialogs.EditApiEndpointDialogFragment
@@ -67,7 +66,7 @@ class ApiEndpointsListActivity : FragmentActivity() {
 
         override fun onEdit(oldLabel: String, apiEndpoint: ApiEndpointObject, position: Int) {
             if (oldLabel == "Default" && apiEndpoint.label != "Default") {
-                Toast.makeText(this@ApiEndpointsListActivity, "Default API endpoint label can not be edited", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ApiEndpointsListActivity, getString(R.string.default_api_endpoint_error), Toast.LENGTH_SHORT).show()
                 return
             }
             apiEndpointPreferences!!.editEndpoint(this@ApiEndpointsListActivity, list[position]["label"]?: return, apiEndpoint)
@@ -76,12 +75,12 @@ class ApiEndpointsListActivity : FragmentActivity() {
 
         override fun onDelete(position: Int, id: String) {
             if (list != null && position >= 0 && list[position]["label"] == "Default") {
-                Toast.makeText(this@ApiEndpointsListActivity, "Default API endpoint can not be deleted", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ApiEndpointsListActivity, getString(R.string.default_api_endpoint_error_delete), Toast.LENGTH_SHORT).show()
             } else if (/* R8 fucker */ list != null && list.size > 1) {
                 apiEndpointPreferences!!.deleteApiEndpoint(this@ApiEndpointsListActivity, id)
                 reloadList()
             } else {
-                Toast.makeText(this@ApiEndpointsListActivity, "At least 1 API endpoint must be set", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ApiEndpointsListActivity, getString(R.string.api_endpoint_error_zero), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -104,8 +103,10 @@ class ApiEndpointsListActivity : FragmentActivity() {
 
         setContentView(R.layout.activity_api_endpoint_list)
 
-        window.statusBarColor = getColor(R.color.accent_250)
-        window.navigationBarColor = getColor(R.color.accent_250)
+        if (android.os.Build.VERSION.SDK_INT <= 34) {
+            window.statusBarColor = getColor(R.color.accent_250)
+            window.navigationBarColor = getColor(R.color.accent_250)
+        }
 
         btnAdd = findViewById(R.id.btn_add)
         btnBack = findViewById(R.id.btn_back)

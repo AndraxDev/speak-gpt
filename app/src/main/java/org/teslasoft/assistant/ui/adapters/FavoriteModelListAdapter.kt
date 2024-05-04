@@ -24,12 +24,9 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageButton
 import android.widget.TextView
-
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
-
-import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 
@@ -84,7 +81,8 @@ class FavoriteModelListAdapter(private val context: Context, private val items: 
             viewHolder.modelAction.setImageResource(R.drawable.ic_close_item)
         }
 
-        viewHolder.modelAction.tooltipText = "Remove from favorites"
+        viewHolder.modelAction.tooltipText = context.getString(R.string.label_remove_from_favorites)
+        viewHolder.modelAction.contentDescription = context.getString(R.string.label_remove_from_favorites)
 
         viewHolder.voiceBg.setOnClickListener {
             listener?.onItemClick(item.get("modelId")!!, item.get("endpointId")!!)

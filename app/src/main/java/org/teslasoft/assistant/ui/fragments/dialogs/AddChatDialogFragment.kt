@@ -27,13 +27,9 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
-
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ChatPreferences
 import org.teslasoft.assistant.preferences.Preferences
@@ -110,9 +106,9 @@ class AddChatDialogFragment : DialogFragment() {
 
             builder!!.setView(view)
                     .setCancelable(false)
-                    .setPositiveButton("OK") { _, _ -> validateForm() }
-                    .setNeutralButton("Delete") { _, _ -> confirmDeletion(requireActivity()) }
-                    .setNegativeButton("Cancel") { _, _ -> listener!!.onCanceled() }
+                    .setPositiveButton(R.string.btn_save) { _, _ -> validateForm() }
+                    .setNeutralButton(R.string.btn_delete) { _, _ -> confirmDeletion(requireActivity()) }
+                    .setNegativeButton(R.string.btn_cancel) { _, _ -> listener!!.onCanceled() }
 
             isEdit = true
 
@@ -134,8 +130,8 @@ class AddChatDialogFragment : DialogFragment() {
 
             builder!!.setView(view)
                     .setCancelable(false)
-                    .setPositiveButton("OK") { _, _ -> validateForm() }
-                    .setNegativeButton("Cancel") { _, _: Int -> listener!!.onCanceled() }
+                    .setPositiveButton(R.string.btn_ok) { _, _ -> validateForm() }
+                    .setNegativeButton(R.string.btn_cancel) { _, _: Int -> listener!!.onCanceled() }
 
             autoName?.visibility = View.VISIBLE
         }
@@ -259,10 +255,10 @@ class AddChatDialogFragment : DialogFragment() {
 
     private fun confirmDeletion(context: Context) {
         MaterialAlertDialogBuilder(requireActivity(), R.style.App_MaterialAlertDialog)
-                .setTitle("Confirm deletion")
-                .setMessage("This action can not be undone.")
-                .setPositiveButton("Delete") { _, _ -> delete(context) }
-                .setNegativeButton("Cancel") { _, _ -> }
+                .setTitle(R.string.label_confirm_deletion)
+                .setMessage(R.string.msg_confirm_deletion_chat)
+                .setPositiveButton(R.string.btn_delete) { _, _ -> delete(context) }
+                .setNegativeButton(R.string.btn_cancel) { _, _ -> }
                 .show()
     }
 

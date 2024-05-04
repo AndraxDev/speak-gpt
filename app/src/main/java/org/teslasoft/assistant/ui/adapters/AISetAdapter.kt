@@ -86,7 +86,7 @@ class AISetAdapter(private val mContext: Context, private val dataArray: ArrayLi
 
         setName?.text = dataArray[position]["name"]
         setDescription?.text = dataArray[position]["desc"]
-        setOwner?.text = "Provided by: ${dataArray[position]["owner"]}"
+        setOwner?.text = mContext.getString(R.string.label_provided_by) + " " + dataArray[position]["owner"]
         setModel?.text = "AI Model: ${dataArray[position]["model"]}"
 
         val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(dpToPx(28f).toInt()))

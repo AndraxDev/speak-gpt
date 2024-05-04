@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
+<!--
+/**************************************************************************
+* Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*  http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+**************************************************************************/
+-->
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -164,7 +181,7 @@
                     android:minHeight="56dp"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:text="Favorite models"
+                    android:text="@string/btn_favorite_models"
                     android:textSize="16sp" />
 
                 <RadioButton
@@ -177,152 +194,8 @@
                     android:minHeight="56dp"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:text="See all models"
+                    android:text="@string/btn_all_models"
                     android:textSize="16sp" />
-
-                <RadioButton
-                    android:id="@+id/gpt_4_0613"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginEnd="24dp"
-                    android:button="@null"
-                    android:minHeight="56dp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:text="GPT 4 (Enchanced)"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
-
-                <RadioButton
-                    android:id="@+id/gpt_4_32k_0314"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:button="@null"
-                    android:minHeight="56dp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:text=" gpt-4-32k-0314 (deprecated)"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
-
-                <RadioButton
-                    android:id="@+id/text_davinci_003"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginEnd="24dp"
-                    android:button="@null"
-                    android:minHeight="56dp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:text="Text davinci v3"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
-
-                <RadioButton
-                    android:id="@+id/text_davinci_002"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginEnd="24dp"
-                    android:button="@null"
-                    android:minHeight="56dp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:text="Text davinci v2"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
-
-                <RadioButton
-                    android:id="@+id/text_curie_001"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginEnd="24dp"
-                    android:button="@null"
-                    android:minHeight="56dp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:text="Text curie"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
-
-                <RadioButton
-                    android:id="@+id/text_babbage_001"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginEnd="24dp"
-                    android:button="@null"
-                    android:minHeight="56dp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:text="Text babbage"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
-
-                <RadioButton
-                    android:id="@+id/text_ada_001"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginEnd="24dp"
-                    android:button="@null"
-                    android:minHeight="56dp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:text="Text ada"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
-
-                <RadioButton
-                    android:id="@+id/davinci"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:button="@null"
-                    android:minHeight="56dp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:text=" davinci"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
-
-                <RadioButton
-                    android:id="@+id/curie"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:button="@null"
-                    android:minHeight="56dp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:text=" curie"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
-
-                <RadioButton
-                    android:id="@+id/babbage"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:button="@null"
-                    android:minHeight="56dp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:text=" babbage"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
-
-                <RadioButton
-                    android:id="@+id/ada"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:button="@null"
-                    android:minHeight="56dp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:text=" ada"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
 
                 <RadioButton
                     android:id="@+id/ft"
@@ -356,25 +229,6 @@
                         android:singleLine="true" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginHorizontal="24dp"
-                    android:layout_marginVertical="8dp"
-                    android:background="@drawable/btn_tip1"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:id="@+id/textView27"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Cost effective model (gpt-3.5-turbo-0125) has reduced pricing: input prices for the new model are reduced by 50% to $0.0005 /1K tokens and output prices are reduced by 25% to $0.0015 /1K tokens. On Friday, February 16 2024, gpt-3.5-turbo will be automatically switched to this model and you will receive lower pricing even if you forgot to update to this model."
-                        android:textColor="@color/tip1" />
-                </LinearLayout>
-
                 <TextView
                     android:id="@+id/textView25"
                     android:layout_width="match_parent"
@@ -404,7 +258,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
                         android:layout_marginBottom="12dp"
-                        android:text="Creative"
+                        android:text="@string/label_creative"
                         android:textColor="@color/text"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -415,7 +269,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:text="Deterministic"
+                        android:text="@string/label_deterministic"
                         android:textColor="@color/text"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/temperature_slider" />
@@ -441,7 +295,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="12dp"
-                        android:text="Temperature (response creativity)"
+                        android:text="@string/label_temperature"
                         android:textColor="@color/accent_900"
                         android:textSize="16sp"
                         android:textStyle="bold"
@@ -483,7 +337,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="12dp"
-                        android:text="top_p"
+                        android:text="@string/label_top_p"
                         android:textColor="@color/accent_900"
                         android:textSize="16sp"
                         android:textStyle="bold"
@@ -526,7 +380,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="12dp"
-                        android:text="Frequency penalty"
+                        android:text="@string/label_frequency_penalty"
                         android:textColor="@color/accent_900"
                         android:textSize="16sp"
                         android:textStyle="bold"
@@ -570,7 +424,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="12dp"
-                        android:text="Presence penalty"
+                        android:text="@string/label_presence_penalty"
                         android:textColor="@color/accent_900"
                         android:textSize="16sp"
                         android:textStyle="bold"
@@ -670,6 +524,5 @@
                 app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

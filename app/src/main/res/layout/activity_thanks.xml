@@ -1,7 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+/**************************************************************************
+* Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*  http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+**************************************************************************/
+-->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -23,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="36dp"
-                android:text="Thank you!"
+                android:text="@string/title_thank_you"
                 android:textColor="@color/text_title"
                 android:textSize="24sp"
                 android:textStyle="bold"
@@ -40,7 +57,7 @@
                 android:layout_marginEnd="24dp"
                 android:background="@drawable/btn_tip1"
                 android:padding="16dp"
-                android:text="Your donation has been verified. Donations and ads help us to keep this app up to date, provide you with high-quality experience and release new features. Now you can enjoy ad free experience! This license is lifetime. If you want to activate the license on another device, please contact us."
+                android:text="@string/donation_thanks_message"
                 android:textColor="@color/success"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -56,7 +73,7 @@
                 android:layout_marginEnd="24dp"
                 android:background="@drawable/btn_tip2"
                 android:padding="16dp"
-                android:text="IMPORTANT NOTE:\nIf you still see ads you might need to restart the app. Please note that if you used installation ID to activate the license, ads may appear once you reinstall the app. Please contact us for a new license or use Android ID to activate license in this case. Android ID is unique for each app and it is persistent until you perform a factory reset. Installation ID is temporary and it changes after app reinstall or and when you manually reset it/revoke authorization."
+                android:text="@string/donation_important_note"
                 android:textColor="@color/error"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -72,7 +89,7 @@
                 android:layout_marginEnd="24dp"
                 android:layout_marginBottom="24dp"
                 android:background="@drawable/btn_accent_tonal_selector_v4"
-                android:text="Close"
+                android:text="@string/btn_close"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

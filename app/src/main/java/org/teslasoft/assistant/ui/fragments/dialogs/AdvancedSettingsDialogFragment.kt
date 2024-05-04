@@ -27,17 +27,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.RadioButton
-
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.DialogFragment
-
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
-
 import org.teslasoft.assistant.R
-import org.teslasoft.assistant.preferences.FavoriteModelsPreferences
 import org.teslasoft.assistant.preferences.Preferences
 
 class AdvancedSettingsDialogFragment : DialogFragment() {
@@ -56,9 +52,6 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
     }
 
     private var builder: AlertDialog.Builder? = null
-
-    private var context: Context? = null
-
     private var gpt_35_turbo: RadioButton? = null
     private var gpt_35_turbo_1106: RadioButton? = null
     private var gpt_35_turbo_0125: RadioButton? = null
@@ -81,6 +74,8 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
     private var listener: StateChangesListener? = null
 
     private var model = "gpt-3.5-turbo"
+
+    private var context: Context? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -351,8 +346,8 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
 
         builder!!.setView(view)
             .setCancelable(false)
-            .setPositiveButton("OK") { _, _ -> validateForm() }
-            .setNegativeButton("Cancel") { _, _ ->  }
+            .setPositiveButton(R.string.btn_save) { _, _ -> validateForm() }
+            .setNegativeButton(R.string.btn_cancel) { _, _ ->  }
 
         model = requireArguments().getString("name").toString()
 

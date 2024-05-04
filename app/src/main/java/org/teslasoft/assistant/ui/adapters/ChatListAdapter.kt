@@ -35,15 +35,11 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
-
 import com.google.android.material.elevation.SurfaceColors
-
 import org.teslasoft.assistant.ui.activities.ChatActivity
 import org.teslasoft.assistant.ui.fragments.tabs.ChatsListFragment
 import org.teslasoft.assistant.R
@@ -98,13 +94,15 @@ class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragme
             readAndDisplay(Uri.fromFile(File(mContext.requireActivity().getExternalFilesDir("images")?.absolutePath + "/avatar_" + preferences?.getAvatarIdByChatId(Hash.hash(dataArray?.get(position)?.get("name").toString()), mContext.requireActivity()) + ".png")))
         }
 
-        name.text = if (dataArray?.get(position)?.get("name").toString().trim().contains("_autoname_")) "Untitled chat" else dataArray?.get(position)?.get("name").toString()
+        name.text = if (dataArray?.get(position)?.get("name").toString().trim().contains("_autoname_")) mContext.getString(R.string.label_untitled_chat) else dataArray?.get(position)?.get("name").toString()
 
         textFirstMessage.text = dataArray?.get(position)?.get("first_message") ?: "No messages yet."
 
         val model: String = Preferences.getPreferences(mContext.requireActivity(), Hash.hash(dataArray?.get(position)?.get("name").toString())).getModel()
 
         val textModel: TextView = mView.findViewById(R.id.textModel)
+
+        icon?.contentDescription = name.text
 
         modelName.text = model
 

@@ -18,13 +18,9 @@ package org.teslasoft.assistant.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.widget.Toast
-
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-
 import org.teslasoft.assistant.util.Hash
-
 import java.lang.Exception
 import java.lang.reflect.Type
 

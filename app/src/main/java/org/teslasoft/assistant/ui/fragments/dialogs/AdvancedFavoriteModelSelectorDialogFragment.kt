@@ -36,7 +36,6 @@ import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
 import org.teslasoft.assistant.preferences.dto.FavoriteModelObject
 import org.teslasoft.assistant.ui.adapters.FavoriteModelListAdapter
-import org.teslasoft.assistant.ui.adapters.ModelListAdapter
 import org.teslasoft.assistant.util.Hash
 
 class AdvancedFavoriteModelSelectorDialogFragment : DialogFragment() {
@@ -55,32 +54,22 @@ class AdvancedFavoriteModelSelectorDialogFragment : DialogFragment() {
         }
     }
 
-
-    private var builder: AlertDialog.Builder? = null
-
-    private var preferences: Preferences? = null
-
     private var apiEndpointPreferences: ApiEndpointPreferences? = null
-
     private var apiEndpointObject: ApiEndpointObject? = null
-
     private var listener: OnModelSelectedListener? = null
-
+    private var progressBar: ProgressBar? = null
+    private var ttsSelectorTitle: TextView? = null
+    private var fieldSearch: TextInputEditText? = null
+    private var builder: AlertDialog.Builder? = null
     private var modelList: ListView? = null
 
     private var modelListAdapter: FavoriteModelListAdapter? = null
 
     private var availableModels: ArrayList<Map<String, String>> = arrayListOf()
-
     private var availableModelsProjection: ArrayList<Map<String, String>> = arrayListOf()
 
-    private var progressBar: ProgressBar? = null
-
-    private var ttsSelectorTitle: TextView? = null
-
+    private var preferences: Preferences? = null
     private var favoriteModelsPreferences: FavoriteModelsPreferences? = null
-
-    private var fieldSearch: TextInputEditText? = null
 
     private var modelSelectedListener: AdvancedModelSelectorDialogFragment.OnModelSelectedListener = AdvancedModelSelectorDialogFragment.OnModelSelectedListener { model ->
         listener?.onModelSelected(model)
@@ -91,7 +80,7 @@ class AdvancedFavoriteModelSelectorDialogFragment : DialogFragment() {
         override fun onItemClick(model: String, endpointId: String) {
             listener?.onModelSelected(model)
             preferences?.setApiEndpointId(endpointId)
-            Toast.makeText(requireActivity(), "API endpoint has changed to support this model.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireActivity(), getString(R.string.msg_api_compatibility_change), Toast.LENGTH_SHORT).show()
             dismiss()
         }
 
@@ -128,7 +117,7 @@ class AdvancedFavoriteModelSelectorDialogFragment : DialogFragment() {
 
         progressBar = view.findViewById(R.id.progressBar)
 
-        ttsSelectorTitle?.text = "Favorite AI models"
+        ttsSelectorTitle?.text = getString(R.string.label_favorite_ai_models)
 
         progressBar?.visibility = View.GONE
 
@@ -144,7 +133,7 @@ class AdvancedFavoriteModelSelectorDialogFragment : DialogFragment() {
 
         builder!!.setView(view)
             .setCancelable(false)
-            .setNeutralButton("See all models") {_, _ -> run{
+            .setNeutralButton(R.string.btn_all_models) {_, _ -> run{
                 val dialog = AdvancedModelSelectorDialogFragment.newInstance(model!!, chatId!!)
                 dialog.setModelSelectedListener(modelSelectedListener)
                 dialog.show(parentFragmentManager, "AdvancedModelSelectorDialogFragment")

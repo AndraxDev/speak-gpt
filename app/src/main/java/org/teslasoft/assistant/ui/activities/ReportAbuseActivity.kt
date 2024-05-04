@@ -31,9 +31,7 @@ import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
-
 import androidx.fragment.app.FragmentActivity
-
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.Api
@@ -233,8 +231,10 @@ class ReportAbuseActivity : FragmentActivity() {
 
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() &&  Preferences.getPreferences(this, "").getAmoledPitchBlack()) {
-            window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
-            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme)
+            if (android.os.Build.VERSION.SDK_INT <= 34) {
+                window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+                window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme)
+            }
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
 
             reportActivityTitle?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme))
@@ -246,8 +246,10 @@ class ReportAbuseActivity : FragmentActivity() {
                 )!!, this
             )
         } else {
-            window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.window_background, theme)
-            window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
+            if (android.os.Build.VERSION.SDK_INT <= 34) {
+                window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.window_background, theme)
+                window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
+            }
             window.setBackgroundDrawableResource(R.color.window_background)
 
             reportActivityTitle?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))

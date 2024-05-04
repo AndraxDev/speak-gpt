@@ -75,17 +75,20 @@ class LogsActivity : FragmentActivity() {
 
                     when (logType) {
                         "crash" -> {
-                            activityLogsTitle?.text = "Crash log"
+                            activityLogsTitle?.text = getString(R.string.title_crash_log)
+                            this.title = getString(R.string.title_crash_log)
                             textLog?.text = Logger.getCrashLog(this)
                         }
 
                         "ads" -> {
-                            activityLogsTitle?.text = "Ads log"
+                            activityLogsTitle?.text = getString(R.string.title_ads_log)
+                            this.title = getString(R.string.title_ads_log)
                             textLog?.text = Logger.getAdsLog(this)
                         }
 
                         "event" -> {
-                            activityLogsTitle?.text = "Event log"
+                            activityLogsTitle?.text = getString(R.string.title_event_log)
+                            this.title = getString(R.string.title_event_log)
                             textLog?.text = Logger.getEventLog(this)
                         }
 
@@ -97,9 +100,9 @@ class LogsActivity : FragmentActivity() {
 
                 btnClearLog?.setOnClickListener {
                     MaterialAlertDialogBuilder(this)
-                        .setTitle("Clear log")
-                        .setMessage("Are you sure you want to clear this log?")
-                        .setPositiveButton("Yes") { _, _ ->
+                        .setTitle(R.string.label_clear_log)
+                        .setMessage(R.string.msg_clear_log_confirm)
+                        .setPositiveButton(R.string.yes) { _, _ ->
                             when (logType) {
                                 "crash" -> {
                                     Logger.clearCrashLog(this)
@@ -117,7 +120,7 @@ class LogsActivity : FragmentActivity() {
                                 }
                             }
                         }
-                        .setNegativeButton("No") { _, _ -> }
+                        .setNegativeButton(R.string.no) { _, _ -> }
                         .show()
                 }
 
@@ -137,14 +140,18 @@ class LogsActivity : FragmentActivity() {
 
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack()!!) {
-            window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
-            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+            if (android.os.Build.VERSION.SDK_INT <= 34) {
+                window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+                window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+            }
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
             root?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
             btnBack?.setBackgroundResource(R.drawable.btn_accent_icon_large_amoled)
         } else {
-            window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
-            window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
+            if (android.os.Build.VERSION.SDK_INT <= 34) {
+                window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
+                window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
+            }
             window.setBackgroundDrawableResource(R.color.window_background)
             root?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
             btnBack?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_icon_large, theme)!!)

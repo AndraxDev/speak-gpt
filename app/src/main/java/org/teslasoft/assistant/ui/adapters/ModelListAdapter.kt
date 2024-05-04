@@ -24,12 +24,9 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageButton
 import android.widget.TextView
-
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
-
-import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 
@@ -84,7 +81,8 @@ class ModelListAdapter(private val context: Context, private val items: ArrayLis
             viewHolder.modelAction.setImageResource(R.drawable.ic_like_item)
         }
 
-        viewHolder.modelAction.tooltipText = "Add to favorites"
+        viewHolder.modelAction.tooltipText = context.getString(R.string.label_add_to_favorites)
+        viewHolder.modelAction.contentDescription = context.getString(R.string.label_add_to_favorites)
 
         viewHolder.voiceBg.setOnClickListener {
             listener?.onItemClick(item)

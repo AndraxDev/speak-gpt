@@ -37,18 +37,14 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
-
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-
 import org.teslasoft.assistant.Api
 import org.teslasoft.assistant.Config.Companion.API_ENDPOINT
 import org.teslasoft.assistant.R
@@ -56,10 +52,51 @@ import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.PromptAdapter
 import org.teslasoft.assistant.ui.fragments.dialogs.PostPromptDialogFragment
 import org.teslasoft.core.api.network.RequestNetwork
-
 import java.net.URLEncoder
 
 class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+
+    private var fieldSearch: EditText? = null
+    private var btnPost: ExtendedFloatingActionButton? = null
+    private var promptsList: ListView? = null
+    private var promptsAdapter: PromptAdapter? = null
+    private var refreshLayout: SwipeRefreshLayout? = null
+    private var refreshButton: MaterialButton? = null
+    private var btnDetails: MaterialButton? = null
+    private var noInternetLayout: LinearLayout? = null
+    private var progressbar: ProgressBar? = null
+    private var catAll: LinearLayout? = null
+    private var catDevelopment: LinearLayout? = null
+    private var catMusic: LinearLayout? = null
+    private var catArt: LinearLayout? = null
+    private var catCulture: LinearLayout? = null
+    private var catBusiness: LinearLayout? = null
+    private var catGaming: LinearLayout? = null
+    private var catEducation: LinearLayout? = null
+    private var catHistory: LinearLayout? = null
+    private var catFood: LinearLayout? = null
+    private var catTourism: LinearLayout? = null
+    private var catProductivity: LinearLayout? = null
+    private var catTools: LinearLayout? = null
+    private var catEntertainment: LinearLayout? = null
+    private var catSport: LinearLayout? = null
+    private var catHealth: LinearLayout? = null
+    private var searchBar: ConstraintLayout? = null
+    private var btnAllModels: MaterialButton? = null
+    private var btnTextModel: MaterialButton? = null
+    private var btnImageModel: MaterialButton? = null
+    private var btnSearch: ImageButton? = null
+
+    private var query = ""
+    private var selectedCategory = "all"
+    private var model = "all"
+    private var networkError = ""
+    private var onAttach: Boolean = false
+    private var prompts: ArrayList<HashMap<String, String>> = arrayListOf()
+
+    private var mContext: Context? = null
+    private var requestNetwork: RequestNetwork? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -67,82 +104,6 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     ): View? {
         return inflater.inflate(R.layout.fragment_prompts, container, false)
     }
-
-    private var fieldSearch: EditText? = null
-
-    private var btnPost: ExtendedFloatingActionButton? = null
-
-    private var promptsList: ListView? = null
-
-    private var promptsAdapter: PromptAdapter? = null
-
-    private var prompts: ArrayList<HashMap<String, String>> = arrayListOf()
-
-    private var refreshLayout: SwipeRefreshLayout? = null
-
-    private var requestNetwork: RequestNetwork? = null
-
-    private var query: String = ""
-
-    private var refreshButton: MaterialButton? = null
-
-    private var btnDetails: MaterialButton? = null
-
-    private var noInternetLayout: LinearLayout? = null
-
-    private var progressbar: ProgressBar? = null
-
-    private var selectedCategory: String = "all"
-
-    private var model: String = "all"
-
-    private var networkError = ""
-
-    private var catAll: LinearLayout? = null
-
-    private var catDevelopment: LinearLayout? = null
-
-    private var catMusic: LinearLayout? = null
-
-    private var catArt: LinearLayout? = null
-
-    private var catCulture: LinearLayout? = null
-
-    private var catBusiness: LinearLayout? = null
-
-    private var catGaming: LinearLayout? = null
-
-    private var catEducation: LinearLayout? = null
-
-    private var catHistory: LinearLayout? = null
-
-    private var catFood: LinearLayout? = null
-
-    private var catTourism: LinearLayout? = null
-
-    private var catProductivity: LinearLayout? = null
-
-    private var catTools: LinearLayout? = null
-
-    private var catEntertainment: LinearLayout? = null
-
-    private var catSport: LinearLayout? = null
-
-    private var catHealth: LinearLayout? = null
-
-    private var searchBar: ConstraintLayout? = null
-
-    private var btnAllModels: MaterialButton? = null
-
-    private var btnTextModel: MaterialButton? = null
-
-    private var btnImageModel: MaterialButton? = null
-
-    private var btnSearch: ImageButton? = null
-
-    private var onAttach: Boolean = false
-
-    private var mContext: Context? = null
 
     private val postPromptListener: PostPromptDialogFragment.StateChangesListener = object : PostPromptDialogFragment.StateChangesListener {
         override fun onFormFilled(
@@ -174,7 +135,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             type: String,
             category: String
         ) {
-            Toast.makeText(mContext?: return, "Please fill all blanks", Toast.LENGTH_SHORT).show()
+            Toast.makeText(mContext?: return, getString(R.string.label_error_fill_all_blanks), Toast.LENGTH_SHORT).show()
 
             val promptDialog: PostPromptDialogFragment =
                 PostPromptDialogFragment.newInstance(name, title, desc, prompt, type, category)
@@ -203,7 +164,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 noInternetLayout?.visibility = View.VISIBLE
                 promptsList?.visibility = View.GONE
                 progressbar?.visibility = View.GONE
-                Toast.makeText(mContext?: return, "Server error. Please try again later.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(mContext?: return, getString(R.string.label_server_error), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -223,9 +184,9 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         override fun onErrorResponse(tag: String, message: String) {
             MaterialAlertDialogBuilder(mContext?: return, R.style.App_MaterialAlertDialog)
-                .setTitle("Error")
-                .setMessage("Failed to post prompt. Please check your Internet connection.")
-                .setPositiveButton("Close") { _, _ -> }
+                .setTitle(R.string.label_error)
+                .setMessage(getString(R.string.msg_failed_to_post_prompt))
+                .setPositiveButton(R.string.btn_close) { _, _ -> }
                 .show()
         }
     }
@@ -312,7 +273,6 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             override fun onScrollStateChanged(view: AbsListView, scrollState: Int) { /* unused */ }
 
             override fun onScroll(view: AbsListView, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
-
                 val topRowVerticalPosition: Int = if (prompts.isEmpty() || promptsList == null || promptsList?.childCount == 0) 0 else promptsList?.getChildAt(0)!!.top
 
                 if (firstVisibleItem == 0 && topRowVerticalPosition >= 0) {
@@ -341,15 +301,12 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         )
 
         refreshLayout?.setSize(SwipeRefreshLayout.LARGE)
-
         refreshLayout?.setOnRefreshListener(this)
 
         promptsAdapter = PromptAdapter(prompts, this)
 
         promptsList?.dividerHeight = 0
-
         promptsList?.adapter = promptsAdapter
-
         promptsAdapter?.notifyDataSetChanged()
 
         requestNetwork = RequestNetwork((mContext as Activity?)?: return)
@@ -408,9 +365,9 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         btnDetails?.setOnClickListener {
             MaterialAlertDialogBuilder(mContext?: return@setOnClickListener, R.style.App_MaterialAlertDialog)
-                .setTitle("Error details")
+                .setTitle(R.string.label_error_details)
                 .setMessage(networkError)
-                .setPositiveButton("Close") { _, _ -> }
+                .setPositiveButton(R.string.btn_close) { _, _ -> }
                 .show()
         }
 

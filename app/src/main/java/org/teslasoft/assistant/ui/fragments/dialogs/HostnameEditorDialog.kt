@@ -29,6 +29,7 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.teslasoft.assistant.R
 
+@Deprecated("Use API endpoints model instead")
 class HostnameEditorDialog : DialogFragment() {
     companion object {
         fun newInstance(name: String) : HostnameEditorDialog {
@@ -87,8 +88,8 @@ class HostnameEditorDialog : DialogFragment() {
 
         builder!!.setView(view)
             .setCancelable(false)
-            .setPositiveButton("OK") { _, _ -> validateForm() }
-            .setNegativeButton("Cancel") { _, _ ->  }
+            .setPositiveButton(R.string.btn_ok) { _, _ -> validateForm() }
+            .setNegativeButton(R.string.btn_cancel) { _, _ ->  }
 
         return builder!!.create()
     }

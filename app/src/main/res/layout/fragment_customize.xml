@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+/**************************************************************************
+* Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*  http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+**************************************************************************/
+-->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Customize Assistant"
+        android:text="@string/label_customize_assistant"
         android:textColor="@color/text_title"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -34,7 +52,7 @@
             android:id="@+id/field_assistant_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Assistant name"
+            android:hint="@string/hint_assistant_name"
             android:singleLine="true" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -46,7 +64,7 @@
         android:background="@color/accent_900"
         android:gravity="center"
         android:padding="16dp"
-        android:text="Select an avatar"
+        android:text="@string/label_select_an_avatar"
         android:textColor="@color/window_background"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -72,6 +90,8 @@
             android:layout_marginHorizontal="8dp"
             android:layout_weight="1"
             android:background="@drawable/btn_accent_50_v3"
+            android:contentDescription="@string/avatar_gpt"
+            android:tooltipText="@string/avatar_gpt"
             android:padding="12dp"
             android:scaleType="centerCrop"
             android:src="@drawable/chatgpt_icon"
@@ -91,6 +111,8 @@
             android:layout_marginHorizontal="8dp"
             android:layout_weight="1"
             android:background="@drawable/btn_accent_50_v3"
+            android:contentDescription="@string/avatar_gemini"
+            android:tooltipText="@string/avatar_gemini"
             android:padding="12dp"
             android:scaleType="centerCrop"
             android:src="@drawable/google_bard"
@@ -109,6 +131,8 @@
             android:layout_marginHorizontal="8dp"
             android:layout_weight="1"
             android:background="@drawable/btn_accent_50_v3"
+            android:contentDescription="@string/avatar_perplexity_ai"
+            android:tooltipText="@string/avatar_perplexity_ai"
             android:padding="12dp"
             android:scaleType="centerCrop"
             android:src="@drawable/perplexity_ai"
@@ -127,6 +151,8 @@
             android:layout_marginHorizontal="8dp"
             android:layout_weight="1"
             android:background="@drawable/btn_accent_50_v3"
+            android:contentDescription="Empty"
+            android:tooltipText="Empty"
             android:padding="12dp"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -135,7 +161,8 @@
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toEndOf="@id/view3"
             app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/avatars[2]" />
+            tools:srcCompat="@tools:sample/avatars[2]"
+            tools:ignore="HardcodedText" />
 
         <ImageButton
             android:id="@+id/view5"
@@ -144,6 +171,7 @@
             android:layout_marginHorizontal="8dp"
             android:layout_weight="1"
             android:background="@drawable/btn_accent_50_v3"
+            android:contentDescription="@string/app_name"
             android:padding="12dp"
             android:scaleType="centerCrop"
             android:src="@drawable/assistant"
@@ -164,7 +192,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
-        android:text="Select from gallery"
+        android:text="@string/label_select_from_gallery"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout17" />
@@ -175,6 +203,7 @@
         android:layout_height="128dp"
         android:layout_marginTop="24dp"
         android:background="@drawable/btn_accent_50_v3"
+        android:contentDescription="@string/label_current_avatar"
         android:padding="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

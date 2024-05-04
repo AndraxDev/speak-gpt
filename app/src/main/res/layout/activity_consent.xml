@@ -1,7 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+/**************************************************************************
+* Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*  http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+**************************************************************************/
+-->
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -27,9 +44,9 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
-            android:text="Data we DO NOT collect"
+            android:text="@string/ds_no_collect"
             android:textColor="@color/accent_900"
-            android:textSize="18dp"
+            android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -42,8 +59,8 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
-            android:paddingStart="16dp"
-            android:text="• Chats list"
+            android:paddingHorizontal="16dp"
+            android:text="@string/ds_chats_list"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -55,8 +72,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
-            android:paddingStart="16dp"
-            android:text="• Conversation contents"
+            android:paddingHorizontal="16dp"
+            android:text="@string/ds_conversation_contents"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -68,8 +85,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
-            android:paddingStart="16dp"
-            android:text="• Audio samples of your voice"
+            android:paddingHorizontal="16dp"
+            android:text="@string/ds_audio_samples_of_your_voice"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -81,8 +98,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
-            android:paddingStart="16dp"
-            android:text="• API keys"
+            android:paddingHorizontal="16dp"
+            android:text="@string/ds_api_keys"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -95,10 +112,10 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
-            android:background="@drawable/btn_accent_tonal_selector"
-            android:padding="12dp"
-            android:text="This info is securely saved only on your device, but it might be sent to OpenAI to provide basic functionality. This data is not used to train models."
-            android:textColor="@color/accent_900"
+            android:background="@drawable/btn_accent_tonal_selector_v7"
+            android:padding="16dp"
+            android:text="@string/dsnote_nocollect_1"
+            android:textColor="@color/text"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -111,7 +128,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
-            android:text="Optional data we may colect"
+            android:text="@string/ds_optional_collect"
             android:textColor="@color/accent_900"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -126,8 +143,8 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
-            android:paddingStart="16dp"
-            android:text="• Installation ID*"
+            android:paddingHorizontal="16dp"
+            android:text="@string/ds_installation_id"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -139,8 +156,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
-            android:paddingStart="16dp"
-            android:text="• Crash logs"
+            android:paddingHorizontal="16dp"
+            android:text="@string/ds_crash_logs"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -152,8 +169,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
-            android:paddingStart="16dp"
-            android:text="• Advertising ID"
+            android:paddingHorizontal="16dp"
+            android:text="@string/ds_advertising_id"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -165,8 +182,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
-            android:paddingStart="16dp"
-            android:text="• Device info (device model, Android version, etc)"
+            android:paddingHorizontal="16dp"
+            android:text="@string/ds_device_info_device_model_android_version_etc"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -179,10 +196,10 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
-            android:background="@drawable/btn_accent_tonal_selector"
-            android:padding="12dp"
-            android:text="This info is used for analytics and marketing purposes. We do not share this info with third-party organizations. This info is collected only when &quot;Usage and diagnostics&quot; feature is enabled. You can also send this info manually. You are able to delete this info from our servers, reset or/and delete installation ID. You can also revoke authorization to use this data without losing access to the app."
-            android:textColor="@color/accent_900"
+            android:background="@drawable/btn_accent_tonal_selector_v7"
+            android:padding="16dp"
+            android:text="@string/dsnote_optional_1"
+            android:textColor="@color/text"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -195,7 +212,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
-            android:text="Required data we collect"
+            android:text="@string/ds_require_collection"
             android:textColor="@color/accent_900"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -210,8 +227,8 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
-            android:paddingStart="16dp"
-            android:text="• Name"
+            android:paddingHorizontal="16dp"
+            android:text="@string/ds_name"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -223,8 +240,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
-            android:paddingStart="16dp"
-            android:text="• User-generated content**"
+            android:paddingHorizontal="16dp"
+            android:text="@string/ds_user_generated_content"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -237,10 +254,10 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
-            android:background="@drawable/btn_accent_tonal_selector"
-            android:padding="12dp"
-            android:text="This data is required for function &quot;Prompts store&quot;. We do not collect this data unless you published a prompt. You can still delete this data by reporting a prompt or contacting us via admin@teslasoft.org. This data is stored permanently unless you request your data to be deleted. This data can be accessed by other users."
-            android:textColor="@color/accent_900"
+            android:background="@drawable/btn_accent_tonal_selector_v7"
+            android:padding="16dp"
+            android:text="@string/dsnote_required_1"
+            android:textColor="@color/text"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -253,10 +270,10 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
-            android:background="@drawable/btn_accent_tonal_selector"
-            android:padding="12dp"
-            android:text="* When you install this app an installation ID will be created. This id is a random UUID string and it does not belong to Android id or any of hardware IDs. You can either reset or delete installation ID. In this case we will stop to collect data associated with installation ID."
-            android:textColor="@color/accent_900"
+            android:background="@drawable/btn_accent_tonal_selector_v7"
+            android:padding="16dp"
+            android:text="@string/ds_footnote_1"
+            android:textColor="@color/text"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -269,10 +286,10 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
-            android:background="@drawable/btn_accent_tonal_selector"
-            android:padding="12dp"
-            android:text="** User-generated content is all content created and published by users using this app. We may review public content for violations and remove inappropriate content. We don't have access to private content (like chats list, conversations, etc)"
-            android:textColor="@color/accent_900"
+            android:background="@drawable/btn_accent_tonal_selector_v7"
+            android:padding="16dp"
+            android:text="@string/ds_footnote_2"
+            android:textColor="@color/text"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -283,7 +300,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Data safety"
+            android:text="@string/data_safety"
             android:textColor="@color/text_title"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -298,10 +315,10 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
-            android:background="@drawable/btn_accent_tonal_selector"
-            android:padding="12dp"
-            android:text="This page describes which data we use and why."
-            android:textColor="@color/accent_900"
+            android:background="@drawable/btn_accent_tonal_selector_v7"
+            android:padding="16dp"
+            android:text="@string/ds_description"
+            android:textColor="@color/text"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -327,7 +344,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:text="Decline" />
+                android:text="@string/btn_ds_decline" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_accept"
@@ -336,7 +353,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:text="Accept" />
+                android:text="@string/btn_ds_accept" />
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
@@ -348,7 +365,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="16dp"
-            android:text="Privacy Policy"
+            android:text="@string/label_privacy_policy"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -362,8 +379,8 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
             android:background="@drawable/btn_tip2"
-            android:padding="12dp"
-            android:text="Even if you decompile the app and remove this screen we may still collect this data. By using this app, you are agree with our Privacy Policy and Terms of Service."
+            android:padding="16dp"
+            android:text="@string/ds_warning"
             android:textColor="@color/error"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -379,7 +396,7 @@
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView57"></LinearLayout>
+            app:layout_constraintTop_toBottomOf="@+id/textView57"/>
 
         <LinearLayout
             android:id="@+id/linearLayout19"
@@ -390,7 +407,7 @@
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView42"></LinearLayout>
+            app:layout_constraintTop_toBottomOf="@+id/textView42"/>
 
         <LinearLayout
             android:id="@+id/linearLayout20"
@@ -401,7 +418,7 @@
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView49"></LinearLayout>
+            app:layout_constraintTop_toBottomOf="@+id/textView49"/>
 
         <LinearLayout
             android:id="@+id/linearLayout21"
@@ -412,7 +429,7 @@
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView53"></LinearLayout>
+            app:layout_constraintTop_toBottomOf="@+id/textView53"/>
 
         <LinearLayout
             android:id="@+id/linearLayout22"
@@ -423,7 +440,7 @@
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView58"></LinearLayout>
+            app:layout_constraintTop_toBottomOf="@+id/textView58"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

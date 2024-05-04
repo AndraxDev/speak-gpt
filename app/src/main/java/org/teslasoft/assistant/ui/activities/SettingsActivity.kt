@@ -27,7 +27,6 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -38,13 +37,11 @@ import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
-
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.materialswitch.MaterialSwitch
-
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ChatPreferences
 import org.teslasoft.assistant.preferences.Preferences
@@ -56,10 +53,9 @@ import org.teslasoft.assistant.ui.fragments.dialogs.HostnameEditorDialog
 import org.teslasoft.assistant.ui.fragments.dialogs.LanguageSelectorDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.SystemMessageDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.VoiceSelectorDialogFragment
-import org.teslasoft.assistant.ui.onboarding.ActivationActivity
 import org.teslasoft.assistant.util.TestDevicesAds
-import org.teslasoft.core.auth.client.TeslasoftIDClient
 
+@Deprecated("This activity is deprecated and will be removed in the future", ReplaceWith("SettingsV2Activity"))
 class SettingsActivity : FragmentActivity() {
 
     private var btnChangeApi: LinearLayout? = null
@@ -111,8 +107,6 @@ class SettingsActivity : FragmentActivity() {
     private var systemMessage = ""
     private var language = "en"
     private var ttsEngine = "google"
-
-    private var teslasoftIDClient: TeslasoftIDClient? = null
 
     private var modelChangedListener: AdvancedSettingsDialogFragment.StateChangesListener = object : AdvancedSettingsDialogFragment.StateChangesListener {
         override fun onSelected(name: String, maxTokens: String, endSeparator: String, prefix: String) {

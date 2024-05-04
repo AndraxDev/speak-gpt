@@ -42,8 +42,6 @@ import org.teslasoft.assistant.Config
 
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
-import org.teslasoft.assistant.ui.fragments.tabs.ChatsListFragment
-import org.teslasoft.assistant.ui.fragments.tabs.PromptsFragment
 
 class AboutActivity : FragmentActivity() {
 
@@ -127,9 +125,9 @@ class AboutActivity : FragmentActivity() {
 
             val version = pInfo.versionName
 
-            appVer?.text = "App version: $version"
+            appVer?.text = "${getString(R.string.app_version)} $version"
         } catch (e: PackageManager.NameNotFoundException) {
-            appVer?.text = "App version: unknown"
+            appVer?.text = "${getString(R.string.app_version)} unknown"
         }
 
         btnProjects?.setOnClickListener {
@@ -186,8 +184,11 @@ class AboutActivity : FragmentActivity() {
 
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() && Preferences.getPreferences(this, "").getAmoledPitchBlack()) {
-            window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
-            window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+            if (android.os.Build.VERSION.SDK_INT <= 34) {
+                window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+                window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+            }
+
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
 
             appIcon?.setBackgroundResource(R.drawable.btn_accent_50_amoled)
@@ -199,8 +200,10 @@ class AboutActivity : FragmentActivity() {
             root?.setBackgroundResource(R.color.amoled_window_background)
             btnBack?.setBackgroundResource(R.drawable.btn_accent_icon_large_amoled)
         } else {
-            window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
-            window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
+            if (android.os.Build.VERSION.SDK_INT <= 34) {
+                window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
+                window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
+            }
             window.setBackgroundDrawableResource(R.color.window_background)
 
             appIcon?.setBackgroundResource(R.drawable.btn_accent_50)

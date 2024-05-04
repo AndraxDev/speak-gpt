@@ -33,7 +33,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.LogitBiasPreferences
-import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.preferences.dto.LogitBiasObject
 import org.teslasoft.assistant.ui.adapters.LogitBiasItemAdapter
 
@@ -79,8 +78,10 @@ class LogitBiasConfigActivity : FragmentActivity() {
 
         setContentView(R.layout.activity_logit_bias_list)
 
-        window.statusBarColor = getColor(R.color.accent_250)
-        window.navigationBarColor = getColor(R.color.accent_250)
+        if (android.os.Build.VERSION.SDK_INT <= 34) {
+            window.statusBarColor = getColor(R.color.accent_250)
+            window.navigationBarColor = getColor(R.color.accent_250)
+        }
 
         listView = findViewById(R.id.list_view)
         btnBack = findViewById(R.id.btn_back)
@@ -95,7 +96,7 @@ class LogitBiasConfigActivity : FragmentActivity() {
 
         btnAddPair!!.setOnClickListener {
             if (fieldLogitBias!!.text.toString() == "" || fieldLogitBias!!.text.toString() == "-" || fieldLogitBias!!.text.toString() == "e") {
-                Toast.makeText(this, "Please fill logit bias field", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.logit_bias_error_empty), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             if (fieldTokenId!!.text.toString() != "" && fieldTokenId!!.text.toString() != "-" && fieldTokenId!!.text.toString() != "e") {
@@ -104,7 +105,7 @@ class LogitBiasConfigActivity : FragmentActivity() {
                 val logitBias = fieldLogitBias!!.text.toString()
 
                 if (logitBias.toInt() > 100 || logitBias.toInt() < -100) {
-                    Toast.makeText(this, "Logit bias must be in range from -100 to 100", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.logit_bias_error_range), Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
 
@@ -126,7 +127,7 @@ class LogitBiasConfigActivity : FragmentActivity() {
                         val tokenId = i.toString()
 
                         if (logitBias.toInt() > 100 || logitBias.toInt() < -100) {
-                            Toast.makeText(this@LogitBiasConfigActivity, "Logit bias must be in range from -100 to 100", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@LogitBiasConfigActivity, getString(R.string.logit_bias_error_range), Toast.LENGTH_SHORT).show()
                             return@launch
                         }
 
@@ -141,7 +142,7 @@ class LogitBiasConfigActivity : FragmentActivity() {
                     }
                 }
             } else {
-                Toast.makeText(this, "Please fill token or token ID field", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.logit_bias_error_token_id), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -152,7 +153,7 @@ class LogitBiasConfigActivity : FragmentActivity() {
 
             if (configId != null) {
                 logitBiasPreferences = LogitBiasPreferences(this, configId)
-                activityTitle!!.text = extras.getString("label") ?: "Logit Bias Config"
+                activityTitle!!.text = extras.getString("label") ?: getString(R.string.logit_bias_config)
                 initialize()
             } else {
                 finish()
@@ -196,11 +197,9 @@ class LogitBiasConfigActivity : FragmentActivity() {
 
         btnHelp!!.setOnClickListener {
             MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
-                .setTitle("Help")
-                .setMessage("Logit Bias Config is a feature that allows you to set custom logit bias for specific tokens. Logit bias is a value that is added to the logit of the token. It can be used to increase or decrease the probability of the token in the output sequence. For example, if you set logit bias to 100, the token will be more likely to appear in the output sequence. If you set logit bias to -100, the token will be less likely to appear in the output sequence.")
-                .setPositiveButton("Close") { dialog, _ ->
-                    dialog.dismiss()
-                }
+                .setTitle(R.string.help)
+                .setMessage(R.string.logit_bias_help)
+                .setPositiveButton(R.string.btn_close) { _, _ -> }
                 .show()
         }
     }

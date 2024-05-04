@@ -70,34 +70,24 @@ class AdvancedModelSelectorDialogFragment : DialogFragment() {
         }
     }
 
-
     private var builder: AlertDialog.Builder? = null
+    private var modelList: ListView? = null
+    private var progressBar: ProgressBar? = null
+    private var ttsSelectorTitle: TextView? = null
+    private var fieldSearch: TextInputEditText? = null
 
     private var preferences: Preferences? = null
-
     private var apiEndpointPreferences: ApiEndpointPreferences? = null
-
-    private var apiEndpointObject: ApiEndpointObject? = null
-
-    private var listener: OnModelSelectedListener? = null
-
-    private var modelList: ListView? = null
-
-    private var modelListAdapter: ModelListAdapter? = null
-
-    private var availableModels: ArrayList<String> = arrayListOf()
-
-    private var availableModelsProjection: ArrayList<String> = arrayListOf()
-
-    private var progressBar: ProgressBar? = null
-
-    private var ttsSelectorTitle: TextView? = null
-
-    private var requestNetwork: RequestNetwork? = null
-
     private var favoriteModelsPreferences: FavoriteModelsPreferences? = null
 
-    private var fieldSearch: TextInputEditText? = null
+    private var apiEndpointObject: ApiEndpointObject? = null
+    private var listener: OnModelSelectedListener? = null
+
+    private var availableModels: ArrayList<String> = arrayListOf()
+    private var availableModelsProjection: ArrayList<String> = arrayListOf()
+
+    private var requestNetwork: RequestNetwork? = null
+    private var modelListAdapter: ModelListAdapter? = null
 
     private var mContext: Context? = null
 
@@ -125,7 +115,7 @@ class AdvancedModelSelectorDialogFragment : DialogFragment() {
 
         override fun onActionClick(model: String, endpointId: String, position: Int) {
             val m = FavoriteModelObject(model, endpointId)
-            Toast.makeText(mContext ?: return, "Added to favorites", Toast.LENGTH_SHORT).show()
+            Toast.makeText(mContext ?: return, getString(R.string.label_added_to_favorites), Toast.LENGTH_SHORT).show()
             favoriteModelsPreferences?.addFavoriteModel(m)
         }
     }
@@ -156,18 +146,18 @@ class AdvancedModelSelectorDialogFragment : DialogFragment() {
                 progressBar?.visibility = View.GONE
             } catch (e: Exception) {
                 MaterialAlertDialogBuilder(requireContext())
-                    .setTitle("Error")
-                    .setMessage("An error occurred while fetching models. Please check your Internet and API key and try again later. Error message: ${e.message}")
-                    .setPositiveButton("OK") { _, _ -> this@AdvancedModelSelectorDialogFragment.dismiss() }
+                    .setTitle(R.string.label_error)
+                    .setMessage(getString(R.string.msg_model_loading_error_with_details) + e.message.toString())
+                    .setPositiveButton(R.string.btn_ok) { _, _ -> this@AdvancedModelSelectorDialogFragment.dismiss() }
                     .show()
             }
         }
 
         override fun onErrorResponse(tag: String, message: String) {
             MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Error")
-                .setMessage("An error occurred while fetching models. Please check your Internet and API key and try again later.")
-                .setPositiveButton("OK") { _, _ -> this@AdvancedModelSelectorDialogFragment.dismiss() }
+                .setTitle(R.string.label_error)
+                .setMessage(R.string.msg_error_loading_models)
+                .setPositiveButton(R.string.btn_ok) { _, _ -> this@AdvancedModelSelectorDialogFragment.dismiss() }
                 .show()
         }
     }
@@ -196,7 +186,7 @@ class AdvancedModelSelectorDialogFragment : DialogFragment() {
             override fun afterTextChanged(s: Editable?) { /* unused */ }
         })
 
-        ttsSelectorTitle?.text = "Select AI model"
+        ttsSelectorTitle?.text = getString(R.string.label_select_ai_model)
 
         progressBar?.visibility = View.VISIBLE
 
