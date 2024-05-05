@@ -20,6 +20,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.ListView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
@@ -46,6 +47,7 @@ class LogitBiasConfigActivity : FragmentActivity() {
     private var fieldTokenId: TextInputEditText? = null
     private var fieldLogitBias: TextInputEditText? = null
     private var btnAddPair: MaterialButton? = null
+    private var logitBiasLoader: ProgressBar? = null
 
     private var list: ArrayList<HashMap<String, String>> = arrayListOf()
     private var adapter: LogitBiasItemAdapter? = null
@@ -67,7 +69,6 @@ class LogitBiasConfigActivity : FragmentActivity() {
             logitBiasPreferences!!.removeLogitBias(list[position]["tokenId"] ?: return)
             list.clear()
             reloadList()
-            // recreate()
         }
 
     }
@@ -79,8 +80,8 @@ class LogitBiasConfigActivity : FragmentActivity() {
         setContentView(R.layout.activity_logit_bias_list)
 
         if (android.os.Build.VERSION.SDK_INT <= 34) {
-            window.statusBarColor = getColor(R.color.accent_250)
-            window.navigationBarColor = getColor(R.color.accent_250)
+            window.statusBarColor = getColor(R.color.accent_100)
+            window.navigationBarColor = getColor(R.color.accent_100)
         }
 
         listView = findViewById(R.id.list_view)
@@ -91,6 +92,7 @@ class LogitBiasConfigActivity : FragmentActivity() {
         fieldTokenId = findViewById(R.id.field_token_id)
         fieldLogitBias = findViewById(R.id.field_logit_bias)
         btnAddPair = findViewById(R.id.btn_add_pair)
+        logitBiasLoader = findViewById(R.id.logit_bias_loading)
 
         listView?.divider = null
 
@@ -164,27 +166,42 @@ class LogitBiasConfigActivity : FragmentActivity() {
     }
 
     private fun reloadList() {
+        runOnUiThread {
+            logitBiasLoader?.visibility = ProgressBar.VISIBLE
+            listView?.visibility = ListView.GONE
+            btnAddPair?.isEnabled = false
+        }
+
         if (list == null) list = arrayListOf()
 
         var logitBiasList = logitBiasPreferences!!.getLogitBiasesList()
 
         if (logitBiasList == null) logitBiasList = arrayListOf()
 
-        for (i in logitBiasList) {
-            val map = HashMap<String, String>()
-            map["tokenId"] = i.tokenId
-            map["logitBias"] = i.logitBias
-            list.add(map)
-        }
+        CoroutineScope(Dispatchers.Main).launch {
+            val tokenizer = Tokenizer.of(encoding = Encoding.CL100K_BASE)
 
-        // R8 bug fix
-        if (list == null) list = arrayListOf()
+            for (i in logitBiasList) {
+                val map = HashMap<String, String>()
+                map["tokenId"] = i.tokenId
+                map["logitBias"] = i.logitBias
+                map["tokenContent"] = tokenizer.decode(i.tokenId.toString().toInt())
+                list.add(map)
+            }
 
-        runOnUiThread {
-            adapter = LogitBiasItemAdapter(list, this)
-            adapter!!.setOnSelectListener(onSelectListener)
-            listView!!.adapter = adapter
-            adapter!!.notifyDataSetChanged()
+            // R8 bug fix
+            if (list == null) list = arrayListOf()
+
+            runOnUiThread {
+                adapter = LogitBiasItemAdapter(list, this@LogitBiasConfigActivity)
+                adapter!!.setOnSelectListener(onSelectListener)
+                listView!!.adapter = adapter
+                adapter!!.notifyDataSetChanged()
+
+                logitBiasLoader?.visibility = ProgressBar.GONE
+                listView?.visibility = ListView.VISIBLE
+                btnAddPair?.isEnabled = true
+            }
         }
     }
 

@@ -24,6 +24,11 @@ import android.widget.BaseAdapter
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.aallam.ktoken.Encoding
+import com.aallam.ktoken.Tokenizer
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.teslasoft.assistant.R
 
 class LogitBiasItemAdapter(private val dataArray: ArrayList<HashMap<String, String>>, private var mContext: Context) : BaseAdapter() {
@@ -66,7 +71,7 @@ class LogitBiasItemAdapter(private val dataArray: ArrayList<HashMap<String, Stri
 
         val item = dataArray[position]
 
-        textToken?.text = "Token ID: ${item["tokenId"]}"
+        textToken?.text = "Token: ${item["tokenContent"]} ${item["tokenId"]}"
         textLogitBias?.text = "Logit bias: ${item["logitBias"]}"
 
         ui?.setOnClickListener {

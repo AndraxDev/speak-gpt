@@ -18,6 +18,7 @@ package org.teslasoft.assistant.ui.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
@@ -25,18 +26,23 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.Config
 import org.teslasoft.assistant.R
 
 class AISetAdapter(private val mContext: Context, private val dataArray: ArrayList<Map<String, String>>) : BaseAdapter() {
 
     private var ui: ConstraintLayout? = null
+    private var window: ConstraintLayout? = null
     private var setIcon: ImageView? = null
     private var setName: TextView? = null
     private var setDescription: TextView? = null
@@ -75,6 +81,8 @@ class AISetAdapter(private val mContext: Context, private val dataArray: ArrayLi
         }
 
         ui = mView?.findViewById(R.id.ui)
+        window = mView?.findViewById(R.id.window)
+        window?.background = getAccentDrawable(AppCompatResources.getDrawable(mContext, R.drawable.btn_accent_tonal_selector_v8)!!)
         setIcon = mView?.findViewById(R.id.set_icon)
         setName = mView?.findViewById(R.id.set_name)
         setDescription = mView?.findViewById(R.id.set_description)
@@ -118,5 +126,14 @@ class AISetAdapter(private val mContext: Context, private val dataArray: ArrayLi
 
     private fun dpToPx(dp: Float): Float {
         return dp * mContext.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT
+    }
+
+    private fun getSurfaceColor() : Int {
+        return SurfaceColors.SURFACE_4.getColor(mContext)
+    }
+
+    private fun getAccentDrawable(drawable: Drawable) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getSurfaceColor())
+        return drawable
     }
 }

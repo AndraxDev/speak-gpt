@@ -146,7 +146,7 @@
                                     android:layout_height="56dp"
                                     android:layout_marginHorizontal="6dp"
                                     android:layout_weight="1"
-                                    android:background="@drawable/btn_accent_tonal"
+                                    android:background="@drawable/btn_accent_tonal_12"
                                     android:text="@string/btn_try_it"
                                     app:icon="@drawable/ic_play"
                                     app:iconGravity="textStart"

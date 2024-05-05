@@ -43,6 +43,8 @@ import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.splashscreen.SplashScreen
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -68,6 +70,7 @@ import java.io.IOException
 class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener {
     private var navigationBar: BottomNavigationView? = null
     private var fragmentChats: ConstraintLayout? = null
+    private var fragmentPlayground: ConstraintLayout? = null
     private var fragmentPrompts: ConstraintLayout? = null
     private var fragmentTips: ConstraintLayout? = null
     private var btnDebugger: ImageButton? = null
@@ -80,6 +83,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     private var threadLoader: LinearLayout? = null
     private var devIds: TextView? = null
     private var frameChats: Fragment? = null
+    private var framePlayground: Fragment? = null
     private var framePrompts: Fragment? = null
     private var frameTips: Fragment? = null
     private var root: ConstraintLayout? = null
@@ -89,6 +93,8 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     private var selectedTab: Int = 1
     private var isAnimating = false
     private var isInitialized: Boolean = false
+
+    private var splashScreen: SplashScreen? = null
 
     private val requestListener = object : RequestNetwork.RequestListener {
         override fun onResponse(tag: String, message: String) {
@@ -121,6 +127,9 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        splashScreen = installSplashScreen()
+        splashScreen?.setKeepOnScreenCondition { true }
+
         val consent: SharedPreferences = getSharedPreferences("consent", MODE_PRIVATE)
 
         if (!consent.getBoolean("consent", false)) {
@@ -136,6 +145,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         navigationBar = findViewById(R.id.navigation_bar)
 
         fragmentChats = findViewById(R.id.fragment_chats)
+        fragmentPlayground = findViewById(R.id.fragment_playground)
         fragmentPrompts = findViewById(R.id.fragment_prompts)
         fragmentTips = findViewById(R.id.fragment_tips)
         root = findViewById(R.id.root)
@@ -155,6 +165,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         debuggerWindow?.visibility = View.GONE
 
         frameChats = supportFragmentManager.findFragmentById(R.id.fragment_chats_)
+        framePlayground = supportFragmentManager.findFragmentById(R.id.fragment_playground_)
         framePrompts = supportFragmentManager.findFragmentById(R.id.fragment_prompts_)
         frameTips = supportFragmentManager.findFragmentById(R.id.fragment_tips_)
 
@@ -231,6 +242,10 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                         when (item.itemId) {
                             R.id.menu_chat -> {
                                 menuChats()
+                                return@OnItemSelectedListener true
+                            }
+                            R.id.menu_playground -> {
+                                menuPlayground()
                                 return@OnItemSelectedListener true
                             }
                             R.id.menu_prompts -> {
@@ -338,6 +353,8 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
 
                 reloadAmoled()
 
+                splashScreen?.setKeepOnScreenCondition { false }
+
                 Handler(Looper.getMainLooper()).postDelayed({
                     val fadeOut: Animation = AnimationUtils.loadAnimation(this, R.anim.fade_out)
                     threadLoader?.startAnimation(fadeOut)
@@ -407,6 +424,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         }
     }
 
+    @Suppress("DEPRECATION")
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack()!!) {
             if (android.os.Build.VERSION.SDK_INT <= 34) {
@@ -482,6 +500,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         (framePrompts as PromptsFragment).reloadAmoled(this)
     }
 
+    @Suppress("DEPRECATION")
     private fun preloadAmoled() {
         if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack()!!) {
             if (android.os.Build.VERSION.SDK_INT <= 34) {
@@ -521,9 +540,9 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         }
     }
 
-    override fun onSaveInstanceState(savedInstanceState: Bundle) {
-        super.onSaveInstanceState(savedInstanceState)
-        savedInstanceState.putInt("tab", selectedTab)
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("tab", selectedTab)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -535,6 +554,14 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         Thread {
             runOnUiThread {
                 openChats()
+            }
+        }.start()
+    }
+
+    private fun menuPlayground() {
+        Thread {
+            runOnUiThread {
+                openPlayground()
             }
         }.start()
     }
@@ -558,22 +585,39 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     private fun openChats() {
         transition(
             fragmentPrompts as ConstraintLayout,
+            fragmentPlayground as ConstraintLayout,
             fragmentTips as ConstraintLayout,
             switchChatsAnimation,
-            2,
             3,
+            2,
+            4,
             1
+        )
+    }
+
+    private fun openPlayground() {
+        transition(
+            fragmentChats as ConstraintLayout,
+            fragmentTips as ConstraintLayout,
+            fragmentPrompts as ConstraintLayout,
+            switchPlaygroundAnimation,
+            1,
+            4,
+            3,
+            2
         )
     }
 
     private fun openPrompts() {
         transition(
             fragmentChats as ConstraintLayout,
+            fragmentPlayground as ConstraintLayout,
             fragmentTips as ConstraintLayout,
             switchPromptsAnimation,
             1,
-            3,
-            2
+            2,
+            4,
+            3
         )
     }
 
@@ -581,10 +625,12 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         transition(
             fragmentChats as ConstraintLayout,
             fragmentPrompts as ConstraintLayout,
+            fragmentPlayground as ConstraintLayout,
             switchTipsAnimation,
             1,
+            3,
             2,
-            3
+            4
         )
     }
 
@@ -594,15 +640,19 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         when (selectedTab) {
             1 -> {
                 navigationBar?.selectedItemId = R.id.menu_chat
-                switchLayout(fragmentPrompts!!, fragmentTips!!, fragmentChats!!)
+                switchLayout(fragmentPrompts!!, fragmentTips!!, fragmentPlayground!!, fragmentChats!!)
             }
             2 -> {
-                navigationBar?.selectedItemId = R.id.menu_prompts
-                switchLayout(fragmentChats!!, fragmentTips!!, fragmentPrompts!!)
+                navigationBar?.selectedItemId = R.id.menu_playground
+                switchLayout(fragmentChats!!, fragmentTips!!, fragmentPrompts!!, fragmentPlayground!!)
             }
             3 -> {
+                navigationBar?.selectedItemId = R.id.menu_prompts
+                switchLayout(fragmentChats!!, fragmentTips!!, fragmentPlayground!!, fragmentPrompts!!)
+            }
+            4 -> {
                 navigationBar?.selectedItemId = R.id.menu_tips
-                switchLayout(fragmentChats!!, fragmentPrompts!!, fragmentTips!!)
+                switchLayout(fragmentChats!!, fragmentPrompts!!, fragmentPlayground!!, fragmentTips!!)
             }
         }
     }
@@ -637,9 +687,11 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     private fun animationListenerCallback(
         layout1: ConstraintLayout,
         layout2: ConstraintLayout,
+        layout3: ConstraintLayout,
         layoutToShow: ConstraintLayout,
         fragment1: Fragment?,
         fragment2: Fragment?,
+        fragment3: Fragment?,
         fragmentToShow: Fragment?
     ) {
         layoutToShow.visibility = View.VISIBLE
@@ -653,6 +705,10 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
             hideFragment(supportFragmentManager, fragment2)
         }
 
+        if (fragment3 != null) {
+            hideFragment(supportFragmentManager, fragment3)
+        }
+
         if (fragmentToShow != null) {
             showFragment(supportFragmentManager, fragmentToShow)
         }
@@ -662,7 +718,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                 override fun onAnimationEnd(animation: Animator) {
                     Thread {
                         this@MainActivity.runOnUiThread {
-                            switchLayout(layout1, layout2, layoutToShow)
+                            switchLayout(layout1, layout2, layout3, layoutToShow)
                             isAnimating = false
                         }
                     }.start()
@@ -671,25 +727,29 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     }
 
     private fun switchLayout(
-        layout1: ConstraintLayout, layout2: ConstraintLayout, layoutToShow: ConstraintLayout
+        layout1: ConstraintLayout, layout2: ConstraintLayout, layout3: ConstraintLayout, layoutToShow: ConstraintLayout
     ) {
         layout1.visibility = View.GONE
         layout2.visibility = View.GONE
+        layout3.visibility = View.GONE
         layoutToShow.visibility = View.VISIBLE
     }
 
     private fun transition(
         l1: ConstraintLayout,
         l2: ConstraintLayout,
+        l3: ConstraintLayout,
         animation: AnimatorListenerAdapter,
         tab1: Int,
         tab2: Int,
+        tab3: Int,
         targetTab: Int
     ) {
         isAnimating = true
         when (selectedTab) {
             tab1 -> animate(l1, animation)
             tab2 -> animate(l2, animation)
+            tab3 -> animate(l3, animation)
             else -> {
                 isAnimating = false
             }
@@ -705,10 +765,12 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                     runOnUiThread {
                         animationListenerCallback(
                             fragmentPrompts!!,
+                            fragmentPlayground!!,
                             fragmentTips!!,
                             fragmentChats!!,
-                            frameTips,
                             framePrompts,
+                            framePlayground,
+                            frameTips,
                             frameChats
                         )
                     }
@@ -716,17 +778,39 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
             }
     }
 
-    private val switchPromptsAnimation: AnimatorListenerAdapter =
+    private val switchPlaygroundAnimation: AnimatorListenerAdapter =
         object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
                 Thread {
                     runOnUiThread {
                         animationListenerCallback(
                             fragmentTips!!,
+                            fragmentPrompts!!,
                             fragmentChats!!,
+                            fragmentPlayground!!,
+                            frameTips,
+                            framePrompts,
+                            frameChats,
+                            framePlayground
+                        )
+                    }
+                }.start()
+            }
+        }
+
+    private val switchPromptsAnimation: AnimatorListenerAdapter =
+        object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                Thread {
+                    runOnUiThread {
+                        animationListenerCallback(
+                            fragmentChats!!,
+                            fragmentTips!!,
+                            fragmentPlayground!!,
                             fragmentPrompts!!,
                             frameChats,
                             frameTips,
+                            framePlayground,
                             framePrompts
                         )
                     }
@@ -742,9 +826,11 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                         animationListenerCallback(
                             fragmentPrompts!!,
                             fragmentChats!!,
+                            fragmentPlayground!!,
                             fragmentTips!!,
                             framePrompts,
                             frameChats,
+                            framePlayground,
                             frameTips
                         )
                     }

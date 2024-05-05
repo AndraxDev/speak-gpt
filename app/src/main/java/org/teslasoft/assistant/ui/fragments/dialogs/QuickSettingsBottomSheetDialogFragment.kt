@@ -78,17 +78,17 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
     private var textUsage: TextView? = null
     private var textCost: TextView? = null
     private var btnCostInfo: MaterialButton? = null
+    private var textModel: TextView? = null
+    private var textHost: TextView? = null
+    private var textLogitBiasesConfig: TextView? = null
+    private var favoriteModelsPreferences: FavoriteModelsPreferences? = null
+    private var usageCost: ConstraintLayout? = null
 
     private var preferences: Preferences? = null
     private var chatId: String = ""
 
     private var updateListener: OnUpdateListener? = null
     private var shouldForceUpdate: Boolean = false
-
-    private var textModel: TextView? = null
-    private var textHost: TextView? = null
-    private var textLogitBiasesConfig: TextView? = null
-    private var favoriteModelsPreferences: FavoriteModelsPreferences? = null
 
     private var priceIn = 0.0f
     private var priceOut = 0.0f
@@ -276,6 +276,7 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         textModel = view.findViewById(R.id.text_model)
         textHost = view.findViewById(R.id.text_host)
         textLogitBiasesConfig = view.findViewById(R.id.text_logit_biases_config)
+        usageCost = view.findViewById(R.id.usage_cost)
 
         textUsage = view.findViewById(R.id.text_usage)
         textCost = view.findViewById(R.id.text_cost)
@@ -296,12 +297,18 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         usageIn = requireArguments().getInt("usageIn")
         usageOut = requireArguments().getInt("usageOut")
 
-        requestNetwork = RequestNetwork(requireActivity())
-        requestNetwork?.setHeaders(hashMapOf("Authorization" to "Bearer " + apiEndpoint?.apiKey))
-        requestNetwork?.startRequestNetwork("GET", apiEndpoint?.host + "models", "A", requestListener)
-
         textUsage?.text = getString(R.string.cost_counter_usage).format(usageIn.toString(), usageOut.toString())
         textCost?.text = getString(R.string.cost_loading)
+
+        if (usageIn >= 0) {
+            requestNetwork = RequestNetwork(requireActivity())
+            requestNetwork?.setHeaders(hashMapOf("Authorization" to "Bearer " + apiEndpoint?.apiKey))
+            requestNetwork?.startRequestNetwork("GET", apiEndpoint?.host + "models", "A", requestListener)
+        } else {
+            textUsage?.text = "Usage: <Usage not available in playground>"
+            textCost?.text = "Cost: <Cost not available in playground>"
+            usageCost?.visibility = View.GONE
+        }
 
         temperatureSeekbar?.value = preferences?.getTemperature()!! * 10
         topPSeekbar?.value = preferences?.getTopP()!! * 10

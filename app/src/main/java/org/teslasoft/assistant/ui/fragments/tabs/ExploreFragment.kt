@@ -19,6 +19,8 @@ package org.teslasoft.assistant.ui.fragments.tabs
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +30,8 @@ import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.button.MaterialButton
@@ -139,7 +143,6 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
         )
 
         refreshLayout?.setSize(SwipeRefreshLayout.LARGE)
-
         refreshLayout?.setOnRefreshListener(this)
 
         setsList?.divider = null
@@ -169,6 +172,39 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
                 .setMessage(error)
                 .setPositiveButton(R.string.btn_close) { _, _ -> }
                 .show()
+        }
+
+        Thread {
+            val th = Thread {
+                while (mContext == null) { /* wait */ }
+            }
+
+            th.start()
+            th.join()
+
+            btnTips?.background = getDisabledDrawable(ResourcesCompat.getDrawable(mContext?.resources?: return@Thread, R.drawable.btn_accent_tonal, mContext?.theme)!!)
+        }.start()
+    }
+
+    private fun getDisabledDrawable(drawable: Drawable) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getDisabledColor())
+        return drawable
+    }
+
+    private fun getDisabledColor() : Int {
+        return if (isDarkThemeEnabled() && preferences!!.getAmoledPitchBlack()) {
+            ResourcesCompat.getColor(mContext?.resources!!, R.color.amoled_accent_100,  mContext?.theme)
+        } else if (mContext != null) {
+            SurfaceColors.SURFACE_5.getColor(mContext!!)
+        } else 0
+    }
+
+    private fun isDarkThemeEnabled(): Boolean {
+        return when (mContext?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> true
+            Configuration.UI_MODE_NIGHT_NO -> false
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> false
+            else -> false
         }
     }
 

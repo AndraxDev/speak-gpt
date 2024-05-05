@@ -24,9 +24,15 @@
         android:title="@string/menu_chat"/>
 
     <item
+        android:id="@+id/menu_playground"
+        android:enabled="true"
+        android:icon="@drawable/ic_terminal"
+        android:title="Playground"/>
+
+    <item
         android:id="@+id/menu_prompts"
         android:enabled="true"
-        android:icon="@drawable/ic_prompts"
+        android:icon="@drawable/ic_apps"
         android:title="@string/menu_prompts"/>
 
     <item

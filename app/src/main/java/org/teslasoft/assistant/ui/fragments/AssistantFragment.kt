@@ -1457,6 +1457,9 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
             }
         } catch (e: Exception) {
             val response = when {
+                e.stackTraceToString().contains("invalid model") -> {
+                    getString(R.string.prompt_no_model_provided)
+                }
                 e.stackTraceToString().contains("does not exist") -> {
                     String.format(getString(R.string.prompt_model_not_available), model)
                 }
@@ -1733,6 +1736,9 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         } catch (e: Exception) {
             if (preferences?.showChatErrors() == true) {
                 when {
+                    e.stackTraceToString().contains("invalid model") -> {
+                        putMessage(getString(R.string.prompt_no_model_provided), true)
+                    }
                     e.stackTraceToString().contains("Your request was rejected") -> {
                         putMessage( getString(R.string.prompt_rejected), true)
                     }

@@ -1847,6 +1847,9 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
             }
         } catch (e: Exception) {
             val response = when {
+                e.stackTraceToString().contains("invalid model") -> {
+                    getString(R.string.prompt_no_model_provided)
+                }
                 e.stackTraceToString().contains("does not exist") -> {
                     String.format(getString(R.string.prompt_model_not_available), model)
                 }
@@ -2207,6 +2210,9 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
             if (preferences?.showChatErrors() == true) {
                 putMessage(
                     when {
+                        e.stackTraceToString().contains("invalid model") -> {
+                            getString(R.string.prompt_no_model_provided)
+                        }
                         e.stackTraceToString().contains("Your request was rejected") -> {
                             getString(R.string.prompt_rejected)
                         }

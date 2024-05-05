@@ -108,8 +108,8 @@ class LogitBiasConfigListActivity : FragmentActivity() {
         setContentView(R.layout.activity_logit_bias_config_list)
 
         if (android.os.Build.VERSION.SDK_INT <= 34) {
-            window.statusBarColor = getColor(R.color.accent_250)
-            window.navigationBarColor = getColor(R.color.accent_250)
+            window.statusBarColor = getColor(R.color.accent_100)
+            window.navigationBarColor = getColor(R.color.accent_100)
         }
 
         btnAdd = findViewById(R.id.btn_add)

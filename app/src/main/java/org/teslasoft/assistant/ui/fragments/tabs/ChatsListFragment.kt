@@ -160,15 +160,15 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
 
     fun reloadAmoled(context: Context) {
         if (!isDestroyed && isDarkThemeEnabled() && preferences!!.getAmoledPitchBlack()) {
-            btnSettings?.background = ResourcesCompat.getDrawable(mContext?.resources?: return, R.drawable.btn_accent_tonal_amoled, context.theme)!!
-            bgSearch?.background = ResourcesCompat.getDrawable(mContext?.resources?: return, R.drawable.btn_accent_tonal_amoled, context.theme)!!
-            btnImport?.backgroundTintList = ResourcesCompat.getColorStateList(mContext?.resources?: return, R.color.amoled_accent_100, context.theme)
-            btnAdd?.backgroundTintList = ResourcesCompat.getColorStateList(mContext?.resources?: return, R.color.accent_600, context.theme)
+            btnSettings?.background = ResourcesCompat.getDrawable(context.resources?: return, R.drawable.btn_accent_tonal_amoled, context.theme)!!
+            bgSearch?.background = ResourcesCompat.getDrawable(context.resources?: return, R.drawable.btn_accent_tonal_amoled, context.theme)!!
+            btnImport?.backgroundTintList = ResourcesCompat.getColorStateList(context.resources?: return, R.color.amoled_accent_100, context.theme)
+            btnAdd?.backgroundTintList = ResourcesCompat.getColorStateList(context.resources?: return, R.color.accent_600, context.theme)
         } else {
-            btnSettings?.background = getDisabledDrawable(ResourcesCompat.getDrawable(mContext?.resources?: return, R.drawable.btn_accent_tonal, context.theme)!!)
-            bgSearch?.background = getDisabledDrawable(ResourcesCompat.getDrawable(mContext?.resources?: return, R.drawable.btn_accent_tonal, context.theme)!!)
-            btnImport?.backgroundTintList = ResourcesCompat.getColorStateList(mContext?.resources?: return, R.color.accent_250, context.theme)
-            btnAdd?.backgroundTintList = ResourcesCompat.getColorStateList(mContext?.resources?: return, R.color.accent_900, context.theme)
+            btnSettings?.background = getDisabledDrawable(ResourcesCompat.getDrawable(context.resources?: return, R.drawable.btn_accent_tonal, context.theme)!!)
+            bgSearch?.background = getDisabledDrawable(ResourcesCompat.getDrawable(context.resources?: return, R.drawable.btn_accent_tonal, context.theme)!!)
+            btnImport?.backgroundTintList = ResourcesCompat.getColorStateList(context.resources?: return, R.color.accent_250, context.theme)
+            btnAdd?.backgroundTintList = ResourcesCompat.getColorStateList(context.resources?: return, R.color.accent_900, context.theme)
         }
     }
 
