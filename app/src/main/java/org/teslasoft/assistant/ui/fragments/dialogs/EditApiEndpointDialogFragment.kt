@@ -87,7 +87,7 @@ class EditApiEndpointDialogFragment : DialogFragment() {
                     .setTitle(R.string.label_delete_api_endpoint)
                     .setMessage(R.string.message_delete_api_endpoint)
                     .setPositiveButton(R.string.yes) { _, _ -> listener!!.onDelete(requireArguments().getInt("position"), Hash.hash(requireArguments().getString("label")!!)) }
-                    .setNegativeButton(R.string.no) { _, _ ->  }
+                    .setNegativeButton(R.string.no) { _, _ ->  listener!!.onCancel(requireArguments().getInt("position"))}
                     .show()
             } }
             .setNegativeButton(R.string.btn_cancel) { _, _ ->  }
@@ -136,9 +136,10 @@ class EditApiEndpointDialogFragment : DialogFragment() {
     }
 
     interface StateChangesListener {
-        fun onAdd(apiEndpoint: ApiEndpointObject)
-        fun onEdit(oldLabel: String, apiEndpoint: ApiEndpointObject, position: Int)
-        fun onDelete(position: Int, id: String)
-        fun onError(message: String, position: Int)
+        fun onAdd(apiEndpoint: ApiEndpointObject) {}
+        fun onEdit(oldLabel: String, apiEndpoint: ApiEndpointObject, position: Int) {}
+        fun onDelete(position: Int, id: String) {}
+        fun onError(message: String, position: Int) {}
+        fun onCancel(position: Int) {}
     }
 }

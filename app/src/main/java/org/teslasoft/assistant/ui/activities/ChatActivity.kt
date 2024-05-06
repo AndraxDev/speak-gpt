@@ -134,6 +134,7 @@ import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
 import org.teslasoft.assistant.ui.adapters.AbstractChatAdapter
 import org.teslasoft.assistant.ui.adapters.ChatAdapter
+import org.teslasoft.assistant.ui.fragments.dialogs.EditApiEndpointDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.QuickSettingsBottomSheetDialogFragment
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
 import org.teslasoft.assistant.ui.permission.CameraPermissionActivity
@@ -205,7 +206,9 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
 
     // init AI
     private var ai: OpenAI? = null
+    private var openAIAI: OpenAI? = null
     private var key: String? = null
+    private var openAIKey: String? = null
     private var model = ""
     private var endSeparator = ""
     private var prefix = ""
@@ -254,6 +257,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
             btnSend?.isEnabled = true
             isRecording = false
             btnMicro?.setImageResource(R.drawable.ic_microphone)
+            cancelState = false
         }
     }
 
@@ -691,6 +695,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
     @Suppress("unchecked")
     private fun initSettings() {
         key = apiEndpointObject?.apiKey!!
+        openAIKey = apiEndpointPreferences?.findOpenAIKeyIfAvailable(this)
 
         endSeparator = preferences!!.getEndSeparator()
         prefix = preferences!!.getPrefix()
@@ -1075,7 +1080,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
 
         btnSettings?.setOnClickListener {
             settingsLauncher.launch(
-                Intent(this, SettingsV2Activity::class.java).setAction(Intent.ACTION_VIEW).putExtra("chatId", chatId)
+                Intent(this, SettingsActivity::class.java).setAction(Intent.ACTION_VIEW).putExtra("chatId", chatId)
             )
         }
 
@@ -1129,7 +1134,9 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
     }
 
     private fun startWhisper() {
-        if (android.os.Build.VERSION.SDK_INT >= 31) {
+        if (openAIKey == null) {
+            openAIMissing("whisper", "")
+        } else if (android.os.Build.VERSION.SDK_INT >= 31) {
             recorder = MediaRecorder(this).apply {
                 setAudioSource(MediaRecorder.AudioSource.MIC)
                 setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
@@ -1240,7 +1247,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                 ),
                 model = ModelId("whisper-1"),
             )
-            val transcription = ai?.transcription(transcriptionRequest)!!.text
+            val transcription = openAIAI?.transcription(transcriptionRequest)!!.text
 
             if (transcription.trim() == "") {
                 isRecording = false
@@ -1380,7 +1387,19 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                 proxy = null,
                 retry = RetryStrategy()
             )
+
             ai = OpenAI(config)
+            val configOpenAI = OpenAIConfig(
+                token = openAIKey.toString(),
+                logging = LoggingConfig(LogLevel.None, Logger.Simple),
+                timeout = Timeout(socket = 30.seconds),
+                organization = null,
+                headers = emptyMap(),
+                host = OpenAIHost("https://api.openai.com/v1/"),
+                proxy = null,
+                retry = RetryStrategy()
+            )
+            openAIAI = OpenAI(configOpenAI)
             loadModel()
             setup()
         }
@@ -1529,7 +1548,11 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
             if (m.lowercase().contains("/imagine") && m.length > 9 && imagineCommandEnabled) {
                 val x: String = m.substring(9)
 
-                sendImageRequest(x)
+                if (openAIKey == null) {
+                    openAIMissing("dalle", x)
+                } else {
+                    sendImageRequest(x)
+                }
             } else if (m.lowercase().contains("/imagine") && m.length <= 9 && imagineCommandEnabled) {
                 putMessage("Prompt can not be empty. Use /imagine &lt;PROMPT&gt;", true)
 
@@ -2084,49 +2107,53 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
         if (preferences!!.getTtsEngine() == "google") {
             tts!!.speak(message, TextToSpeech.QUEUE_FLUSH, null, "")
         } else {
-            speakScope = CoroutineScope(Dispatchers.Main)
+            if (openAIKey == null) {
+                openAIMissing("tts", message)
+            } else {
+                speakScope = CoroutineScope(Dispatchers.Main)
 
-            speakScope?.launch {
-                progress?.setOnClickListener {
-                    cancel()
-                    restoreUIState()
-                }
-
-                try {
-                    val rawAudio = ai!!.speech(
-                        request = SpeechRequest(
-                            model = ModelId("tts-1"),
-                            input = message,
-                            voice = com.aallam.openai.api.audio.Voice(preferences!!.getOpenAIVoice()),
-                        )
-                    )
-
-                    runOnUiThread {
-                        try {
-                            // create temp file that will hold byte array
-                            val tempMp3 = File.createTempFile("audio", "mp3", cacheDir)
-                            tempMp3.deleteOnExit()
-                            val fos = FileOutputStream(tempMp3)
-                            fos.write(rawAudio)
-                            fos.close()
-
-                            // resetting media player instance to evade problems
-                            mediaPlayer?.reset()
-
-                            val fis = FileInputStream(tempMp3)
-                            mediaPlayer?.setDataSource(fis.fd)
-                            mediaPlayer?.prepare()
-                            mediaPlayer?.start()
-                        } catch (ex: IOException) {
-                            MaterialAlertDialogBuilder(this@ChatActivity, R.style.App_MaterialAlertDialog)
-                                .setTitle(R.string.label_audio_error)
-                                .setPositiveButton(R.string.btn_close) { _, _ -> }
-                                .setMessage(ex.stackTraceToString())
-                                .show()
-                        }
+                speakScope?.launch {
+                    progress?.setOnClickListener {
+                        cancel()
+                        restoreUIState()
                     }
-                } catch (e: CancellationException) {
-                    restoreUIState()
+
+                    try {
+                        val rawAudio = openAIAI!!.speech(
+                            request = SpeechRequest(
+                                model = ModelId("tts-1"),
+                                input = message,
+                                voice = com.aallam.openai.api.audio.Voice(preferences!!.getOpenAIVoice()),
+                            )
+                        )
+
+                        runOnUiThread {
+                            try {
+                                // create temp file that will hold byte array
+                                val tempMp3 = File.createTempFile("audio", "mp3", cacheDir)
+                                tempMp3.deleteOnExit()
+                                val fos = FileOutputStream(tempMp3)
+                                fos.write(rawAudio)
+                                fos.close()
+
+                                // resetting media player instance to evade problems
+                                mediaPlayer?.reset()
+
+                                val fis = FileInputStream(tempMp3)
+                                mediaPlayer?.setDataSource(fis.fd)
+                                mediaPlayer?.prepare()
+                                mediaPlayer?.start()
+                            } catch (ex: IOException) {
+                                MaterialAlertDialogBuilder(this@ChatActivity, R.style.App_MaterialAlertDialog)
+                                    .setTitle(R.string.label_audio_error)
+                                    .setPositiveButton(R.string.btn_close) { _, _ -> }
+                                    .setMessage(ex.stackTraceToString())
+                                    .show()
+                            }
+                        }
+                    } catch (e: CancellationException) {
+                        restoreUIState()
+                    }
                 }
             }
         }
@@ -2154,7 +2181,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
         disableAutoScroll = false
         chat?.transcriptMode = ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL
         try {
-            val images = ai?.imageURL(
+            val images = openAIAI?.imageURL(
                 creation = ImageCreation(
                     prompt = p,
                     model = ModelId("dall-e-${preferences!!.getDalleVersion()}"),
@@ -2319,5 +2346,85 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
 
     override fun onMessageDeleted() {
         syncChatProjection()
+    }
+
+    private fun openAIMissing(feature: String, prompt: String) {
+        restoreUIState()
+
+        val message = when(feature) {
+            "dalle" -> "DALL-E image generation"
+            "tts" -> "OpenAI text-to-speech"
+            "whisper" -> "Whisper speech recognition"
+            else -> "this OpenAI"
+        }
+
+        MaterialAlertDialogBuilder(
+            this,
+            R.style.App_MaterialAlertDialog
+        )
+            .setTitle("OpenAI API endpoint missing")
+            .setMessage("To use $message, you need to add OpenAI API endpoint first. Would you like to add OpenAI endpoint now?")
+            .setPositiveButton(R.string.yes) { _, _ -> requestAddApiEndpoint(feature, prompt) }
+            .setNegativeButton(R.string.no) { _, _ -> onCancelOpenAIAction(feature, prompt) }
+            .show()
+    }
+
+    private fun requestAddApiEndpoint(feature: String, prompt: String) {
+        val apiEndpointDialog: EditApiEndpointDialogFragment = EditApiEndpointDialogFragment.newInstance("OpenAI", "https://api.openai.com/v1/", "", -1)
+        apiEndpointDialog.setListener(object : EditApiEndpointDialogFragment.StateChangesListener {
+            override fun onAdd(apiEndpoint: ApiEndpointObject) {
+                apiEndpointPreferences?.setApiEndpoint(this@ChatActivity, apiEndpoint)
+                openAIKey = apiEndpoint.apiKey
+
+                val configOpenAI = OpenAIConfig(
+                    token = openAIKey.toString(),
+                    logging = LoggingConfig(LogLevel.None, Logger.Simple),
+                    timeout = Timeout(socket = 30.seconds),
+                    organization = null,
+                    headers = emptyMap(),
+                    host = OpenAIHost(apiEndpoint.host),
+                    proxy = null,
+                    retry = RetryStrategy()
+                )
+                openAIAI = OpenAI(configOpenAI)
+                onOpenAIAction(feature, prompt)
+            }
+
+            override fun onError(message: String, position: Int) {
+                apiEndpointDialog.show(supportFragmentManager, "EditApiEndpointDialogFragment")
+            }
+
+            override fun onCancel(position: Int) {
+                onCancelOpenAIAction(feature, prompt)
+            }
+        })
+        apiEndpointDialog.show(supportFragmentManager, "EditApiEndpointDialogFragment")
+    }
+
+    private fun onCancelOpenAIAction(feature: String, prompt: String) {
+        if (feature == "dalle") {
+            putMessage("DALL-E image generation is disabled. Please add OpenAI API endpoint to enable this feature.", true)
+            saveSettings()
+        }
+    }
+
+    private fun onOpenAIAction(feature: String, prompt: String) {
+        when (feature) {
+            "dalle" -> {
+                btnMicro?.isEnabled = false
+                btnSend?.isEnabled = false
+                progress?.visibility = View.VISIBLE
+
+                CoroutineScope(Dispatchers.Main).launch {
+                    progress?.setOnClickListener {
+                        cancel()
+                        restoreUIState()
+                    }
+
+                    generateImage(prompt)
+                }
+            }
+            "tts" -> speak(prompt)
+        }
     }
 }

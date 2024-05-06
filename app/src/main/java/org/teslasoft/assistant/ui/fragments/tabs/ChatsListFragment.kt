@@ -51,7 +51,7 @@ import org.teslasoft.assistant.preferences.ApiEndpointPreferences
 import org.teslasoft.assistant.preferences.ChatPreferences
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.activities.ChatActivity
-import org.teslasoft.assistant.ui.activities.SettingsV2Activity
+import org.teslasoft.assistant.ui.activities.SettingsActivity
 import org.teslasoft.assistant.ui.adapters.ChatListAdapter
 import org.teslasoft.assistant.ui.fragments.dialogs.AddChatDialogFragment
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
@@ -59,8 +59,6 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 
 class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
-
-
 
     private var adapter: ChatListAdapter? = null
     private var chatsList: ListView? = null
@@ -186,7 +184,8 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
                 initUI(view)
                 initChatsList()
                 initLogics()
-                preInit()
+                initSettings()
+                // preInit()
             }
         }.start()
     }
@@ -211,7 +210,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
 
     private fun initLogics() {
         btnSettings?.setOnClickListener {
-            startActivity(Intent(mContext?: return@setOnClickListener, SettingsV2Activity::class.java).setAction(Intent.ACTION_VIEW))
+            startActivity(Intent(mContext?: return@setOnClickListener, SettingsActivity::class.java).setAction(Intent.ACTION_VIEW))
         }
 
         btnAdd?.setOnClickListener {
@@ -318,6 +317,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
         fileIntentLauncher.launch(intent)
     }
 
+    @Deprecated("This method is deprecated and will be removed in the future. Use initSettings() instead.")
     private fun preInit() {
         val apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(mContext?: return)
 
@@ -370,7 +370,8 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
             override fun onScrollStateChanged(view: AbsListView?, scrollState: Int) { /* unused */ }
 
             override fun onScroll(view: AbsListView?, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
-                val topRowVerticalPosition: Int = if (chats.isEmpty() || chatsList == null || chatsList?.childCount == 0) 0 else chatsList?.getChildAt(0)!!.top
+                if (chats == null) chats = arrayListOf()
+                val topRowVerticalPosition: Int = if (chats.isNullOrEmpty() || chatsList == null || chatsList?.childCount == 0) 0 else chatsList?.getChildAt(0)!!.top
 
                 if (firstVisibleItem == 0 && topRowVerticalPosition >= 0) {
                     btnAdd?.extend()
@@ -417,7 +418,8 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
         // Another dumb things goes here...
         // Oh yes, it's not a code smell, it just appears that R8 minifier is a bit dumb
         // Nothing interesting, you may ignore this...
-        if (!chats.isNullOrEmpty()) {
+        if (chats == null) chats = arrayListOf()
+        if (!chats.isNullOrEmpty() /* NullPointerException has been thrown here... ...HOW??? */) {
             val chatList = ChatPreferences.getChatPreferences().getChatList(mContext?: return)
             // Compare chats and chatList and update the list if needed
             if (chats != chatList) {

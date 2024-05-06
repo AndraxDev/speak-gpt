@@ -81,7 +81,7 @@ class LogitBiasConfigActivity : FragmentActivity() {
 
         if (android.os.Build.VERSION.SDK_INT <= 34) {
             window.statusBarColor = getColor(R.color.accent_100)
-            window.navigationBarColor = getColor(R.color.accent_100)
+            window.navigationBarColor = getColor(R.color.window_background)
         }
 
         listView = findViewById(R.id.list_view)

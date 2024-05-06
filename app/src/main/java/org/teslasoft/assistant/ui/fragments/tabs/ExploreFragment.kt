@@ -25,6 +25,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AbsListView
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ListView
@@ -93,7 +94,6 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
                 error = e.message ?: "Unknown error"
                 noInternet?.visibility = View.VISIBLE
                 setsList?.visibility = View.GONE
-                refreshLayout?.visibility = View.GONE
             }
         }
 
@@ -103,7 +103,6 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
             refreshLayout?.isRefreshing = false
             loading?.visibility = View.GONE
             setsList?.visibility = View.GONE
-            refreshLayout?.visibility = View.GONE
         }
     }
 
@@ -166,6 +165,16 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
             runRequest()
         }
 
+        setsList?.setOnScrollListener(object : AbsListView.OnScrollListener {
+            override fun onScrollStateChanged(view: AbsListView, scrollState: Int) { /* unused */ }
+
+            override fun onScroll(view: AbsListView, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
+                val topRowVerticalPosition: Int = if (aiSets.isEmpty() || setsList == null || setsList?.childCount == 0) 0 else setsList?.getChildAt(0)!!.top
+
+                refreshLayout?.isEnabled = firstVisibleItem == 0 && topRowVerticalPosition >= 0
+            }
+        })
+
         btnErrorDetails?.setOnClickListener {
             MaterialAlertDialogBuilder(mContext ?: return@setOnClickListener, R.style.App_MaterialAlertDialog)
                 .setTitle(getString(R.string.label_error_details))
@@ -193,7 +202,7 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
 
     private fun getDisabledColor() : Int {
         return if (isDarkThemeEnabled() && preferences!!.getAmoledPitchBlack()) {
-            ResourcesCompat.getColor(mContext?.resources!!, R.color.amoled_accent_100,  mContext?.theme)
+            ResourcesCompat.getColor(mContext?.resources!!, R.color.amoled_accent_50,  mContext?.theme)
         } else if (mContext != null) {
             SurfaceColors.SURFACE_5.getColor(mContext!!)
         } else 0
@@ -211,6 +220,7 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
     private fun runRequest() {
         error = ""
         loading?.visibility = View.VISIBLE
+        setsList?.visibility = View.GONE
         noInternet?.visibility = View.GONE
         requestNetwork?.startRequestNetwork("GET", "https://${Config.API_SERVER_NAME}/api/v1/explore", "A", requestListener)
     }

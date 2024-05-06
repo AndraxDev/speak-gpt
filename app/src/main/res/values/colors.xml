@@ -16,9 +16,9 @@
     <color name="white">#ffffffff</color>
     <color name="warning">#ffff3d00</color>
 
-    <color name="amoled_accent_50">#121212</color>
-    <color name="amoled_accent_100">#181818</color>
-    <color name="amoled_accent_200">#212121</color>
+    <color name="amoled_accent_50">#090909</color>
+    <color name="amoled_accent_100">#141414</color>
+    <color name="amoled_accent_200">#1E1E1E</color>
     <color name="amoled_accent_250">#242424</color>
     <color name="amoled_accent_400">#292929</color>
     <color name="amoled_accent_300">#323232</color>

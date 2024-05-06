@@ -36,7 +36,8 @@
         android:theme="@style/Theme.App"
         android:name=".app.MainApplication"
         android:installLocation="auto"
-        android:enableOnBackInvokedCallback="true" >
+        android:enableOnBackInvokedCallback="true"
+        tools:targetApi="tiramisu">
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
@@ -229,20 +230,6 @@
             </intent-filter>
         </activity>
 
-        <!-- DEPRECATED -->
-        <activity
-            android:name=".ui.assistant.WindowsProxy"
-            android:exported="true"
-            android:enabled="false"
-            android:theme="@style/UI.Fade"
-            android:launchMode="singleTask">
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
         <activity
             android:name=".pwa.PWAActivity"
             android:exported="true"
@@ -291,14 +278,6 @@
 
         <activity
             android:name=".ui.activities.SettingsActivity"
-            android:exported="false"
-            android:theme="@style/UI.Fade"
-            android:label="@string/settings"
-            android:launchMode="singleTask">
-        </activity>
-
-        <activity
-            android:name=".ui.activities.SettingsV2Activity"
             android:exported="false"
             android:theme="@style/UI.Fade"
             android:label="@string/settings"

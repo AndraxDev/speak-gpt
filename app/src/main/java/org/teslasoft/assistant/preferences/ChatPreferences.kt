@@ -79,7 +79,7 @@ class ChatPreferences private constructor() {
         val settings: SharedPreferences = context.getSharedPreferences("chat_list", Context.MODE_PRIVATE)
 
         val gson = Gson()
-        val json = settings.getString("data", null)
+        val json = settings.getString("data", "[]")
         val type: Type = TypeToken.getParameterized(ArrayList::class.java, HashMap::class.java).type
 
         var list: ArrayList<HashMap<String, String>> = try {
@@ -92,7 +92,7 @@ class ChatPreferences private constructor() {
         if (list == null) list = arrayListOf()
 
         // Dumb things goes gere
-        if (list.isEmpty()) return arrayListOf()
+        if (list.isNullOrEmpty()) return arrayListOf()
 
         for (chat in list) {
             val messagesList = getChatById(context, Hash.hash(chat["name"].toString()))
@@ -125,7 +125,7 @@ class ChatPreferences private constructor() {
 
         var list: ArrayList<HashMap<String, Any>> = try {
             val gson = Gson()
-            val json = chat.getString("chat", null)
+            val json = chat.getString("chat", "[]")
             val type: Type = TypeToken.getParameterized(ArrayList::class.java, HashMap::class.java).type
 
             gson.fromJson<Any>(json, type) as ArrayList<HashMap<String, Any>>

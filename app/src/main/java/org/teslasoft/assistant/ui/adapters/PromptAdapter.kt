@@ -23,6 +23,8 @@ import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.BaseAdapter
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -105,6 +107,10 @@ class PromptAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragment
             i.putExtra("title", dataArray?.get(position)?.get("name"))
             mContext.requireActivity().startActivity(i)
         }
+
+        val animation: Animation = AnimationUtils.loadAnimation(mContext.context, R.anim.fade_in)
+        animation.duration = 200
+        mView.startAnimation(animation)
 
         return mView
     }

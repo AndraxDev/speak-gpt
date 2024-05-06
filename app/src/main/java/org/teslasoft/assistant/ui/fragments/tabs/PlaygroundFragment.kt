@@ -16,6 +16,7 @@
 
 package org.teslasoft.assistant.ui.fragments.tabs
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -25,15 +26,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AbsListView
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import com.aallam.ktoken.Encoding
+import com.aallam.ktoken.Tokenizer
 import com.aallam.openai.api.chat.ChatCompletionChunk
 import com.aallam.openai.api.chat.ChatCompletionRequest
 import com.aallam.openai.api.chat.ChatMessage
@@ -69,9 +74,12 @@ import kotlin.time.Duration.Companion.seconds
 class PlaygroundFragment : Fragment() {
 
     private var btnSettings: ImageButton? = null
-    private var layoutBottom: LinearLayout? = null
+    private var layoutBottom: ConstraintLayout? = null
     private var btnRun: FloatingActionButton? = null
     private var btnStop: FloatingActionButton? = null
+    private var btnTokenize: FloatingActionButton? = null
+    private var clearIn: ImageButton? = null
+    private var clearOut: ImageButton? = null
     private var runLoader: ProgressBar? = null
     private var editTextIn: EditText? = null
     private var editTextOut: EditText? = null
@@ -109,6 +117,9 @@ class PlaygroundFragment : Fragment() {
 
         btnRun = view.findViewById(R.id.btn_run)
         btnStop = view.findViewById(R.id.btn_stop)
+        btnTokenize = view.findViewById(R.id.btn_tokenize)
+        clearIn = view.findViewById(R.id.clear_in)
+        clearOut = view.findViewById(R.id.clear_out)
         runLoader = view.findViewById(R.id.run_loader)
         editTextIn = view.findViewById(R.id.editTextIn)
         editTextOut = view.findViewById(R.id.editTextOut)
@@ -129,6 +140,7 @@ class PlaygroundFragment : Fragment() {
         }.start()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun initialize(context: Context) {
         preferences = Preferences.getPreferences(context, "")
         apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(context)
@@ -136,7 +148,12 @@ class PlaygroundFragment : Fragment() {
         apiEndpoint = apiEndpointPreferences?.getApiEndpoint(context, preferences?.getApiEndpointId() ?: return)
 
         btnSettings?.background = getDisabledDrawable(ResourcesCompat.getDrawable(context.resources, R.drawable.btn_accent_tonal, context.theme)!!)
-        layoutBottom?.background = getDisabledDrawableV2(ResourcesCompat.getDrawable(context.resources, R.drawable.playground_bottom, context.theme)!!)
+
+        if (isDarkThemeEnabled() && preferences!!.getAmoledPitchBlack()) {
+            layoutBottom?.background = ResourcesCompat.getDrawable(context.resources, R.drawable.playground_bottom_amoled, context.theme)
+        } else {
+            layoutBottom?.background = getDisabledDrawableV2(ResourcesCompat.getDrawable(context.resources, R.drawable.playground_bottom, context.theme)!!)
+        }
 
         model = preferences?.getModel() ?: "unknown"
 
@@ -176,6 +193,46 @@ class PlaygroundFragment : Fragment() {
                     cancel()
                 }
             }
+        }
+
+        btnTokenize?.setOnClickListener {
+            runLoader?.visibility = View.VISIBLE
+            btnStop?.visibility = View.VISIBLE
+            btnRun?.visibility = View.GONE
+
+            CoroutineScope(Dispatchers.Main).launch {
+                val tokenizer = try {
+                    Tokenizer.of(model = preferences?.getModel() ?: return@launch)
+                } catch (_: Exception) {
+                    Tokenizer.of(encoding = Encoding.CL100K_BASE)
+                }
+
+                val tokens = tokenizer.encode(editTextIn?.text.toString())
+
+                val tokenString: StringBuilder = StringBuilder()
+                for (i in tokens) {
+                    tokenString.append(i.toString())
+                    tokenString.append(", ")
+                }
+
+                tokenString.deleteCharAt(tokenString.length - 2)
+
+                val response = "Chars count: ${editTextIn?.text?.toList()?.size}\nTokens count: ${tokens.size}\nTokens: ${tokenString.toString()}"
+
+                editTextOut?.setText(response)
+
+                runLoader?.visibility = View.GONE
+                btnStop?.visibility = View.GONE
+                btnRun?.visibility = View.VISIBLE
+            }
+        }
+
+        clearIn?.setOnClickListener {
+            editTextIn?.setText("")
+        }
+
+        clearOut?.setOnClickListener {
+            editTextOut?.setText("")
         }
 
         val config = OpenAIConfig(
@@ -302,7 +359,7 @@ class PlaygroundFragment : Fragment() {
 
     private fun getDisabledColor() : Int {
         return if (isDarkThemeEnabled() && preferences!!.getAmoledPitchBlack()) {
-            ResourcesCompat.getColor(mContext?.resources!!, R.color.amoled_accent_100,  mContext?.theme)
+            ResourcesCompat.getColor(mContext?.resources!!, R.color.amoled_accent_50,  mContext?.theme)
         } else if (mContext != null) {
             SurfaceColors.SURFACE_5.getColor(mContext!!)
         } else 0

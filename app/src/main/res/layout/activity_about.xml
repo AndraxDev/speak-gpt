@@ -172,11 +172,11 @@
                     android:background="@drawable/btn_accent_tonal_selector_v5"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:padding="8dp">
+                    android:padding="16dp">
 
                     <LinearLayout
-                        android:layout_width="120dp"
-                        android:layout_height="120dp"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
                         android:background="@drawable/ic_github"
                         android:orientation="vertical" />
                 </LinearLayout>
@@ -190,11 +190,11 @@
                     android:background="@drawable/btn_accent_tonal_selector_v5"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:padding="8dp">
+                    android:padding="16dp">
 
                     <LinearLayout
-                        android:layout_width="120dp"
-                        android:layout_height="120dp"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
                         android:background="@drawable/bmc_qr"
                         android:orientation="horizontal" />
                 </LinearLayout>

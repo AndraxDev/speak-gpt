@@ -126,11 +126,11 @@ import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
 import org.teslasoft.assistant.ui.activities.MainActivity
 import org.teslasoft.assistant.ui.activities.SettingsActivity
-import org.teslasoft.assistant.ui.activities.SettingsV2Activity
 import org.teslasoft.assistant.ui.adapters.AbstractChatAdapter
 import org.teslasoft.assistant.ui.adapters.AssistantAdapter
 import org.teslasoft.assistant.ui.fragments.dialogs.ActionSelectorDialog
 import org.teslasoft.assistant.ui.fragments.dialogs.AddChatDialogFragment
+import org.teslasoft.assistant.ui.fragments.dialogs.EditApiEndpointDialogFragment
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
 import org.teslasoft.assistant.ui.permission.CameraPermissionActivity
 import org.teslasoft.assistant.ui.permission.MicrophonePermissionActivity
@@ -205,7 +205,9 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
 
     // init AI
     private var ai: OpenAI? = null
+    private var openAIAI: OpenAI? = null
     private var key: String? = null
+    private var openAIKey: String? = null
     private var model = ""
     private var endSeparator = ""
     private var prefix = ""
@@ -479,6 +481,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                         CoroutineScope(Dispatchers.Main).launch {
                             assistantLoading?.setOnClickListener {
                                 cancel()
+                                restoreUIState()
                             }
 
                             try {
@@ -578,6 +581,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
     @Suppress("unchecked")
     private fun initSettings() {
         key = apiEndpointObject?.apiKey
+        openAIKey = apiEndpointPreferences?.findOpenAIKeyIfAvailable(mContext ?: return)
 
         endSeparator = preferences!!.getEndSeparator()
         prefix = preferences!!.getPrefix()
@@ -650,19 +654,14 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         }
 
         btnAssistantSettings?.setOnClickListener {
-            val i =  if (preferences?.getExperimentalUI()!!) {
-                Intent(
-                    mContext ?: return@setOnClickListener,
-                    SettingsV2Activity::class.java
-                )
-            } else {
-                Intent(
-                    mContext ?: return@setOnClickListener,
-                    SettingsActivity::class.java
-                )
-            }
+            val i = Intent(
+                mContext ?: return@setOnClickListener,
+                SettingsActivity::class.java
+            )
 
-            i.putExtra("chatId", chatID)
+            if (isSaved) {
+                i.putExtra("chatId", chatID)
+            }
 
             settingsLauncher.launch(
                 i
@@ -671,7 +670,9 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
     }
 
     private fun startWhisper() {
-        if (android.os.Build.VERSION.SDK_INT >= 31) {
+        if (openAIKey == null) {
+            openAIMissing("whisper", "")
+        } else if (android.os.Build.VERSION.SDK_INT >= 31) {
             recorder = MediaRecorder(mContext ?: return).apply {
                 setAudioSource(MediaRecorder.AudioSource.MIC)
                 setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
@@ -760,6 +761,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
             CoroutineScope(Dispatchers.Main).launch {
                 assistantLoading?.setOnClickListener {
                     cancel()
+                    restoreUIState()
                 }
 
                 try {
@@ -784,7 +786,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 ),
                 model = ModelId("whisper-1"),
             )
-            val transcription = ai?.transcription(transcriptionRequest)!!.text
+            val transcription = openAIAI?.transcription(transcriptionRequest)!!.text
 
             if (transcription.trim() == "") {
                 isRecording = false
@@ -814,6 +816,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                     CoroutineScope(Dispatchers.Main).launch {
                         assistantLoading?.setOnClickListener {
                             cancel()
+                            restoreUIState()
                         }
 
                         try {
@@ -931,6 +934,20 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
             )
 
             ai = OpenAI(config)
+
+            val configOpenAI = OpenAIConfig(
+                token = openAIKey.toString(),
+                logging = LoggingConfig(LogLevel.None, Logger.Simple),
+                timeout = Timeout(socket = 30.seconds),
+                organization = null,
+                headers = emptyMap(),
+                host = OpenAIHost("https://api.openai.com/v1/"),
+                proxy = null,
+                retry = RetryStrategy()
+            )
+
+            openAIAI = OpenAI(configOpenAI)
+
             loadModel()
             setup()
         }
@@ -952,6 +969,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                     CoroutineScope(Dispatchers.Main).launch {
                         assistantLoading?.setOnClickListener {
                             cancel()
+                            restoreUIState()
                         }
 
                         try {
@@ -982,6 +1000,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 CoroutineScope(Dispatchers.Main).launch {
                     assistantLoading?.setOnClickListener {
                         cancel()
+                        restoreUIState()
                     }
 
                     try {
@@ -1047,6 +1066,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
             CoroutineScope(Dispatchers.Main).launch {
                 assistantLoading?.setOnClickListener {
                     cancel()
+                    restoreUIState()
                 }
 
                 try {
@@ -1086,6 +1106,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 CoroutineScope(Dispatchers.Main).launch {
                     assistantLoading?.setOnClickListener {
                         cancel()
+                        restoreUIState()
                     }
 
                     try {
@@ -1139,7 +1160,11 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
             if (m.lowercase().contains("/imagine") && m.length > 9 && (imagineCommandEnabled || FORCE_SLASH_COMMANDS_ENABLED)) {
                 val x: String = m.substring(9)
 
-                sendImageRequest(x)
+                if (openAIKey == null) {
+                    openAIMissing("dalle", x)
+                } else {
+                    sendImageRequest(x)
+                }
             } else if (m.lowercase().contains("/imagine") && m.length <= 9 && imagineCommandEnabled) {
                 putMessage("Prompt can not be empty. Use /imagine &lt;PROMPT&gt;", true)
 
@@ -1161,6 +1186,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 CoroutineScope(Dispatchers.Main).launch {
                     assistantLoading?.setOnClickListener {
                         cancel()
+                        restoreUIState()
                     }
 
                     try {
@@ -1185,6 +1211,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         CoroutineScope(Dispatchers.Main).launch {
             assistantLoading?.setOnClickListener {
                 cancel()
+                restoreUIState()
             }
 
             try {
@@ -1608,45 +1635,51 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         if (preferences!!.getTtsEngine() == "google") {
             tts!!.speak(message, TextToSpeech.QUEUE_FLUSH, null, "")
         } else {
-            CoroutineScope(Dispatchers.Main).launch {
-                assistantLoading?.setOnClickListener {
-                    cancel()
-                }
-
-                try {
-                    val rawAudio = ai!!.speech(
-                        request = SpeechRequest(
-                            model = ModelId("tts-1"),
-                            input = message,
-                            voice = com.aallam.openai.api.audio.Voice(preferences!!.getOpenAIVoice()),
-                        )
-                    )
-
-                    (mContext as Activity?)?.runOnUiThread {
-                        try {
-                            // create temp file that will hold byte array
-                            val tempMp3 = File.createTempFile("audio", "mp3", mContext?.cacheDir)
-                            tempMp3.deleteOnExit()
-                            val fos = FileOutputStream(tempMp3)
-                            fos.write(rawAudio)
-                            fos.close()
-
-                            // resetting mediaplayer instance to evade problems
-                            mediaPlayer?.reset()
-
-                            val fis = FileInputStream(tempMp3)
-                            mediaPlayer?.setDataSource(fis.fd)
-                            mediaPlayer?.prepare()
-                            mediaPlayer?.start()
-                        } catch (ex: IOException) {
-                            MaterialAlertDialogBuilder(mContext ?: return@runOnUiThread, R.style.App_MaterialAlertDialog)
-                                .setTitle(R.string.label_audio_error)
-                                .setMessage(ex.stackTraceToString())
-                                .setPositiveButton(R.string.btn_close) { _, _ -> }
-                                .show()
-                        }
+            if (openAIKey == null) {
+                openAIMissing("tts", message)
+            } else {
+                CoroutineScope(Dispatchers.Main).launch {
+                    assistantLoading?.setOnClickListener {
+                        cancel()
+                        restoreUIState()
                     }
-                } catch (e: CancellationException) { /* ignore */ }
+
+                    try {
+                        val rawAudio = openAIAI!!.speech(
+                            request = SpeechRequest(
+                                model = ModelId("tts-1"),
+                                input = message,
+                                voice = com.aallam.openai.api.audio.Voice(preferences!!.getOpenAIVoice()),
+                            )
+                        )
+
+                        (mContext as Activity?)?.runOnUiThread {
+                            try {
+                                // create temp file that will hold byte array
+                                val tempMp3 = File.createTempFile("audio", "mp3", mContext?.cacheDir)
+                                tempMp3.deleteOnExit()
+                                val fos = FileOutputStream(tempMp3)
+                                fos.write(rawAudio)
+                                fos.close()
+
+                                // resetting mediaplayer instance to evade problems
+                                mediaPlayer?.reset()
+
+                                val fis = FileInputStream(tempMp3)
+                                mediaPlayer?.setDataSource(fis.fd)
+                                mediaPlayer?.prepare()
+                                mediaPlayer?.start()
+                            } catch (ex: IOException) {
+                                MaterialAlertDialogBuilder(mContext ?: return@runOnUiThread, R.style.App_MaterialAlertDialog)
+                                    .setTitle(R.string.label_audio_error)
+                                    .setMessage(ex.stackTraceToString())
+                                    .setPositiveButton(R.string.btn_close) { _, _ -> }
+                                    .show()
+                            }
+                        }
+                    } catch (e: CancellationException) { /* ignore */
+                    }
+                }
             }
         }
     }
@@ -1678,7 +1711,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         assistantConversation?.transcriptMode = ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL
 
         try {
-            val images = ai?.imageURL(
+            val images = openAIAI?.imageURL(
                 creation = ImageCreation(
                     prompt = p,
                     n = 1,
@@ -1786,6 +1819,10 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         btnAssistantSend?.isEnabled = true
         assistantLoading?.visibility = View.GONE
         isProcessing = false
+        cancelState = false
+        btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+        animation?.stop()
+        animation?.reset()
     }
 
     private fun saveSettings() {
@@ -1811,7 +1848,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         super.onResume()
 
         if (isInitialized) {
-            preferences = Preferences.getPreferences(mContext ?: return, chatID)
+            preferences = Preferences.getPreferences(mContext ?: return, "")
             apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(mContext ?: return)
             logitBiasPreferences = LogitBiasPreferences(mContext ?: return, preferences?.getLogitBiasesConfigId()!!)
             apiEndpointObject = apiEndpointPreferences?.getApiEndpoint(mContext ?: return, preferences?.getApiEndpointId()!!)
@@ -2302,5 +2339,86 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
 
     override fun onMessageDeleted() {
         syncChatProjection()
+    }
+
+    private fun openAIMissing(feature: String, prompt: String) {
+        restoreUIState()
+
+        val message = when(feature) {
+            "dalle" -> "DALL-E image generation"
+            "tts" -> "OpenAI text-to-speech"
+            "whisper" -> "Whisper speech recognition"
+            else -> "this OpenAI"
+        }
+
+        MaterialAlertDialogBuilder(
+            mContext ?: return,
+            R.style.App_MaterialAlertDialog
+        )
+            .setTitle("OpenAI API endpoint missing")
+            .setMessage("To use $message, you need to add OpenAI API endpoint first. Would you like to add OpenAI endpoint now?")
+            .setPositiveButton(R.string.yes) { _, _ -> requestAddApiEndpoint(feature, prompt) }
+            .setNegativeButton(R.string.no) { _, _ -> onCancelOpenAIAction(feature, prompt) }
+            .show()
+    }
+
+    private fun requestAddApiEndpoint(feature: String, prompt: String) {
+        val apiEndpointDialog: EditApiEndpointDialogFragment = EditApiEndpointDialogFragment.newInstance("OpenAI", "https://api.openai.com/v1/", "", -1)
+        apiEndpointDialog.setListener(object : EditApiEndpointDialogFragment.StateChangesListener {
+            override fun onAdd(apiEndpoint: ApiEndpointObject) {
+                apiEndpointPreferences?.setApiEndpoint(mContext ?: return, apiEndpoint)
+                openAIKey = apiEndpoint.apiKey
+
+                val configOpenAI = OpenAIConfig(
+                    token = openAIKey.toString(),
+                    logging = LoggingConfig(LogLevel.None, Logger.Simple),
+                    timeout = Timeout(socket = 30.seconds),
+                    organization = null,
+                    headers = emptyMap(),
+                    host = OpenAIHost(apiEndpoint.host),
+                    proxy = null,
+                    retry = RetryStrategy()
+                )
+                openAIAI = OpenAI(configOpenAI)
+                onOpenAIAction(feature, prompt)
+            }
+
+            override fun onError(message: String, position: Int) {
+                apiEndpointDialog.show(parentFragmentManager, "EditApiEndpointDialogFragment")
+            }
+
+            override fun onCancel(position: Int) {
+                onCancelOpenAIAction(feature, prompt)
+            }
+        })
+        apiEndpointDialog.show(parentFragmentManager, "EditApiEndpointDialogFragment")
+    }
+
+    private fun onCancelOpenAIAction(feature: String, prompt: String) {
+        if (feature == "dalle") {
+            putMessage("DALL-E image generation is disabled. Please add OpenAI API endpoint to enable this feature.", true)
+            saveSettings()
+        }
+    }
+
+    private fun onOpenAIAction(feature: String, prompt: String) {
+        when (feature) {
+            "dalle" -> {
+                hideKeyboard()
+                btnAssistantVoice?.isEnabled = false
+                btnAssistantSend?.isEnabled = false
+                assistantLoading?.visibility = View.VISIBLE
+
+                CoroutineScope(Dispatchers.Main).launch {
+                    assistantLoading?.setOnClickListener {
+                        cancel()
+                        restoreUIState()
+                    }
+
+                    generateImage(prompt)
+                }
+            }
+            "tts" -> speak(prompt)
+        }
     }
 }

@@ -57,22 +57,22 @@
     <color name="cat_health">#9BFFCC</color>
     <color name="grey">#d4d4d4</color>
 
-    <color name="tint_cat_development">#25FFC3A7</color>
-    <color name="tint_cat_music">#25FFB3B3</color>
-    <color name="tint_cat_art">#25BBC6FF</color>
-    <color name="tint_cat_culture">#25B6FFC0</color>
-    <color name="tint_cat_business">#25D3A2FF</color>
-    <color name="tint_cat_gaming">#25C7FFB0</color>
-    <color name="tint_cat_education">#25B8FBFF</color>
-    <color name="tint_cat_history">#25BFFFDE</color>
-    <color name="tint_cat_food">#25FFA7EC</color>
-    <color name="tint_cat_tourism">#25FFB2CA</color>
-    <color name="tint_cat_productivity">#25F6FFAB</color>
-    <color name="tint_cat_tools">#25B7CEFF</color>
-    <color name="tint_cat_entertainment">#25FFD9B1</color>
-    <color name="tint_cat_sport">#25BFFFB3</color>
-    <color name="tint_cat_health">#25B6FFDA</color>
-    <color name="tint_grey">#25FFFFFF</color>
+    <color name="tint_cat_development">#25B19284</color>
+    <color name="tint_cat_music">#25A17878</color>
+    <color name="tint_cat_art">#257C83AA</color>
+    <color name="tint_cat_culture">#25617E65</color>
+    <color name="tint_cat_business">#258A759E</color>
+    <color name="tint_cat_gaming">#258EAA82</color>
+    <color name="tint_cat_education">#2586B0B3</color>
+    <color name="tint_cat_history">#2582AE97</color>
+    <color name="tint_cat_food">#25B686AC</color>
+    <color name="tint_cat_tourism">#25B37387</color>
+    <color name="tint_cat_productivity">#25A5AA7C</color>
+    <color name="tint_cat_tools">#258390AE</color>
+    <color name="tint_cat_entertainment">#25B39C84</color>
+    <color name="tint_cat_sport">#258CB884</color>
+    <color name="tint_cat_health">#2588BFA3</color>
+    <color name="tint_grey">#259C9C9C</color>
 
     <color name="tint_cat_development_active">#50ffddad</color>
     <color name="tint_cat_music_active">#50ffadad</color>
@@ -92,22 +92,22 @@
     <color name="disabled_background">#66999999</color>
     <color name="disabled_icon">#FF999999</color>
 
-    <color name="tint_red">#30965050</color>
+    <color name="tint_red">#309C5E5E</color>
     <color name="gpt_icon_red">#CCB4B4</color>
 
-    <color name="tint_yellow">#30877249</color>
+    <color name="tint_yellow">#308E7B57</color>
     <color name="gpt_icon_yellow">#D0C9BC</color>
 
-    <color name="tint_green">#29739665</color>
+    <color name="tint_green">#297F9F73</color>
     <color name="gpt_icon_green">#C2CCB4</color>
 
-    <color name="tint_blue">#305F7CA7</color>
+    <color name="tint_blue">#30627797</color>
     <color name="gpt_icon_blue">#B4BFCC</color>
 
-    <color name="tint_purple">#30795896</color>
+    <color name="tint_purple">#307F6298</color>
     <color name="gpt_icon_purple">#C2B4CC</color>
 
-    <color name="tint_orange">#30966E58</color>
+    <color name="tint_orange">#30977563</color>
     <color name="gpt_icon_orange">#CCBEB4</color>
 
     <color name="border">#38FFFFFF</color>
