@@ -66,6 +66,7 @@ import org.teslasoft.assistant.ui.fragments.tabs.ChatsListFragment
 import org.teslasoft.assistant.ui.fragments.tabs.ExploreFragment
 import org.teslasoft.assistant.ui.fragments.tabs.PlaygroundFragment
 import org.teslasoft.assistant.ui.fragments.tabs.PromptsFragment
+import org.teslasoft.assistant.ui.fragments.tabs.ToolsFragment
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
 import org.teslasoft.core.api.network.RequestNetwork
 import java.io.IOException
@@ -85,6 +86,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     private var devIds: TextView? = null
     private var frameChats: Fragment? = null
     private var framePlayground: Fragment? = null
+    private var frameTools: Fragment? = null
     private var framePrompts: Fragment? = null
     private var frameExplore: Fragment? = null
     private var root: ConstraintLayout? = null
@@ -92,7 +94,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     private var preferences: Preferences? = null
 
     private var selectedTab: Int = 1
-    private var isAnimating = false
     private var isInitialized: Boolean = false
 
     private var splashScreen: SplashScreen? = null
@@ -237,6 +238,10 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                         }
                         R.id.menu_playground -> {
                             menuPlayground()
+                            return@OnItemSelectedListener true
+                        }
+                        R.id.menu_tools -> {
+                            menuTools()
                             return@OnItemSelectedListener true
                         }
                         R.id.menu_prompts -> {
@@ -391,6 +396,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     private fun initUI() {
         frameChats = ChatsListFragment()
         framePlayground = PlaygroundFragment()
+        frameTools = ToolsFragment()
         framePrompts = PromptsFragment()
         frameExplore = ExploreFragment()
 
@@ -582,13 +588,18 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         loadFragment(framePlayground)
     }
 
-    private fun menuPrompts() {
+    private fun menuTools() {
         selectedTab = 3
+        loadFragment(frameTools)
+    }
+
+    private fun menuPrompts() {
+        selectedTab = 4
         loadFragment(framePrompts)
     }
 
     private fun menuExplore() {
-        selectedTab = 4
+        selectedTab = 5
         loadFragment(frameExplore)
     }
 
@@ -605,10 +616,14 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                 loadFragment(framePlayground)
             }
             3 -> {
+                navigationBar?.selectedItemId = R.id.menu_tools
+                loadFragment(frameTools)
+            }
+            4 -> {
                 navigationBar?.selectedItemId = R.id.menu_prompts
                 loadFragment(framePrompts)
             }
-            4 -> {
+            5 -> {
                 navigationBar?.selectedItemId = R.id.menu_tips
                 loadFragment(frameExplore)
             }

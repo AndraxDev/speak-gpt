@@ -83,10 +83,10 @@ import com.aallam.openai.api.chat.ChatCompletionRequest
 import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatRole
 import com.aallam.openai.api.chat.ContentPart
-import com.aallam.openai.api.chat.FunctionMode
 import com.aallam.openai.api.chat.ImagePart
-import com.aallam.openai.api.chat.Parameters
 import com.aallam.openai.api.chat.TextPart
+import com.aallam.openai.api.chat.ToolCall
+import com.aallam.openai.api.chat.ToolChoice
 import com.aallam.openai.api.chat.chatCompletionRequest
 import com.aallam.openai.api.completion.CompletionRequest
 import com.aallam.openai.api.completion.TextCompletion
@@ -117,6 +117,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.add
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.put
@@ -1595,6 +1596,12 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
     private fun sendImageRequest(str: String) {
         imageRequestScope = CoroutineScope(Dispatchers.Main)
         imageRequestScope?.launch {
+            runOnUiThread {
+                btnMicro?.isEnabled = false
+                btnSend?.isEnabled = false
+                progress?.visibility = View.VISIBLE
+            }
+
             progress?.setOnClickListener {
                 cancel()
                 restoreUIState()
@@ -1604,7 +1611,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
             }
 
             try {
-                generateImage(str)
+                generateImageR(str)
             } catch (cancelledException: CancellationException) {
                 restoreUIState()
             }
@@ -1770,35 +1777,9 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                 progress?.visibility = View.GONE
                 messageInput?.requestFocus()
             } else {
-                val functionCallingEnabled: Boolean = preferences!!.getFunctionCalling()
+                var functionCallingEnabled: Boolean = preferences!!.getFunctionCalling()
 
-                if (functionCallingEnabled) {
-                    val imageParams = Parameters.buildJsonObject {
-                        put("type", "object")
-                        putJsonObject("properties") {
-                            putJsonObject("prompt") {
-                                put("type", "string")
-                                put("description", "The prompt for image generation")
-                            }
-                        }
-                        putJsonArray("required") {
-                            add("prompt")
-                        }
-                    }
-
-                    val searchParams = Parameters.buildJsonObject {
-                        put("type", "object")
-                        putJsonObject("properties") {
-                            putJsonObject("prompt") {
-                                put("type", "string")
-                                put("description", "Search query")
-                            }
-                        }
-                        putJsonArray("required") {
-                            add("prompt")
-                        }
-                    }
-
+                if (functionCallingEnabled && openAIKey != null) {
                     val cm = mutableListOf(
                         ChatMessage(
                             role = ChatRole.User,
@@ -1808,57 +1789,76 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
 
                     val functionRequest = chatCompletionRequest {
                         model = ModelId(this@ChatActivity.model)
-                        temperature = if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble()
-                        topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble()
-                        frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble()
-                        presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble()
                         messages = cm
-                        functions {
-                            function {
-                                name = "generateImages"
+
+                        tools {
+                            function(
+                                name = "generateImage",
                                 description = "Generate an image based on the entered prompt"
-                                parameters = imageParams
+                            ) {
+                                put("type", "object")
+                                putJsonObject("properties") {
+                                    putJsonObject("prompt") {
+                                        put("type", "string")
+                                        put("description", "The prompt for image generation")
+                                    }
+                                }
+                                putJsonArray("required") {
+                                    add("prompt")
+                                }
                             }
 
-                            function {
-                                name = "searchInternet"
-                                description = "Search the Internet"
-                                parameters = searchParams
+                            function(
+                                name = "searchAtInternet",
+                                description = "Search the Internet",
+                            ) {
+                                put("type", "object")
+                                putJsonObject("properties") {
+                                    putJsonObject("prompt") {
+                                        put("type", "string")
+                                        put("description", "Search query")
+                                    }
+                                }
+                                putJsonArray("required") {
+                                    add("prompt")
+                                }
                             }
                         }
-                        functionCall = FunctionMode.Auto
+
+                        toolChoice = ToolChoice.Auto
                     }
 
-                    val response1 = ai?.chatCompletion(functionRequest)
+                    val response1 = openAIAI?.chatCompletion(functionRequest)
 
                     val message = response1?.choices?.first()?.message
 
-                    if (message?.functionCall != null) {
-                        val functionCall = message.functionCall!!
-                        val imageGenerationAvailable = mapOf("generateImages" to ::generateImages)
-                        val searchInternetAvailable = mapOf("searchInternet" to ::searchInternet)
-                        val imageGenerationAvailableToCall =
-                            imageGenerationAvailable[functionCall.name]
-                        val searchInternetAvailableToCall =
-                            searchInternetAvailable[functionCall.name]
-                        val imageGenerationAvailableArgs =
-                            functionCall.argumentsAsJson()
-                        val searchInternetAvailableArgs =
-                            functionCall.argumentsAsJson()
-                        if (imageGenerationAvailableToCall != null) {
-                            imageGenerationAvailableToCall(
-                                imageGenerationAvailableArgs.getValue("prompt").jsonPrimitive.content
-                            )
-                        } else if (searchInternetAvailableToCall != null) {
-                            searchInternetAvailableToCall(
-                                searchInternetAvailableArgs.getValue("prompt").jsonPrimitive.content
-                            )
-                        } else {
+                    if (message?.toolCalls != null) {
+                        val toolsCalls = message.toolCalls!!
+
+                        if (toolsCalls.orEmpty().isEmpty()) {
                             regularGPTResponse(shouldPronounce)
+                        } else {
+                            for (toolCall in toolsCalls.orEmpty()) {
+                                require(toolCall is ToolCall.Function) { "Tool call is not a function" }
+                                toolCall.execute()
+                            }
                         }
                     } else {
                         regularGPTResponse(shouldPronounce)
                     }
+                } else if (functionCallingEnabled) {
+                    putMessage("Function calling requires OpenAI endpoint which is missing on your device. Please go to the settings and add OpenAI endpoint or disable Function Calling. OpenAI base url (host) is: https://api.openai.com/v1/ (don't forget to add slash at the end otherwise you will receive an error).", true)
+                    saveSettings()
+                    restoreUIState()
+                    MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
+                        .setTitle("Unsupported feature")
+                        .setMessage("Function calling feature is unavailable because it requires OpenAI endpoint. Would you like to disable this feature?")
+                        .setPositiveButton("Disable") { _, _ -> run {
+                            preferences?.setFunctionCalling(false)
+                            functionCallingEnabled = false
+                        }}
+                        .setNegativeButton("Cancel") { _, _ -> }
+                        .show()
                 } else {
                     regularGPTResponse(shouldPronounce)
                 }
@@ -1902,6 +1902,10 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                 }
             }
 
+            if (messages[messages.size - 1]["isBot"] == false) {
+                putMessage("", true)
+            }
+
             if (preferences?.showChatErrors() == true) {
                 messages[messages.size - 1]["message"] = "${messages[messages.size - 1]["message"]}\n\n${getString(R.string.prompt_show_error)}\n\n$response"
                 adapter?.notifyDataSetChanged()
@@ -1921,6 +1925,42 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
             runOnUiThread {
                 restoreUIState()
             }
+        }
+    }
+
+    private val availableFunctions = mapOf("generateImage" to ::generateImage, "searchAtInternet" to ::searchAtInternet)
+
+    private fun ToolCall.Function.execute() {
+        val functionToCall = availableFunctions[function.name] ?: error("Function ${function.name} not found")
+        val functionArgs = function.argumentsAsJson()
+        functionToCall(functionArgs)
+    }
+
+    private fun generateImage(args: JsonObject) {
+        val prompt = args.getValue("prompt").jsonPrimitive.content
+
+        runOnUiThread {
+            btnMicro?.isEnabled = false
+            btnSend?.isEnabled = false
+            progress?.visibility = View.VISIBLE
+        }
+
+        CoroutineScope(Dispatchers.Main).launch {
+            generateImages(prompt)
+        }
+    }
+
+    private fun searchAtInternet(args: JsonObject) {
+        val prompt = args.getValue("prompt").jsonPrimitive.content
+
+        runOnUiThread {
+            btnMicro?.isEnabled = false
+            btnSend?.isEnabled = false
+            progress?.visibility = View.VISIBLE
+        }
+
+        CoroutineScope(Dispatchers.Main).launch {
+            searchInternet(prompt)
         }
     }
 
@@ -2176,7 +2216,13 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private suspend fun generateImage(p: String) {
+    private suspend fun generateImageR(p: String) {
+        runOnUiThread {
+            btnMicro?.isEnabled = false
+            btnSend?.isEnabled = false
+            progress?.visibility = View.VISIBLE
+        }
+
         chat?.setOnTouchListener(null)
         disableAutoScroll = false
         chat?.transcriptMode = ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL
@@ -2421,10 +2467,11 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                         restoreUIState()
                     }
 
-                    generateImage(prompt)
+                    generateImageR(prompt)
                 }
             }
             "tts" -> speak(prompt)
+            "whisper" -> handleWhisperSpeechRecognition()
         }
     }
 }

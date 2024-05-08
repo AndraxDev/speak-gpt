@@ -199,6 +199,7 @@ class PlaygroundFragment : Fragment() {
             runLoader?.visibility = View.VISIBLE
             btnStop?.visibility = View.VISIBLE
             btnRun?.visibility = View.GONE
+            btnTokenize?.isEnabled = false
 
             CoroutineScope(Dispatchers.Main).launch {
                 val tokenizer = try {
@@ -209,21 +210,26 @@ class PlaygroundFragment : Fragment() {
 
                 val tokens = tokenizer.encode(editTextIn?.text.toString())
 
-                val tokenString: StringBuilder = StringBuilder()
-                for (i in tokens) {
-                    tokenString.append(i.toString())
-                    tokenString.append(", ")
+                if (tokens.isEmpty()) {
+                    Toast.makeText(context, "Please enter some text to the input textarea.", Toast.LENGTH_SHORT).show()
+                } else {
+                    val tokenString: StringBuilder = StringBuilder()
+                    for (i in tokens) {
+                        tokenString.append(i.toString())
+                        tokenString.append(", ")
+                    }
+
+                    tokenString.deleteCharAt(tokenString.length - 2)
+
+                    val response = "Chars count: ${editTextIn?.text?.toList()?.size}\nTokens count: ${tokens.size}\nTokens: ${tokenString.toString()}"
+
+                    editTextOut?.setText(response)
                 }
-
-                tokenString.deleteCharAt(tokenString.length - 2)
-
-                val response = "Chars count: ${editTextIn?.text?.toList()?.size}\nTokens count: ${tokens.size}\nTokens: ${tokenString.toString()}"
-
-                editTextOut?.setText(response)
 
                 runLoader?.visibility = View.GONE
                 btnStop?.visibility = View.GONE
                 btnRun?.visibility = View.VISIBLE
+                btnTokenize?.isEnabled = true
             }
         }
 
