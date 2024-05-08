@@ -37,6 +37,7 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -257,10 +258,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                     return@OnItemSelectedListener false
                 })
 
-                if (savedInstanceState != null) {
-                    onRestoredState(savedInstanceState)
-                }
-
                 if (preferences!!.getDebugTestAds() && !preferences!!.getDebugMode()) {
                     preferences!!.setDebugMode(true)
                     restartActivity()
@@ -347,6 +344,10 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                 }
 
                 preInit()
+
+                if (savedInstanceState != null) {
+                    onRestoredState(savedInstanceState)
+                }
 
                 Handler(Looper.getMainLooper()).postDelayed({
                     val fadeOut: Animation = AnimationUtils.loadAnimation(this, R.anim.fade_out)
@@ -569,14 +570,14 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
         outState.putInt("tab", selectedTab)
+        super.onSaveInstanceState(outState)
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        selectedTab = savedInstanceState.getInt("tab")
-    }
+//    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+//        super.onRestoreInstanceState(savedInstanceState)
+//        selectedTab = savedInstanceState.getInt("tab")
+//    }
 
     private fun menuChats() {
         selectedTab = 1
@@ -638,11 +639,16 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
 
     private fun loadFragment(fragment: Fragment?): Boolean {
         if (fragment != null) {
-            val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-            transaction.setCustomAnimations(R.anim.fade_in_tab, R.anim.fade_out_tab)
-            transaction.replace(R.id.fragment, fragment)
-            transaction.commit()
-            return true
+             try {
+                val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+                transaction.setCustomAnimations(R.anim.fade_in_tab, R.anim.fade_out_tab)
+                transaction.replace(R.id.fragment, fragment)
+                transaction.commit()
+                return true
+             } catch (e: Exception) {
+                 e.printStackTrace()
+                 return false
+             }
         }
         return false
     }

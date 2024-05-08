@@ -69,6 +69,7 @@
         <activity
             android:name=".ui.activities.ChatActivity"
             android:exported="false"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/UI.Fade">
         </activity>
 

@@ -17,31 +17,68 @@
 package org.teslasoft.assistant.preferences
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 
 class EncryptedPreferences {
     companion object {
+        private var mainKey: MasterKey? = null
+        private val preferencesCache = mutableMapOf<String, SharedPreferences>()
+
+        private fun getMasterKey(context: Context): MasterKey {
+            if (mainKey == null) {
+                mainKey = MasterKey.Builder(context)
+                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                    .build()
+            }
+            return mainKey!!
+        }
+
+        private fun getEncryptedSharedPreferences(context: Context, fileName: String): SharedPreferences {
+            return preferencesCache[fileName] ?: run {
+                val sharedPreferences = EncryptedSharedPreferences.create(
+                    context,
+                    fileName,
+                    getMasterKey(context),
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+                )
+                preferencesCache[fileName] = sharedPreferences
+                sharedPreferences
+            }
+        }
+
+
         /**
          * Get encrypted preference
          * */
         fun getEncryptedPreference(context: Context, file: String, key: String) : String {
-            try {
-                val mainKey = MasterKey.Builder(context)
-                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-                    .build()
+//            try {
+//                if (mainKey == null) {
+//                    mainKey = MasterKey.Builder(context)
+//                        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+//                        .build()
+//                }
+//
+//                val sharedPreferences = EncryptedSharedPreferences.create(
+//                    context,
+//                    file,
+//                    mainKey!!,
+//                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+//                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+//                )
+//
+//                return sharedPreferences.getString(key, "")!!
+//            } catch (e: Exception) {
+//                return ""
+//            }
 
-                val sharedPreferences = EncryptedSharedPreferences.create(
-                    context,
-                    file,
-                    mainKey,
-                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-                )
-
-                return sharedPreferences.getString(key, "")!!
+            return try {
+                val sharedPreferences = getEncryptedSharedPreferences(context, file)
+                sharedPreferences.getString(key, "") ?: ""
             } catch (e: Exception) {
-                return ""
+                ""
             }
         }
 
@@ -49,19 +86,21 @@ class EncryptedPreferences {
          * Set encrypted preference
          * */
         fun setEncryptedPreference(context: Context, file: String, key: String, value: String) {
-            val mainKey = MasterKey.Builder(context)
-                .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-                .build()
+//            if (mainKey == null) {
+//                mainKey = MasterKey.Builder(context)
+//                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+//                    .build()
+//            }
+//
+//            val sharedPreferences = EncryptedSharedPreferences.create(
+//                context,
+//                file,
+//                mainKey!!,
+//                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+//                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+//            )
 
-            val sharedPreferences = EncryptedSharedPreferences.create(
-                context,
-                file,
-                mainKey,
-                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-            )
-
-            with (sharedPreferences.edit()) {
+            with (getEncryptedSharedPreferences(context, file).edit()) {
                 putString(key, value)
                 apply()
             }

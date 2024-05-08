@@ -30,6 +30,12 @@
         android:title="Playground"/>
 
     <item
+        android:id="@+id/menu_tools"
+        android:enabled="true"
+        android:icon="@drawable/ic_tools_accent"
+        android:title="Tools"/>
+
+    <item
         android:id="@+id/menu_prompts"
         android:enabled="true"
         android:icon="@drawable/ic_apps"

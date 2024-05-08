@@ -38,7 +38,7 @@ import org.teslasoft.assistant.util.Hash
 class AddChatDialogFragment : DialogFragment() {
 
     companion object {
-        fun newInstance(isEdit: Boolean, name: String, fromFile: Boolean, disableAutoName: Boolean, saveChat: Boolean, endpointId: String, model: String, avatarType: String, avatarId: String, assistantName: String) : AddChatDialogFragment {
+        fun newInstance(isEdit: Boolean, name: String, fromFile: Boolean, disableAutoName: Boolean, saveChat: Boolean, endpointId: String, model: String, avatarType: String, avatarId: String, assistantName: String, position: Int) : AddChatDialogFragment {
             val addChatDialogFragment = AddChatDialogFragment()
 
             val args = Bundle()
@@ -52,6 +52,7 @@ class AddChatDialogFragment : DialogFragment() {
             args.putString("avatarType", avatarType)
             args.putString("avatarId", avatarId)
             args.putString("assistantName", assistantName)
+            args.putInt("position", position)
 
             addChatDialogFragment.arguments = args
 
@@ -165,7 +166,7 @@ class AddChatDialogFragment : DialogFragment() {
 
     private fun validateForm() {
         if (nameInput?.text.toString() == "" && !autoName!!.isChecked) {
-            listener!!.onError(arguments?.getBoolean("fromFile") == true)
+            listener!!.onError(arguments?.getBoolean("fromFile") == true, arguments?.getInt("position")!!)
         } else {
             createChat()
         }
@@ -177,7 +178,7 @@ class AddChatDialogFragment : DialogFragment() {
 
             val preferences: Preferences = if (isEdit) {
                 chatPreferences?.editChat(requireActivity(), nameInput?.text.toString(), requireArguments().getString("name").toString())
-                listener!!.onEdit(chatName, Hash.hash(nameInput?.text.toString()))
+                listener!!.onEdit(chatName, Hash.hash(nameInput?.text.toString()), arguments?.getInt("position")!!)
 
                 // Transfer settings
                 Preferences.getPreferences(requireActivity(), Hash.hash(arguments?.getString("name").toString()))
@@ -249,7 +250,7 @@ class AddChatDialogFragment : DialogFragment() {
             newPreferences.setAvatarId(avatarId!!)
             newPreferences.setAssistantName(assistantName!!)
         } else {
-            listener!!.onDuplicate()
+            listener!!.onDuplicate(arguments?.getInt("position")!!)
         }
     }
 
@@ -264,7 +265,7 @@ class AddChatDialogFragment : DialogFragment() {
 
     private fun delete(context: Context) {
         chatPreferences?.deleteChat(context, requireArguments().getString("name").toString())
-        listener!!.onDelete()
+        listener!!.onDelete(arguments?.getInt("position")!!)
     }
 
     fun setStateChangedListener(listener: StateChangesListener) {
@@ -273,10 +274,10 @@ class AddChatDialogFragment : DialogFragment() {
 
     interface StateChangesListener {
         fun onAdd(name: String, id: String, fromFile: Boolean)
-        fun onEdit(name: String, id: String)
-        fun onError(fromFile: Boolean)
+        fun onEdit(name: String, id: String, position: Int)
+        fun onError(fromFile: Boolean, position: Int)
         fun onCanceled()
-        fun onDelete()
-        fun onDuplicate()
+        fun onDelete(position: Int)
+        fun onDuplicate(position: Int)
     }
 }

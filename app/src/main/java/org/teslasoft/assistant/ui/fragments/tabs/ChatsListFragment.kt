@@ -20,6 +20,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.Canvas
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
@@ -29,10 +31,8 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.ListView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -40,6 +40,9 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -52,16 +55,18 @@ import org.teslasoft.assistant.preferences.ChatPreferences
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.activities.ChatActivity
 import org.teslasoft.assistant.ui.activities.SettingsActivity
-import org.teslasoft.assistant.ui.adapters.ChatListAdapter
+import org.teslasoft.assistant.ui.adapters.ChatListAdapterV2
 import org.teslasoft.assistant.ui.fragments.dialogs.AddChatDialogFragment
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
+import org.teslasoft.assistant.util.Hash
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
+
 class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
 
-    private var adapter: ChatListAdapter? = null
-    private var chatsList: ListView? = null
+    private var adapter: ChatListAdapterV2? = null
+    private var chatsList: RecyclerView? = null
     private var btnSettings: ImageButton? = null
     private var btnAdd: ExtendedFloatingActionButton? = null
     private var btnImport: FloatingActionButton? = null
@@ -101,14 +106,14 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
             startActivity(i)
         }
 
-        override fun onEdit(name: String, id: String) {
-            initSettings()
+        override fun onEdit(name: String, id: String, position: Int) {
+            initSettings("edit", position, name)
         }
 
-        override fun onError(fromFile: Boolean) {
+        override fun onError(fromFile: Boolean, position: Int) {
             Toast.makeText(mContext ?: return, R.string.chat_error_empty, Toast.LENGTH_SHORT).show()
 
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", fromFile, false, false, "", "", "", "", "")
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", fromFile, false, false, "", "", "", "", "", position)
             chatDialogFragment.setStateChangedListener(this)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -117,14 +122,14 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
             /* unused */
         }
 
-        override fun onDelete() {
-            initSettings()
+        override fun onDelete(position: Int) {
+            initSettings("delete", position)
         }
 
-        override fun onDuplicate() {
+        override fun onDuplicate(position: Int) {
             Toast.makeText(mContext ?: return, R.string.chat_error_unique, Toast.LENGTH_SHORT).show()
 
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, false, false, "", "", "", "", "")
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, false, false, "", "", "", "", "", position)
             chatDialogFragment.setStateChangedListener(this)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -182,7 +187,6 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
 
             (mContext as Activity?)?.runOnUiThread {
                 initUI(view)
-                initChatsList()
                 initLogics()
                 initSettings()
                 // preInit()
@@ -197,13 +201,89 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
         fieldSearch = view.findViewById(R.id.field_search)
         bgSearch = view.findViewById(R.id.bg_search)
         btnAdd = view.findViewById(R.id.btn_add)
-        reloadAmoled(mContext?:return)
+
+        chatsList?.setLayoutManager(LinearLayoutManager(mContext ?: return))
+
+        val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
+        itemTouchHelper.attachToRecyclerView(chatsList)
+
+        reloadAmoled(mContext ?: return)
     }
 
+    private val itemTouchCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+        override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+            return false
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
+            val position = viewHolder.adapterPosition
+
+            viewHolder.itemView.post {
+                adapter?.notifyItemChanged(position)
+
+                if (swipeDir == ItemTouchHelper.RIGHT) {
+                    ChatPreferences.getChatPreferences().switchPinState(mContext ?: return@post, Hash.hash(chats[position]["name"].toString()))
+                    initSettings()
+                } else {
+                    MaterialAlertDialogBuilder(requireActivity(), R.style.App_MaterialAlertDialog)
+                        .setTitle(R.string.label_confirm_deletion)
+                        .setMessage(R.string.msg_confirm_deletion_chat)
+                        .setPositiveButton(R.string.btn_delete) { _, _ -> run {
+                            ChatPreferences.getChatPreferences().deleteChat(mContext ?: return@run, chats[position]["name"].toString())
+                            initSettings("delete", position)
+                        } }
+                        .setNegativeButton(R.string.btn_cancel) { _, _ -> }
+                        .show()
+                }
+
+            }
+        }
+
+        override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
+                                 dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+
+            val position = viewHolder.adapterPosition
+
+            val iconDLeft = if(chats[position]["pinned"] == "false") {
+                ResourcesCompat.getDrawable(mContext?.resources?: return, R.drawable.ic_pin_action, mContext?.theme)!!
+            } else {
+                ResourcesCompat.getDrawable(mContext?.resources?: return, R.drawable.ic_unpin_action, mContext?.theme)!!
+            }
+            val iconDRight = ResourcesCompat.getDrawable(mContext?.resources?: return, R.drawable.ic_delete_action, mContext?.theme)!!
+            val itemView = viewHolder.itemView
+            val background = ColorDrawable(ResourcesCompat.getColor(mContext?.resources?: return, R.color.pin, mContext?.theme))
+
+            if (dX > 0) { // Swiping to the right
+                val iconMargin = (itemView.height - iconDLeft.intrinsicHeight) / 2
+                val iconTop = itemView.top + (itemView.height - iconDLeft.intrinsicHeight) / 2
+                val iconBottom = iconTop + iconDLeft.intrinsicHeight
+                val iconLeft = itemView.left + iconMargin
+                val iconRight = iconLeft + iconDLeft.intrinsicWidth
+                iconDLeft.setBounds(iconLeft, iconTop, iconRight, iconBottom)
+                background.color = ResourcesCompat.getColor(mContext?.resources?: return, R.color.pin, mContext?.theme)
+                background.setBounds(itemView.left, itemView.top, itemView.left + dX.toInt(), itemView.bottom)
+                background.draw(c)
+                iconDLeft.draw(c)
+            } else if (dX < 0) { // Swiping to the left
+                val iconMargin = (itemView.height - iconDRight.intrinsicHeight) / 2
+                val iconTop = itemView.top + (itemView.height - iconDRight.intrinsicHeight) / 2
+                val iconBottom = iconTop + iconDRight.intrinsicHeight
+                val iconLeft = itemView.right - iconMargin - iconDRight.intrinsicWidth
+                val iconRight = itemView.right - iconMargin
+                iconDRight.setBounds(iconLeft, iconTop, iconRight, iconBottom)
+                background.color = ResourcesCompat.getColor(mContext?.resources?: return, R.color.delete, mContext?.theme)
+                background.setBounds(itemView.right + dX.toInt(), itemView.top, itemView.right, itemView.bottom)
+                background.draw(c)
+                iconDRight.draw(c)
+            }
+
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+        }
+    }
+
+
     private fun initChatsList() {
-        adapter = ChatListAdapter(chats, this)
-        chatsList?.dividerHeight = 0
-        chatsList?.divider = null
+        adapter = ChatListAdapterV2(chats, this)
         chatsList?.adapter = adapter
         adapter?.notifyDataSetChanged()
     }
@@ -214,7 +294,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
         }
 
         btnAdd?.setOnClickListener {
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, false, false, "", "", "", "", "")
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, false, false, "", "", "", "", "", -1)
             chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -231,7 +311,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchTerm = s.toString().trim()
                 if (s.toString().trim() == "") {
-                    adapter = ChatListAdapter(chats, this@ChatsListFragment)
+                    adapter = ChatListAdapterV2(chats, this@ChatsListFragment)
                     chatsList?.adapter = adapter
                     adapter?.notifyDataSetChanged()
                 } else {
@@ -243,7 +323,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
                         }
                     }
 
-                    adapter = ChatListAdapter(filtered, this@ChatsListFragment)
+                    adapter = ChatListAdapterV2(filtered, this@ChatsListFragment)
                     chatsList?.adapter = adapter
                     adapter?.notifyDataSetChanged()
                 }
@@ -264,7 +344,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
 
                     if (isValidJson(selectedFile)) {
                         val chatDialogFragment: AddChatDialogFragment =
-                            AddChatDialogFragment.newInstance(false, "", true, false, false, "", "", "", "", "")
+                            AddChatDialogFragment.newInstance(false, "", true, false, false, "", "", "", "", "", -1)
                         chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
                         chatDialogFragment.show(
                             parentFragmentManager.beginTransaction(),
@@ -342,16 +422,34 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
         }
     }
 
-    private fun initSettings() {
+    private fun initSettings(action: String = "", position: Int = -1, chatName: String = "") {
         chats = ChatPreferences.getChatPreferences().getChatList(mContext?: return)
 
         // R8 went fuck himself...
         if (chats == null) chats = arrayListOf()
 
+        val sorted = chats.sortedWith(compareBy(
+            { (it["pinned"] ?: "false") == "true" },
+            { (it["timestamp"] ?: "0").toLong() }
+        ))
+
+        chats.clear()
+        chats.addAll(sorted)
+
+        chats.reverse()
+
         if (searchTerm.trim() == "") {
-            adapter = ChatListAdapter(chats, this@ChatsListFragment)
-            chatsList?.adapter = adapter
-            adapter?.notifyDataSetChanged()
+            when (action) {
+                "edit" -> {
+                    adapter?.editItemAtPosition(position, chatName)
+                }
+                "delete" -> {
+                    adapter?.deleteItemAtPosition(position)
+                }
+                else -> {
+                    initChatsList()
+                }
+            }
         } else {
             val filtered: ArrayList<HashMap<String, String>> = arrayListOf()
 
@@ -361,19 +459,25 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
                 }
             }
 
-            adapter = ChatListAdapter(filtered, this@ChatsListFragment)
-            chatsList?.adapter = adapter
-            adapter?.notifyDataSetChanged()
+            when (action) {
+                "edit" -> {
+                    adapter?.editItemAtPosition(position, chatName)
+                }
+                "delete" -> {
+                    adapter?.deleteItemAtPosition(position)
+                }
+                else -> {
+                    initChatsList()
+                }
+            }
         }
 
-        chatsList?.setOnScrollListener(object : AbsListView.OnScrollListener {
-            override fun onScrollStateChanged(view: AbsListView?, scrollState: Int) { /* unused */ }
-
-            override fun onScroll(view: AbsListView?, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
+        chatsList?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (chats == null) chats = arrayListOf()
                 val topRowVerticalPosition: Int = if (chats.isNullOrEmpty() || chatsList == null || chatsList?.childCount == 0) 0 else chatsList?.getChildAt(0)!!.top
 
-                if (firstVisibleItem == 0 && topRowVerticalPosition >= 0) {
+                if ((chatsList?.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition() == 0 && topRowVerticalPosition >= 0) {
                     btnAdd?.extend()
                 } else {
                     btnAdd?.shrink()
@@ -421,12 +525,37 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
         if (chats == null) chats = arrayListOf()
         if (!chats.isNullOrEmpty() /* NullPointerException has been thrown here... ...HOW??? */) {
             val chatList = ChatPreferences.getChatPreferences().getChatList(mContext?: return)
+
+            val sorted = chatList.sortedWith(compareBy(
+                { (it["pinned"] ?: "false") == "true" },
+                { (it["timestamp"] ?: "0").toLong() }
+            ))
+
+            chatList.clear()
+            chatList.addAll(sorted)
+
+            chatList.reverse()
+
             // Compare chats and chatList and update the list if needed
-            if (chats != chatList) {
-                chats = chatList
-                adapter = ChatListAdapter(chats, this@ChatsListFragment)
-                chatsList?.adapter = adapter
-                adapter?.notifyDataSetChanged()
+
+            var isUpdated = false
+
+            if (chatList.size != chats.size) {
+                initSettings()
+            } else {
+                var i = 0;
+
+                while (i < chatList.size) {
+                    if (chatList[i]["name"] != chats[i]["name"] || chatList[i]["first_message"] != chats[i]["first_message"] || chatList[i]["timestamp"] != chats[i]["timestamp"]) {
+                        isUpdated = true
+                        break
+                    }
+                    i++
+                }
+
+                if (isUpdated) {
+                    initSettings()
+                }
             }
         }
     }

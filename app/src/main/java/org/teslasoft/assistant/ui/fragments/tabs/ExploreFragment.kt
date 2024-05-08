@@ -257,7 +257,7 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
     }
 
     private fun createChat(endpointName: String, suggestedChatName: String, model: String, avatarType: String, avatarId: String, assistantName: String) {
-        val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, suggestedChatName, false, true, true, Hash.hash(endpointName), model, avatarType, avatarId, assistantName)
+        val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, suggestedChatName, false, true, true, Hash.hash(endpointName), model, avatarType, avatarId, assistantName, -1)
         chatDialogFragment.setStateChangedListener(object : AddChatDialogFragment.StateChangesListener {
             override fun onAdd(name: String, id: String, fromFile: Boolean) {
                 val i = Intent(
@@ -271,7 +271,7 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
                 startActivity(i)
             }
 
-            override fun onEdit(name: String, id: String) {
+            override fun onEdit(name: String, id: String, position: Int) {
                 val i = Intent(
                     mContext ?: return,
                     ChatActivity::class.java
@@ -283,7 +283,7 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
                 startActivity(i)
             }
 
-            override fun onError(fromFile: Boolean) {
+            override fun onError(fromFile: Boolean, position: Int) {
                 chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
             }
 
@@ -291,11 +291,11 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
                 /* unused */
             }
 
-            override fun onDelete() {
+            override fun onDelete(position: Int) {
                 /* unused */
             }
 
-            override fun onDuplicate() {
+            override fun onDuplicate(position: Int) {
                 /* unused */
             }
         })

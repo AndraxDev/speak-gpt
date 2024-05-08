@@ -1512,6 +1512,8 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
     }
 
     private fun parseMessage(message: String, shouldAdd: Boolean = true) {
+        // Put timestamp to chat to sort chats by last message
+        ChatPreferences.getChatPreferences().putTimestampToChatById(this, chatId)
         try {
             if (mediaPlayer!!.isPlaying) {
                 mediaPlayer!!.stop()
@@ -1788,7 +1790,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                     )
 
                     val functionRequest = chatCompletionRequest {
-                        model = ModelId(this@ChatActivity.model)
+                        model = ModelId("gpt-4-turbo-preview")
                         messages = cm
 
                         tools {
@@ -1842,6 +1844,9 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                                 require(toolCall is ToolCall.Function) { "Tool call is not a function" }
                                 toolCall.execute()
                             }
+
+                            // Put timestamp to chat to sort chats by last message
+                            ChatPreferences.getChatPreferences().putTimestampToChatById(this, chatId)
                         }
                     } else {
                         regularGPTResponse(shouldPronounce)
@@ -2025,6 +2030,9 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
         progress?.visibility = View.GONE
         messageInput?.requestFocus()
 
+        // Put timestamp to chat to sort chats by last message
+        ChatPreferences.getChatPreferences().putTimestampToChatById(this, chatId)
+
         if (messageCounter == 0) {
             val chatName = ChatPreferences.getChatPreferences().getChatName(this, chatId)
 
@@ -2080,6 +2088,9 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                     val topP = preferences.getTopP()
                     val frequencyPenalty = preferences.getFrequencyPenalty()
                     val presencePenalty = preferences.getPresencePenalty()
+                    val avatarType = preferences.getAvatarType()
+                    val avatarId = preferences.getAvatarId()
+                    val assistantName = preferences.getAssistantName()
 
                     preferences.setPreferences(Hash.hash(newChatName.toString()), this)
                     preferences.setResolution(resolution)
@@ -2102,6 +2113,9 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                     preferences.setTopP(topP)
                     preferences.setFrequencyPenalty(frequencyPenalty)
                     preferences.setPresencePenalty(presencePenalty)
+                    preferences.setAvatarType(avatarType)
+                    preferences.setAvatarId(avatarId)
+                    preferences.setAssistantName(assistantName)
 
                     activityTitle?.text = newChatName.toString()
 
@@ -2273,6 +2287,9 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                     progress?.visibility = View.GONE
 
                     messageInput?.requestFocus()
+
+                    // Put timestamp to chat to sort chats by last message
+                    ChatPreferences.getChatPreferences().putTimestampToChatById(this@ChatActivity, chatId)
                 }
             }
         } catch (e: CancellationException) {

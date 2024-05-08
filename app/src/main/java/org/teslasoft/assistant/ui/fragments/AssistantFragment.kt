@@ -363,14 +363,14 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
             save(id)
         }
 
-        override fun onEdit(name: String, id: String) {
+        override fun onEdit(name: String, id: String, position: Int) {
             save(id)
         }
 
-        override fun onError(fromFile: Boolean) {
+        override fun onError(fromFile: Boolean, position: Int) {
             Toast.makeText(mContext ?: return, getString(R.string.chat_error_empty), Toast.LENGTH_SHORT).show()
 
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, false, true, "", "", "", "", "")
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, false, true, "", "", "", "", "", -1)
             chatDialogFragment.setStateChangedListener(this)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -379,14 +379,14 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
             /* unused */
         }
 
-        override fun onDelete() {
+        override fun onDelete(position: Int) {
             /* unused */
         }
 
-        override fun onDuplicate() {
+        override fun onDuplicate(position: Int) {
             Toast.makeText(mContext ?: return, getString(R.string.chat_error_unique), Toast.LENGTH_SHORT).show()
 
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, false, true, "", "", "", "", "")
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, false, true, "", "", "", "", "", -1)
             chatDialogFragment.setStateChangedListener(this)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -1401,7 +1401,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                     )
 
                     val functionRequest = chatCompletionRequest {
-                        model = ModelId(this@AssistantFragment.model)
+                        model = ModelId("gpt-4-turbo-preview")
                         messages = cm
 
                         tools {
@@ -2098,7 +2098,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         }
 
         btnSaveToChat?.setOnClickListener {
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, false, true, "", "", "", "", "")
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, false, true, "", "", "", "", "", -1)
             chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }

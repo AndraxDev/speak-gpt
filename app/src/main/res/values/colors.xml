@@ -15,6 +15,8 @@
     <color name="transparent">#00000000</color>
     <color name="white">#ffffffff</color>
     <color name="warning">#ffff3d00</color>
+    <color name="delete">#ffdb4437</color>
+    <color name="pin">#3786DB</color>
 
     <color name="amoled_accent_50">#090909</color>
     <color name="amoled_accent_100">#141414</color>

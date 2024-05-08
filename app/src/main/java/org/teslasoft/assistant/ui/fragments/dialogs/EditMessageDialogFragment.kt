@@ -18,6 +18,7 @@ package org.teslasoft.assistant.ui.fragments.dialogs
 
 import android.app.Dialog
 import android.content.Context
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -67,8 +68,6 @@ class EditMessageDialogFragment : DialogFragment() {
 
         promptInput = view.findViewById(R.id.prompt_input)
         promptInput?.setText(requireArguments().getString("prompt"))
-
-
 
         builder!!.setView(view)
             .setCancelable(false)

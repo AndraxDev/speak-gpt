@@ -18,6 +18,7 @@ package org.teslasoft.assistant.ui.fragments.dialogs
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -66,9 +67,7 @@ class WebViewDialog : DialogFragment() {
 
         webView?.setBackgroundColor(0x00000000)
 
-        val displayMetrics = DisplayMetrics()
-        requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
-        val height = displayMetrics.heightPixels
+        val height = Resources.getSystem().displayMetrics.heightPixels
 
         dialogBody?.layoutParams?.height = height - 100
 

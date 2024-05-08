@@ -17,7 +17,6 @@
 package org.teslasoft.assistant.ui.adapters
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -54,6 +53,7 @@ import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
 
+@Deprecated("This class is deprecated and will be removed in the future.", ReplaceWith("ChatListAdapterV2"))
 class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragment) : BaseAdapter() {
     private val dataArray: ArrayList<HashMap<String, String>>? = data
     private val mContext: Fragment = context
@@ -169,7 +169,7 @@ class ChatListAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragme
         }
 
         selector.setOnLongClickListener {
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(true, dataArray?.get(position)?.get("name").toString(), false, false, false, "", "", "", "", "")
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(true, dataArray?.get(position)?.get("name").toString(), false, false, false, "", "", "", "", "", position)
             chatDialogFragment.setStateChangedListener((mContext as ChatsListFragment).chatListUpdatedListener)
             chatDialogFragment.show(mContext.parentFragmentManager.beginTransaction(), "AddChatDialog")
 

@@ -111,6 +111,56 @@ class ChatPreferences private constructor() {
         return list
     }
 
+    fun switchPinState(context: Context, chatId: String) {
+        val list = getChatList(context)
+
+        for (map in list) {
+            if (Hash.hash(map["name"].toString()) == chatId) {
+                if (map["pinned"] == "true") {
+                    map["pinned"] = "false"
+                } else {
+                    map["pinned"] = "true"
+                }
+                break
+            }
+        }
+
+        val json: String = Gson().toJson(list)
+
+        val settings: SharedPreferences = context.getSharedPreferences("chat_list", Context.MODE_PRIVATE)
+        settings.edit().putString("data", json).apply()
+    }
+
+    fun pinChatById(context: Context, chatId: String) {
+        putMetadataToChatById(context, chatId, "pinned", "true")
+    }
+
+    fun unpinChatById(context: Context, chatId: String) {
+        putMetadataToChatById(context, chatId, "pinned", "false")
+    }
+
+    fun putTimestampToChatById(context: Context, chatId: String) {
+        val timestamp = System.currentTimeMillis().toString()
+
+        putMetadataToChatById(context, chatId, "timestamp", timestamp)
+    }
+
+    private fun putMetadataToChatById(context: Context, chatId: String, key: String, value: String) {
+        val list = getChatList(context)
+
+        for (map in list) {
+            if (Hash.hash(map["name"].toString()) == chatId) {
+                map[key] = value
+                break
+            }
+        }
+
+        val json: String = Gson().toJson(list)
+
+        val settings: SharedPreferences = context.getSharedPreferences("chat_list", Context.MODE_PRIVATE)
+        settings.edit().putString("data", json).apply()
+    }
+
     /**
      * Retrieves all chat messages for a given chat ID.
      *
@@ -281,6 +331,8 @@ class ChatPreferences private constructor() {
 
         map["name"] = chatName
         map["id"] = Hash.hash(chatName)
+        map["timestamp"] = System.currentTimeMillis().toString()
+        map["pinned"] = "false"
 
         list.add(map)
         val json: String = Gson().toJson(list)
