@@ -163,9 +163,11 @@ class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>,
             }
 
             if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack() == true) {
-                root.setBackgroundColor(ResourcesCompat.getColor(mContext.resources, R.color.black, null))
+                root.background = getAccentDrawable(
+                    ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_selector_backdrop_amoled)!!, mContext.requireActivity().getColor(R.color.amoled_window_background))
             } else {
-                root.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(mContext.requireActivity()))
+                root.background = getAccentDrawable(
+                    ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_selector_backdrop)!!, SurfaceColors.SURFACE_0.getColor(mContext.requireActivity()))
             }
 
             if (chatMessage["pinned"] == "true") {

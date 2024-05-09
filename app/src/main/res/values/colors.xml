@@ -15,8 +15,14 @@
     <color name="transparent">#00000000</color>
     <color name="white">#ffffffff</color>
     <color name="warning">#ffff3d00</color>
-    <color name="delete">#ffdb4437</color>
-    <color name="pin">#3786DB</color>
+    <color name="delete_active">#7A2821</color>
+    <color name="pin_active">#2C3F85</color>
+    <color name="delete">#5A332C</color>
+    <color name="pin">#31344E</color>
+    <color name="delete_tint">#33B36E68</color>
+    <color name="pin_tint">#334C5ABA</color>
+    <color name="delete_tint_active">#55FF4331</color>
+    <color name="pin_tint_active">#552F49FF</color>
 
     <color name="amoled_accent_50">#090909</color>
     <color name="amoled_accent_100">#141414</color>

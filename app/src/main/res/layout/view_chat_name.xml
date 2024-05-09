@@ -16,105 +16,115 @@
 * limitations under the License.
 **************************************************************************/
 -->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/chat_selector"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="4dp"
-        android:background="@drawable/btn_accent_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/chat_icon"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/btn_accent_tonal"
-            android:contentDescription="@null"
-            android:padding="12dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/chatgpt_icon" />
-
-        <TextView
-            android:id="@+id/textModel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:alpha="0.5"
-            android:text="debug.model.watermark"
-            android:textColor="@color/marker"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@+id/linearLayout27"
-            app:layout_constraintEnd_toEndOf="@+id/linearLayout27" />
-
-        <LinearLayout
-            android:id="@+id/linearLayout27"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/chat_selector"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="12dp"
-            android:orientation="vertical"
+            android:background="@drawable/btn_accent_selector"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/chat_icon"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="debug.chat.name"
-                android:textColor="@color/text_title"
-                android:textSize="18sp" />
+            <ImageView
+                android:id="@+id/chat_icon"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/btn_accent_tonal"
+                android:contentDescription="@null"
+                android:padding="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/chatgpt_icon" />
 
             <TextView
-                android:id="@+id/chat_first_message"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="debug.message.content"
-                android:textColor="@color/text_subtitle" />
-
-            <TextView
-                android:id="@+id/model_name"
-                android:layout_width="match_parent"
+                android:id="@+id/textModel"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:alpha="0.5"
-                android:text="debug.model.name"
-                android:textColor="@color/text_subtitle" />
-        </LinearLayout>
+                android:text="debug.model.watermark"
+                android:textColor="@color/marker"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="@+id/linearLayout27"
+                app:layout_constraintEnd_toEndOf="@+id/linearLayout27" />
 
-        <ImageView
-            android:id="@+id/pin_marker"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_marginTop="4dp"
-            android:contentDescription="@null"
-            android:src="@drawable/ic_pin"
-            app:layout_constraintEnd_toEndOf="@+id/linearLayout27"
-            app:layout_constraintTop_toTopOf="@+id/linearLayout27"
-            app:srcCompat="@drawable/ic_pin" />
+            <LinearLayout
+                android:id="@+id/linearLayout27"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="12dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/chat_icon"
+                app:layout_constraintTop_toTopOf="parent">
 
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="debug.chat.name"
+                    android:textColor="@color/text_title"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/chat_first_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="debug.message.content"
+                    android:textColor="@color/text_subtitle" />
+
+                <TextView
+                    android:id="@+id/model_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:alpha="0.5"
+                    android:text="debug.model.name"
+                    android:textColor="@color/text_subtitle" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/pin_marker"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginTop="4dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_pin"
+                app:layout_constraintEnd_toEndOf="@+id/linearLayout27"
+                app:layout_constraintTop_toTopOf="@+id/linearLayout27"
+                app:srcCompat="@drawable/ic_pin" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -39,6 +39,14 @@
     <color name="tip">#15E4FFD6</color>
     <color name="marker">#15FFFFFF</color>
     <color name="warn_bg">#1AA55757</color>
+    <color name="delete_active">#FF5647</color>
+    <color name="pin_active">#4E6AFF</color>
+    <color name="delete">#FFE3E0</color>
+    <color name="pin">#C4CEFF</color>
+    <color name="delete_tint_active">#22FF4333</color>
+    <color name="pin_tint_active">#222544FF</color>
+    <color name="delete_tint">#55884C46</color>
+    <color name="pin_tint">#554C579C</color>
 
     <color name="cat_development">#FFC18B</color>
     <color name="cat_music">#FF8383</color>

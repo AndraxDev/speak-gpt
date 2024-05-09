@@ -23,6 +23,7 @@ import android.content.res.Configuration
 import android.graphics.Canvas
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.DocumentsContract
@@ -61,6 +62,7 @@ import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
 import org.teslasoft.assistant.util.Hash
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import kotlin.math.abs
 
 
 class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, ChatListAdapter.OnInteractionListener {
@@ -262,13 +264,30 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
             val position = viewHolder.adapterPosition
 
             val iconDLeft = if(chats[position]["pinned"] == "false") {
-                ResourcesCompat.getDrawable(mContext?.resources?: return, R.drawable.ic_pin_action, mContext?.theme)!!
+                if (maxX(dX.toInt() / 5) == dpToPx(16)) {
+                    ResourcesCompat.getDrawable(mContext?.resources ?: return, R.drawable.ic_pin_action_active, mContext?.theme)!!
+                } else {
+                    ResourcesCompat.getDrawable(mContext?.resources ?: return, R.drawable.ic_pin_action, mContext?.theme)!!
+                }
             } else {
-                ResourcesCompat.getDrawable(mContext?.resources?: return, R.drawable.ic_unpin_action, mContext?.theme)!!
+                if (maxX(dX.toInt() / 5) == dpToPx(16)) {
+                    ResourcesCompat.getDrawable(mContext?.resources ?: return, R.drawable.ic_unpin_action_active, mContext?.theme)!!
+                } else {
+                    ResourcesCompat.getDrawable(mContext?.resources ?: return, R.drawable.ic_unpin_action, mContext?.theme)!!
+                }
             }
-            val iconDRight = ResourcesCompat.getDrawable(mContext?.resources?: return, R.drawable.ic_delete_action, mContext?.theme)!!
+
+            val iconDRight = if (maxX(dX.toInt() / 5) == dpToPx(-16)) {
+                ResourcesCompat.getDrawable(mContext?.resources ?: return, R.drawable.ic_delete_action_active, mContext?.theme)!!
+            } else {
+                ResourcesCompat.getDrawable(mContext?.resources ?: return, R.drawable.ic_delete_action, mContext?.theme)!!
+            }
             val itemView = viewHolder.itemView
-            val background = ColorDrawable(ResourcesCompat.getColor(mContext?.resources?: return, R.color.pin, mContext?.theme))
+            val background = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                setColor(ResourcesCompat.getColor(mContext?.resources ?: return, R.color.transparent, mContext?.theme))
+                cornerRadius = dpToPx(128).toFloat()
+            }
 
             if (dX > 0) { // Swiping to the right
                 val iconMargin = (itemView.height - iconDLeft.intrinsicHeight) / 2
@@ -277,8 +296,12 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
                 val iconLeft = itemView.left + iconMargin
                 val iconRight = iconLeft + iconDLeft.intrinsicWidth
                 iconDLeft.setBounds(iconLeft, iconTop, iconRight, iconBottom)
-                background.color = ResourcesCompat.getColor(mContext?.resources?: return, R.color.pin, mContext?.theme)
-                background.setBounds(itemView.left, itemView.top, itemView.left + dX.toInt(), itemView.bottom)
+                background.setColor(ResourcesCompat.getColor(mContext?.resources?: return, R.color.pin_tint, mContext?.theme))
+                if (maxX(dX.toInt() / 5) == dpToPx(16)) {
+                    background.setColor(ResourcesCompat.getColor(mContext?.resources?: return, R.color.pin_tint_active, mContext?.theme))
+                }
+                // background.color = ResourcesCompat.getColor(mContext?.resources?: return, R.color.pin, mContext?.theme)
+                background.setBounds(iconLeft - maxX(dX.toInt() / 5), iconTop - maxX(dX.toInt() / 5), iconRight + maxX(dX.toInt() / 5), iconBottom + maxX(dX.toInt() / 5))
                 background.draw(c)
                 iconDLeft.draw(c)
             } else if (dX < 0) { // Swiping to the left
@@ -288,8 +311,12 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
                 val iconLeft = itemView.right - iconMargin - iconDRight.intrinsicWidth
                 val iconRight = itemView.right - iconMargin
                 iconDRight.setBounds(iconLeft, iconTop, iconRight, iconBottom)
-                background.color = ResourcesCompat.getColor(mContext?.resources?: return, R.color.delete, mContext?.theme)
-                background.setBounds(itemView.right + dX.toInt(), itemView.top, itemView.right, itemView.bottom)
+                background.setColor(ResourcesCompat.getColor(mContext?.resources?: return, R.color.delete_tint, mContext?.theme))
+                if (maxX(dX.toInt() / 5) == dpToPx(-16)) {
+                    background.setColor(ResourcesCompat.getColor(mContext?.resources?: return, R.color.delete_tint_active, mContext?.theme))
+                }
+                // background.color = ResourcesCompat.getColor(mContext?.resources?: return, R.color.delete, mContext?.theme)
+                background.setBounds(iconLeft + maxX(dX.toInt() / 5), iconTop + maxX(dX.toInt() / 5), iconRight - maxX(dX.toInt() / 5), iconBottom - maxX(dX.toInt() / 5))
                 background.draw(c)
                 iconDRight.draw(c)
             }
@@ -298,6 +325,15 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
         }
     }
 
+    private fun dpToPx(dp: Int): Int {
+        return (dp * mContext?.resources?.displayMetrics?.density!!).toInt()
+    }
+
+    private fun maxX(x: Int) : Int {
+        if (x < dpToPx(-16)) return dpToPx(-16)
+        else if (x < dpToPx(16)) return x
+        return dpToPx(16)
+    }
 
     private fun initChatsList() {
         bulkSelect = false
@@ -647,12 +683,11 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
     private fun deleteSelected() {
         MaterialAlertDialogBuilder(mContext ?: return, R.style.App_MaterialAlertDialog)
             .setTitle(R.string.label_confirm_deletion)
-            .setMessage("Delete the following chats?")
+            .setMessage("Would you like to delete selected chats?")
             .setPositiveButton(R.string.btn_delete) { _, _ -> run {
                 val selected = selectionProjection.filter { it["selected"] == "true" }
 
                 for (item in selected) {
-                    // Toast.makeText(mContext ?: return@run, "Deleting ${item["name"]}", Toast.LENGTH_SHORT).show()
                     ChatPreferences.getChatPreferences().deleteChat(mContext ?: return@run, item["name"] ?: "")
                     selectionProjection.remove(item)
                 }
