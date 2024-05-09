@@ -118,7 +118,8 @@ class AISetAdapter(private val mContext: Context, private val dataArray: ArrayLi
         }
 
         val animation: Animation = AnimationUtils.loadAnimation(mContext, R.anim.fade_in)
-        animation.duration = 200
+        animation.duration = 300
+        animation.startOffset = 50
         mView?.startAnimation(animation)
 
         return mView!!

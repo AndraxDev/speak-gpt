@@ -56,7 +56,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="24dp">
 
             <ImageButton
                 android:id="@+id/btn_back"
@@ -104,7 +105,7 @@
                 android:id="@+id/textView30"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:gravity="center"
                 android:text="@string/control_center_general"
                 android:textColor="@color/accent_900"
@@ -112,7 +113,7 @@
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ad" />
+                app:layout_constraintTop_toBottomOf="@+id/text_global" />
 
             <TextView
                 android:id="@+id/textView31"
@@ -709,8 +710,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView36">
@@ -755,6 +754,7 @@
                     android:layout_marginEnd="12dp"
                     android:baselineAligned="false"
                     android:orientation="horizontal"
+                    android:visibility="gone"
                     android:weightSum="2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -985,7 +985,7 @@
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_global" />
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout16" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_remove_ads"

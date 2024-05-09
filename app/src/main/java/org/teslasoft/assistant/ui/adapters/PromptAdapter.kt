@@ -109,7 +109,8 @@ class PromptAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragment
         }
 
         val animation: Animation = AnimationUtils.loadAnimation(mContext.context, R.anim.fade_in)
-        animation.duration = 200
+        animation.duration = 300
+        animation.startOffset = 50
         mView.startAnimation(animation)
 
         return mView

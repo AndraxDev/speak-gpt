@@ -55,7 +55,7 @@ import org.teslasoft.assistant.preferences.ChatPreferences
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.activities.ChatActivity
 import org.teslasoft.assistant.ui.activities.SettingsActivity
-import org.teslasoft.assistant.ui.adapters.ChatListAdapterV2
+import org.teslasoft.assistant.ui.adapters.ChatListAdapter
 import org.teslasoft.assistant.ui.fragments.dialogs.AddChatDialogFragment
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
 import org.teslasoft.assistant.util.Hash
@@ -63,9 +63,9 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 
 
-class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
+class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, ChatListAdapter.OnInteractionListener {
 
-    private var adapter: ChatListAdapterV2? = null
+    private var adapter: ChatListAdapter? = null
     private var chatsList: RecyclerView? = null
     private var btnSettings: ImageButton? = null
     private var btnAdd: ExtendedFloatingActionButton? = null
@@ -78,12 +78,20 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
     private var isAttached: Boolean = false
     private var isDestroyed: Boolean = false
     private var chats: ArrayList<HashMap<String, String>> = arrayListOf()
+    private var selectionProjection: ArrayList<HashMap<String, String>> = arrayListOf()
+    private var bulkSelect: Boolean = false
+
+    private var bulkSelectContainer: ConstraintLayout? = null
+    private var btnBulkSelectAll: ImageButton? = null
+    private var btnBulkDeselectAll: ImageButton? = null
+    private var btnBulkDelete: ImageButton? = null
+    private var btnBulkRename: ImageButton? = null
 
     private var preferences: Preferences? = null
 
     private var mContext: Context? = null
 
-    var chatListUpdatedListener: AddChatDialogFragment.StateChangesListener = object : AddChatDialogFragment.StateChangesListener {
+    private var chatListUpdatedListener: AddChatDialogFragment.StateChangesListener = object : AddChatDialogFragment.StateChangesListener {
         override fun onAdd(name: String, id: String, fromFile: Boolean) {
             initSettings()
 
@@ -202,6 +210,15 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
         bgSearch = view.findViewById(R.id.bg_search)
         btnAdd = view.findViewById(R.id.btn_add)
 
+        bulkSelectContainer = view.findViewById(R.id.bulk_actions_container)
+        btnBulkSelectAll = view.findViewById(R.id.btn_bulk_select_all)
+        btnBulkDeselectAll = view.findViewById(R.id.btn_bulk_deselect_all)
+        btnBulkDelete = view.findViewById(R.id.btn_bulk_delete)
+        btnBulkRename = view.findViewById(R.id.btn_bulk_edit)
+
+        bulkSelectContainer?.visibility = View.GONE
+        fieldSearch?.isEnabled = true
+
         chatsList?.setLayoutManager(LinearLayoutManager(mContext ?: return))
 
         val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
@@ -283,7 +300,11 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
 
 
     private fun initChatsList() {
-        adapter = ChatListAdapterV2(chats, this)
+        bulkSelect = false
+        bulkSelectContainer?.visibility = View.GONE
+        fieldSearch?.isEnabled = true
+        adapter = ChatListAdapter(chats, selectionProjection, this)
+        adapter?.setOnInteractionListener(this)
         chatsList?.adapter = adapter
         adapter?.notifyDataSetChanged()
     }
@@ -303,6 +324,38 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
             openFile(Uri.parse("/storage/emulated/0/chat.json"))
         }
 
+        btnBulkSelectAll?.setOnClickListener {
+            selectAll()
+        }
+
+        btnBulkDeselectAll?.setOnClickListener {
+            unselectAll()
+        }
+
+        btnBulkDelete?.setOnClickListener {
+            deleteSelected()
+        }
+
+        btnBulkRename?.setOnClickListener {
+            val selected = selectionProjection.filter { it["selected"] == "true" }
+
+            var selectedPosition = 0
+
+            while (selectedPosition < selectionProjection.size) {
+                if (selectionProjection[selectedPosition]["selected"] == "true") {
+                    break
+                }
+
+                selectedPosition++
+            }
+
+            if (selected.size == 1) {
+                val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(true, selected[0]["name"] ?: "", false, false, false, "", "", "", "", "", selectedPosition)
+                chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
+                chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
+            }
+        }
+
         fieldSearch?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 /* unused */
@@ -311,7 +364,8 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchTerm = s.toString().trim()
                 if (s.toString().trim() == "") {
-                    adapter = ChatListAdapterV2(chats, this@ChatsListFragment)
+                    adapter = ChatListAdapter(chats, selectionProjection, this@ChatsListFragment)
+                    adapter?.setOnInteractionListener(this@ChatsListFragment)
                     chatsList?.adapter = adapter
                     adapter?.notifyDataSetChanged()
                 } else {
@@ -323,7 +377,8 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
                         }
                     }
 
-                    adapter = ChatListAdapterV2(filtered, this@ChatsListFragment)
+                    adapter = ChatListAdapter(filtered, selectionProjection, this@ChatsListFragment)
+                    adapter?.setOnInteractionListener(this@ChatsListFragment)
                     chatsList?.adapter = adapter
                     adapter?.notifyDataSetChanged()
                 }
@@ -397,36 +452,12 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
         fileIntentLauncher.launch(intent)
     }
 
-    @Deprecated("This method is deprecated and will be removed in the future. Use initSettings() instead.")
-    private fun preInit() {
-        val apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(mContext?: return)
-
-        if (apiEndpointPreferences.getApiEndpoint(mContext ?: return, preferences!!.getApiEndpointId()).apiKey == "") {
-            if (preferences!!.getApiKey(mContext?: return) == "") {
-                if (preferences!!.getOldApiKey() == "") {
-                    mContext?.getSharedPreferences("chat_list", Context.MODE_PRIVATE)?.edit()?.putString("data", "[]")?.apply()
-                    startActivity(Intent(mContext?: return, WelcomeActivity::class.java).setAction(Intent.ACTION_VIEW))
-                    (mContext as Activity?)?.finish()
-                    isDestroyed = true
-                } else {
-                    preferences!!.secureApiKey(mContext?: return)
-                    apiEndpointPreferences.migrateFromLegacyEndpoint(mContext?: return)
-                    initSettings()
-                }
-            } else {
-                apiEndpointPreferences.migrateFromLegacyEndpoint(mContext?: return)
-                initSettings()
-            }
-        } else {
-            initSettings()
-        }
-    }
-
     private fun initSettings(action: String = "", position: Int = -1, chatName: String = "") {
         chats = ChatPreferences.getChatPreferences().getChatList(mContext?: return)
 
         // R8 went fuck himself...
         if (chats == null) chats = arrayListOf()
+        if (selectionProjection == null) selectionProjection = arrayListOf()
 
         val sorted = chats.sortedWith(compareBy(
             { (it["pinned"] ?: "false") == "true" },
@@ -438,12 +469,21 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
 
         chats.reverse()
 
+        selectionProjection.clear()
+        selectionProjection.addAll(chats)
+
+        for (p in selectionProjection) {
+            p["selected"] = "false"
+        }
+
         if (searchTerm.trim() == "") {
             when (action) {
                 "edit" -> {
-                    adapter?.editItemAtPosition(position, chatName)
+                    // adapter?.editItemAtPosition(position, chatName)
+                    initChatsList()
                 }
                 "delete" -> {
+                    // selectionProjection.removeAt(position)
                     adapter?.deleteItemAtPosition(position)
                 }
                 else -> {
@@ -459,22 +499,13 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
                 }
             }
 
-            when (action) {
-                "edit" -> {
-                    adapter?.editItemAtPosition(position, chatName)
-                }
-                "delete" -> {
-                    adapter?.deleteItemAtPosition(position)
-                }
-                else -> {
-                    initChatsList()
-                }
-            }
+            initChatsList()
         }
 
         chatsList?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (chats == null) chats = arrayListOf()
+                if (selectionProjection == null) selectionProjection = arrayListOf()
                 val topRowVerticalPosition: Int = if (chats.isNullOrEmpty() || chatsList == null || chatsList?.childCount == 0) 0 else chatsList?.getChildAt(0)!!.top
 
                 if ((chatsList?.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition() == 0 && topRowVerticalPosition >= 0) {
@@ -523,6 +554,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
         // Oh yes, it's not a code smell, it just appears that R8 minifier is a bit dumb
         // Nothing interesting, you may ignore this...
         if (chats == null) chats = arrayListOf()
+        if (selectionProjection == null) selectionProjection = arrayListOf()
         if (!chats.isNullOrEmpty() /* NullPointerException has been thrown here... ...HOW??? */) {
             val chatList = ChatPreferences.getChatPreferences().getChatList(mContext?: return)
 
@@ -558,5 +590,76 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener {
                 }
             }
         }
+    }
+
+    override fun onRename(position: Int, name: String, id: String) {
+        val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(true, name, false, false, false, "", "", "", "", "", position)
+        chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
+        chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
+    }
+
+    override fun onBulkSelectionChanged(position: Int, selected: Boolean) {
+        selectionProjection[position]["selected"] = selected.toString()
+
+        checkSize()
+    }
+
+    override fun onChangeBulkActionMode(mode: Boolean) {
+        bulkSelect = mode
+
+        if (bulkSelect) {
+            bulkSelectContainer?.visibility = View.VISIBLE
+            fieldSearch?.isEnabled = false
+        } else {
+            bulkSelectContainer?.visibility = View.GONE
+            fieldSearch?.isEnabled = true
+        }
+    }
+
+    private fun unselectAll() {
+        for (projection in selectionProjection) {
+            projection["selected"] = "false"
+        }
+
+        adapter?.unselectAll()
+        bulkSelectContainer?.visibility = View.GONE
+        fieldSearch?.isEnabled = true
+        adapter?.notifyDataSetChanged()
+    }
+
+    private fun checkSize() {
+        if (selectionProjection.filter { it["selected"] == "true" }.size == 1) {
+            btnBulkRename?.visibility = View.VISIBLE
+        } else {
+            btnBulkRename?.visibility = View.GONE
+        }
+    }
+
+    private fun selectAll() {
+        for (projection in selectionProjection) {
+            projection["selected"] = "true"
+        }
+
+        adapter?.selectAll()
+        adapter?.notifyDataSetChanged()
+    }
+
+    private fun deleteSelected() {
+        MaterialAlertDialogBuilder(mContext ?: return, R.style.App_MaterialAlertDialog)
+            .setTitle(R.string.label_confirm_deletion)
+            .setMessage("Delete the following chats?")
+            .setPositiveButton(R.string.btn_delete) { _, _ -> run {
+                val selected = selectionProjection.filter { it["selected"] == "true" }
+
+                for (item in selected) {
+                    // Toast.makeText(mContext ?: return@run, "Deleting ${item["name"]}", Toast.LENGTH_SHORT).show()
+                    ChatPreferences.getChatPreferences().deleteChat(mContext ?: return@run, item["name"] ?: "")
+                    selectionProjection.remove(item)
+                }
+
+                initSettings()
+            }}
+            .setNegativeButton(R.string.btn_cancel) { _, _ -> }
+            .show()
     }
 }
