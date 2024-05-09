@@ -673,6 +673,10 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
 
                 initChatId()
                 initSettings()
+
+                if (savedInstanceState != null) {
+                    onRestoredState(savedInstanceState)
+                }
             }
         }.start()
     }
@@ -1536,7 +1540,13 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
 
                 val file = Hash.hash(encoded)
 
-                putMessage(m, false, file, selectedImageType!!)
+                if (shouldAdd) {
+                    putMessage(m, false, file, selectedImageType!!)
+                } else {
+                    messages[messages.size - 1]["image"] = file
+                    messages[messages.size - 1]["imageType"] = selectedImageType!!
+                    messages[messages.size - 1]["message"] = m
+                }
             } else {
                 if (shouldAdd) putMessage(m, false)
             }
@@ -2344,12 +2354,12 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
         }
     }
 
-    private fun findLastUserMessage(): String {
-        var lastUserMessage = ""
+    private fun findLastUserMessage(): HashMap<String, Any> {
+        var lastUserMessage = hashMapOf<String, Any>()
 
         for (i in messages.size - 1 downTo 0) {
             if (messages[i]["isBot"] == false) {
-                lastUserMessage = messages[i]["message"].toString()
+                lastUserMessage = messages[i]
                 break
             }
         }
@@ -2370,7 +2380,51 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
     override fun onRetryClick() {
         removeLastAssistantMessageIfAvailable()
         saveSettings()
-        parseMessage(findLastUserMessage(), false)
+
+        val message = findLastUserMessage()
+
+        if (message["image"] != null) {
+            btnMicro?.isEnabled = false
+            btnSend?.isEnabled = false
+            progress?.visibility = View.VISIBLE
+
+            val uri = Uri.fromFile(File(getExternalFilesDir("images")?.absolutePath + "/" + message["image"] + "." + message["imageType"]))
+            imageIsSelected = true
+            bitmap = readFile(uri)
+
+            if (bitmap != null) {
+                imageIsSelected = true
+
+                val mimeType = contentResolver.getType(uri)
+                val format = when {
+                    mimeType.equals("image/png", ignoreCase = true) -> {
+                        selectedImageType = "png"
+                        Bitmap.CompressFormat.PNG
+                    }
+                    else -> {
+                        selectedImageType = "jpg"
+                        Bitmap.CompressFormat.JPEG
+                    }
+                }
+
+                // Step 3: Convert the Bitmap to a Base64-encoded string
+                val outputStream = ByteArrayOutputStream()
+                bitmap!!.compress(format, 100, outputStream) // Note: Adjust the quality as necessary
+                val base64Image = Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT)
+
+                // Step 4: Generate the data URL
+                val imageType = when(format) {
+                    Bitmap.CompressFormat.JPEG -> "jpeg"
+                    Bitmap.CompressFormat.PNG -> "png"
+                    // Add more mappings as necessary
+                    else -> ""
+                }
+
+                baseImageString = "data:image/$imageType;base64,$base64Image"
+            }
+        }
+
+        parseMessage(message["message"].toString(), false)
     }
 
     private fun syncChatProjection() {
@@ -2430,6 +2484,43 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
             .setPositiveButton(R.string.yes) { _, _ -> requestAddApiEndpoint(feature, prompt) }
             .setNegativeButton(R.string.no) { _, _ -> onCancelOpenAIAction(feature, prompt) }
             .show()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        if (imageIsSelected) {
+            outState.putString("image", baseImageString)
+            outState.putString("imageType", selectedImageType)
+        }
+        super.onSaveInstanceState(outState)
+    }
+
+    private fun base64ToBitmap(base64Str: String): Bitmap? {
+        return try {
+            // Decode Base64 string to bytes
+            val decodedBytes = Base64.decode(base64Str, Base64.DEFAULT)
+            // Decode byte array to Bitmap
+            BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+        } catch (e: IllegalArgumentException) {
+            // Handle the case where the Base64 string was not correctly formatted
+            null
+        }
+    }
+
+    private fun onRestoredState(savedInstanceState: Bundle?) {
+        val image = savedInstanceState?.getString("image")
+
+        if (image != null) {
+            baseImageString = image
+            imageIsSelected = true
+            selectedImageType = savedInstanceState.getString("imageType")
+
+            bitmap = base64ToBitmap(baseImageString!!.split(",")[1])
+
+            if (bitmap != null) {
+                attachedImage?.visibility = View.VISIBLE
+                selectedImage?.setImageBitmap(roundCorners(bitmap!!, 80f))
+            }
+        }
     }
 
     private fun requestAddApiEndpoint(feature: String, prompt: String) {

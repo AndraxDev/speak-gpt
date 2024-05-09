@@ -574,11 +574,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         super.onSaveInstanceState(outState)
     }
 
-//    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-//        super.onRestoreInstanceState(savedInstanceState)
-//        selectedTab = savedInstanceState.getInt("tab")
-//    }
-
     private fun menuChats() {
         selectedTab = 1
         loadFragment(frameChats)

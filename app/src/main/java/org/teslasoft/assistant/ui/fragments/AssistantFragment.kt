@@ -309,6 +309,9 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                         }
 
                         baseImageString = "data:image/$imageType;base64,$base64Image"
+
+                        mContext?.getSharedPreferences("imageTemp", Context.MODE_PRIVATE)?.edit()?.putString("image", baseImageString)?.apply()
+                        mContext?.getSharedPreferences("imageTemp", Context.MODE_PRIVATE)?.edit()?.putString("type", selectedImageType)?.apply()
                     }
                 }
             }
@@ -574,6 +577,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
 
                 preferences?.forceUpdate()
             }
+            mContext?.getSharedPreferences("imageTemp", Context.MODE_PRIVATE)?.edit()?.clear()?.apply()
             (mContext as Activity?)?.finishAndRemoveTask()
         }
     }
@@ -591,6 +595,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
 
         if (key == null) {
             startActivity(Intent(mContext ?: return, WelcomeActivity::class.java).setAction(Intent.ACTION_VIEW))
+            mContext?.getSharedPreferences("imageTemp", Context.MODE_PRIVATE)?.edit()?.clear()?.apply()
             (mContext as Activity?)?.finishAndRemoveTask()
         } else {
             silenceMode = preferences!!.getSilence()
@@ -921,6 +926,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
     private fun initAI() {
         if (key == null) {
             startActivity(Intent(mContext ?: return, WelcomeActivity::class.java).setAction(Intent.ACTION_VIEW))
+            mContext?.getSharedPreferences("imageTemp", Context.MODE_PRIVATE)?.edit()?.clear()?.apply()
             (mContext as Activity?)?.finish()
         } else {
             val config = OpenAIConfig(
@@ -1118,8 +1124,21 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         }
     }
 
+    private fun base64ToBitmap(base64Str: String): Bitmap? {
+        return try {
+            // Decode Base64 string to bytes
+            val decodedBytes = android.util.Base64.decode(base64Str, android.util.Base64.DEFAULT)
+            // Decode byte array to Bitmap
+            BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+        } catch (e: IllegalArgumentException) {
+            // Handle the case where the Base64 string was not correctly formatted
+            null
+        }
+    }
+
     @SuppressLint("SetTextI18n")
     private fun parseMessage(message: String, shouldAdd: Boolean = true) {
+        mContext?.getSharedPreferences("imageTemp", Context.MODE_PRIVATE)?.edit()?.clear()?.apply()
         autosave()
         try {
             if (mediaPlayer!!.isPlaying) {
@@ -1143,7 +1162,13 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
 
                 val file = Hash.hash(encoded)
 
-                putMessage(m, false, file, selectedImageType!!)
+                if (shouldAdd) {
+                    putMessage(m, false, file, selectedImageType!!)
+                } else {
+                    messages[messages.size - 1]["image"] = file
+                    messages[messages.size - 1]["imageType"] = selectedImageType!!
+                    messages[messages.size - 1]["message"] = m
+                }
             } else {
                 if (shouldAdd) {
                     putMessage(m, false)
@@ -2092,6 +2117,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         }
 
         btnRemoveImage?.setOnClickListener {
+            mContext?.getSharedPreferences("imageTemp", Context.MODE_PRIVATE)?.edit()?.clear()?.apply()
             attachedImage?.visibility = View.GONE
             imageIsSelected = false
             bitmap = null
@@ -2104,6 +2130,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         }
 
         btnExit?.setOnClickListener {
+            mContext?.getSharedPreferences("imageTemp", Context.MODE_PRIVATE)?.edit()?.clear()?.apply()
             (mContext as Activity?)?.finishAndRemoveTask()
         }
 
@@ -2112,6 +2139,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         assistantTitle?.setOnClickListener {
             val intent = Intent(mContext ?: return@setOnClickListener, MainActivity::class.java).setAction(Intent.ACTION_VIEW)
             startActivity(intent)
+            mContext?.getSharedPreferences("imageTemp", Context.MODE_PRIVATE)?.edit()?.clear()?.apply()
             (mContext as Activity?)?.finish()
         }
 
@@ -2130,6 +2158,19 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 }
                 .setNegativeButton("No") { _, _ -> }
                 .show()
+        }
+
+        baseImageString = mContext?.getSharedPreferences("imageTemp", Context.MODE_PRIVATE)?.getString("image", null)
+        selectedImageType = mContext?.getSharedPreferences("imageTemp", Context.MODE_PRIVATE)?.getString("type", null)
+
+        if (baseImageString != null) {
+            imageIsSelected = true
+            bitmap = base64ToBitmap(baseImageString!!.split(",")[1])
+
+            if (bitmap != null) {
+                attachedImage?.visibility = View.VISIBLE
+                selectedImage?.setImageBitmap(roundCorners(bitmap!!, 80f))
+            }
         }
 
         hideKeyboard()
@@ -2320,12 +2361,12 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         }
     }
 
-    private fun findLastUserMessage(): String {
-        var lastUserMessage = ""
+    private fun findLastUserMessage(): HashMap<String, Any> {
+        var lastUserMessage = hashMapOf<String, Any>()
 
         for (i in messages.size - 1 downTo 0) {
             if (messages[i]["isBot"] == false) {
-                lastUserMessage = messages[i]["message"].toString()
+                lastUserMessage = messages[i]
                 break
             }
         }
@@ -2346,7 +2387,52 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
     override fun onRetryClick() {
         removeLastAssistantMessageIfAvailable()
         saveSettings()
-        parseMessage(findLastUserMessage(), false)
+
+        val message = findLastUserMessage()
+
+        hideKeyboard()
+        btnAssistantVoice?.isEnabled = false
+        btnAssistantSend?.isEnabled = false
+        assistantLoading?.visibility = View.VISIBLE
+
+        if (message["image"] != null) {
+            val uri = Uri.fromFile(File((mContext ?: return).getExternalFilesDir("images")?.absolutePath + "/" + message["image"] + "." + message["imageType"]))
+            imageIsSelected = true
+            bitmap = readFile(uri)
+
+            if (bitmap != null) {
+                imageIsSelected = true
+
+                val mimeType = (mContext ?: return).contentResolver.getType(uri)
+                val format = when {
+                    mimeType.equals("image/png", ignoreCase = true) -> {
+                        selectedImageType = "png"
+                        Bitmap.CompressFormat.PNG
+                    }
+                    else -> {
+                        selectedImageType = "jpg"
+                        Bitmap.CompressFormat.JPEG
+                    }
+                }
+
+                // Step 3: Convert the Bitmap to a Base64-encoded string
+                val outputStream = ByteArrayOutputStream()
+                bitmap!!.compress(format, 100, outputStream) // Note: Adjust the quality as necessary
+                val base64Image = android.util.Base64.encodeToString(outputStream.toByteArray(), android.util.Base64.DEFAULT)
+
+                // Step 4: Generate the data URL
+                val imageType = when(format) {
+                    Bitmap.CompressFormat.JPEG -> "jpeg"
+                    Bitmap.CompressFormat.PNG -> "png"
+                    // Add more mappings as necessary
+                    else -> ""
+                }
+
+                baseImageString = "data:image/$imageType;base64,$base64Image"
+            }
+        }
+
+        parseMessage(message["message"].toString(), false)
     }
 
     private fun syncChatProjection() {
