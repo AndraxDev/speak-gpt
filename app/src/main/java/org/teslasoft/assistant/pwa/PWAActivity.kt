@@ -19,6 +19,7 @@ package org.teslasoft.assistant.pwa
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.webkit.WebStorage
 import android.webkit.WebView
 import android.widget.ImageButton
 import android.widget.ProgressBar
@@ -99,15 +100,33 @@ class PWAActivity : FragmentActivity() {
     }
 
     private fun closePWA() {
-        MaterialAlertDialogBuilder(this)
+        MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
             .setTitle("PWA")
             .setMessage("Are you sure you want to close the PWA?")
             .setPositiveButton("Exit") { _, _ ->
                 finish()
             }
-            .setNeutralButton("Clear cache and reload") { _, _ ->
-                webView?.clearCache(true)
-                webView?.reload()
+            .setNeutralButton("Clear data") { _, _ ->
+                MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
+                    .setTitle("Select action")
+                    .setNegativeButton("Clear cache") { _, _ ->
+                        run {
+                            webView?.clearCache(true)
+                            webView?.reload()
+                        }
+                    }
+                    .setNeutralButton("Clear data") { _, _ ->
+                        run {
+                            WebStorage.getInstance().deleteAllData()
+                            webView?.evaluateJavascript("(function() { indexedDB.deleteDatabase('your-database-name'); })();") {
+                                webView?.clearCache(true)
+                                webView?.clearFormData()
+                                webView?.reload()
+                            }
+                        }
+                    }
+                    .setPositiveButton("Cancel") { _, _ -> webView?.reload() }
+                    .show()
             }
             .setNegativeButton("Cancel") { _, _ -> }
             .show()
