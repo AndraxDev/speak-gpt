@@ -118,5 +118,8 @@
     <color name="tint_orange">#30977563</color>
     <color name="gpt_icon_orange">#CCBEB4</color>
 
+    <color name="tint_cyan">#30639797</color>
+    <color name="gpt_icon_cyan">#B4CCCC</color>
+
     <color name="border">#38FFFFFF</color>
 </resources>

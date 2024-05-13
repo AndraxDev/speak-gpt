@@ -82,20 +82,6 @@
                     android:textSize="16sp" />
 
                 <RadioButton
-                    android:id="@+id/gpt_35_turbo_1106"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginEnd="24dp"
-                    android:button="@null"
-                    android:minHeight="56dp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:text="GPT 3.5 (Long context) (1106)"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
-
-                <RadioButton
                     android:id="@+id/gpt_35_turbo_0125"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -159,7 +145,7 @@
                     android:visibility="gone" />
 
                 <RadioButton
-                    android:id="@+id/gpt_4_32k"
+                    android:id="@+id/gpt_4_o"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
@@ -168,7 +154,7 @@
                     android:minHeight="56dp"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:text="GPT 4 (Extended version, 32k)"
+                    android:text="GPT 4o (Most capable model)"
                     android:textSize="16sp" />
 
                 <RadioButton

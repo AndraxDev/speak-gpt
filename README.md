@@ -64,31 +64,10 @@ Repo can be found [here](https://github.com/AndraxDev/speak-gpt-web)
 - [x] AMOLED dark mode
 - [x] Custom API provider support
 - [x] Customize models params like temperature, topP, frequencyPenalty, presencePenalty and logit_bias
+- [x] Playground
+- [x] GPT 4o
 
-## Task list
-
-### ✔️ Already added
-
-- [x] Chat
-- [x] GPT 4 Vision (use your images and photos with ChatGPT)
-- [x] Activation prompt
-- [x] System message
-- [x] Voice input (Whisper and Google)
-- [x] Assistant
-- [x] SpeakGPT in context menu
-- [x] SpeakGPT in Share sheet
-- [x] Prompts store
-- [x] Different chat layout
-- [x] Adaptive design
-- [x] DALL-e integration
-- [x] A lot of different models
-- [x] Add support of custom fine-tuned models
-- [o] Function calling features
-- [x] AMOLED dark mode
-- [x] Custom API provider support
-- [x] Customize models params like temperature, topP, frequencyPenalty, presencePenalty and logit_bias
-
-### ❌ Planned to add (Share your ideas in Issues)
+## ❌ Planned to add (Share your ideas in Issues)
 
 - [ ] Device routines (like set alarm or open app)
 - [ ] Sync chat history

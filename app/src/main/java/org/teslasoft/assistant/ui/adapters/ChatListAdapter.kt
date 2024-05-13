@@ -257,7 +257,7 @@ class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>,
             textModel.text = if (model.lowercase().contains("gpt-4") && !model.lowercase().contains("turbo")) "GPT 4" else textModel.text
             textModel.text = if (model.lowercase().contains("gpt-3.5") && model.lowercase().contains("turbo") && model.lowercase().contains("0125")) "GPT 3.5 (0125)" else textModel.text
             textModel.text = if (model.lowercase().contains("gpt-3.5") && model.lowercase().contains("turbo") && !model.lowercase().contains("0125")) "GPT 3.5 Turbo" else textModel.text
-
+            textModel.text = if (model.lowercase().contains("gpt-4o")) "GPT 4o" else textModel.text
         }
 
         private fun reloadCards(chatMessage: HashMap<String, String>) {
@@ -286,6 +286,10 @@ class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>,
                     updateCard(selector, icon, pinMarker, R.color.tint_blue, R.color.gpt_icon_blue, chatMessage)
                 }
 
+                "GPT 4o" -> {
+                    updateCard(selector, icon, pinMarker, R.color.tint_cyan, R.color.gpt_icon_cyan, chatMessage)
+                }
+
                 else -> {
                     icon.setImageResource(R.drawable.chatgpt_icon)
                     DrawableCompat.setTint(icon.getDrawable(), ContextCompat.getColor(mContext.requireActivity(), R.color.accent_900))
@@ -303,6 +307,8 @@ class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>,
 
         pin.background = getAccentDrawable(
             ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_transparent)!!, mContext.requireActivity().getColor(tintColor))
+
+        DrawableCompat.setTint(pin.getDrawable(), ContextCompat.getColor(mContext.requireActivity(), iconColor))
 
         if (preferences?.getAvatarTypeByChatId(Hash.hash(chatMessage["name"].toString()), mContext.requireActivity()) == "builtin") {
             DrawableCompat.setTint(icon.getDrawable(), ContextCompat.getColor(mContext.requireActivity(), iconColor))

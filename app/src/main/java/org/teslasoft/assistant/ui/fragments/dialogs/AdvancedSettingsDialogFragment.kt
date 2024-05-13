@@ -53,11 +53,10 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
 
     private var builder: AlertDialog.Builder? = null
     private var gpt_35_turbo: RadioButton? = null
-    private var gpt_35_turbo_1106: RadioButton? = null
     private var gpt_35_turbo_0125: RadioButton? = null
     private var gpt_4: RadioButton? = null
     private var gpt_4_turbo: RadioButton? = null
-    private var gpt_4_32k: RadioButton? = null
+    private var gpt_4_o: RadioButton? = null
     private var see_all_models: RadioButton? = null
     private var see_favorite_models: RadioButton? = null
     private var ft: RadioButton? = null
@@ -92,11 +91,10 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
         val view: View = this.layoutInflater.inflate(R.layout.fragment_advanced_settings, null)
 
         gpt_35_turbo = view.findViewById(R.id.gpt_35_turbo)
-        gpt_35_turbo_1106 = view.findViewById(R.id.gpt_35_turbo_1106)
         gpt_35_turbo_0125 = view.findViewById(R.id.gpt_35_turbo_0125)
         gpt_4 = view.findViewById(R.id.gpt_4)
         gpt_4_turbo = view.findViewById(R.id.gpt_4_turbo)
-        gpt_4_32k = view.findViewById(R.id.gpt_4_32k)
+        gpt_4_o = view.findViewById(R.id.gpt_4_o)
         see_all_models = view.findViewById(R.id.see_all_models)
         see_favorite_models = view.findViewById(R.id.see_favorite_models)
         ft = view.findViewById(R.id.ft)
@@ -161,14 +159,6 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
                 ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
             ftFrame?.visibility = View.GONE
         }
-        gpt_35_turbo_1106?.setOnClickListener {
-            model = "gpt-3.5-turbo-1106"
-            clearSelection()
-            gpt_35_turbo_1106?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-            gpt_35_turbo_1106?.background = getDarkAccentDrawableV2(
-                ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
-            ftFrame?.visibility = View.GONE
-        }
         gpt_35_turbo_0125?.setOnClickListener {
             model = "gpt-3.5-turbo-0125"
             clearSelection()
@@ -193,11 +183,11 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
                 ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
             ftFrame?.visibility = View.GONE
         }
-        gpt_4_32k?.setOnClickListener {
-            model = "gpt-4-32k"
+        gpt_4_o?.setOnClickListener {
+            model = "gpt-4o"
             clearSelection()
-            gpt_4_32k?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-            gpt_4_32k?.background = getDarkAccentDrawableV2(
+            gpt_4_o?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+            gpt_4_o?.background = getDarkAccentDrawableV2(
                 ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
             ftFrame?.visibility = View.GONE
         }
@@ -215,57 +205,7 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
             advancedModelSelectorDialogFragment.setModelSelectedListener { model ->
                 this@AdvancedSettingsDialogFragment.model = model
 
-                when (model) {
-                    "gpt-3.5-turbo" -> {
-                        gpt_35_turbo?.isChecked = true
-                        clearSelection()
-                        gpt_35_turbo?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-                        gpt_35_turbo?.background = getDarkAccentDrawableV2(
-                            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
-                        ftFrame?.visibility = View.GONE
-                    }
-                    "gpt-3.5-turbo-0125" -> {
-                        gpt_35_turbo_0125?.isChecked = true
-                        clearSelection()
-                        gpt_35_turbo_0125?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-                        gpt_35_turbo_0125?.background = getDarkAccentDrawableV2(
-                            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
-                        ftFrame?.visibility = View.GONE
-                    }
-                    "gpt-4" -> {
-                        gpt_4?.isChecked = true
-                        clearSelection()
-                        gpt_4?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-                        gpt_4?.background = getDarkAccentDrawableV2(
-                            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
-                        ftFrame?.visibility = View.GONE
-                    }
-                    "gpt-4-turbo-preview" -> {
-                        gpt_4_turbo?.isChecked = true
-                        clearSelection()
-                        gpt_4_turbo?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-                        gpt_4_turbo?.background = getDarkAccentDrawableV2(
-                            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
-                        ftFrame?.visibility = View.GONE
-                    }
-                    "gpt-4-32k" -> {
-                        gpt_4_32k?.isChecked = true
-                        clearSelection()
-                        gpt_4_32k?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-                        gpt_4_32k?.background = getDarkAccentDrawableV2(
-                            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
-                        ftFrame?.visibility = View.GONE
-                    }
-                    else -> {
-                        ft?.isChecked = true
-                        ftInput?.setText(model)
-                        clearSelection()
-                        ft?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-                        ft?.background = getDarkAccentDrawableV2(
-                            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
-                        ftFrame?.visibility = View.VISIBLE
-                    }
-                }
+                reloadModelList(model)
             }
             advancedModelSelectorDialogFragment.show(requireActivity().supportFragmentManager, "advancedModelSelectorDialogFragment")
         }
@@ -275,57 +215,7 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
             advancedModelSelectorDialogFragment.setModelSelectedListener { model ->
                 this@AdvancedSettingsDialogFragment.model = model
 
-                when (model) {
-                    "gpt-3.5-turbo" -> {
-                        gpt_35_turbo?.isChecked = true
-                        clearSelection()
-                        gpt_35_turbo?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-                        gpt_35_turbo?.background = getDarkAccentDrawableV2(
-                            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
-                        ftFrame?.visibility = View.GONE
-                    }
-                    "gpt-3.5-turbo-0125" -> {
-                        gpt_35_turbo_0125?.isChecked = true
-                        clearSelection()
-                        gpt_35_turbo_0125?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-                        gpt_35_turbo_0125?.background = getDarkAccentDrawableV2(
-                            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
-                        ftFrame?.visibility = View.GONE
-                    }
-                    "gpt-4" -> {
-                        gpt_4?.isChecked = true
-                        clearSelection()
-                        gpt_4?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-                        gpt_4?.background = getDarkAccentDrawableV2(
-                            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
-                        ftFrame?.visibility = View.GONE
-                    }
-                    "gpt-4-turbo-preview" -> {
-                        gpt_4_turbo?.isChecked = true
-                        clearSelection()
-                        gpt_4_turbo?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-                        gpt_4_turbo?.background = getDarkAccentDrawableV2(
-                            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
-                        ftFrame?.visibility = View.GONE
-                    }
-                    "gpt-4-32k" -> {
-                        gpt_4_32k?.isChecked = true
-                        clearSelection()
-                        gpt_4_32k?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-                        gpt_4_32k?.background = getDarkAccentDrawableV2(
-                            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
-                        ftFrame?.visibility = View.GONE
-                    }
-                    else -> {
-                        ft?.isChecked = true
-                        ftInput?.setText(model)
-                        clearSelection()
-                        ft?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-                        ft?.background = getDarkAccentDrawableV2(
-                            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
-                        ftFrame?.visibility = View.VISIBLE
-                    }
-                }
+                reloadModelList(model)
             }
             advancedModelSelectorDialogFragment.show(requireActivity().supportFragmentManager, "advancedFavoriteModelSelectorDialogFragment")
         }
@@ -350,21 +240,18 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
             .setNegativeButton(R.string.btn_cancel) { _, _ ->  }
 
         model = requireArguments().getString("name").toString()
+        reloadModelList(model)
 
-        when (requireArguments().getString("name")) { // load default model if settings not found
+        return builder!!.create()
+    }
+
+    private fun reloadModelList(model: String) {
+        when (model) { // load default model if settings not found
             "gpt-3.5-turbo" -> {
                 gpt_35_turbo?.isChecked = true
                 clearSelection()
                 gpt_35_turbo?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
                 gpt_35_turbo?.background = getDarkAccentDrawableV2(
-                    ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
-                ftFrame?.visibility = View.GONE
-            }
-            "gpt-3.5-turbo-1106" -> {
-                gpt_35_turbo_1106?.isChecked = true
-                clearSelection()
-                gpt_35_turbo_1106?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-                gpt_35_turbo_1106?.background = getDarkAccentDrawableV2(
                     ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
                 ftFrame?.visibility = View.GONE
             }
@@ -392,11 +279,11 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
                     ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
                 ftFrame?.visibility = View.GONE
             }
-            "gpt-4-32k" -> {
-                gpt_4_32k?.isChecked = true
+            "gpt-4o" -> {
+                gpt_4_o?.isChecked = true
                 clearSelection()
-                gpt_4_32k?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-                gpt_4_32k?.background = getDarkAccentDrawableV2(
+                gpt_4_o?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+                gpt_4_o?.background = getDarkAccentDrawableV2(
                     ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
                 ftFrame?.visibility = View.GONE
             }
@@ -410,8 +297,6 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
                 ftFrame?.visibility = View.VISIBLE
             }
         }
-
-        return builder!!.create()
     }
 
     private fun clearSelection() {
@@ -427,10 +312,6 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
             ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
         gpt_35_turbo?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
 
-        gpt_35_turbo_1106?.background = getDarkAccentDrawable(
-            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
-        gpt_35_turbo_1106?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
-
         gpt_35_turbo_0125?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
         gpt_35_turbo_0125?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
@@ -443,9 +324,9 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
             ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
         gpt_4_turbo?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
 
-        gpt_4_32k?.background = getDarkAccentDrawable(
+        gpt_4_o?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())
-        gpt_4_32k?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
+        gpt_4_o?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
 
         ft?.background = getDarkAccentDrawable(
             ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v3)!!, requireActivity())

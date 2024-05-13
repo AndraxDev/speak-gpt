@@ -146,6 +146,9 @@
     <color name="tint_orange">#25733600</color>
     <color name="gpt_icon_orange">#733600</color>
 
+    <color name="tint_cyan">#25007373</color>
+    <color name="gpt_icon_cyan">#007373</color>
+
     <color name="border">#33000000</color>
 
     <color name="pwa_background">#191c20</color>
