@@ -289,7 +289,7 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
             }
             else -> {
                 ft?.isChecked = true
-                ftInput?.setText(requireArguments().getString("name"))
+                ftInput?.setText(model)
                 clearSelection()
                 ft?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
                 ft?.background = getDarkAccentDrawableV2(
