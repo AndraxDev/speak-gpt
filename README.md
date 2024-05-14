@@ -18,7 +18,7 @@ SpeakGPT is an advanced and highly intuitive open-source AI assistant that utili
 
 Launch SpeakGPT Web: [https://assistant.teslasoft.org/](https://assistant.teslasoft.org/)
 
-Repo can be found [here](https://github.com/AndraxDev/speak-gpt-web)
+GitHub Repo: [Click here](https://github.com/AndraxDev/speak-gpt-web)
 
 ## Screenshots
 
@@ -40,7 +40,7 @@ Repo can be found [here](https://github.com/AndraxDev/speak-gpt-web)
 - Azure (Partial support)
 - Other (must be tested by community, don't be shy and provide your feedback)
 
-> ![NOTE]
+> [!NOTE]
 > 
 > To change your API provider, go to settings and select the Custom API host. Don't forget to update and API key.
 
