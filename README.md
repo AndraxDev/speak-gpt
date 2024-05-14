@@ -42,7 +42,7 @@ GitHub Repo: [Click here](https://github.com/AndraxDev/speak-gpt-web)
 
 > [!NOTE]
 > 
-> To change your API provider, go to settings and select the Custom API host. Don't forget to update and API key.
+> To change your API provider, go to settings and select the API endpoint. You can also add your custom API provider.
 
 ## Basic features
 
