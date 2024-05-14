@@ -38,6 +38,7 @@ GitHub Repo: [Click here](https://github.com/AndraxDev/speak-gpt-web)
 - OpenAI (Full support)
 - GROQ (Partial support)
 - Azure (Partial support)
+- OpenRouter (Text generation only, tested with Gemini, Claude, Perplexity, Llama, Gemma, Mistral, OpenAI models)
 - Other (must be tested by community, don't be shy and provide your feedback)
 
 > [!NOTE]
