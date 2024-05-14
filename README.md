@@ -16,7 +16,7 @@ SpeakGPT is an advanced and highly intuitive open-source AI assistant that utili
 
 ## SpeakGPT Web
 
-Launch SpeakGPT Web: (https://assistant.teslasoft.org/)[https://assistant.teslasoft.org/]
+Launch SpeakGPT Web: [https://assistant.teslasoft.org/](https://assistant.teslasoft.org/)
 
 Repo can be found [here](https://github.com/AndraxDev/speak-gpt-web)
 
