@@ -10,16 +10,15 @@ SpeakGPT is an advanced and highly intuitive open-source AI assistant that utili
 >
 > Cite as: Dmytro Ostapenko (2024), "Review Program Automation Using Copilot Services" Bachelor Thesis, Technical University of Košice, 2024.
 
-
-## SpeakGPT Web
-
-<a href = "https://assistant.teslasoft.org">https://assistant.teslasoft.org</a>
-
-Repo can be found [here](https://github.com/AndraxDev/speak-gpt-web)
-
 ## Download
 
 <a href='https://play.google.com/store/apps/details?id=org.teslasoft.assistant&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' width='300'/></a>
+
+## SpeakGPT Web
+
+Launch SpeakGPT Web: (https://assistant.teslasoft.org/)[https://assistant.teslasoft.org/]
+
+Repo can be found [here](https://github.com/AndraxDev/speak-gpt-web)
 
 ## Screenshots
 
