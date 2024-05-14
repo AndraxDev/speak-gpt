@@ -1698,7 +1698,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                 reqList.add(TextPart(request))
                 reqList.add(ImagePart(baseImageString!!))
                 val chatCompletionRequest = ChatCompletionRequest(
-                    model = ModelId("gpt-4-vision-preview"),
+                    model = ModelId("gpt-4o"),
                     temperature = if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
                     topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble(),
                     frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
@@ -1800,7 +1800,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                     )
 
                     val functionRequest = chatCompletionRequest {
-                        model = ModelId("gpt-4-turbo-preview")
+                        model = ModelId("gpt-4o")
                         messages = cm
 
                         tools {
