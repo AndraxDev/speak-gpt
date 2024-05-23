@@ -27,7 +27,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -37,12 +36,6 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
@@ -51,10 +44,8 @@ import com.google.gson.reflect.TypeToken
 import org.teslasoft.assistant.Api
 import org.teslasoft.assistant.Config
 import org.teslasoft.assistant.R
-import org.teslasoft.assistant.preferences.Logger
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.assistant.AssistantActivity
-import org.teslasoft.assistant.util.TestDevicesAds.Companion.TEST_DEVICES
 import org.teslasoft.core.api.network.RequestNetwork
 import java.net.MalformedURLException
 import java.net.URL
@@ -87,7 +78,6 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
     private var promptFor: String? = null
     private var btnBack: ImageButton? = null
     private var root: ConstraintLayout? = null
-    private var ad: LinearLayout? = null
 
     private val dataListener: RequestNetwork.RequestListener = object : RequestNetwork.RequestListener {
         override fun onResponse(tag: String, message: String) {
@@ -431,48 +421,6 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
         activityTitle?.text = title
 
         btnReconnect?.setOnClickListener { loadData() }
-
-        val preferences: Preferences = Preferences.getPreferences(this, "")
-
-        ad = findViewById(R.id.ad)
-
-        if (preferences.getAdsEnabled()) {
-            MobileAds.initialize(this) { /* unused */ }
-            Logger.log(this, "ads", "AdMob", "info", "Ads initialized")
-
-            val requestConfiguration = RequestConfiguration.Builder()
-                .setTestDeviceIds(TEST_DEVICES)
-                .build()
-            MobileAds.setRequestConfiguration(requestConfiguration)
-
-            val adView = AdView(this)
-            adView.setAdSize(AdSize.LARGE_BANNER)
-            adView.adUnitId =
-                if (preferences.getDebugTestAds()) getString(R.string.ad_banner_unit_id_test) else getString(
-                    R.string.ad_banner_unit_id
-                )
-
-            ad?.addView(adView)
-
-            val adRequest: AdRequest = AdRequest.Builder().build()
-
-            adView.loadAd(adRequest)
-
-            adView.adListener = object : com.google.android.gms.ads.AdListener() {
-                override fun onAdFailedToLoad(error: LoadAdError) {
-                    ad?.visibility = View.GONE
-                    Logger.log(this@PromptViewActivity, "ads", "AdMob", "error", "Ad failed to load: ${error.message}")
-                }
-
-                override fun onAdLoaded() {
-                    ad?.visibility = View.VISIBLE
-                    Logger.log(this@PromptViewActivity, "ads", "AdMob", "info", "Ad loaded successfully")
-                }
-            }
-        } else {
-            ad?.visibility = View.GONE
-            Logger.log(this, "ads", "AdMob", "info", "Ads initialization skipped: Ads are disabled")
-        }
 
         btnShowDetails?.setOnClickListener {
             MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)

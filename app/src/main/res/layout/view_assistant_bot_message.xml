@@ -16,12 +16,11 @@
 * limitations under the License.
 **************************************************************************/
 -->
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ui"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/icon"
@@ -111,9 +110,9 @@
                     android:layout_marginEnd="8dp"
                     android:background="@color/transparent"
                     android:contentDescription="@string/btn_msg_retry"
-                    android:tooltipText="@string/btn_msg_retry"
                     android:descendantFocusability="blocksDescendants"
                     android:src="@drawable/ic_retry"
+                    android:tooltipText="@string/btn_msg_retry"
                     app:srcCompat="@drawable/ic_retry" />
 
                 <ImageButton
@@ -124,8 +123,8 @@
                     android:layout_marginEnd="8dp"
                     android:background="@color/transparent"
                     android:contentDescription="@string/btn_copy"
-                    android:tooltipText="@string/btn_copy"
                     android:descendantFocusability="blocksDescendants"
+                    android:tooltipText="@string/btn_copy"
                     app:srcCompat="@drawable/ic_copy" />
 
                 <ImageButton
@@ -134,9 +133,9 @@
                     android:layout_height="32dp"
                     android:background="@color/transparent"
                     android:contentDescription="@string/btn_msg_edit"
-                    android:tooltipText="@string/btn_msg_edit"
                     android:descendantFocusability="blocksDescendants"
                     android:src="@drawable/ic_edit"
+                    android:tooltipText="@string/btn_msg_edit"
                     app:srcCompat="@drawable/ic_edit" />
             </LinearLayout>
 

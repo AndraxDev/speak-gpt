@@ -19,6 +19,7 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -164,19 +165,6 @@
             app:layout_constraintTop_toBottomOf="@+id/textView44" />
 
         <TextView
-            android:id="@+id/textView47"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp"
-            android:paddingHorizontal="16dp"
-            android:text="@string/ds_advertising_id"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView45" />
-
-        <TextView
             android:id="@+id/textView48"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -187,7 +175,7 @@
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView47" />
+            app:layout_constraintTop_toBottomOf="@+id/textView45" />
 
         <TextView
             android:id="@+id/textView49"

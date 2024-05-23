@@ -16,12 +16,11 @@
 * limitations under the License.
 **************************************************************************/
 -->
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ui"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/username"
@@ -96,9 +95,9 @@
         android:layout_marginEnd="2dp"
         android:background="@color/transparent"
         android:contentDescription="@string/btn_msg_retry"
-        android:tooltipText="@string/btn_msg_retry"
         android:descendantFocusability="blocksDescendants"
         android:src="@drawable/ic_retry"
+        android:tooltipText="@string/btn_msg_retry"
         app:layout_constraintEnd_toStartOf="@+id/btn_copy"
         app:layout_constraintTop_toTopOf="@+id/username"
         app:srcCompat="@drawable/ic_retry" />
@@ -110,8 +109,8 @@
         android:layout_marginEnd="2dp"
         android:background="@color/transparent"
         android:contentDescription="@string/btn_copy"
-        android:tooltipText="@string/btn_copy"
         android:descendantFocusability="blocksDescendants"
+        android:tooltipText="@string/btn_copy"
         app:layout_constraintEnd_toStartOf="@+id/btn_edit"
         app:layout_constraintTop_toTopOf="@+id/username"
         app:srcCompat="@drawable/ic_copy" />
@@ -123,9 +122,9 @@
         android:layout_marginEnd="16dp"
         android:background="@color/transparent"
         android:contentDescription="@string/btn_msg_edit"
-        android:tooltipText="@string/btn_msg_edit"
         android:descendantFocusability="blocksDescendants"
         android:src="@drawable/ic_edit"
+        android:tooltipText="@string/btn_msg_edit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/username"
         app:srcCompat="@drawable/ic_edit" />

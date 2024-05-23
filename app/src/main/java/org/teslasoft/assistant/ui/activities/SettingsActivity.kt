@@ -16,7 +16,6 @@
 
 package org.teslasoft.assistant.ui.activities
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.role.RoleManager
 import android.content.Context
@@ -42,15 +41,6 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.RequestConfiguration
-import com.google.android.gms.ads.identifier.AdvertisingIdClient
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException
-import com.google.android.gms.common.GooglePlayServicesRepairableException
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
@@ -69,13 +59,11 @@ import org.teslasoft.assistant.ui.fragments.dialogs.LanguageSelectorDialogFragme
 import org.teslasoft.assistant.ui.fragments.dialogs.SelectResolutionFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.SystemMessageDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.VoiceSelectorDialogFragment
-import org.teslasoft.assistant.util.TestDevicesAds
 import org.teslasoft.core.auth.AccountSyncListener
 import org.teslasoft.core.auth.client.SettingsListener
 import org.teslasoft.core.auth.client.SyncListener
 import org.teslasoft.core.auth.client.TeslasoftIDClient
 import org.teslasoft.core.auth.widget.TeslasoftIDCircledButton
-import java.io.IOException
 import java.util.Locale
 
 class SettingsActivity : FragmentActivity() {
@@ -121,14 +109,11 @@ class SettingsActivity : FragmentActivity() {
     private var btnRemoveAds: MaterialButton? = null
     private var root: ScrollView? = null
     private var textGlobal: TextView? = null
-    private var ad: LinearLayout? = null
     private var btnBack: ImageButton? = null
     private var teslasoftIDCircledButton: TeslasoftIDCircledButton? = null
 
-    private var adId = "<Loading...>"
     private var installationId = ""
     private var androidId = ""
-    private var testAdsReady: Boolean = false
     private var areFragmentsInitialized = false
     private var chatId = ""
     private var preferences: Preferences? = null
@@ -256,19 +241,8 @@ class SettingsActivity : FragmentActivity() {
                 runOnUiThread {
                     if (isDev) {
                         preferences?.setDebugMode(true)
-                        if (areFragmentsInitialized) {
-                            tileDebugTestAds?.setEnabled(true)
-                        }
-
-                        testAdsReady = true
                     } else {
                         preferences?.setDebugMode(false)
-                        if (areFragmentsInitialized) {
-                            tileDebugTestAds?.setEnabled(false)
-                        }
-
-                        preferences?.setDebugTestAds(false)
-                        testAdsReady = false
                     }
                 }
             }.start()
@@ -277,24 +251,12 @@ class SettingsActivity : FragmentActivity() {
         override fun onAuthFailed(state: String, message: String) {
             runOnUiThread {
                 preferences?.setDebugMode(false)
-                if (areFragmentsInitialized) {
-                    tileDebugTestAds?.setEnabled(false)
-                }
-
-                preferences?.setDebugTestAds(false)
-                testAdsReady = false
             }
         }
 
         override fun onSignedOut() {
             runOnUiThread {
                 preferences?.setDebugMode(false)
-                if (areFragmentsInitialized) {
-                    tileDebugTestAds?.setEnabled(false)
-                }
-
-                preferences?.setDebugTestAds(false)
-                testAdsReady = false
                 restartActivity()
             }
         }
@@ -308,7 +270,6 @@ class SettingsActivity : FragmentActivity() {
         root = findViewById(R.id.root)
         textGlobal = findViewById(R.id.text_global)
         threadLoading = findViewById(R.id.thread_loading)
-        btnRemoveAds = findViewById(R.id.btn_remove_ads)
 
         threadLoading?.visibility = View.VISIBLE
         btnRemoveAds?.visibility = View.GONE
@@ -389,7 +350,6 @@ class SettingsActivity : FragmentActivity() {
                     areFragmentsInitialized = true
                 }.start()
 
-                initAds()
                 initializeLogic()
 
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -872,7 +832,7 @@ class SettingsActivity : FragmentActivity() {
                 getString(R.string.tile_crash_log_title),
                 null,
                 logView,
-                logView,
+                null,
                 R.drawable.ic_bug,
                 installationId == "00000000-0000-0000-0000-000000000000" || installationId == "",
                 chatId,
@@ -884,10 +844,10 @@ class SettingsActivity : FragmentActivity() {
                 false,
                 getString(R.string.tile_ads_log_title),
                 null,
-                logView,
-                logView,
+                "<FEATURE REMOVED>",
+                null,
                 R.drawable.ic_bug,
-                installationId == "00000000-0000-0000-0000-000000000000" || installationId == "",
+                true,
                 chatId,
                 getString(R.string.tile_ads_log_desc)
             )
@@ -898,7 +858,7 @@ class SettingsActivity : FragmentActivity() {
                 getString(R.string.tile_events_log_title),
                 null,
                 logView,
-                logView,
+                null,
                 R.drawable.ic_bug,
                 installationId == "00000000-0000-0000-0000-000000000000" || installationId == "",
                 chatId,
@@ -906,16 +866,16 @@ class SettingsActivity : FragmentActivity() {
             )
 
             tileDebugTestAds = TileFragment.newInstance(
-                preferences?.getDebugTestAds()!!,
-                true,
+                false,
+                false,
                 "debug.test.ads",
                 null,
-                getString(R.string.on),
-                getString(R.string.off),
+                "<FEATURE REMOVED>",
+                null,
                 R.drawable.ic_bug,
-                !testAdsReady,
+                true,
                 chatId,
-                "[DEVS ONLY] This feature allows you to enable test ads. Use this feature while development process to avoid ads policy violations. Available only for Teslasoft ID accounts with dev permissions. Ads ID: $adId"
+                "<FEATURE REMOVED>"
             )
 
             tileChatsAutoSave = TileFragment.newInstance(
@@ -994,96 +954,6 @@ class SettingsActivity : FragmentActivity() {
     private fun initTeslasoftID() {
         teslasoftIDCircledButton = supportFragmentManager.findFragmentById(R.id.teslasoft_id_btn) as TeslasoftIDCircledButton
         teslasoftIDCircledButton?.setAccountSyncListener(accountSyncListener)
-    }
-
-    private fun initAds() {
-        val crearEventoHilo: Thread = object : Thread() {
-            @SuppressLint("HardwareIds")
-            override fun run() {
-                val info: AdvertisingIdClient.Info?
-
-                adId = try {
-                    info = AdvertisingIdClient.getAdvertisingIdInfo(this@SettingsActivity)
-                    info.id.toString()
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                    "<Google Play Services error>"
-                } catch (e : GooglePlayServicesNotAvailableException) {
-                    e.printStackTrace()
-                    "<Google Play Services not found>"
-                } catch (e : IllegalStateException) {
-                    e.printStackTrace()
-                    "<IllegalStateException: ${e.message}>"
-                } catch (e : GooglePlayServicesRepairableException) {
-                    e.printStackTrace()
-                    "<Google Play Services error>"
-                }
-
-                tileDebugTestAds?.setFunctionDesc("[DEVS ONLY] This feature allows you to enable test ads. Use this feature while development process to avoid ads policy violations. Available only for Teslasoft ID accounts with dev permissions. Ads ID: $adId\nAndroid ID: $androidId")
-            }
-        }
-        crearEventoHilo.start()
-
-        Thread {
-            while (!areFragmentsInitialized) {
-                Thread.sleep(100)
-            }
-
-            runOnUiThread {
-                if (testAdsReady) {
-                    tileDebugTestAds?.setEnabled(true)
-                }
-            }
-        }.start()
-
-        ad = findViewById(R.id.ad)
-
-        btnRemoveAds?.setOnClickListener {
-            val intent = Intent(this, RemoveAdsActivity::class.java).putExtra("chatId", chatId)
-            startActivity(intent)
-        }
-
-        if (preferences?.getAdsEnabled()!!) {
-            btnRemoveAds?.visibility = View.GONE
-            // btnRemoveAds?.visibility = View.VISIBLE
-            MobileAds.initialize(this) { /* unused */ }
-
-            Logger.log(this, "ads", "AdMob", "info", "Ads initialized")
-
-            val requestConfiguration = RequestConfiguration.Builder()
-                .setTestDeviceIds(TestDevicesAds.TEST_DEVICES)
-                .build()
-            MobileAds.setRequestConfiguration(requestConfiguration)
-
-            val adView = AdView(this)
-            adView.setAdSize(AdSize.LARGE_BANNER)
-            adView.adUnitId =
-                if (preferences?.getDebugTestAds()!!) getString(R.string.ad_banner_unit_id_test) else getString(
-                    R.string.ad_banner_unit_id
-                )
-
-            ad?.addView(adView)
-
-            val adRequest: AdRequest = AdRequest.Builder().build()
-
-            adView.loadAd(adRequest)
-
-            adView.adListener = object : com.google.android.gms.ads.AdListener() {
-                override fun onAdFailedToLoad(error: LoadAdError) {
-                    ad?.visibility = View.GONE
-                    Logger.log(this@SettingsActivity, "ads", "AdMob", "error", "Ad failed to load: ${error.message}")
-                }
-
-                override fun onAdLoaded() {
-                    ad?.visibility = View.VISIBLE
-                    Logger.log(this@SettingsActivity, "ads", "AdMob", "info", "Ad loaded successfully")
-                }
-            }
-        } else {
-            btnRemoveAds?.visibility = View.GONE
-            ad?.visibility = View.GONE
-            Logger.log(this, "ads", "AdMob", "info", "Ads initialization skipped: Ads are disabled")
-        }
     }
 
     private var apiEndpointActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -1400,16 +1270,6 @@ class SettingsActivity : FragmentActivity() {
 
         tileEventLog?.setOnTileClickListener {
             startActivity(Intent(this, LogsActivity::class.java).putExtra("type", "event").putExtra("chatId", chatId))
-        }
-
-        tileDebugTestAds?.setOnCheckedChangeListener { ischecked ->
-            if (ischecked) {
-                preferences?.setDebugTestAds(true)
-            } else {
-                preferences?.setDebugTestAds(false)
-            }
-
-            restartActivity()
         }
 
         tileShowChatErrors?.setOnCheckedChangeListener { ischecked ->

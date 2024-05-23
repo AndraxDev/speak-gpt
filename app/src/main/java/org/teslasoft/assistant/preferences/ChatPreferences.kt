@@ -18,6 +18,7 @@ package org.teslasoft.assistant.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.widget.Toast
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.teslasoft.assistant.util.Hash
@@ -275,6 +276,8 @@ class ChatPreferences private constructor() {
 
     fun deleteMessage(context: Context, chatId: String, position: Int) {
         val list = getChatById(context, chatId)
+
+        // Toast.makeText(context, chatId, Toast.LENGTH_SHORT).show()
 
         list.removeAt(position)
 

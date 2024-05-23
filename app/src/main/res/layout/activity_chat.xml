@@ -211,14 +211,13 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/messages"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:listSelector="@android:color/transparent"
         android:scrollbars="none"
         android:stackFromBottom="true"
-        android:transcriptMode="alwaysScroll"
         app:layout_constraintBottom_toTopOf="@+id/keyboard_input"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

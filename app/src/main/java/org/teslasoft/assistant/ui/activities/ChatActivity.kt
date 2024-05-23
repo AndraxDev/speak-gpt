@@ -61,7 +61,6 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -73,6 +72,8 @@ import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.aallam.ktoken.Encoding
 import com.aallam.ktoken.Tokenizer
 import com.aallam.openai.api.audio.SpeechRequest
@@ -133,8 +134,7 @@ import org.teslasoft.assistant.preferences.GlobalPreferences
 import org.teslasoft.assistant.preferences.LogitBiasPreferences
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
-import org.teslasoft.assistant.ui.adapters.AbstractChatAdapter
-import org.teslasoft.assistant.ui.adapters.ChatAdapter
+import org.teslasoft.assistant.ui.adapters.chat.ChatAdapter
 import org.teslasoft.assistant.ui.fragments.dialogs.EditApiEndpointDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.QuickSettingsBottomSheetDialogFragment
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
@@ -155,7 +155,8 @@ import java.util.Locale
 import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration.Companion.seconds
 
-class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
+
+class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
     // Init UI
     private var messageInput: EditText? = null
@@ -163,7 +164,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
     private var btnMicro: ImageButton? = null
     private var btnSettings: ImageButton? = null
     private var progress: ProgressBar? = null
-    private var chat: ListView? = null
+    private var chat: RecyclerView? = null
     private var activityTitle: TextView? = null
     private var btnExport: ImageButton? = null
     private var fileContents: ByteArray? = null
@@ -182,6 +183,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
 
     // Init chat
     private var messages: ArrayList<HashMap<String, Any>> = arrayListOf()
+    private var messagesSelectionProjection: ArrayList<HashMap<String, Any>> = arrayListOf()
     private var messagesUsageProjection: ArrayList<HashMap<String, Any>> = arrayListOf()
     private var adapter: ChatAdapter? = null
     private var chatMessages: ArrayList<ChatMessage> = arrayListOf()
@@ -204,6 +206,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
     private var usageOut: Int = 0
     private var priceIn: Float = 0.0f
     private var priceOut: Float = 0.0f
+    private var bulkSelectionMode: Boolean = false
 
     // init AI
     private var ai: OpenAI? = null
@@ -739,9 +742,11 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                 }
             }
 
+            updateMessagesSelectionProjection()
+
             calculateCost()
 
-            adapter = ChatAdapter(messages, this, preferences!!)
+            adapter = ChatAdapter(messages, messagesSelectionProjection,this, preferences!!, false, chatId)
             adapter?.setOnUpdateListener(this)
 
             initUI()
@@ -774,6 +779,8 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
         visionActions = findViewById(R.id.vision_action_selector)
         btnVisionActionCamera = findViewById(R.id.action_camera)
         btnVisionActionGallery = findViewById(R.id.action_gallery)
+
+        chat?.itemAnimator = null
 
         visionActions?.visibility = View.GONE
 
@@ -838,14 +845,21 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
             quickSettingsBottomSheetDialogFragment.show(supportFragmentManager, "QuickSettingsBottomSheetDialogFragment")
         }
 
+        val linearLayoutManager = LinearLayoutManager(this)
+        // linearLayoutManager.stackFromEnd = true
+
+        chat?.setLayoutManager(linearLayoutManager)
         chat?.adapter = adapter
-        chat?.dividerHeight = 0
 
         adapter?.notifyDataSetChanged()
 
+        chat?.post {
+            chat?.scrollToPosition(adapter?.itemCount!! - 1)
+        }
+
         chat?.setOnTouchListener { _, event -> run {
             if (event.action == MotionEvent.ACTION_SCROLL || event.action == MotionEvent.ACTION_UP) {
-                chat?.transcriptMode = ListView.TRANSCRIPT_MODE_DISABLED
+                // chat?.transcriptMode = ListView.TRANSCRIPT_MODE_DISABLED
                 disableAutoScroll = true
             }
             return@setOnTouchListener false
@@ -1651,11 +1665,39 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
         }
 
         messages.add(map)
-        adapter?.notifyDataSetChanged()
+        adapter?.notifyItemInserted(messages.size - 1)
 
+        updateMessagesSelectionProjection()
+
+        scroll(true)
+    }
+
+    private fun scroll(mode: Boolean) {
         if (!disableAutoScroll) {
-            chat?.post {
-                chat?.setSelection(adapter?.count!! - 1)
+            val itemCount = adapter?.itemCount ?: 0
+
+            if (mode) {
+                chat?.post {
+                    if (itemCount > 0) {
+                        chat?.scrollToPosition(itemCount - 1)
+
+                        scrollX(itemCount)
+                    }
+                }
+            } else {
+                scrollX(itemCount)
+            }
+        }
+    }
+
+    private fun scrollX(itemCount: Int) {
+        chat?.post {
+            val lastView = chat?.layoutManager?.findViewByPosition(itemCount - 1)
+            lastView?.let {
+                val scrollDistance = it.bottom - (chat?.height ?: 0)
+                if (scrollDistance > 0) {
+                    chat?.scrollBy(0, scrollDistance)
+                }
             }
         }
     }
@@ -1683,7 +1725,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
 
     private suspend fun generateResponse(request: String, shouldPronounce: Boolean) {
         disableAutoScroll = false
-        chat?.transcriptMode = ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL
+        // chat?.transcriptMode = ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL
         try {
             var response = ""
 
@@ -1719,6 +1761,8 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
 
                 val completions: Flow<ChatCompletionChunk> = ai!!.chatCompletions(chatCompletionRequest)
 
+                scroll(true)
+
                 completions.collect { v ->
                     run {
                         if (!coroutineContext.isActive) throw CancellationException()
@@ -1726,15 +1770,25 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                             response += v.choices[0].delta.content
                             if (response != "null") {
                                 messages[messages.size - 1]["message"] = response
-                                adapter?.notifyDataSetChanged()
+                                if (messages.size > 2) {
+                                    adapter?.notifyItemRangeChanged(messages.size - 3, messages.size - 1)
+                                } else {
+                                    adapter?.notifyItemChanged(messages.size - 1)
+                                }
+                                scroll(false)
                                 saveSettings()
                             }
                         }
                     }
                 }
 
-                messages[messages.size - 1]["message"] = "${response.dropLast(4)}\n"
-                adapter?.notifyDataSetChanged()
+                messages[messages.size - 1]["message"] = "${response}\n"
+
+                if (messages.size > 2) {
+                    adapter?.notifyItemRangeChanged(messages.size - 3, messages.size - 1)
+                } else {
+                    adapter?.notifyItemChanged(messages.size - 1)
+                }
 
                 syncChatProjection()
 
@@ -1768,14 +1822,22 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
                         else if (v.choices[0].text != "null") {
                             response += v.choices[0].text
                             messages[messages.size - 1]["message"] = response
-                            adapter?.notifyDataSetChanged()
+                            if (messages.size > 2) {
+                                adapter?.notifyItemRangeChanged(messages.size - 3, messages.size - 1)
+                            } else {
+                                adapter?.notifyItemChanged(messages.size - 1)
+                            }
                             saveSettings()
                         }
                     }
                 }
 
                 messages[messages.size - 1]["message"] = "$response\n"
-                adapter?.notifyDataSetChanged()
+                if (messages.size > 2) {
+                    adapter?.notifyItemRangeChanged(messages.size - 3, messages.size - 1)
+                } else {
+                    adapter?.notifyItemChanged(messages.size - 1)
+                }
 
                 syncChatProjection()
 
@@ -1923,7 +1985,11 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
 
             if (preferences?.showChatErrors() == true) {
                 messages[messages.size - 1]["message"] = "${messages[messages.size - 1]["message"]}\n\n${getString(R.string.prompt_show_error)}\n\n$response"
-                adapter?.notifyDataSetChanged()
+                if (messages.size > 2) {
+                    adapter?.notifyItemRangeChanged(messages.size - 3, messages.size - 1)
+                } else {
+                    adapter?.notifyItemChanged(messages.size - 1)
+                }
             }
 
             saveSettings()
@@ -1981,7 +2047,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
 
     private suspend fun regularGPTResponse(shouldPronounce: Boolean) {
         disableAutoScroll = false
-        chat?.transcriptMode = ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL
+        // chat?.transcriptMode = ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL
         var response = ""
         putMessage("", true)
 
@@ -2013,20 +2079,31 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
         val completions: Flow<ChatCompletionChunk> =
             ai!!.chatCompletions(chatCompletionRequest)
 
+        scroll(true)
+
         completions.collect { v ->
             run {
                 if (!coroutineContext.isActive) throw CancellationException()
                 else if (v.choices[0].delta.content != null) {
                     response += v.choices[0].delta.content
                     messages[messages.size - 1]["message"] = response
-                    adapter?.notifyDataSetChanged()
+                    if (messages.size > 2) {
+                        adapter?.notifyItemRangeChanged(messages.size - 3, messages.size - 1)
+                    } else {
+                        adapter?.notifyItemChanged(messages.size - 1)
+                    }
+                    scroll(false)
                     saveSettings()
                 }
             }
         }
 
         messages[messages.size - 1]["message"] = "$response\n"
-        adapter?.notifyDataSetChanged()
+        if (messages.size > 2) {
+            adapter?.notifyItemRangeChanged(messages.size - 3, messages.size - 1)
+        } else {
+            adapter?.notifyItemChanged(messages.size - 1)
+        }
 
         syncChatProjection()
 
@@ -2249,7 +2326,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
 
         chat?.setOnTouchListener(null)
         disableAutoScroll = false
-        chat?.transcriptMode = ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL
+        // chat?.transcriptMode = ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL
         try {
             val images = openAIAI?.imageURL(
                 creation = ImageCreation(
@@ -2284,11 +2361,14 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
 
                     chat?.setOnTouchListener { _, event -> run {
                         if (event.action == MotionEvent.ACTION_SCROLL || event.action == MotionEvent.ACTION_UP) {
-                            chat?.transcriptMode = ListView.TRANSCRIPT_MODE_DISABLED
+                            // chat?.transcriptMode = ListView.TRANSCRIPT_MODE_DISABLED
                             disableAutoScroll = true
                         }
                         return@setOnTouchListener false
                     }}
+
+                    scroll(true)
+                    scroll(false)
 
                     saveSettings()
 
@@ -2369,7 +2449,8 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
 
     private fun removeLastAssistantMessageIfAvailable() {
         if (messages.isNotEmpty() && messages.size - 1 > 0 && messages[messages.size - 1]["isBot"] == true) {
-            messages.removeAt(messages.size - 1)
+            // messages.removeAt(messages.size - 1)
+            adapter?.onDelete(messages.size - 1)
         }
 
         if (chatMessages.isNotEmpty() && chatMessages.size - 1 > 0 && chatMessages[chatMessages.size - 1].role == Role.Assistant) {
@@ -2454,6 +2535,7 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
             }
         }
 
+        updateMessagesSelectionProjection()
         calculateCost()
     }
 
@@ -2463,6 +2545,16 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
 
     override fun onMessageDeleted() {
         syncChatProjection()
+    }
+
+    override fun onBulkSelectionChanged(position: Int, selected: Boolean) {
+        messagesSelectionProjection[position]["selected"] = selected
+    }
+
+    override fun onChangeBulkActionMode(mode: Boolean) {
+        bulkSelectionMode = mode
+
+        // TODO: Implement bulk action mode
     }
 
     private fun openAIMissing(feature: String, prompt: String) {
@@ -2580,6 +2672,27 @@ class ChatActivity : FragmentActivity(), AbstractChatAdapter.OnUpdateListener {
             }
             "tts" -> speak(prompt)
             "whisper" -> handleWhisperSpeechRecognition()
+        }
+    }
+
+    private fun updateMessagesSelectionProjection() {
+        bulkSelectionMode = false
+        adapter?.setBulkActionMode(false)
+
+        messagesSelectionProjection.clear()
+
+        for (m in messages) {
+            messagesSelectionProjection.add(
+                java.util.HashMap(
+                    mapOf(
+                        "message" to m["message"],
+                        "isBot" to m["isBot"],
+                        "image" to m["image"],
+                        "imageType" to m["imageType"],
+                        "selected" to false
+                    )
+                )
+            )
         }
     }
 }

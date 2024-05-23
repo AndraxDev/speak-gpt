@@ -16,7 +16,6 @@
 
 package org.teslasoft.assistant.ui.fragments.tabs
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -24,16 +23,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.RequestConfiguration
 import org.teslasoft.assistant.R
-import org.teslasoft.assistant.preferences.Logger
-import org.teslasoft.assistant.preferences.Preferences
-import org.teslasoft.assistant.util.TestDevicesAds
 
 class TipsFragment : Fragment() {
 
@@ -47,60 +37,6 @@ class TipsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_tips, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val preferences: Preferences = Preferences.getPreferences(mContext?: return, "")
-
-        ad = view.findViewById(R.id.ad)
-
-        Thread {
-            while (!onAttach) {
-                Thread.sleep(100)
-            }
-
-            (mContext as Activity?)?.runOnUiThread {
-                if (preferences.getAdsEnabled()) {
-                    MobileAds.initialize(mContext?: return@runOnUiThread) { /* unused */ }
-                    Logger.log(mContext?: return@runOnUiThread, "ads", "AdMob", "info", "Ads initialized")
-
-                    val requestConfiguration = RequestConfiguration.Builder()
-                        .setTestDeviceIds(TestDevicesAds.TEST_DEVICES)
-                        .build()
-                    MobileAds.setRequestConfiguration(requestConfiguration)
-
-                    val adView = AdView(mContext ?: return@runOnUiThread)
-                    adView.setAdSize(AdSize.LARGE_BANNER)
-                    adView.adUnitId =
-                        if (preferences.getDebugTestAds()) getString(R.string.ad_banner_unit_id_test) else getString(
-                            R.string.ad_banner_unit_id
-                        )
-
-                    ad?.addView(adView)
-
-                    val adRequest: AdRequest = AdRequest.Builder().build()
-
-                    adView.loadAd(adRequest)
-
-                    adView.adListener = object : com.google.android.gms.ads.AdListener() {
-                        override fun onAdFailedToLoad(error: LoadAdError) {
-                            ad?.visibility = View.GONE
-                            Logger.log(mContext?: return, "ads", "AdMob", "error", "Ad failed to load: ${error.message}")
-                        }
-
-                        override fun onAdLoaded() {
-                            ad?.visibility = View.VISIBLE
-                            Logger.log(mContext?: return, "ads", "AdMob", "info", "Ad loaded successfully")
-                        }
-                    }
-                } else {
-                    ad?.visibility = View.GONE
-                    Logger.log(mContext?: return@runOnUiThread, "ads", "AdMob", "info", "Ads initialization skipped: Ads are disabled")
-                }
-            }
-        }.start()
     }
 
     override fun onAttach(context: Context) {

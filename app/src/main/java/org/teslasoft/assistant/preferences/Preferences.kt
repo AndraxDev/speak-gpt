@@ -463,20 +463,6 @@ class Preferences private constructor(private var preferences: SharedPreferences
     }
 
     /**
-     * Get ads enabled
-     * */
-    fun getAdsEnabled() : Boolean {
-        return getGlobalBoolean("ads_enabled", true)
-    }
-
-    /**
-     * Set ads enabled
-     * */
-    fun setAdsEnabled(state: Boolean) {
-        putGlobalBoolean("ads_enabled", state, true)
-    }
-
-    /**
      * Retrieves system message. System messages allow you to make ChatGPT more reliable.
      *
      * @return System message.
@@ -843,34 +829,6 @@ class Preferences private constructor(private var preferences: SharedPreferences
      * */
     fun getSeed() : String {
         return getString("seed", "")
-    }
-
-    /**
-     * Get Skip chat name dialog
-     * */
-    fun getSkipChatNameDialog() : Boolean {
-        return getGlobalBoolean("skip_chat_name_dialog", false)
-    }
-
-    /**
-     * Set skip chat name dialog
-     * */
-    fun setSkipChatNameDialog(state: Boolean) {
-        putGlobalBoolean("skip_chat_name_dialog", state)
-    }
-
-    /**
-     * Set debug test ads
-     * */
-    fun setDebugTestAds(state: Boolean) {
-        putGlobalBoolean("debug_test_ads", state)
-    }
-
-    /**
-     * Get debug test ads
-     * */
-    fun getDebugTestAds() : Boolean {
-        return getGlobalBoolean("debug_test_ads", false)
     }
 
     /**

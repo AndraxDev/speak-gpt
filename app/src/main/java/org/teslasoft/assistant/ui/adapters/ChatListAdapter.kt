@@ -39,7 +39,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
@@ -73,7 +72,6 @@ class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>,
 
     fun deleteItemAtPosition(position: Int) {
         dataArray.removeAt(position)
-        // selectorProjection.removeAt(position)
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, itemCount)
     }

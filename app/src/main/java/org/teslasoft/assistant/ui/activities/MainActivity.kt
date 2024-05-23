@@ -17,7 +17,6 @@
 package org.teslasoft.assistant.ui.activities
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -37,7 +36,6 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -48,15 +46,11 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
-import com.google.android.gms.ads.identifier.AdvertisingIdClient
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException
-import com.google.android.gms.common.GooglePlayServicesRepairableException
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.navigation.NavigationBarView
-import org.teslasoft.assistant.Config.Companion.API_ENDPOINT
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ApiEndpointPreferences
 import org.teslasoft.assistant.preferences.DeviceInfoProvider
@@ -70,7 +64,6 @@ import org.teslasoft.assistant.ui.fragments.tabs.PromptsFragment
 import org.teslasoft.assistant.ui.fragments.tabs.ToolsFragment
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
 import org.teslasoft.core.api.network.RequestNetwork
-import java.io.IOException
 
 class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener {
 
@@ -98,33 +91,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     private var isInitialized: Boolean = false
 
     private var splashScreen: SplashScreen? = null
-
-    private val requestListener = object : RequestNetwork.RequestListener {
-        override fun onResponse(tag: String, message: String) {
-            if (message == "131") {
-                preferences!!.setAdsEnabled(false)
-                startActivity(Intent(this@MainActivity, ThanksActivity::class.java))
-                finish()
-            } else {
-                if (tag == "AID" && !preferences!!.getDebugMode()) {
-                    preferences!!.setAdsEnabled(true)
-                } else {
-                    val androidId = DeviceInfoProvider.getAndroidId(this@MainActivity)
-
-                    requestNetwork?.startRequestNetwork(
-                        "GET",
-                        "${API_ENDPOINT}/checkForDonation?did=${androidId}",
-                        "AID",
-                        this
-                    )
-                }
-            }
-        }
-
-        override fun onErrorResponse(tag: String, message: String) {
-            /* Failed to verify donation */
-        }
-    }
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -202,7 +168,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
             })
         }
 
-        if (isActivityEnabled(this, "org.teslasoft.assistant.pwa.PWAActivity")) {
+        if (isPWAActivityEnabled(this)) {
             btnTogglePWA?.text = "Disable PWA"
         } else {
             btnTogglePWA?.text = "Enable PWA"
@@ -210,7 +176,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
 
         btnTogglePWA?.setOnClickListener {
             val pm = packageManager
-            if (isActivityEnabled(this, "org.teslasoft.assistant.pwa.PWAActivity")) {
+            if (isPWAActivityEnabled(this)) {
                 btnTogglePWA?.text = "Enable PWA"
                 pm.setComponentEnabledSetting(
                     ComponentName(this, "org.teslasoft.assistant.pwa.PWAActivity"),
@@ -258,20 +224,10 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                     return@OnItemSelectedListener false
                 })
 
-                if (preferences!!.getDebugTestAds() && !preferences!!.getDebugMode()) {
-                    preferences!!.setDebugMode(true)
-                    restartActivity()
-                }
-
                 val installationId = DeviceInfoProvider.getInstallationId(this)
                 val androidId = DeviceInfoProvider.getAndroidId(this)
 
                 Logger.clearAdsLog(this)
-
-                if (preferences!!.getAdsEnabled()) {
-                    requestNetwork = RequestNetwork(this)
-                    requestNetwork?.startRequestNetwork("GET", "${API_ENDPOINT}/checkForDonation?did=${installationId}", "IID", requestListener)
-                }
 
                 if (preferences!!.getDebugMode()) {
                     btnDebugger?.visibility = View.VISIBLE
@@ -288,7 +244,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                     }
 
                     btnLaunchPWA?.setOnClickListener {
-                        if (isActivityEnabled(this, "org.teslasoft.assistant.pwa.PWAActivity")) {
+                        if (isPWAActivityEnabled(this)) {
                             startActivity(Intent(this, PWAActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
                         } else {
                             MaterialAlertDialogBuilder(this)
@@ -298,49 +254,12 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                         }
                     }
 
-                    if (preferences!!.getAdsEnabled()) {
-                        btnSwitchAds?.text = "Disable ads"
-                    } else {
-                        btnSwitchAds?.text = "Enable ads"
-                    }
-
-                    btnSwitchAds?.setOnClickListener {
-                        if (preferences!!.getAdsEnabled()) {
-                            preferences!!.setAdsEnabled(false)
-                        } else {
-                            preferences!!.setAdsEnabled(true)
-                        }
-                        restartActivity()
-                    }
+                    btnSwitchAds?.text = "<ADS FEATURE REMOVED>"
+                    btnSwitchAds?.isEnabled = false
 
                     devIds?.text = "${devIds?.text}\n\nInstallation ID: $installationId\nAndroid ID: $androidId"
 
-                    val crearEventoHilo: Thread = object : Thread() {
-                        @SuppressLint("HardwareIds")
-                        override fun run() {
-                            val info: AdvertisingIdClient.Info?
-
-                            val adId = try {
-                                info = AdvertisingIdClient.getAdvertisingIdInfo(this@MainActivity)
-                                info.id.toString()
-                            } catch (e: IOException) {
-                                e.printStackTrace()
-                                "<Google Play Services error>"
-                            } catch (e : GooglePlayServicesNotAvailableException) {
-                                e.printStackTrace()
-                                "<Google Play Services not found>"
-                            } catch (e : IllegalStateException) {
-                                e.printStackTrace()
-                                "<IllegalStateException: ${e.message}>"
-                            } catch (e : GooglePlayServicesRepairableException) {
-                                e.printStackTrace()
-                                "<Google Play Services error>"
-                            }
-
-                            devIds?.text = "${devIds?.text}\nAds ID: $adId"
-                        }
-                    }
-                    crearEventoHilo.start()
+                    devIds?.text = "${devIds?.text}\nAds ID: <FEATURE REMOVED>"
                 }
 
                 preInit()
@@ -406,18 +325,13 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         splashScreen?.setKeepOnScreenCondition { false }
     }
 
-    private fun isActivityEnabled(context: Context, component: String): Boolean {
+    private fun isPWAActivityEnabled(context: Context): Boolean {
         try {
             val manager = context.packageManager
-            val componentName = ComponentName(context, component)
+            val componentName = ComponentName(context, "org.teslasoft.assistant.pwa.PWAActivity")
             manager.getActivityInfo(componentName, PackageManager.GET_META_DATA)
-            Logger.log(this, "event", "ComponentManager", "info", "Activity found")
             return true
-        } catch (e: PackageManager.NameNotFoundException) {
-            Logger.log(this, "event", "ComponentManager", "error", "Activity not found: ${e.message}")
-        } catch (e: SecurityException) {
-            Logger.log(this, "event", "ComponentManager", "error", "Security exception: ${e.message}")
-        }
+        } catch (e: Exception) { /* unused */ }
 
         return false
     }
@@ -481,14 +395,8 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
             btnTogglePWA?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_600, theme))
             devIds?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_16_amoled, theme)
             devIds?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_600, theme))
-
-            if (preferences?.getAdsEnabled()!!) {
-                btnSwitchAds?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_600, theme)
-                btnSwitchAds?.setTextColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
-            } else {
-                btnSwitchAds?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.amoled_accent_50, theme)
-                btnSwitchAds?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_600, theme))
-            }
+            btnSwitchAds?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_600, theme)
+            btnSwitchAds?.setTextColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
         } else {
             if (android.os.Build.VERSION.SDK_INT <= 34) {
                 window.navigationBarColor = SurfaceColors.SURFACE_3.getColor(this)
@@ -515,14 +423,8 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
             btnTogglePWA?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_900, theme))
             devIds?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_16, theme)!!)
             devIds?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_900, theme))
-
-            if (preferences?.getAdsEnabled()!!) {
-                btnSwitchAds?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_900, theme)
-                btnSwitchAds?.setTextColor(ResourcesCompat.getColor(resources, R.color.window_background, theme))
-            } else {
-                btnSwitchAds?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_250, theme)
-                btnSwitchAds?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_900, theme))
-            }
+            btnSwitchAds?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_900, theme)
+            btnSwitchAds?.setTextColor(ResourcesCompat.getColor(resources, R.color.window_background, theme))
         }
 
         (frameChats as ChatsListFragment).reloadAmoled(this)
@@ -627,7 +529,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     }
 
     override fun onPreferencesChanged(key: String, value: String) {
-        if (key == "debug_mode" || key == "debug_test_ads" || key == "amoled_pitch_black") {
+        if (key == "debug_mode" || key == "amoled_pitch_black") {
             restartActivity()
         }
     }

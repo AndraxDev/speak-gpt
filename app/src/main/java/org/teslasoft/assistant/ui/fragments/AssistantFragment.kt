@@ -70,6 +70,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.aallam.openai.api.audio.SpeechRequest
 import com.aallam.openai.api.audio.TranscriptionRequest
 import com.aallam.openai.api.chat.ChatCompletionChunk
@@ -127,8 +129,7 @@ import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
 import org.teslasoft.assistant.ui.activities.MainActivity
 import org.teslasoft.assistant.ui.activities.SettingsActivity
-import org.teslasoft.assistant.ui.adapters.AbstractChatAdapter
-import org.teslasoft.assistant.ui.adapters.AssistantAdapter
+import org.teslasoft.assistant.ui.adapters.chat.ChatAdapter
 import org.teslasoft.assistant.ui.fragments.dialogs.ActionSelectorDialog
 import org.teslasoft.assistant.ui.fragments.dialogs.AddChatDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.EditApiEndpointDialogFragment
@@ -151,7 +152,7 @@ import java.util.Base64
 import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
 
-class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpdateListener {
+class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListener {
 
     // Init UI
     private var btnAssistantVoice: ImageButton? = null
@@ -165,7 +166,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
     private var assistantMessage: EditText? = null
     private var assistantInputLayout: LinearLayout? = null
     private var assistantActionsLayout: LinearLayout? = null
-    private var assistantConversation: ListView? = null
+    private var assistantConversation: RecyclerView? = null
     private var assistantLoading: ProgressBar? = null
     private var assistantTitle: TextView? = null
     private var ui: LinearLayout? = null
@@ -182,7 +183,8 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
 
     // Init chat
     private var messages: ArrayList<HashMap<String, Any>> = arrayListOf()
-    private var adapter: AssistantAdapter? = null
+    private var messagesSelectionProjection: ArrayList<HashMap<String, Any>> = arrayListOf()
+    private var adapter: ChatAdapter? = null
     private var chatMessages: ArrayList<ChatMessage> = arrayListOf()
     private lateinit var languageIdentifier: LanguageIdentifier
     private var FORCE_SLASH_COMMANDS_ENABLED: Boolean = false
@@ -203,6 +205,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
     private var isInitialized = false
     private var imageIsSelected = false
     private var stopper = false
+    private var bulkSelectionMode: Boolean = false
 
     // init AI
     private var ai: OpenAI? = null
@@ -603,21 +606,21 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
 
             messages = ArrayList()
 
-            adapter = AssistantAdapter(messages, (mContext as FragmentActivity), preferences!!)
+            adapter = ChatAdapter(messages, messagesSelectionProjection, (mContext as FragmentActivity), preferences!!, true, "temp_state")
             adapter?.setOnUpdateListener(this)
 
             assistantConversation?.adapter = adapter
-            assistantConversation?.dividerHeight = 0
 
             adapter?.notifyDataSetChanged()
 
             assistantConversation?.setOnTouchListener { _, event -> run {
                 if (event.action == MotionEvent.ACTION_SCROLL || event.action == MotionEvent.ACTION_UP) {
-                    assistantConversation?.transcriptMode = ListView.TRANSCRIPT_MODE_DISABLED
                     disableAutoScroll = true
                 }
                 return@setOnTouchListener false
-            } }
+            }}
+
+            scroll(true)
 
             initSpeechListener()
             initTTS()
@@ -1267,11 +1270,11 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         }
 
         messages.add(map)
-        adapter?.notifyDataSetChanged()
+        adapter?.notifyItemInserted(messages.size - 1)
 
-        assistantConversation?.post {
-            assistantConversation?.setSelection(adapter?.count!! - 1)
-        }
+        scroll(true)
+
+        updateMessagesSelectionProjection()
     }
 
     private fun generateImages(prompt: String) {
@@ -1301,7 +1304,6 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         btnSaveToChat?.visibility = View.VISIBLE
 
         disableAutoScroll = false
-        assistantConversation?.transcriptMode = ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL
 
         try {
             var response = ""
@@ -1337,6 +1339,8 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
 
                 val completions: Flow<ChatCompletionChunk> = ai!!.chatCompletions(chatCompletionRequest)
 
+                scroll(true)
+
                 completions.collect { v ->
                     run {
                         if (stopper) {
@@ -1347,15 +1351,24 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                             response += v.choices[0].delta.content
                             if (response != "null") {
                                 messages[messages.size - 1]["message"] = response
-                                adapter?.notifyDataSetChanged()
+                                scroll(false)
+                                if (messages.size > 2) {
+                                    adapter?.notifyItemRangeChanged(messages.size - 3, messages.size - 1)
+                                } else {
+                                    adapter?.notifyItemChanged(messages.size - 1)
+                                }
                                 saveSettings()
                             }
                         }
                     }
                 }
 
-                messages[messages.size - 1]["message"] = "${response.dropLast(4)}\n"
-                adapter?.notifyDataSetChanged()
+                messages[messages.size - 1]["message"] = "${response}\n"
+                if (messages.size > 2) {
+                    adapter?.notifyItemRangeChanged(messages.size - 3, messages.size - 1)
+                } else {
+                    adapter?.notifyItemChanged(messages.size - 1)
+                }
 
                 chatMessages.add(ChatMessage(
                     role = ChatRole.Assistant,
@@ -1395,7 +1408,11 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                         if (v.choices[0].text != "null") {
                             response += v.choices[0].text
                             messages[messages.size - 1]["message"] = response
-                            adapter?.notifyDataSetChanged()
+                            if (messages.size > 2) {
+                                adapter?.notifyItemRangeChanged(messages.size - 3, messages.size - 1)
+                            } else {
+                                adapter?.notifyItemChanged(messages.size - 1)
+                            }
                             saveSettings()
                         }
                     }
@@ -1407,6 +1424,12 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 ))
 
                 pronounce(shouldPronounce, response)
+
+                if (messages.size > 2) {
+                    adapter?.notifyItemRangeChanged(messages.size - 3, messages.size - 1)
+                } else {
+                    adapter?.notifyItemChanged(messages.size - 1)
+                }
 
                 saveSettings()
 
@@ -1545,7 +1568,11 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
 
             if (preferences?.showChatErrors() == true) {
                 messages[messages.size - 1]["message"] = "${messages[messages.size - 1]["message"]}\n\n${getString(R.string.prompt_show_error)}\n\n$response"
-                adapter?.notifyDataSetChanged()
+                if (messages.size > 2) {
+                    adapter?.notifyItemRangeChanged(messages.size - 3, messages.size - 1)
+                } else {
+                    adapter?.notifyItemChanged(messages.size - 1)
+                }
             }
 
             saveSettings()
@@ -1600,7 +1627,6 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
     private suspend fun regularGPTResponse(shouldPronounce: Boolean) {
         isProcessing = true
         disableAutoScroll = false
-        assistantConversation?.transcriptMode = ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL
 
         var response = ""
         putMessage("", true)
@@ -1633,6 +1659,8 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         val completions: Flow<ChatCompletionChunk> =
             ai!!.chatCompletions(chatCompletionRequest)
 
+        scroll(true)
+
         completions.collect { v ->
             run {
                 if (stopper) {
@@ -1642,14 +1670,23 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 if (v.choices[0].delta.content != null) {
                     response += v.choices[0].delta.content
                     messages[messages.size - 1]["message"] = response
-                    adapter?.notifyDataSetChanged()
+                    scroll(false)
+                    if (messages.size > 2) {
+                        adapter?.notifyItemRangeChanged(messages.size - 3, messages.size - 1)
+                    } else {
+                        adapter?.notifyItemChanged(messages.size - 1)
+                    }
                     saveSettings()
                 }
             }
         }
 
         messages[messages.size - 1]["message"] = "$response\n"
-        adapter?.notifyDataSetChanged()
+        if (messages.size > 2) {
+            adapter?.notifyItemRangeChanged(messages.size - 3, messages.size - 1)
+        } else {
+            adapter?.notifyItemChanged(messages.size - 1)
+        }
 
         chatMessages.add(ChatMessage(
             role = ChatRole.Assistant,
@@ -1775,7 +1812,6 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         hideKeyboard()
 
         disableAutoScroll = false
-        assistantConversation?.transcriptMode = ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL
 
         try {
             val images = openAIAI?.imageURL(
@@ -1813,13 +1849,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 (mContext as Activity?)?.runOnUiThread {
                     putMessage(path, true)
 
-                    assistantConversation?.setOnTouchListener { _, event -> run {
-                        if (event.action == MotionEvent.ACTION_SCROLL || event.action == MotionEvent.ACTION_UP) {
-                            assistantConversation?.transcriptMode = ListView.TRANSCRIPT_MODE_DISABLED
-                            disableAutoScroll = true
-                        }
-                        return@setOnTouchListener false
-                    }}
+                    scroll(true)
 
                     saveSettings()
 
@@ -1894,6 +1924,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
 
     private fun saveSettings() {
         if (chatID != "") {
+            // Toast.makeText(context, "A: " + chatID, Toast.LENGTH_SHORT).show()
             val chat = mContext?.getSharedPreferences(
                 "chat_$chatID",
                 FragmentActivity.MODE_PRIVATE
@@ -1927,6 +1958,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
     private fun save(id: String) {
         isSaved = true
         chatID = id
+        adapter?.setChatId(chatID)
         saveSettings()
         preferences = Preferences.getPreferences(mContext ?: return, chatID)
 
@@ -2022,6 +2054,36 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         }
     }
 
+    private fun scroll(mode: Boolean) {
+        if (!disableAutoScroll) {
+            val itemCount = adapter?.itemCount ?: 0
+
+            if (mode) {
+                assistantConversation?.post {
+                    if (itemCount > 0) {
+                        assistantConversation?.scrollToPosition(itemCount - 1)
+
+                        scrollX(itemCount)
+                    }
+                }
+            } else {
+                scrollX(itemCount)
+            }
+        }
+    }
+
+    private fun scrollX(itemCount: Int) {
+        assistantConversation?.post {
+            val lastView = assistantConversation?.layoutManager?.findViewByPosition(itemCount - 1)
+            lastView?.let {
+                val scrollDistance = it.bottom - (assistantConversation?.height ?: 0)
+                if (scrollDistance > 0) {
+                    assistantConversation?.scrollBy(0, scrollDistance)
+                }
+            }
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -2059,6 +2121,9 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
         btnVisionActionCamera = view.findViewById(R.id.action_camera)
         btnVisionActionGallery = view.findViewById(R.id.action_gallery)
 
+        assistantConversation?.layoutManager = LinearLayoutManager(mContext)
+        assistantConversation?.itemAnimator = null
+
         animation = btnAssistantVoice?.background as AnimatedVectorDrawable
         
         animation?.registerAnimationCallback(object : Animatable2.AnimationCallback() {
@@ -2090,6 +2155,8 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
 
         assistantConversation?.isNestedScrollingEnabled = true
         assistantMessage?.isNestedScrollingEnabled = true
+
+        updateMessagesSelectionProjection()
 
         initSettings()
 
@@ -2150,7 +2217,7 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 .setPositiveButton("Yes") { _, _ ->
                     messages.clear()
                     chatMessages.clear()
-                    adapter = AssistantAdapter(messages, (mContext as FragmentActivity?), preferences!!)
+                    adapter = ChatAdapter(messages, messagesSelectionProjection, (mContext as FragmentActivity), preferences!!, true, "temp_state")
                     adapter?.setOnUpdateListener(this)
                     assistantConversation?.adapter = adapter
                     adapter?.notifyDataSetChanged()
@@ -2203,13 +2270,13 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
             }
         }
 
-        adapter = AssistantAdapter(messages, (mContext as FragmentActivity?), preferences!!)
+        updateMessagesSelectionProjection()
+
+        adapter = ChatAdapter(messages, messagesSelectionProjection, (mContext as FragmentActivity), preferences!!, true, chatId)
         adapter?.setOnUpdateListener(this)
         assistantConversation?.adapter = adapter
         adapter?.notifyDataSetChanged()
-        assistantConversation?.post {
-            assistantConversation?.setSelection(adapter?.count!! - 1)
-        }
+        scroll(true)
     }
 
     private fun hideKeyboard() {
@@ -2376,7 +2443,8 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
 
     private fun removeLastAssistantMessageIfAvailable() {
         if (messages.isNotEmpty() && messages.size - 1 > 0 && messages[messages.size - 1]["isBot"] == true) {
-            messages.removeAt(messages.size - 1)
+            // messages.removeAt(messages.size - 1)
+            adapter?.onDelete(messages.size - 1)
         }
 
         if (chatMessages.isNotEmpty() && chatMessages.size - 1 > 0 && chatMessages[chatMessages.size - 1].role == Role.Assistant) {
@@ -2459,6 +2527,8 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
                 }
             }
         }
+
+        updateMessagesSelectionProjection()
     }
 
     override fun onMessageEdited() {
@@ -2467,6 +2537,37 @@ class AssistantFragment : BottomSheetDialogFragment(), AbstractChatAdapter.OnUpd
 
     override fun onMessageDeleted() {
         syncChatProjection()
+    }
+
+    override fun onBulkSelectionChanged(position: Int, selected: Boolean) {
+        messagesSelectionProjection[position]["selected"] = selected
+    }
+
+    override fun onChangeBulkActionMode(mode: Boolean) {
+        bulkSelectionMode = mode
+
+        // TODO: Implement bulk selection
+    }
+
+    private fun updateMessagesSelectionProjection() {
+        bulkSelectionMode = false
+        adapter?.setBulkActionMode(false)
+
+        messagesSelectionProjection.clear()
+
+        for (m in messages) {
+            messagesSelectionProjection.add(
+                java.util.HashMap(
+                    mapOf(
+                        "message" to m["message"],
+                        "isBot" to m["isBot"],
+                        "image" to m["image"],
+                        "imageType" to m["imageType"],
+                        "selected" to false
+                    )
+                )
+            )
+        }
     }
 
     private fun openAIMissing(feature: String, prompt: String) {
