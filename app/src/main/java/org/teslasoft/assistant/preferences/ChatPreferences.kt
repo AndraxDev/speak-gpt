@@ -277,8 +277,6 @@ class ChatPreferences private constructor() {
     fun deleteMessage(context: Context, chatId: String, position: Int) {
         val list = getChatById(context, chatId)
 
-        // Toast.makeText(context, chatId, Toast.LENGTH_SHORT).show()
-
         list.removeAt(position)
 
         val json: String = Gson().toJson(list)

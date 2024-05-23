@@ -16,13 +16,13 @@
 * limitations under the License.
 **************************************************************************/
 -->
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ui"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:paddingBottom="12dp"
     android:paddingEnd="12dp"
     android:paddingStart="12dp">
@@ -37,11 +37,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="329dp"
             android:elevation="12dp"
             android:orientation="vertical"
             android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/input_layout"
+            app:layout_constraintBottom_toTopOf="@+id/constraintLayout7"
             app:layout_constraintStart_toStartOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -57,8 +57,8 @@
                     android:layout_marginTop="12dp"
                     android:layout_marginBottom="12dp"
                     android:background="@drawable/btn_accent_center"
-                    android:src="@drawable/ic_camera"
                     android:contentDescription="@string/btn_camera"
+                    android:src="@drawable/ic_camera"
                     android:tooltipText="@string/btn_camera"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -75,8 +75,8 @@
                     android:layout_marginBottom="12dp"
                     android:background="@drawable/btn_accent_center"
                     android:contentDescription="@string/label_select_from_gallery"
-                    android:tooltipText="@string/label_select_from_gallery"
                     android:src="@drawable/ic_photo"
+                    android:tooltipText="@string/label_select_from_gallery"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/action_camera"
@@ -235,13 +235,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginBottom="12dp"
-            android:clickable="true"
+            android:layout_marginBottom="329dp"
             android:background="@drawable/btn_accent_tonal_selector"
+            android:clickable="true"
             android:elevation="6dp"
             android:orientation="vertical"
             android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/input_layout"
+            app:layout_constraintBottom_toTopOf="@+id/constraintLayout7"
             app:layout_constraintStart_toStartOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -279,85 +279,94 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/input_layout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="36dp"
-            android:background="@drawable/btn_accent_tonal"
-            android:clickable="false"
-            android:orientation="horizontal"
-            android:visibility="invisible"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout7"
+            android:layout_width="match_parent"
+            android:layout_height="96dp"
+            android:layout_marginBottom="24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:visibility="invisible">
+            app:layout_constraintStart_toStartOf="parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <LinearLayout
+                android:id="@+id/input_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/btn_accent_tonal"
+                android:clickable="false"
+                android:orientation="horizontal"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="invisible">
 
-                <ImageButton
-                    android:id="@+id/btn_assistant_hide_keyboard"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/btn_accent_tonal"
-                    android:contentDescription="@string/btn_hide_keyboard"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_keyboard_hide" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                <ImageButton
-                    android:id="@+id/btn_assistant_attach"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:background="@drawable/btn_accent_tonal"
-                    android:contentDescription="@string/btn_attach"
-                    android:src="@drawable/ic_attach"
-                    android:tooltipText="@string/btn_attach"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/btn_assistant_hide_keyboard"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_attach" />
+                    <ImageButton
+                        android:id="@+id/btn_assistant_hide_keyboard"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/btn_accent_tonal"
+                        android:contentDescription="@string/btn_hide_keyboard"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_keyboard_hide" />
 
-                <ImageButton
-                    android:id="@+id/btn_assistant_send"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/btn_accent_tonal"
-                    android:contentDescription="@string/btn_send"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_send" />
+                    <ImageButton
+                        android:id="@+id/btn_assistant_attach"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/btn_accent_tonal"
+                        android:contentDescription="@string/btn_attach"
+                        android:src="@drawable/ic_attach"
+                        android:tooltipText="@string/btn_attach"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/btn_assistant_hide_keyboard"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_attach" />
 
-                <EditText
-                    android:id="@+id/assistant_message"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:autofillHints="message"
-                    android:background="@color/transparent"
-                    android:ems="10"
-                    android:gravity="top|start"
-                    android:inputType="text|textMultiLine|textCapSentences"
-                    android:maxHeight="150dp"
-                    android:minHeight="48dp"
-                    android:paddingTop="16dp"
-                    android:paddingBottom="16dp"
-                    android:textSize="16sp"
-                    android:hint="@string/hint_message"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/btn_assistant_send"
-                    app:layout_constraintStart_toEndOf="@+id/btn_assistant_attach"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </LinearLayout>
+                    <ImageButton
+                        android:id="@+id/btn_assistant_send"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/btn_accent_tonal"
+                        android:contentDescription="@string/btn_send"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_send" />
+
+                    <EditText
+                        android:id="@+id/assistant_message"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:autofillHints="message"
+                        android:background="@color/transparent"
+                        android:ems="10"
+                        android:gravity="top|start"
+                        android:hint="@string/hint_message"
+                        android:inputType="text|textMultiLine|textCapSentences"
+                        android:maxHeight="150dp"
+                        android:minHeight="48dp"
+                        android:paddingTop="16dp"
+                        android:paddingBottom="16dp"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/btn_assistant_send"
+                        app:layout_constraintStart_toEndOf="@+id/btn_assistant_attach"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</LinearLayout>
+</RelativeLayout>

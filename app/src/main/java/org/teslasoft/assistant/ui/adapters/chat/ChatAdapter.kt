@@ -95,7 +95,7 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(dataArray[position], selectorProjection[position], position)
+        holder.bind(dataArray[position], position)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -139,7 +139,7 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
         var isEmpty = true
 
         for (projection in selectorProjection) {
-            if (projection["selected"] == "true") {
+            if (projection["selected"].toString() == "true") {
                 isEmpty = false
                 break
             }
@@ -178,15 +178,31 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
         private val btnRetry: ImageButton = itemView.findViewById(R.id.btn_retry)
 
         @SuppressLint("SetTextI18n")
-        open fun bind(chatMessage: HashMap<String, Any>, projection: HashMap<String, Any>, position: Int) {
-            updateUI(chatMessage)
+        open fun bind(chatMessage: HashMap<String, Any>, position: Int) {
 
+            updateUI(chatMessage)
             updateRetryButton(chatMessage, position)
 
             ui.setOnLongClickListener {
-                switchBulkActionState(projection, position)
-
+                switchBulkActionState(position)
                 return@setOnLongClickListener true
+            }
+
+            ui.setOnClickListener {
+                if (bulkActionMode) {
+                    switchBulkActionState(position)
+                }
+            }
+
+            message.setOnLongClickListener {
+                switchBulkActionState(position)
+                return@setOnLongClickListener true
+            }
+
+            message.setOnClickListener {
+                if (bulkActionMode) {
+                    switchBulkActionState(position)
+                }
             }
 
             btnEdit.setOnClickListener {
@@ -201,7 +217,7 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
                 Toast.makeText(context, context.getString(R.string.label_copy), Toast.LENGTH_SHORT).show()
             }
 
-            if (dataArray[position]["message"].toString().contains("data:image")) {
+            if (chatMessage["message"].toString().contains("data:image")) {
                 dalleImage.visibility = View.VISIBLE
                 message.visibility = View.GONE
                 btnCopy.visibility = View.GONE
@@ -243,11 +259,10 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
             } else {
                 updateClassicLayout(chatMessage)
             }
-
-            // TODO: Update selected background
         }
 
         private fun updateBubbleLayout(chatMessage: HashMap<String, Any>) {
+            ui.setBackgroundColor(0x00000000)
             if (chatMessage["isBot"] == true) {
                 displayAvatar()
 
@@ -323,15 +338,18 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
             return output
         }
 
-        private fun switchBulkActionState(projection: HashMap<String, Any>, position: Int) {
-            if ((projection["selected"] ?: "false") == "true") {
-                projection["selected"] = "false"
-                if (checkSelectionIsEmpty()) setBulkActionMode(false)
+        private fun switchBulkActionState(position: Int) {
+            updateUI(dataArray[position])
+            if (selectorProjection[position]["selected"].toString() == "true") {
+                selectorProjection[position]["selected"] = "false"
+                if (checkSelectionIsEmpty()) bulkActionMode = false
             } else {
-                setBulkActionMode(true)
-                projection["selected"] = "true"
+                ui.setBackgroundColor(getSurface3Color(context))
+                bulkActionMode = true
+                selectorProjection[position]["selected"] = "true"
             }
-            listener?.onBulkSelectionChanged(position, (projection["selected"] ?: "false") == "true")
+
+            listener?.onBulkSelectionChanged(position, (selectorProjection[position]["selected"] ?: "false") == "true")
             listener?.onChangeBulkActionMode(bulkActionMode)
         }
 
@@ -397,13 +415,22 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
 
         private fun updateImageClickListener(url: String) {
             dalleImage.setOnClickListener {
-                val sharedPreferences: SharedPreferences = context.getSharedPreferences("tmp", Context.MODE_PRIVATE)
-                val editor: SharedPreferences.Editor = sharedPreferences.edit()
-                editor.putString("tmp", url)
-                editor.apply()
-                val intent = Intent(context, ImageBrowserActivity::class.java).setAction(Intent.ACTION_VIEW)
-                intent.putExtra("tmp", "1")
-                context.startActivity(intent)
+                if (bulkActionMode) {
+                    switchBulkActionState(adapterPosition)
+                } else {
+                    val sharedPreferences: SharedPreferences = context.getSharedPreferences("tmp", Context.MODE_PRIVATE)
+                    val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                    editor.putString("tmp", url)
+                    editor.apply()
+                    val intent = Intent(context, ImageBrowserActivity::class.java).setAction(Intent.ACTION_VIEW)
+                    intent.putExtra("tmp", "1")
+                    context.startActivity(intent)
+                }
+            }
+
+            dalleImage.setOnLongClickListener {
+                switchBulkActionState(adapterPosition)
+                return@setOnLongClickListener true
             }
         }
 
@@ -411,6 +438,11 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
             val dialog = EditMessageDialogFragment.newInstance(chatMessage["message"].toString(), position)
             dialog.setStateChangedListener(this@ChatAdapter)
             dialog.show(context.supportFragmentManager, "EditMessageDialogFragment")
+        }
+
+        fun resetView() {
+            itemView.translationX = 0f
+            itemView.alpha = 1f
         }
     }
 
@@ -431,6 +463,14 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
             ResourcesCompat.getColor(context.resources, R.color.amoled_window_background, null)
         } else {
             SurfaceColors.SURFACE_0.getColor(context)
+        }
+    }
+
+    private fun getSurface3Color(context: Context): Int {
+        return if (isDarkThemeEnabled() && preferences.getAmoledPitchBlack()) {
+            ResourcesCompat.getColor(context.resources, R.color.amoled_accent_100, null)
+        } else {
+            SurfaceColors.SURFACE_4.getColor(context)
         }
     }
 

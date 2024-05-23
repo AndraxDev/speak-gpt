@@ -150,6 +150,7 @@
             android:allowTaskReparenting="true"
             android:allowEmbedded="true"
             android:excludeFromRecents="true"
+            android:windowSoftInputMode="adjustPan"
             android:label="@string/title_speakgpt_mobile_assistant"
             android:launchMode="singleTask">
 

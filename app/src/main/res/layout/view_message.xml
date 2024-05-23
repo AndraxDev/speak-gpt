@@ -20,7 +20,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ui"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:clickable="true">
 
     <TextView
         android:id="@+id/username"
@@ -52,10 +53,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
-        android:focusable="true"
         android:text=""
         android:textColor="@color/text"
-        android:textIsSelectable="true"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/username"

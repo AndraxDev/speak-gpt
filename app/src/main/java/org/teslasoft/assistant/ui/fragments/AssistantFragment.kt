@@ -54,14 +54,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnTouchListener
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ListView
 import android.widget.ProgressBar
+import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -99,6 +102,7 @@ import com.aallam.openai.client.OpenAI
 import com.aallam.openai.client.OpenAIConfig
 import com.aallam.openai.client.OpenAIHost
 import com.aallam.openai.client.RetryStrategy
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -152,6 +156,7 @@ import java.util.Base64
 import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
 
+
 class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListener {
 
     // Init UI
@@ -169,8 +174,8 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
     private var assistantConversation: RecyclerView? = null
     private var assistantLoading: ProgressBar? = null
     private var assistantTitle: TextView? = null
-    private var ui: LinearLayout? = null
-    private var window_: ConstraintLayout? = null
+    private var ui: RelativeLayout? = null
+    private var windowBackground: ConstraintLayout? = null
     private var btnAttachFile: ImageButton? = null
     private var attachedImage: LinearLayout? = null
     private var selectedImage: ImageView? = null
@@ -353,10 +358,10 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() &&  preferences!!.getAmoledPitchBlack()) {
             dialog?.window?.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, mContext?.theme)
-            window_?.setBackgroundResource(R.drawable.assistant_amoled)
+            windowBackground?.setBackgroundResource(R.drawable.assistant_amoled)
         } else {
             dialog?.window?.navigationBarColor = SurfaceColors.SURFACE_0.getColor(mContext ?: return)
-            window_?.setBackgroundResource(R.drawable.assistant_normal)
+            windowBackground?.setBackgroundResource(R.drawable.assistant_normal)
         }
     }
 
@@ -498,7 +503,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                     } else {
                         restoreUIState()
                         assistantMessage?.setText(recognizedText)
-                        showKeyboard()
+                        showKeyboard(true)
                     }
                 }
             }
@@ -836,7 +841,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                 } else {
                     restoreUIState()
                     assistantMessage?.setText(transcription)
-                    showKeyboard()
+                    showKeyboard(true)
                 }
             }
         } catch (e: Exception) {
@@ -2084,7 +2089,17 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        dialog!!.setOnShowListener { dialogInterface: DialogInterface ->
+            val bottomSheetDialog = dialogInterface as BottomSheetDialog
+            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+            if (bottomSheet != null) {
+                val behavior = BottomSheetBehavior.from(bottomSheet)
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
+        }
+
         super.onViewCreated(view, savedInstanceState)
 
         preferences = Preferences.getPreferences(mContext ?: return, "")
@@ -2112,7 +2127,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         assistantLoading = view.findViewById(R.id.assistant_loading)
         assistantTitle = view.findViewById(R.id.assistant_title)
         ui = view.findViewById(R.id.ui)
-        window_ = view.findViewById(R.id.window)
+        windowBackground = view.findViewById(R.id.window)
         btnAttachFile = view.findViewById(R.id.btn_assistant_attach)
         attachedImage = view.findViewById(R.id.attachedImage)
         selectedImage = view.findViewById(R.id.selectedImage)
@@ -2139,6 +2154,14 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
         if (preferences?.getLockAssistantWindow() == false) {
             btnExit?.visibility = View.GONE
+        }
+
+        assistantMessage?.setOnTouchListener { v, event ->
+            v.parent.requestDisallowInterceptTouchEvent(true)
+            when (event.action and MotionEvent.ACTION_MASK) {
+                MotionEvent.ACTION_UP -> v.parent.requestDisallowInterceptTouchEvent(false)
+            }
+            false
         }
 
         visionActions?.visibility = View.GONE
@@ -2289,7 +2312,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         visionActions?.visibility = View.GONE
     }
 
-    private fun showKeyboard() {
+    private fun showKeyboard(sendCursorToTheEnd: Boolean = false) {
         assistantLoading?.visibility = View.GONE
         assistantActionsLayout?.visibility = View.GONE
         assistantInputLayout?.visibility = View.VISIBLE
@@ -2302,6 +2325,13 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
             assistantMessage?.requestFocus()
             val imm = mContext?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.showSoftInput(assistantMessage, InputMethodManager.SHOW_IMPLICIT)
+
+            dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+
+            if (sendCursorToTheEnd) {
+                val textLength = assistantMessage?.text?.length ?: 0
+                assistantMessage?.setSelection(textLength)
+            }
         }, 100)
     }
 
@@ -2311,7 +2341,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         } else {
             restoreUIState()
             assistantMessage?.setText(prompt)
-            showKeyboard()
+            showKeyboard(true)
         }
     }
 

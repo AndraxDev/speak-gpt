@@ -33,6 +33,7 @@ import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.net.Uri
@@ -72,6 +73,7 @@ import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.aallam.ktoken.Encoding
@@ -849,6 +851,10 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         // linearLayoutManager.stackFromEnd = true
 
         chat?.setLayoutManager(linearLayoutManager)
+
+        val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
+        itemTouchHelper.attachToRecyclerView(chat)
+
         chat?.adapter = adapter
 
         adapter?.notifyDataSetChanged()
@@ -881,6 +887,84 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                 override fun onAnimationRepeat(animation: Animation) { /* UNUSED */ }
             })
         }, 50)
+    }
+
+    private val itemTouchCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+        override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+            return false
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
+            val position = viewHolder.adapterPosition
+
+            viewHolder.itemView.post {
+                adapter?.notifyItemChanged(position)
+                adapter?.notifyDataSetChanged() // ??? ...
+
+                if (viewHolder is ChatAdapter.ViewHolder) {
+                    viewHolder.resetView()
+                }
+
+                if (swipeDir == ItemTouchHelper.LEFT) {
+                    MaterialAlertDialogBuilder(this@ChatActivity, R.style.App_MaterialAlertDialog)
+                        .setTitle(R.string.label_confirm_deletion)
+                        .setMessage(R.string.msg_confirm_deletion_chat)
+                        .setPositiveButton(R.string.btn_delete) { _, _ -> run {
+                            adapter?.onDelete(position)
+                        }}
+                        .setNegativeButton(R.string.btn_cancel) { _, _ -> }
+                        .show()
+                }
+            }
+        }
+
+        override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
+                                 dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+
+            val iconDRight = if (maxX(dX.toInt() / 5) == dpToPx(-32)) {
+                ResourcesCompat.getDrawable(resources, R.drawable.ic_delete_action_active, theme)!!
+            } else {
+                ResourcesCompat.getDrawable(resources, R.drawable.ic_delete_action, theme)!!
+            }
+            val itemView = viewHolder.itemView
+            val background = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                setColor(ResourcesCompat.getColor(resources, R.color.transparent, theme))
+                cornerRadius = dpToPx(128).toFloat()
+            }
+
+            if (dX < 0) { // Swiping to the left
+                val iconMargin = 48
+                val iconTop = itemView.top + (itemView.height - iconDRight.intrinsicHeight) / 2
+                val iconBottom = iconTop + iconDRight.intrinsicHeight
+                val iconLeft = itemView.right - iconMargin - iconDRight.intrinsicWidth
+                val iconRight = itemView.right - iconMargin
+                iconDRight.setBounds(iconLeft, iconTop, iconRight, iconBottom)
+                background.setColor(ResourcesCompat.getColor(resources, R.color.delete_tint, theme))
+                if (maxX(dX.toInt() / 5) == dpToPx(-32)) {
+                    background.setColor(ResourcesCompat.getColor(resources, R.color.delete_tint_active, theme))
+                }
+
+                background.setBounds(iconLeft + maxX(dX.toInt() / 5), iconTop + maxX(dX.toInt() / 5), iconRight - maxX(dX.toInt() / 5), iconBottom - maxX(dX.toInt() / 5))
+                background.draw(c)
+                iconDRight.draw(c)
+            }
+
+            if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE && !isCurrentlyActive) {
+                getDefaultUIUtil().clearView(viewHolder.itemView)
+            }
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+        }
+    }
+
+    private fun dpToPx(dp: Int): Int {
+        return (dp * resources?.displayMetrics?.density!!).toInt()
+    }
+
+    private fun maxX(x: Int) : Int {
+        if (x < dpToPx(-32)) return dpToPx(-32)
+        else if (x < dpToPx(32)) return x
+        return dpToPx(32)
     }
 
     private fun getDarkAccentDrawable(drawable: Drawable, context: Context) : Drawable {
