@@ -32,10 +32,14 @@ import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.RectF
 import android.net.Uri
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.LineHeightSpan
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -51,7 +55,16 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.elevation.SurfaceColors
+import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
+import io.noties.markwon.ext.latex.JLatexMathPlugin
+import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
+import io.noties.markwon.ext.tables.TablePlugin
+import io.noties.markwon.ext.tasklist.TaskListPlugin
+import io.noties.markwon.html.HtmlPlugin
+import io.noties.markwon.inlineparser.MarkwonInlineParserPlugin
+import org.commonmark.node.Node
+import org.commonmark.renderer.html.HtmlRenderer
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ChatPreferences
 import org.teslasoft.assistant.preferences.Preferences
@@ -64,6 +77,7 @@ import java.io.FileInputStream
 import java.io.InputStreamReader
 import java.util.Base64
 import java.util.Collections
+
 
 class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, private val selectorProjection: ArrayList<HashMap<String, Any>>, private val context: FragmentActivity, private val preferences: Preferences, private val isAssistant: Boolean, private var chatId: String) : RecyclerView.Adapter<ChatAdapter.ViewHolder>(), EditMessageDialogFragment.StateChangesListener {
 
@@ -176,12 +190,20 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
         private val btnCopy: ImageButton = itemView.findViewById(R.id.btn_copy)
         private val btnEdit: ImageButton = itemView.findViewById(R.id.btn_edit)
         private val btnRetry: ImageButton = itemView.findViewById(R.id.btn_retry)
+        private val web: WebView = itemView.findViewById(R.id.web)
 
-        @SuppressLint("SetTextI18n")
+        private val HTML_TEMPLATE = "data:text/html,<html><head><style>html, body {padding: 0;margin:0;font-family: 'Roboto', sans-serif; font-size: 16px; }</style></head><body>%s</body></html>"
+
+        @SuppressLint("SetTextI18n", "SetJavaScriptEnabled")
         open fun bind(chatMessage: HashMap<String, Any>, position: Int) {
 
             updateUI(chatMessage)
             updateRetryButton(chatMessage, position)
+
+            web.settings.javaScriptEnabled = true
+            web.settings.displayZoomControls = false
+            web.settings.builtInZoomControls = false
+            web.settings.setSupportZoom(false)
 
             ui.setOnLongClickListener {
                 switchBulkActionState(position)
@@ -353,14 +375,85 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
             listener?.onChangeBulkActionMode(bulkActionMode)
         }
 
+        inner class BottomPaddingSpan(private val bottomPadding: Int) : LineHeightSpan {
+            override fun chooseHeight(
+                text: CharSequence?, start: Int, end: Int, spanstartv: Int, v: Int, fm: Paint.FontMetricsInt?
+            ) {
+                fm?.let {
+                    it.bottom += bottomPadding
+                    it.descent += bottomPadding
+                }
+            }
+        }
+
+        @SuppressLint("SetTextI18n")
         private fun applyMarkdown(chatMessage: HashMap<String, Any>, position: Int) {
             if (dataArray[position]["isBot"] == true) {
                 val src = chatMessage["message"].toString()
-                val markwon: Markwon = Markwon.create(context)
-                markwon.setMarkdown(message, src)
+                val markwon: Markwon = Markwon.builder(context)
+                    .usePlugin(HtmlPlugin.create())
+                    .usePlugin(TablePlugin.create(context))
+                    .usePlugin(TaskListPlugin.create(context))
+                    .usePlugin(StrikethroughPlugin.create())
+                     .usePlugin(MarkwonInlineParserPlugin.create())
+                    .usePlugin(JLatexMathPlugin.create(message.textSize) { builder ->
+                        // ENABLE inlines
+                         builder.inlinesEnabled(true)
+                    })
+                    .usePlugin(object : AbstractMarkwonPlugin() {
+                        override fun beforeSetText(
+                            textView: TextView,
+                            markdown: Spanned,
+                        ) {
+                            val spannableBuilder = SpannableStringBuilder(markdown)
+                            val regex = Regex("\\|[^\\|]*\\|")
+                            val matches = regex.findAll(spannableBuilder)
+
+                            for (match in matches) {
+                                val startIndex = match.range.first
+                                val endIndex = match.range.last + 1
+                                spannableBuilder.setSpan(
+                                    BottomPaddingSpan(16),
+                                    startIndex,
+                                    endIndex,
+                                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                                )
+                            }
+                            textView.text = spannableBuilder
+                        }
+                    })
+                    .build()
+
+                markwon.setMarkdown(message, parseLatex(src))
             } else {
                 message.text = chatMessage["message"].toString()
             }
+        }
+
+        private fun parseLatex(markdown: String): String {
+            val pattern = Regex("(`[^`]*`|```[\\s\\S]*?```)|\\\\\\[|\\\\\\]|\\\\\\(|\\\\\\)")
+            val sb = StringBuilder()
+            var index = 0
+
+            pattern.findAll(markdown).forEach { match ->
+                if (match.groups[1] != null) { // Code block
+                    sb.append(markdown.substring(index, match.range.first))
+                    sb.append(match.value)
+                    index = match.range.last + 1
+                } else { // LaTeX \[, \], \(, or \) to be replaced
+                    sb.append(markdown.substring(index, match.range.first))
+                    when (match.value) {
+                        """\[""" -> sb.append("""$$""").append("\n").append("""\[""")
+                        """\]""" -> sb.append("""\]""").append("\n").append("""$$""")
+                        """\(""" -> sb.append("""$$\(""")
+                        """\)""" -> sb.append("""\)$$""")
+                    }
+                    index = match.range.last + 1
+                }
+            }
+            sb.append(markdown.substring(index))
+
+            return sb.toString()
         }
 
         @SuppressLint("SetTextI18n")

@@ -4,6 +4,11 @@ plugins {
     id 'kotlinx-serialization'
 }
 
+configurations {
+    cleanedAnnotations
+    implementation.exclude group: 'org.jetbrains' , module:'annotations'
+}
+
 android {
     namespace 'org.teslasoft.assistant'
     // compileSdkPreview "VanillaIceCream"
@@ -64,9 +69,14 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-v4'
     }
     implementation 'io.noties.markwon:core:4.6.2'
+    implementation 'io.noties.markwon:html:4.6.2'
+    implementation 'io.noties.markwon:syntax-highlight:4.6.2'
+    implementation 'io.noties.markwon:recycler:4.6.2'
+    implementation 'io.noties.markwon:recycler-table:4.6.2'
     implementation 'io.noties.markwon:ext-strikethrough:4.6.2'
     implementation 'io.noties.markwon:ext-tables:4.6.2'
     implementation 'io.noties.markwon:ext-tasklist:4.6.2'
+    implementation 'io.noties.markwon:ext-latex:4.6.2'
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.14'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'androidx.security:security-crypto-ktx:1.1.0-alpha06'
@@ -75,4 +85,7 @@ dependencies {
     implementation 'org.conscrypt:conscrypt-android:2.5.2'
     implementation 'com.aallam.ktoken:ktoken:0.3.0'
     implementation 'androidx.core:core-splashscreen:1.0.1'
+    implementation ('io.noties:prism4j:2.0.0') {
+        exclude group: 'org.jetbrains', module: 'annotations'
+    }
 }
