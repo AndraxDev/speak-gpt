@@ -190,9 +190,6 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
         private val btnCopy: ImageButton = itemView.findViewById(R.id.btn_copy)
         private val btnEdit: ImageButton = itemView.findViewById(R.id.btn_edit)
         private val btnRetry: ImageButton = itemView.findViewById(R.id.btn_retry)
-        private val web: WebView = itemView.findViewById(R.id.web)
-
-        private val HTML_TEMPLATE = "data:text/html,<html><head><style>html, body {padding: 0;margin:0;font-family: 'Roboto', sans-serif; font-size: 16px; }</style></head><body>%s</body></html>"
 
         @SuppressLint("SetTextI18n", "SetJavaScriptEnabled")
         open fun bind(chatMessage: HashMap<String, Any>, position: Int) {
@@ -200,10 +197,11 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
             updateUI(chatMessage)
             updateRetryButton(chatMessage, position)
 
-            web.settings.javaScriptEnabled = true
-            web.settings.displayZoomControls = false
-            web.settings.builtInZoomControls = false
-            web.settings.setSupportZoom(false)
+            if (selectorProjection[position]["selected"].toString() == "true") {
+                ui.setBackgroundColor(getSurface3Color(context))
+            } else {
+                updateUI(chatMessage)
+            }
 
             ui.setOnLongClickListener {
                 switchBulkActionState(position)
@@ -228,7 +226,9 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
             }
 
             btnEdit.setOnClickListener {
-                openEditDialog(chatMessage, position)
+                if (!bulkActionMode) {
+                    openEditDialog(chatMessage, position)
+                }
             }
 
             btnCopy.setImageResource(R.drawable.ic_copy)
@@ -268,7 +268,9 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
                 btnRetry.visibility = View.VISIBLE
 
                 btnRetry.setOnClickListener {
-                    listener?.onRetryClick()
+                    if (!bulkActionMode) {
+                        listener?.onRetryClick()
+                    }
                 }
             } else {
                 btnRetry.visibility = View.GONE
@@ -397,7 +399,6 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
                     .usePlugin(StrikethroughPlugin.create())
                      .usePlugin(MarkwonInlineParserPlugin.create())
                     .usePlugin(JLatexMathPlugin.create(message.textSize) { builder ->
-                        // ENABLE inlines
                          builder.inlinesEnabled(true)
                     })
                     .usePlugin(object : AbstractMarkwonPlugin() {

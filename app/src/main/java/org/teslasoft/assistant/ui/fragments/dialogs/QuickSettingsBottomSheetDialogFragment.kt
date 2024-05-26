@@ -18,6 +18,7 @@ package org.teslasoft.assistant.ui.fragments.dialogs
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -95,6 +96,8 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
     private var usageIn = 0
     private var usageOut = 0
 
+    private var isAttached = false
+
     private var requestNetwork: RequestNetwork? = null
 
     private var requestListener: RequestNetwork.RequestListener = object : RequestNetwork.RequestListener {
@@ -128,6 +131,18 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         override fun onErrorResponse(tag: String, message: String) {
             textCost?.text = getString(R.string.msg_error_calculating_cost)
         }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        isAttached = true
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+
+        isAttached = false
     }
 
     private var logitBiasesActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -226,13 +241,15 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
             }
         }
 
-        if (inPrice == 0.0 && outPrice == 0.0) {
-            textCost?.text = getString(R.string.msg_cost_not_enough_data)
-        } else {
-            val costIn = inPrice * usageIn
-            val costOut = outPrice * usageOut
-            val costTotal = costIn + costOut
-            textCost?.text = String.format(getString(R.string.cost_template), costIn, costOut, costTotal)
+        if (isAttached) {
+            if (inPrice == 0.0 && outPrice == 0.0) {
+                textCost?.text = getString(R.string.msg_cost_not_enough_data)
+            } else {
+                val costIn = inPrice * usageIn
+                val costOut = outPrice * usageOut
+                val costTotal = costIn + costOut
+                textCost?.text = String.format(getString(R.string.cost_template), costIn, costOut, costTotal)
+            }
         }
         return hashMapOf()
     }

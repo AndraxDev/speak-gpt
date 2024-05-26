@@ -75,12 +75,13 @@
                 android:id="@+id/image_frame"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:paddingTop="8dp"
                 android:visibility="visible"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/web">
+                app:layout_constraintTop_toBottomOf="@+id/message">
 
                 <ImageView
                     android:id="@+id/dalle_image"
@@ -136,13 +137,6 @@
                     android:tooltipText="@string/btn_msg_edit"
                     app:srcCompat="@drawable/ic_edit" />
             </LinearLayout>
-
-            <WebView
-                android:id="@+id/web"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/message" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>

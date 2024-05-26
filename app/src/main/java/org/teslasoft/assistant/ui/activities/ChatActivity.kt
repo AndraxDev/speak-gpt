@@ -37,6 +37,7 @@ import android.graphics.drawable.GradientDrawable
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
@@ -65,6 +66,8 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import android.window.OnBackInvokedDispatcher
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -182,6 +185,13 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
     private var visionActions: LinearLayout? = null
     private var btnVisionActionCamera: ImageButton? = null
     private var btnVisionActionGallery: ImageButton? = null
+    private var bulkContainer: ConstraintLayout? = null
+    private var btnSelectAll: ImageButton? = null
+    private var btnDeselectAll: ImageButton? = null
+    private var btnDeleteSelected: ImageButton? = null
+    private var btnCopySelected: ImageButton? = null
+    private var btnShareSelected: ImageButton? = null
+    private var selectedCount: TextView? = null
 
     // Init chat
     private var messages: ArrayList<HashMap<String, Any>> = arrayListOf()
@@ -652,6 +662,28 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        if (Build.VERSION.SDK_INT >= 33) {
+            onBackInvokedDispatcher.registerOnBackInvokedCallback(
+                OnBackInvokedDispatcher.PRIORITY_DEFAULT
+            ) {
+                if (bulkSelectionMode) {
+                    deselectAll()
+                } else {
+                    finish()
+                }
+            }
+        } else {
+            onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (bulkSelectionMode) {
+                        deselectAll()
+                    } else {
+                        finish()
+                    }
+                }
+            })
+        }
+
         setContentView(R.layout.activity_chat)
 
         preloadAmoled()
@@ -781,6 +813,16 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         visionActions = findViewById(R.id.vision_action_selector)
         btnVisionActionCamera = findViewById(R.id.action_camera)
         btnVisionActionGallery = findViewById(R.id.action_gallery)
+        bulkContainer = findViewById(R.id.bulk_container)
+
+        btnSelectAll = findViewById(R.id.btn_select_all)
+        btnDeselectAll = findViewById(R.id.btn_deselect_all)
+        btnDeleteSelected = findViewById(R.id.btn_delete_selected)
+        btnCopySelected = findViewById(R.id.btn_copy_selected)
+        btnShareSelected = findViewById(R.id.btn_share_selected)
+        selectedCount = findViewById(R.id.text_selected_count)
+
+        bulkContainer?.visibility = View.GONE
 
         chat?.itemAnimator = null
 
@@ -799,6 +841,18 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
         btnMicro?.setImageResource(R.drawable.ic_microphone)
         btnSettings?.setImageResource(R.drawable.ic_settings)
+
+        btnSelectAll?.setOnClickListener {
+            selectAll()
+        }
+
+        btnDeselectAll?.setOnClickListener {
+            deselectAll()
+        }
+
+        btnDeleteSelected?.setOnClickListener {
+            deleteSelectedMessages()
+        }
 
         btnExport?.background = getDarkAccentDrawable(
             AppCompatResources.getDrawable(
@@ -905,7 +959,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                     viewHolder.resetView()
                 }
 
-                if (swipeDir == ItemTouchHelper.LEFT) {
+                if (swipeDir == ItemTouchHelper.LEFT && !bulkSelectionMode) {
                     MaterialAlertDialogBuilder(this@ChatActivity, R.style.App_MaterialAlertDialog)
                         .setTitle(R.string.label_confirm_deletion)
                         .setMessage(R.string.msg_confirm_deletion_chat)
@@ -2633,12 +2687,21 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
     override fun onBulkSelectionChanged(position: Int, selected: Boolean) {
         messagesSelectionProjection[position]["selected"] = selected
+        selectedCount?.text = messagesSelectionProjection.count { it["selected"] == true }.toString()
     }
 
     override fun onChangeBulkActionMode(mode: Boolean) {
         bulkSelectionMode = mode
 
-        // TODO: Implement bulk action mode
+        if (mode) {
+            if (android.os.Build.VERSION.SDK_INT <= 34) {
+                window.statusBarColor = ResourcesCompat.getColor(resources, R.color.accent_250, theme)
+            }
+            bulkContainer?.visibility = View.VISIBLE
+        } else {
+            reloadAmoled()
+            bulkContainer?.visibility = View.GONE
+        }
     }
 
     private fun openAIMissing(feature: String, prompt: String) {
@@ -2778,5 +2841,58 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                 )
             )
         }
+    }
+
+    private fun selectAll() {
+        adapter?.selectAll()
+
+        for (i in messagesSelectionProjection.indices) {
+            messagesSelectionProjection[i]["selected"] = true
+        }
+
+        selectedCount?.text = messagesSelectionProjection.size.toString()
+        bulkSelectionMode = true
+        bulkContainer?.visibility = View.VISIBLE
+        adapter?.notifyDataSetChanged()
+    }
+
+    private fun deselectAll() {
+        adapter?.unselectAll()
+
+        for (i in messagesSelectionProjection.indices) {
+            messagesSelectionProjection[i]["selected"] = false
+        }
+
+        selectedCount?.text = "0"
+        bulkSelectionMode = false
+        bulkContainer?.visibility = View.GONE
+        adapter?.notifyDataSetChanged()
+    }
+
+    private fun deleteSelectedMessages() {
+        MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
+            .setTitle("Delete selected messages")
+            .setMessage("Are you sure you want to delete selected messages?")
+            .setPositiveButton("Delete") { _, _ ->
+                var pos = 0
+                var p = 0
+                while (pos < messagesSelectionProjection.size) {
+                    if (messagesSelectionProjection[pos]["selected"].toString() == "true") {
+                        messages.removeAt(pos-p)
+                        p++
+                    }
+
+                    pos++
+                }
+
+                syncChatProjection()
+                saveSettings()
+                adapter?.notifyDataSetChanged()
+                updateMessagesSelectionProjection()
+                deselectAll()
+                calculateCost()
+            }
+            .setNegativeButton("Cancel") { _, _ -> }
+            .show()
     }
 }

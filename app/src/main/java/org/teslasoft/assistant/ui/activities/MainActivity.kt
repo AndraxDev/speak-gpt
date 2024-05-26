@@ -150,7 +150,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                 }
             }
         } else {
-            onBackPressedDispatcher.addCallback(this /* lifecycle owner */, object : OnBackPressedCallback(true) {
+            onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     if (debuggerWindow?.visibility == View.VISIBLE) {
                         debuggerWindow?.visibility = View.GONE

@@ -23,6 +23,93 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bulk_container"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:background="@color/accent_250"
+        android:clickable="true"
+        android:elevation="3dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btn_select_all"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/btn_accent_tonal_v6"
+            android:contentDescription="Select all"
+            android:src="@drawable/ic_select_all"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_select_all" />
+
+        <ImageButton
+            android:id="@+id/btn_deselect_all"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/btn_accent_tonal_v6"
+            android:contentDescription="Deselect all"
+            android:src="@drawable/ic_deselect_all"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btn_select_all"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_deselect_all" />
+
+        <ImageButton
+            android:id="@+id/btn_share_selected"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/btn_accent_tonal_v6"
+            android:contentDescription="Share selected"
+            android:src="@drawable/ic_share"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_share" />
+
+        <ImageButton
+            android:id="@+id/btn_copy_selected"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/btn_accent_tonal_v6"
+            android:contentDescription="Copy selected"
+            android:src="@drawable/ic_copy_normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_share_selected"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_copy_normal" />
+
+        <ImageButton
+            android:id="@+id/btn_delete_selected"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/btn_accent_tonal_v6"
+            android:contentDescription="Delete selected"
+            android:src="@drawable/ic_delete"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_copy_selected"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_delete" />
+
+        <TextView
+            android:id="@+id/text_selected_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="0"
+            android:textColor="@color/text_title"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btn_deselect_all"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <LinearLayout
         android:id="@+id/thread_loader"
         android:layout_width="0dp"
