@@ -465,7 +465,6 @@
     <string name="btn_post">Опублікувати</string>
     <string name="msg_error_calculating_cost">Вартість: Помилка розрахунку вартості. Будь ласка, перевірте ваше з\'єднання.</string>
     <string name="msg_cost_not_enough_data"><![CDATA[Вартість: <SpeakGPT не має достатньо даних для розрахунку вартості цієї моделі. Дивіться документацію і розраховуйте вартість вручну на основі вищезазначеного використання.>]]></string>
-    <string name="cost_template">Вартість: $%.5f вх / $%.5f вих\nЗагалом: $%.5f</string>
     <string name="cost_loading">Вартість: Завантаження...</string>
     <string name="cost_counter_usage">Використання (токени): %s вх / %s вих</string>
 </resources>

@@ -19,6 +19,8 @@ package org.teslasoft.assistant.ui.activities
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -814,7 +816,6 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         btnVisionActionCamera = findViewById(R.id.action_camera)
         btnVisionActionGallery = findViewById(R.id.action_gallery)
         bulkContainer = findViewById(R.id.bulk_container)
-
         btnSelectAll = findViewById(R.id.btn_select_all)
         btnDeselectAll = findViewById(R.id.btn_deselect_all)
         btnDeleteSelected = findViewById(R.id.btn_delete_selected)
@@ -852,6 +853,14 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
         btnDeleteSelected?.setOnClickListener {
             deleteSelectedMessages()
+        }
+
+        btnCopySelected?.setOnClickListener {
+            copySelectedMessages()
+        }
+
+        btnShareSelected?.setOnClickListener {
+            shareSelectedMessages()
         }
 
         btnExport?.background = getDarkAccentDrawable(
@@ -2894,5 +2903,37 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
             }
             .setNegativeButton("Cancel") { _, _ -> }
             .show()
+    }
+
+    private fun copySelectedMessages() {
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("Copied messages", conversationToString())
+        clipboard.setPrimaryClip(clip)
+        Toast.makeText(this, "Messages copied to clipboard", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun shareSelectedMessages() {
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "text/plain"
+        intent.putExtra(Intent.EXTRA_TEXT, conversationToString())
+        startActivity(Intent.createChooser(intent, "Share messages"))
+    }
+
+    private fun conversationToString() : String {
+        val stringBuilder = StringBuilder()
+
+        for (m in messagesSelectionProjection) {
+            if (m["selected"].toString() == "true") {
+                if (m["isBot"] == true) {
+                    stringBuilder.append("[Bot] >\n")
+                } else {
+                    stringBuilder.append("[User] >\n")
+                }
+                stringBuilder.append(m["message"])
+                stringBuilder.append("\n\n")
+            }
+        }
+
+        return stringBuilder.toString()
     }
 }

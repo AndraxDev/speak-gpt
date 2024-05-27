@@ -471,7 +471,6 @@
     <string name="btn_post">Publicar</string>
     <string name="msg_error_calculating_cost">Coste: Error al calcular el coste. Por favor, verifica tu conexión.</string>
     <string name="msg_cost_not_enough_data"><![CDATA[Coste: <SpeakGPT no tiene suficientes datos para calcular el coste para este modelo. Consulta la documentación y calcula el coste manualmente basándote en el uso anterior.>]]></string>
-    <string name="cost_template">Coste: $%.5f entrada / $%.5f salida\nTotal: $%.5f</string>
     <string name="cost_loading">Coste: Cargando...</string>
     <string name="cost_counter_usage">Uso (tokens): %s entrada / %s salida</string>
 

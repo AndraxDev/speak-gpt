@@ -119,7 +119,7 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
                         val costIn = priceIn * usageIn
                         val costOut = priceOut * usageOut
                         val costTotal = costIn + costOut
-                        textCost?.text = String.format("Cost: $%.5f in / $%.5f out\nTotal: $%.5f", costIn, costOut, costTotal)
+                        textCost?.text = String.format(getString(R.string.cost_template), costIn, costOut, costTotal, priceIn * 1000000, priceOut * 1000000)
                         break
                     }
                 }
@@ -211,25 +211,17 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
                 inPrice = 0.00006
                 outPrice = 0.00012
             }
+            model.contains("gpt-4o") -> {
+                inPrice = 0.000005
+                outPrice = 0.000015
+            }
             model.contains("gpt-4") -> {
                 inPrice = 0.00003
                 outPrice = 0.00006
             }
-            model.contains("gpt-3.5") && model.contains("0125") -> {
-                inPrice = 0.0000005
-                outPrice = 0.0000015
-            }
             (model.contains("gpt-3.5") && model.contains("instruct")) || model == "gpt-3.5-turbo-0613" || model == "gpt-3.5-turbo-0301" -> {
                 inPrice = 0.0000015
                 outPrice = 0.000002
-            }
-            model.contains("davinci") -> {
-                inPrice = 0.000002
-                outPrice = 0.000002
-            }
-            model.contains("babbage") -> {
-                inPrice = 0.0000004
-                outPrice = 0.0000004
             }
             model == "gpt-3.5-turbo-1106" -> {
                 inPrice = 0.000001
@@ -238,6 +230,18 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
             model == "gpt-3.5-turbo-16k-0613" -> {
                 inPrice = 0.000003
                 outPrice = 0.000004
+            }
+            model.contains("gpt-3.5") -> {
+                inPrice = 0.0000005
+                outPrice = 0.0000015
+            }
+            model.contains("davinci") -> {
+                inPrice = 0.000002
+                outPrice = 0.000002
+            }
+            model.contains("babbage") -> {
+                inPrice = 0.0000004
+                outPrice = 0.0000004
             }
         }
 
@@ -248,7 +252,7 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
                 val costIn = inPrice * usageIn
                 val costOut = outPrice * usageOut
                 val costTotal = costIn + costOut
-                textCost?.text = String.format(getString(R.string.cost_template), costIn, costOut, costTotal)
+                textCost?.text = String.format(getString(R.string.cost_template), costIn, costOut, costTotal, inPrice * 1000000, outPrice * 1000000)
             }
         }
         return hashMapOf()
@@ -322,8 +326,8 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
             requestNetwork?.setHeaders(hashMapOf("Authorization" to "Bearer " + apiEndpoint?.apiKey))
             requestNetwork?.startRequestNetwork("GET", apiEndpoint?.host + "models", "A", requestListener)
         } else {
-            textUsage?.text = "Usage: <Usage not available in playground>"
-            textCost?.text = "Cost: <Cost not available in playground>"
+            textUsage?.text = "Usage: <Usage is not available in playground>"
+            textCost?.text = "Cost: <Cost is not available in playground>"
             usageCost?.visibility = View.GONE
         }
 

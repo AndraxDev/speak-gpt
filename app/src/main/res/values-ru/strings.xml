@@ -467,7 +467,6 @@
     <string name="btn_post">Опубликовать</string>
     <string name="msg_error_calculating_cost">Стоимость: Ошибка при расчете стоимости. Пожалуйста, проверьте ваше соединение.</string>
     <string name="msg_cost_not_enough_data"><![CDATA[Стоимость: <SpeakGPT не имеет достаточно данных для расчета стоимости этой модели. Изучите документацию и рассчитайте стоимость вручную на основе вышеуказанного использования.>]]></string>
-    <string name="cost_template">Стоимость: $%.5f в / $%.5f из\nИтого: $%.5f</string>
     <string name="cost_loading">Стоимость: Загрузка...</string>
     <string name="cost_counter_usage">Использование (токены): %s в / %s из</string>
 </resources>

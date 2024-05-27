@@ -495,8 +495,8 @@
     <string name="btn_post">Post</string>
     <string name="msg_error_calculating_cost">Cost: Error calculating cost. Please check your connection.</string>
     <string name="msg_cost_not_enough_data"><![CDATA[Cost: <SpeakGPT hasn\'t enough data to calculate cost for this model. Look for documentation and calculate cost manually based on the usage above.>]]></string>
-    <string name="cost_template">Cost: $%.5f in / $%.5f out\nTotal: $%.5f</string>
+    <string name="cost_template" translatable="false">Cost: $%.5f in / $%.5f out\nTotal: $%.5f\nPrice: $%.2f (in) $%.2f (out) per 1M tokens</string>
     <string name="cost_loading">Cost: Loading...</string>
     <string name="cost_counter_usage">Usage (tokens): %s in / %s out</string>
-    <string name="prompt_no_model_provided">No model has been provided.</string>
+    <string name="prompt_no_model_provided" translatable="false">No model has been provided.</string>
 </resources>

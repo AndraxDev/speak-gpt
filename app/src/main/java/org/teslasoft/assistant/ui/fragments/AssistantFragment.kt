@@ -20,6 +20,8 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -183,8 +185,14 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
     private var visionActions: LinearLayout? = null
     private var btnVisionActionCamera: ImageButton? = null
     private var btnVisionActionGallery: ImageButton? = null
-
     private var animation: AnimatedVectorDrawable? = null
+    private var bulkContainer: ConstraintLayout? = null
+    private var btnSelectAll: ImageButton? = null
+    private var btnDeselectAll: ImageButton? = null
+    private var btnDeleteSelected: ImageButton? = null
+    private var btnCopySelected: ImageButton? = null
+    private var btnShareSelected: ImageButton? = null
+    private var selectedCount: TextView? = null
 
     // Init chat
     private var messages: ArrayList<HashMap<String, Any>> = arrayListOf()
@@ -2135,6 +2143,15 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         visionActions = view.findViewById(R.id.vision_action_selector)
         btnVisionActionCamera = view.findViewById(R.id.action_camera)
         btnVisionActionGallery = view.findViewById(R.id.action_gallery)
+        bulkContainer = view.findViewById(R.id.bulk_container)
+        btnSelectAll = view.findViewById(R.id.btn_select_all)
+        btnDeselectAll = view.findViewById(R.id.btn_deselect_all)
+        btnDeleteSelected = view.findViewById(R.id.btn_delete_selected)
+        btnCopySelected = view.findViewById(R.id.btn_copy_selected)
+        btnShareSelected = view.findViewById(R.id.btn_share_selected)
+        selectedCount = view.findViewById(R.id.text_selected_count)
+
+        bulkContainer?.visibility = View.GONE
 
         assistantConversation?.layoutManager = LinearLayoutManager(mContext)
         assistantConversation?.itemAnimator = null
@@ -2148,6 +2165,26 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                 }
             }
         })
+
+        btnSelectAll?.setOnClickListener {
+            selectAll()
+        }
+
+        btnDeselectAll?.setOnClickListener {
+            deselectAll()
+        }
+
+        btnDeleteSelected?.setOnClickListener {
+            deleteSelectedMessages()
+        }
+
+        btnCopySelected?.setOnClickListener {
+            copySelectedMessages()
+        }
+
+        btnShareSelected?.setOnClickListener {
+            shareSelectedMessages()
+        }
 
         btnSaveToChat?.setImageResource(R.drawable.ic_storage)
         btnExit?.setImageResource(R.drawable.ic_back)
@@ -2571,12 +2608,18 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
     override fun onBulkSelectionChanged(position: Int, selected: Boolean) {
         messagesSelectionProjection[position]["selected"] = selected
+        selectedCount?.text = messagesSelectionProjection.count { it["selected"] == true }.toString()
     }
 
     override fun onChangeBulkActionMode(mode: Boolean) {
         bulkSelectionMode = mode
 
-        // TODO: Implement bulk selection
+        if (mode) {
+            bulkContainer?.visibility = View.VISIBLE
+        } else {
+            reloadAmoled()
+            bulkContainer?.visibility = View.GONE
+        }
     }
 
     private fun updateMessagesSelectionProjection() {
@@ -2680,5 +2723,89 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
             "tts" -> speak(prompt)
             "whisper" -> handleWhisperSpeechRecognition()
         }
+    }
+
+    private fun selectAll() {
+        adapter?.selectAll()
+
+        for (i in messagesSelectionProjection.indices) {
+            messagesSelectionProjection[i]["selected"] = true
+        }
+
+        selectedCount?.text = messagesSelectionProjection.size.toString()
+        bulkSelectionMode = true
+        bulkContainer?.visibility = View.VISIBLE
+        adapter?.notifyDataSetChanged()
+    }
+
+    private fun deselectAll() {
+        adapter?.unselectAll()
+
+        for (i in messagesSelectionProjection.indices) {
+            messagesSelectionProjection[i]["selected"] = false
+        }
+
+        selectedCount?.text = "0"
+        bulkSelectionMode = false
+        bulkContainer?.visibility = View.GONE
+        adapter?.notifyDataSetChanged()
+    }
+
+    private fun deleteSelectedMessages() {
+        MaterialAlertDialogBuilder(mContext ?: return, R.style.App_MaterialAlertDialog)
+            .setTitle("Delete selected messages")
+            .setMessage("Are you sure you want to delete selected messages?")
+            .setPositiveButton("Delete") { _, _ ->
+                var pos = 0
+                var p = 0
+                while (pos < messagesSelectionProjection.size) {
+                    if (messagesSelectionProjection[pos]["selected"].toString() == "true") {
+                        messages.removeAt(pos-p)
+                        p++
+                    }
+
+                    pos++
+                }
+
+                syncChatProjection()
+                saveSettings()
+                adapter?.notifyDataSetChanged()
+                updateMessagesSelectionProjection()
+                deselectAll()
+            }
+            .setNegativeButton("Cancel") { _, _ -> }
+            .show()
+    }
+
+    private fun copySelectedMessages() {
+        val clipboard = mContext?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("Copied messages", conversationToString())
+        clipboard.setPrimaryClip(clip)
+        Toast.makeText(mContext, "Messages copied to clipboard", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun shareSelectedMessages() {
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "text/plain"
+        intent.putExtra(Intent.EXTRA_TEXT, conversationToString())
+        startActivity(Intent.createChooser(intent, "Share messages"))
+    }
+
+    private fun conversationToString() : String {
+        val stringBuilder = StringBuilder()
+
+        for (m in messagesSelectionProjection) {
+            if (m["selected"].toString() == "true") {
+                if (m["isBot"] == true) {
+                    stringBuilder.append("[Bot] >\n")
+                } else {
+                    stringBuilder.append("[User] >\n")
+                }
+                stringBuilder.append(m["message"])
+                stringBuilder.append("\n\n")
+            }
+        }
+
+        return stringBuilder.toString()
     }
 }

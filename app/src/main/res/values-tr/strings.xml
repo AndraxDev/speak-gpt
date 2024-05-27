@@ -466,7 +466,6 @@
     <string name="btn_post">Gönder</string>
     <string name="msg_error_calculating_cost">Maliyet: Maliyet hesaplanırken hata. Lütfen bağlantınızı kontrol edin.</string>
     <string name="msg_cost_not_enough_data"><![CDATA[Maliyet: <SpeakGPT\'in bu model için maliyeti hesaplamak için yeterli verisi yok. Belgeden yararlanarak kullanımı üzerinden maliyeti manuel olarak hesaplayın.>]]></string>
-    <string name="cost_template">Maliyet: $%.5f gir/ $%.5f çık\nToplam: $%.5f</string>
     <string name="cost_loading">Maliyet: Yükleniyor...</string>
     <string name="cost_counter_usage">Kullanım (tokenler): %s gir / %s çık</string>
 </resources>
