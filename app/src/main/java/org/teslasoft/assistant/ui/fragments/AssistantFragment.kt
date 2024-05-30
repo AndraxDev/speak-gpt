@@ -622,6 +622,10 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
             adapter = ChatAdapter(messages, messagesSelectionProjection, (mContext as FragmentActivity), preferences!!, true, "temp_state")
             adapter?.setOnUpdateListener(this)
 
+            if (preferences?.getChatsAutosave()!!) {
+                adapter?.setChatId(chatID)
+            }
+
             assistantConversation?.adapter = adapter
 
             adapter?.notifyDataSetChanged()
@@ -1929,6 +1933,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         btnAssistantSend?.isEnabled = true
         assistantLoading?.visibility = View.GONE
         isProcessing = false
+        isRecording = false
         cancelState = false
         btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
         animation?.stop()
@@ -2358,6 +2363,16 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         btnAssistantHideKeyboard?.isEnabled = true
         btnAssistantVoice?.visibility = View.GONE
 
+        try {
+            cancelState = true
+            stopWhisper()
+            btnAssistantVoice?.isEnabled = true
+            btnAssistantSend?.isEnabled = true
+            isRecording = false
+            isProcessing = false
+            assistantLoading?.visibility = View.GONE
+        } catch (e: Exception) { /* ignored */ }
+
         Handler(Looper.getMainLooper()).postDelayed({
             assistantMessage?.requestFocus()
             val imm = mContext?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -2510,8 +2525,9 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
     private fun removeLastAssistantMessageIfAvailable() {
         if (messages.isNotEmpty() && messages.size - 1 > 0 && messages[messages.size - 1]["isBot"] == true) {
-            // messages.removeAt(messages.size - 1)
-            adapter?.onDelete(messages.size - 1)
+            messages.removeAt(messages.size - 1)
+            // adapter?.onDelete(messages.size - 1)
+            adapter?.notifyItemRemoved(messages.size - 1)
         }
 
         if (chatMessages.isNotEmpty() && chatMessages.size - 1 > 0 && chatMessages[chatMessages.size - 1].role == Role.Assistant) {
