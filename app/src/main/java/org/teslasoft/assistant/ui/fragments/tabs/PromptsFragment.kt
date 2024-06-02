@@ -321,9 +321,9 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 query = s.toString()
 
-                if (query.contains("type:gpt")) {
+                if (query.lowercase().contains("type:gpt")) {
                     updateModelsPanel(R.color.accent_100, R.color.accent_900, R.color.accent_100, R.color.accent_900, R.color.window_background, R.color.accent_900)
-                } else if (query.contains("type:dall-e")) {
+                } else if (query.lowercase().contains("type:dall-e")) {
                     updateModelsPanel(R.color.accent_100, R.color.accent_100, R.color.accent_900, R.color.accent_900, R.color.accent_900, R.color.window_background)
                 } else {
                     updateModelsPanel(R.color.accent_900, R.color.accent_100, R.color.accent_100, R.color.window_background, R.color.accent_900, R.color.accent_900)

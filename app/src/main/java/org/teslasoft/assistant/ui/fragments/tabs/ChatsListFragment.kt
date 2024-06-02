@@ -399,7 +399,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchTerm = s.toString().trim()
-                if (s.toString().trim() == "") {
+                if (s.toString().lowercase().trim() == "") {
                     adapter = ChatListAdapter(chats, selectionProjection, this@ChatsListFragment)
                     adapter?.setOnInteractionListener(this@ChatsListFragment)
                     chatsList?.adapter = adapter
@@ -408,7 +408,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
                     val filtered: ArrayList<HashMap<String, String>> = arrayListOf()
 
                     for (i in chats) {
-                        if (i["name"]?.contains(s.toString().trim()) == true || i["name"] == s.toString().trim()) {
+                        if (i["name"]?.lowercase()?.contains(s.toString().lowercase().trim()) == true || i["name"] == s.toString().lowercase().trim()) {
                             filtered.add(i)
                         }
                     }
