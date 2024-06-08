@@ -1046,10 +1046,18 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         } else if ((mContext as Activity?)?.intent?.action == Intent.ACTION_SEND && ((mContext as Activity?)?.intent?.type == "image/png" || (mContext as Activity?)?.intent?.type == "image/jpeg")) {
             val uri = (mContext as Activity?)?.intent?.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
             if (uri != null) {
-                val bitmap = readFile(uri)
+                var bitmap: Bitmap? = null
+
+                val th = Thread {
+                    bitmap = readFile(uri)
+                }
+
+                th.start()
+                th.join()
+
                 if (bitmap != null) {
                     attachedImage?.visibility = View.VISIBLE
-                    selectedImage?.setImageBitmap(roundCorners(bitmap, 80f))
+                    selectedImage?.setImageBitmap(roundCorners(bitmap!!, 80f))
                     imageIsSelected = true
 
                     val mimeType = mContext?.contentResolver?.getType(uri)
@@ -1066,19 +1074,31 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
                     // Step 3: Convert the Bitmap to a Base64-encoded string
                     val outputStream = ByteArrayOutputStream()
-                    bitmap.compress(format, 100, outputStream) // Note: Adjust the quality as necessary
-                    val base64Image = android.util.Base64.encodeToString(outputStream.toByteArray(), android.util.Base64.DEFAULT)
 
-                    // Step 4: Generate the data URL
-                    val imageType = when(format) {
-                        Bitmap.CompressFormat.JPEG -> "jpeg"
-                        Bitmap.CompressFormat.PNG -> "png"
-                        // Add more mappings as necessary
-                        else -> ""
-                    }
+                    Thread {
+                        bitmap!!.compress(format, 100, outputStream) // Note: Adjust the quality as necessary
+                        val base64Image = android.util.Base64.encodeToString(outputStream.toByteArray(), android.util.Base64.DEFAULT)
 
-                    baseImageString = "data:image/$imageType;base64,$base64Image"
-                    showKeyboard()
+                        // Step 4: Generate the data URL
+                        val imageType = when (format) {
+                            Bitmap.CompressFormat.JPEG -> {
+                                selectedImageType = "jpg"
+                                "jpeg"
+                            }
+                            Bitmap.CompressFormat.PNG -> {
+                                selectedImageType = "png"
+                                "png"
+                            }
+                            // Add more mappings as necessary
+                            else -> ""
+                        }
+
+                        baseImageString = "data:image/$imageType;base64,$base64Image"
+
+                        (mContext as Activity?)?.runOnUiThread {
+                            showKeyboard()
+                        }
+                    }.start()
                 }
             }
         } else {
@@ -1175,8 +1195,10 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
             val m = prefix + message + endSeparator
 
             if (imageIsSelected) {
-                val bytes = android.util.Base64.decode(baseImageString!!.split(",")[1], android.util.Base64.DEFAULT)
-                writeImageToCache(bytes, selectedImageType!!)
+
+                val bytes = android.util.Base64.decode(baseImageString?.split(",")?.get(1) ?: return, android.util.Base64.DEFAULT)
+
+                writeImageToCache(bytes, selectedImageType ?: return)
 
                 val encoded = java.util.Base64.getEncoder().encodeToString(bytes)
 
@@ -1364,7 +1386,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                             stopper = false
                             return@collect
                         }
-                        if (v.choices[0].delta.content != "null") {
+                        if (v.choices[0].delta != null && v.choices[0].delta.content != null && v.choices[0].delta.content.toString() != "null") {
                             response += v.choices[0].delta.content
                             if (response != "null") {
                                 messages[messages.size - 1]["message"] = response
@@ -1422,7 +1444,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                             stopper = false
                             return@collect
                         }
-                        if (v.choices[0].text != "null") {
+                        if (v.choices[0] != null && v.choices[0].text != null &&  v.choices[0].text.toString() != "null") {
                             response += v.choices[0].text
                             messages[messages.size - 1]["message"] = response
                             if (messages.size > 2) {
@@ -1684,7 +1706,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                     stopper = false
                     return@collect
                 }
-                if (v.choices[0].delta.content != null) {
+                if (v.choices[0].delta != null && v.choices[0].delta.content != null && v.choices[0].delta.content.toString() != "null") {
                     response += v.choices[0].delta.content
                     messages[messages.size - 1]["message"] = response
                     scroll(false)

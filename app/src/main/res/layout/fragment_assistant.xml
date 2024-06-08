@@ -131,7 +131,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:layout_marginBottom="329dp"
+            android:layout_marginBottom="16dp"
             android:elevation="12dp"
             android:orientation="vertical"
             android:visibility="gone"
