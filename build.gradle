@@ -5,8 +5,9 @@ buildscript {
         google()
         mavenCentral()
     }
+
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.6.0-alpha03'
+        classpath 'com.android.tools.build:gradle:8.6.0-alpha05'
     }
 }
 

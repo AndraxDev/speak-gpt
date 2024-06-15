@@ -409,23 +409,39 @@ class Preferences private constructor(private var preferences: SharedPreferences
     }
 
     /**
-     * Get experimental UI
+     * Retrieves the hide model names status from the shared preferences.
      *
-     * @return experimental UI mode
+     * @return The hide model names status, true if enabled or false otherwise.
      */
-    @Deprecated("This feature is no longer supported")
-    fun getExperimentalUI() : Boolean {
-        return getGlobalBoolean("experimentalUI", true)
+    fun getHideModelNames() : Boolean {
+        return getGlobalBoolean("hide_model_names", false)
     }
 
     /**
-     * Set experimental UI
+     * Enable/disable hide model names.
      *
-     * @param mode experimental UI mode
+     * @param state mode.
      */
-    @Deprecated("This feature is no longer supported")
-    fun setExperimentalUI(mode: Boolean) {
-        putGlobalBoolean("experimentalUI", mode)
+    fun setHideModelNames(state: Boolean) {
+        putGlobalBoolean("hide_model_names", state)
+    }
+
+    /**
+     * Retrieves the monochrome background for chat list status from the shared preferences.
+     *
+     * @return The monochrome background for chat list status, true if enabled or false otherwise.
+     */
+    fun getMonochromeBackgroundForChatList() : Boolean {
+        return getGlobalBoolean("monochrome_background_for_chat_list", false)
+    }
+
+    /**
+     * Enable/disable monochrome background for chat list.
+     *
+     * @param state mode.
+     */
+    fun setMonochromeBackgroundForChatList(state: Boolean) {
+        putGlobalBoolean("monochrome_background_for_chat_list", state)
     }
 
     /**

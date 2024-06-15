@@ -72,20 +72,6 @@ class Logger {
         }
 
         /**
-         * Set ads log
-         * */
-        private fun setAdsLog(context: Context, log: String) {
-            EncryptedPreferences.setEncryptedPreference(context, "logs", "ads", log)
-        }
-
-        /**
-         * Clear ads log
-         * */
-        fun clearAdsLog(context: Context) {
-            setAdsLog(context, "")
-        }
-
-        /**
          * @param type - type of log (crash/event/ads)
          * @param tag - any tag to identify log message and source
          * @param level - log level (info/error/warning/debug/verbose)
@@ -112,11 +98,6 @@ class Logger {
                             setEventLog(context, log)
                         }
 
-                        "ads" -> {
-                            val log = "${getAdsLog(context)}$logString"
-                            setAdsLog(context, log)
-                        }
-
                         else -> {
                             error("Invalid log type")
                         }
@@ -133,7 +114,6 @@ class Logger {
         fun deleteAllLogs(context: Context) {
             clearCrashLog(context)
             clearEventLog(context)
-            clearAdsLog(context)
         }
     }
 }

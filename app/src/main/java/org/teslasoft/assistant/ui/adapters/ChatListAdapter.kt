@@ -58,7 +58,11 @@ class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>,
     private var bulkActionMode = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.view_chat_name, parent, false)
+        val view = if (Preferences.getPreferences(mContext.requireActivity(), "").getHideModelNames()) {
+            LayoutInflater.from(parent.context).inflate(R.layout.view_chat_name_min, parent, false)
+        } else {
+            LayoutInflater.from(parent.context).inflate(R.layout.view_chat_name, parent, false)
+        }
         return ViewHolder(view)
     }
 
@@ -195,7 +199,7 @@ class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>,
                 ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_v3)!!, mContext.requireActivity())
 
             if (bulkActionMode && (projection["selected"] ?: "false") == "true") {
-                updateCard(selector, icon, pinMarker, R.color.accent_300, R.color.accent_900, chatMessage)
+                updateCard(selector, icon, pinMarker, R.color.accent_300, R.color.accent_900, chatMessage, true)
             } else {
                 reloadCards(chatMessage)
             }
@@ -236,7 +240,7 @@ class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>,
             } else {
                 setBulkActionMode(true)
                 projection["selected"] = "true"
-                updateCard(selector, icon, pinMarker, R.color.accent_300, R.color.accent_900, chatMessage)
+                updateCard(selector, icon, pinMarker, R.color.accent_300, R.color.accent_900, chatMessage, true)
             }
             listener?.onBulkSelectionChanged(position, (projection["selected"] ?: "false") == "true")
             listener?.onChangeBulkActionMode(bulkActionMode)
@@ -261,31 +265,31 @@ class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>,
         private fun reloadCards(chatMessage: HashMap<String, String>) {
             when (textModel.text) {
                 "GPT 4", "GEMINI" -> {
-                    updateCard(selector, icon, pinMarker, R.color.tint_red, R.color.gpt_icon_red, chatMessage)
+                    updateCard(selector, icon, pinMarker, R.color.tint_red, R.color.gpt_icon_red, chatMessage, false)
                 }
 
                 "GPT 3.5 Turbo", "GEMMA" -> {
-                    updateCard(selector, icon, pinMarker, R.color.tint_yellow, R.color.gpt_icon_yellow, chatMessage)
+                    updateCard(selector, icon, pinMarker, R.color.tint_yellow, R.color.gpt_icon_yellow, chatMessage, false)
                 }
 
                 "GPT 3.5 (0125)", "PERPLEXITY" -> {
-                    updateCard(selector, icon, pinMarker, R.color.tint_purple, R.color.gpt_icon_purple, chatMessage)
+                    updateCard(selector, icon, pinMarker, R.color.tint_purple, R.color.gpt_icon_purple, chatMessage, false)
                 }
 
                 "GPT 4 Turbo", "CLAUDE" -> {
-                    updateCard(selector, icon, pinMarker, R.color.tint_green, R.color.gpt_icon_green, chatMessage)
+                    updateCard(selector, icon, pinMarker, R.color.tint_green, R.color.gpt_icon_green, chatMessage, false)
                 }
 
                 "MISTRAL", "META" -> {
-                    updateCard(selector, icon, pinMarker, R.color.tint_orange, R.color.gpt_icon_orange, chatMessage)
+                    updateCard(selector, icon, pinMarker, R.color.tint_orange, R.color.gpt_icon_orange, chatMessage, false)
                 }
 
                 "CUSTOM" -> {
-                    updateCard(selector, icon, pinMarker, R.color.tint_blue, R.color.gpt_icon_blue, chatMessage)
+                    updateCard(selector, icon, pinMarker, R.color.tint_blue, R.color.gpt_icon_blue, chatMessage, false)
                 }
 
                 "GPT 4o" -> {
-                    updateCard(selector, icon, pinMarker, R.color.tint_cyan, R.color.gpt_icon_cyan, chatMessage)
+                    updateCard(selector, icon, pinMarker, R.color.tint_cyan, R.color.gpt_icon_cyan, chatMessage, false)
                 }
 
                 else -> {
@@ -296,14 +300,25 @@ class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>,
         }
     }
 
-    private fun updateCard(selector: ConstraintLayout, icon: ImageView, pin: ImageView, tintColor: Int, iconColor: Int, chatMessage: HashMap<String, String>) {
-        selector.background = getAccentDrawable(
-            ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_selector_tint)!!, mContext.requireActivity().getColor(tintColor))
+    private fun updateCard(selector: ConstraintLayout, icon: ImageView, pin: ImageView, tintColor: Int, iconColor: Int, chatMessage: HashMap<String, String>, isSelected: Boolean) {
+        if (!preferences?.getMonochromeBackgroundForChatList()!! || isSelected) {
+            selector.background = getAccentDrawable(
+                ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_selector_tint)!!, mContext.requireActivity().getColor(tintColor)
+            )
+
+            pin.background = getAccentDrawable(
+                ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_transparent)!!, mContext.requireActivity().getColor(tintColor))
+        } else {
+            selector.background = getAccentDrawable(
+                ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_selector_tint)!!, getSurfaceColor(mContext.requireActivity())
+            )
+
+            pin.background = getAccentDrawable(
+                ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_transparent)!!, getSurfaceColorV2(mContext.requireActivity())
+            )
+        }
 
         icon.background = getAccentDrawable(
-            ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_transparent)!!, mContext.requireActivity().getColor(tintColor))
-
-        pin.background = getAccentDrawable(
             ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_transparent)!!, mContext.requireActivity().getColor(tintColor))
 
         DrawableCompat.setTint(pin.getDrawable(), ContextCompat.getColor(mContext.requireActivity(), iconColor))

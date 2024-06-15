@@ -6,7 +6,7 @@ plugins {
 
 configurations {
     cleanedAnnotations
-    implementation.exclude group: 'org.jetbrains' , module:'annotations'
+    implementation.exclude group: 'org.jetbrains', module: 'annotations'
 }
 
 android {
@@ -22,8 +22,8 @@ android {
         applicationId "org.teslasoft.assistant"
         minSdk 28
         targetSdk 34
-        versionCode 413
-        versionName "4.13"
+        versionCode 414
+        versionName "4.14"
     }
 
     buildTypes {
@@ -43,10 +43,12 @@ android {
             multiDexEnabled true
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+
     kotlinOptions {
         jvmTarget = '17'
     }
@@ -65,9 +67,6 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.16.0'
     implementation 'org.apache.commons:commons-lang3:3.14.0'
     implementation 'commons-io:commons-io:2.16.1'
-    implementation ('com.github.chrisbanes.photoview:library:1.2.4') {
-        exclude group: 'com.android.support', module: 'support-v4'
-    }
     implementation 'io.noties.markwon:core:4.6.2'
     implementation 'io.noties.markwon:html:4.6.2'
     implementation 'io.noties.markwon:syntax-highlight:4.6.2'
@@ -85,6 +84,9 @@ dependencies {
     implementation 'org.conscrypt:conscrypt-android:2.5.2'
     implementation 'com.aallam.ktoken:ktoken:0.4.0'
     implementation 'androidx.core:core-splashscreen:1.0.1'
+    implementation ('com.github.chrisbanes.photoview:library:1.2.4') {
+        exclude group: 'com.android.support', module: 'support-v4'
+    }
     implementation ('io.noties:prism4j:2.0.0') {
         exclude group: 'org.jetbrains', module: 'annotations'
     }

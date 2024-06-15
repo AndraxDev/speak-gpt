@@ -109,11 +109,6 @@ class LogsActivity : FragmentActivity() {
                                     textLog?.text = Logger.getCrashLog(this)
                                 }
 
-                                "ads" -> {
-                                    Logger.clearAdsLog(this)
-                                    textLog?.text = Logger.getAdsLog(this)
-                                }
-
                                 "event" -> {
                                     Logger.clearEventLog(this)
                                     textLog?.text = Logger.getEventLog(this)

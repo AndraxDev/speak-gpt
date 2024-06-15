@@ -88,7 +88,6 @@ class SettingsActivity : FragmentActivity() {
     private var tileFunctionCalling: TileFragment? = null
     private var tileSlashCommands: TileFragment? = null
     private var tileDesktopMode: TileFragment? = null
-    private var tileNewLook: TileFragment? = null
     private var tileAboutApp: TileFragment? = null
     private var tileClearChat: TileFragment? = null
     private var tileDocumentation: TileFragment? = null
@@ -100,11 +99,11 @@ class SettingsActivity : FragmentActivity() {
     private var tileRevokeAuthorization: TileFragment? = null
     private var tileGetNewInstallationId: TileFragment? = null
     private var tileCrashLog: TileFragment? = null
-    private var tileAdsLog: TileFragment? = null
     private var tileEventLog: TileFragment? = null
-    private var tileDebugTestAds: TileFragment? = null
     private var tileChatsAutoSave: TileFragment? = null
     private var tileShowChatErrors: TileFragment? = null
+    private var tileHideModelNames: TileFragment? = null
+    private var tileMonochromeBackgroundForChatList: TileFragment? = null
     private var threadLoading: LinearLayout? = null
     private var btnRemoveAds: MaterialButton? = null
     private var root: ScrollView? = null
@@ -281,12 +280,14 @@ class SettingsActivity : FragmentActivity() {
 
             if (chatId == "") {
                 tileClearChat?.setEnabled(false)
+                tileClearChat?.setVisibility(TileFragment.TileVisibility.GONE)
                 textGlobal?.visibility = TextView.VISIBLE
             } else {
                 textGlobal?.visibility = TextView.GONE
             }
         } else {
             tileClearChat?.setEnabled(false)
+            tileClearChat?.setVisibility(TileFragment.TileVisibility.GONE)
             textGlobal?.visibility = TextView.VISIBLE
         }
 
@@ -362,6 +363,15 @@ class SettingsActivity : FragmentActivity() {
                             runOnUiThread {
                                 threadLoading?.visibility = View.GONE
                                 threadLoading?.elevation = 0.0f
+
+                                if (chatId == "") {
+                                    tileClearChat?.setEnabled(false)
+                                    tileClearChat?.setVisibility(TileFragment.TileVisibility.GONE)
+                                } else {
+                                    textGlobal?.visibility = TextView.GONE
+                                    tileClearChat?.setEnabled(true)
+                                    tileClearChat?.setVisibility(TileFragment.TileVisibility.VISIBLE)
+                                }
                             }
                         }
 
@@ -653,6 +663,19 @@ class SettingsActivity : FragmentActivity() {
                 chatId,
                 getString(R.string.tile_desktop_mode_desc)
             )
+
+            tileMonochromeBackgroundForChatList = TileFragment.newInstance(
+                preferences?.getMonochromeBackgroundForChatList() == true,
+                true,
+                "Monochrome background for chat list",
+                null,
+                getString(R.string.on),
+                getString(R.string.off),
+                R.drawable.ic_experiment,
+                false,
+                chatId,
+                "This feature allows you to enable monochrome background for chat list."
+            )
         }
 
         t4.start()
@@ -661,19 +684,6 @@ class SettingsActivity : FragmentActivity() {
 
     private fun createFragments5() {
         val t5 = Thread {
-            tileNewLook = TileFragment.newInstance(
-                false,
-                false,
-                getString(R.string.tile_new_ui_title),
-                null,
-                getString(R.string.on),
-                null,
-                R.drawable.ic_experiment,
-                true,
-                chatId,
-                getString(R.string.tile_new_ui_desc)
-            )
-
             tileAboutApp = TileFragment.newInstance(
                 false,
                 false,
@@ -724,6 +734,19 @@ class SettingsActivity : FragmentActivity() {
                 !isDarkThemeEnabled(),
                 chatId,
                 getString(R.string.tile_amoled_mode_desc)
+            )
+
+            tileHideModelNames = TileFragment.newInstance(
+                preferences?.getHideModelNames() == true,
+                true,
+                "Hide model names",
+                null,
+                getString(R.string.on),
+                getString(R.string.off),
+                R.drawable.ic_visibility_off,
+                false,
+                chatId,
+                "This feature allows you to hide model names in the chat list to make it more minimalist and less distractive."
             )
         }
 
@@ -822,8 +845,6 @@ class SettingsActivity : FragmentActivity() {
 
     private fun createFragments7() {
         val t7 = Thread {
-
-
             val logView = if (installationId == "00000000-0000-0000-0000-000000000000" || installationId == "") "Authorization revoked" else "Tap to view"
 
             tileCrashLog = TileFragment.newInstance(
@@ -839,19 +860,6 @@ class SettingsActivity : FragmentActivity() {
                 getString(R.string.tile_crash_log_desc)
             )
 
-            tileAdsLog = TileFragment.newInstance(
-                false,
-                false,
-                getString(R.string.tile_ads_log_title),
-                null,
-                "<FEATURE REMOVED>",
-                null,
-                R.drawable.ic_bug,
-                true,
-                chatId,
-                getString(R.string.tile_ads_log_desc)
-            )
-
             tileEventLog = TileFragment.newInstance(
                 false,
                 false,
@@ -863,19 +871,6 @@ class SettingsActivity : FragmentActivity() {
                 installationId == "00000000-0000-0000-0000-000000000000" || installationId == "",
                 chatId,
                 getString(R.string.tile_events_log_desc)
-            )
-
-            tileDebugTestAds = TileFragment.newInstance(
-                false,
-                false,
-                "debug.test.ads",
-                null,
-                "<FEATURE REMOVED>",
-                null,
-                R.drawable.ic_bug,
-                true,
-                chatId,
-                "<FEATURE REMOVED>"
             )
 
             tileChatsAutoSave = TileFragment.newInstance(
@@ -930,7 +925,6 @@ class SettingsActivity : FragmentActivity() {
             .replace(R.id.tile_function_calling, tileFunctionCalling!!)
             .replace(R.id.tile_slash_commands, tileSlashCommands!!)
             .replace(R.id.tile_desktop_mode, tileDesktopMode!!)
-            .replace(R.id.tile_new_look, tileNewLook!!)
             .replace(R.id.tile_amoled_mode, tileAmoledMode!!)
             .replace(R.id.tile_lock_assistant, tileLockAssistantWindow!!)
             .replace(R.id.tile_customize, tileCustomize!!)
@@ -943,10 +937,10 @@ class SettingsActivity : FragmentActivity() {
             .replace(R.id.tile_revoke_authorization, tileRevokeAuthorization!!)
             .replace(R.id.tile_assign_new_id, tileGetNewInstallationId!!)
             .replace(R.id.tile_crash_log, tileCrashLog!!)
-            .replace(R.id.tile_ads_log, tileAdsLog!!)
             .replace(R.id.tile_event_log, tileEventLog!!)
-            .replace(R.id.tile_debug_test_ads, tileDebugTestAds!!)
             .replace(R.id.tile_show_chat_errors, tileShowChatErrors!!)
+            .replace(R.id.tile_hide_model_names, tileHideModelNames!!)
+            .replace(R.id.tile_monochrome_background_for_chat_list, tileMonochromeBackgroundForChatList!!)
 
         return operation
     }
@@ -1129,14 +1123,6 @@ class SettingsActivity : FragmentActivity() {
             }
         }}
 
-        tileNewLook?.setOnCheckedChangeListener { ischecked -> run {
-            if (ischecked) {
-                preferences?.setExperimentalUI(true)
-            } else {
-                preferences?.setExperimentalUI(false)
-            }
-        }}
-
         tileAmoledMode?.setOnCheckedChangeListener { ischecked -> run {
             if (ischecked) {
                 preferences?.setAmoledPitchBlack(true)
@@ -1160,6 +1146,22 @@ class SettingsActivity : FragmentActivity() {
                 preferences?.setChatsAutosave(true)
             } else {
                 preferences?.setChatsAutosave(false)
+            }
+        }}
+
+        tileHideModelNames?.setOnCheckedChangeListener { ischecked -> run {
+            if (ischecked) {
+                preferences?.setHideModelNames(true)
+            } else {
+                preferences?.setHideModelNames(false)
+            }
+        }}
+
+        tileMonochromeBackgroundForChatList?.setOnCheckedChangeListener { ischecked -> run {
+            if (ischecked) {
+                preferences?.setMonochromeBackgroundForChatList(true)
+            } else {
+                preferences?.setMonochromeBackgroundForChatList(false)
             }
         }}
 
@@ -1262,10 +1264,6 @@ class SettingsActivity : FragmentActivity() {
 
         tileCrashLog?.setOnTileClickListener {
             startActivity(Intent(this, LogsActivity::class.java).putExtra("type", "crash").putExtra("chatId", chatId))
-        }
-
-        tileAdsLog?.setOnTileClickListener {
-            startActivity(Intent(this, LogsActivity::class.java).putExtra("type", "ads").putExtra("chatId", chatId))
         }
 
         tileEventLog?.setOnTileClickListener {

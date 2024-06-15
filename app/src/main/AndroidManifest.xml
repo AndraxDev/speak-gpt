@@ -21,6 +21,7 @@
             <action android:name="android.intent.action.TTS_SERVICE" />
         </intent>
         <package android:name="org.teslasoft.assistant" />
+        <package android:name="org.teslasoft.libraries.support" />
     </queries>
 
     <application

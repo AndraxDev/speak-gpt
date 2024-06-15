@@ -47,8 +47,8 @@
 
             <ImageView
                 android:id="@+id/chat_icon"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
@@ -99,6 +99,7 @@
                     android:id="@+id/chat_first_message"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:text="debug.message.content"
@@ -110,7 +111,8 @@
                     android:layout_height="wrap_content"
                     android:alpha="0.5"
                     android:text="debug.model.name"
-                    android:textColor="@color/text_subtitle" />
+                    android:textColor="@color/text_subtitle"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <ImageView

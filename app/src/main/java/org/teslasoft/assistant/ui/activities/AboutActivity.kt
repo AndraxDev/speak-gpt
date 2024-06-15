@@ -16,6 +16,8 @@
 
 package org.teslasoft.assistant.ui.activities
 
+import android.annotation.SuppressLint
+import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
@@ -33,13 +35,10 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
-
 import androidx.fragment.app.FragmentActivity
-
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.Config
-
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 
@@ -66,6 +65,7 @@ class AboutActivity : FragmentActivity() {
 
     private var preferences: Preferences? = null
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -109,8 +109,15 @@ class AboutActivity : FragmentActivity() {
 
             if (activateEasterEggCounter == 4) {
                 activateEasterEggCounter = 0
-                Toast.makeText(this, "Easter egg found!", Toast.LENGTH_SHORT).show()
-                /* TODO: Open easter egg */
+
+                try {
+                    val intent = Intent(Intent.ACTION_MAIN)
+                    intent.setComponent(ComponentName("com.teslasoft.libraries.support", "org.teslasoft.core.easter.JarvisPlatLogo"))
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    /* TODO: Open easter egg */
+                    Toast.makeText(this, "Easter egg found!", Toast.LENGTH_SHORT).show()
+                }
             }
 
             activateEasterEggCounter++

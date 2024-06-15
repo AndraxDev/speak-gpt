@@ -69,8 +69,8 @@
     <color name="text_field">#CC000000</color>
     <color name="text_hint">#99000000</color>
     <color name="text_subtitle_inv">#AAFFFFFF</color>
-    <color name="ripple">#4D000000</color>
-    <color name="ripple_bg">#CC000000</color>
+    <color name="ripple">#20000000</color>
+    <color name="ripple_bg">#99000000</color>
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/accent_900</color>
     <color name="system_bars">@color/accent_100</color>
     <color name="marker">#15000000</color>

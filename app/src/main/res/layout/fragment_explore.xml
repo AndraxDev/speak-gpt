@@ -91,7 +91,7 @@
                 android:id="@+id/ai_sets_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="16dp" />
+                android:layout_marginTop="12dp" />
         </LinearLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

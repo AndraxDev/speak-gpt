@@ -80,6 +80,11 @@ class TileFragment : Fragment() {
 
     private var desc: String = ""
 
+    enum class TileVisibility {
+        VISIBLE,
+        GONE
+    }
+
     fun setFunctionDesc(desc: String) {
         this.desc = desc
     }
@@ -98,6 +103,14 @@ class TileFragment : Fragment() {
 
     fun interface OnCheckedChangeListener {
         fun onCheckedChange(isChecked: Boolean)
+    }
+
+    fun setVisibility(visibility: TileVisibility) {
+        if (visibility == TileVisibility.GONE) {
+            tileBg?.visibility = View.GONE
+        } else {
+            tileBg?.visibility = View.VISIBLE
+        }
     }
 
     fun setEnabled(isEnabled: Boolean) {

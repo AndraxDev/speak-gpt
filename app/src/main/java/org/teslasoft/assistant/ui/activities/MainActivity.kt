@@ -63,7 +63,6 @@ import org.teslasoft.assistant.ui.fragments.tabs.PlaygroundFragment
 import org.teslasoft.assistant.ui.fragments.tabs.PromptsFragment
 import org.teslasoft.assistant.ui.fragments.tabs.ToolsFragment
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
-import org.teslasoft.core.api.network.RequestNetwork
 
 class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener {
 
@@ -75,7 +74,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     private var btnInitiateCrash: MaterialButton? = null
     private var btnLaunchPWA: MaterialButton? = null
     private var btnTogglePWA: MaterialButton? = null
-    private var btnSwitchAds: MaterialButton? = null
     private var threadLoader: LinearLayout? = null
     private var devIds: TextView? = null
     private var frameChats: Fragment? = null
@@ -84,7 +82,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     private var framePrompts: Fragment? = null
     private var frameExplore: Fragment? = null
     private var root: ConstraintLayout? = null
-    private var requestNetwork: RequestNetwork? = null
     private var preferences: Preferences? = null
 
     private var selectedTab: Int = 1
@@ -121,7 +118,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         btnInitiateCrash = findViewById(R.id.btn_initiate_crash)
         btnLaunchPWA = findViewById(R.id.btn_launch_pwa)
         btnTogglePWA = findViewById(R.id.btn_toggle_pwa)
-        btnSwitchAds = findViewById(R.id.btn_switch_ads)
         devIds = findViewById(R.id.dev_ids)
         threadLoader = findViewById(R.id.thread_loader)
 
@@ -227,8 +223,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                 val installationId = DeviceInfoProvider.getInstallationId(this)
                 val androidId = DeviceInfoProvider.getAndroidId(this)
 
-                Logger.clearAdsLog(this)
-
                 if (preferences!!.getDebugMode()) {
                     btnDebugger?.visibility = View.VISIBLE
                     btnDebugger?.setOnClickListener {
@@ -254,12 +248,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                         }
                     }
 
-                    btnSwitchAds?.text = "<ADS FEATURE REMOVED>"
-                    btnSwitchAds?.isEnabled = false
-
                     devIds?.text = "${devIds?.text}\n\nInstallation ID: $installationId\nAndroid ID: $androidId"
-
-                    devIds?.text = "${devIds?.text}\nAds ID: <FEATURE REMOVED>"
                 }
 
                 preInit()
@@ -395,8 +384,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
             btnTogglePWA?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_600, theme))
             devIds?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_16_amoled, theme)
             devIds?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_600, theme))
-            btnSwitchAds?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_600, theme)
-            btnSwitchAds?.setTextColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
         } else {
             if (android.os.Build.VERSION.SDK_INT <= 34) {
                 window.navigationBarColor = SurfaceColors.SURFACE_3.getColor(this)
@@ -423,8 +410,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
             btnTogglePWA?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_900, theme))
             devIds?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_16, theme)!!)
             devIds?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_900, theme))
-            btnSwitchAds?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_900, theme)
-            btnSwitchAds?.setTextColor(ResourcesCompat.getColor(resources, R.color.window_background, theme))
         }
 
         (frameChats as ChatsListFragment).reloadAmoled(this)
@@ -529,7 +514,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     }
 
     override fun onPreferencesChanged(key: String, value: String) {
-        if (key == "debug_mode" || key == "amoled_pitch_black") {
+        if (key == "debug_mode" || key == "amoled_pitch_black" || key == "hide_model_names" || key == "monochrome_background_for_chat_list") {
             restartActivity()
         }
     }

@@ -555,7 +555,39 @@
                         android:layout_weight="1" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/tile_empty_1"
+                        android:id="@+id/tile_hide_model_names"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="4dp"
+                        android:layout_weight="1">
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayout99"
+                    android:layout_width="0dp"
+                    android:layout_height="84dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="12dp"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout9">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/tile_monochrome_background_for_chat_list"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="4dp"
+                        android:layout_weight="1" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/tile_empty_11"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_marginHorizontal="4dp"
@@ -629,7 +661,7 @@
                         android:layout_weight="1" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/tile_new_look"
+                        android:id="@+id/tile_lock_assistant"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_marginHorizontal="4dp"
@@ -661,7 +693,7 @@
                         android:layout_weight="1" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/tile_lock_assistant"
+                        android:id="@+id/tile_customize"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_marginHorizontal="4dp"
@@ -693,7 +725,7 @@
                         android:layout_weight="1" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/tile_customize"
+                        android:id="@+id/tile_empty_9"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_marginHorizontal="4dp"
@@ -810,7 +842,7 @@
                         android:layout_weight="1" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/tile_ads_log"
+                        android:id="@+id/tile_event_log"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_marginHorizontal="4dp"
@@ -833,38 +865,6 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/linearLayout172">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/tile_event_log"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginHorizontal="4dp"
-                        android:layout_weight="1" />
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/tile_debug_test_ads"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginHorizontal="4dp"
-                        android:layout_weight="1">
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/linearLayout179"
-                    android:layout_width="0dp"
-                    android:layout_height="84dp"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="12dp"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal"
-                    android:weightSum="2"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout175">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/tile_show_chat_errors"
