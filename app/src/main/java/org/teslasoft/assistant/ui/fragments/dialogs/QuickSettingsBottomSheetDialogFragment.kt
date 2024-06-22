@@ -170,7 +170,7 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
             if (apiEndpointId != null) {
                 preferences?.setApiEndpointId(apiEndpointId)
                 apiEndpoint = apiEndpointPreferences?.getApiEndpoint(requireContext(), apiEndpointId)
-                textHost?.text = apiEndpoint?.host ?: getString(R.string.label_tap_to_set)
+                textHost?.text = if (apiEndpoint?.label != "") apiEndpoint?.label ?: getString(R.string.label_tap_to_set) else getString(R.string.label_tap_to_set)
                 shouldForceUpdate = true
             }
         }
@@ -303,7 +303,7 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         textCost = view.findViewById(R.id.text_cost)
         btnCostInfo = view.findViewById(R.id.btn_cost_info)
 
-        textHost?.text = apiEndpoint?.host ?: getString(R.string.label_tap_to_set)
+        textHost?.text = if (apiEndpoint?.label != "") apiEndpoint?.label ?: getString(R.string.label_tap_to_set) else getString(R.string.label_tap_to_set)
         textLogitBiasesConfig?.text = if (preferences?.getLogitBiasesConfigId() != ""){
             logitBiasConfigPreferences?.getConfigById(preferences?.getLogitBiasesConfigId()!!)?.get("label") ?: getString(R.string.label_tap_to_set)
         } else {

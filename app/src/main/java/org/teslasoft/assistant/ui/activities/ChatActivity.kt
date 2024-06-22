@@ -133,6 +133,7 @@ import kotlinx.serialization.json.putJsonArray
 import kotlinx.serialization.json.putJsonObject
 import okio.FileSystem
 import okio.Path.Companion.toPath
+import org.apache.commons.lang3.ObjectUtils.Null
 import org.jetbrains.annotations.TestOnly
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ApiEndpointPreferences
@@ -203,7 +204,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
     private var chatMessages: ArrayList<ChatMessage> = arrayListOf()
     private var chatId = ""
     private var chatName = ""
-    private lateinit var languageIdentifier: LanguageIdentifier
+    private var languageIdentifier: LanguageIdentifier? = null
 
     // Init states
     private var isRecording = false
@@ -698,7 +699,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         threadLoader?.visibility = View.VISIBLE
 
         Thread {
-            languageIdentifier = LanguageIdentification.getClient()
+            // languageIdentifier = LanguageIdentification.getClient()
 
             val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
             StrictMode.setThreadPolicy(policy)
@@ -1913,8 +1914,8 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                 completions.collect { v ->
                     run {
                         if (!coroutineContext.isActive) throw CancellationException()
-                        else if (v.choices[0].delta != null && v.choices[0].delta.content != null && v.choices[0].delta.content.toString() != "null") {
-                            response += v.choices[0].delta.content
+                        else if (v.choices[0].delta != null && v.choices[0].delta?.content != null && v.choices[0].delta?.content.toString() != "null") {
+                            response += v.choices[0].delta?.content
                             if (response != "null") {
                                 messages[messages.size - 1]["message"] = response
                                 if (messages.size > 2) {
@@ -2231,8 +2232,8 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         completions.collect { v ->
             run {
                 if (!coroutineContext.isActive) throw CancellationException()
-                else if (v.choices[0].delta != null && v.choices[0].delta.content != null && v.choices[0].delta.content.toString() != "null") {
-                    response += v.choices[0].delta.content
+                else if (v.choices[0].delta != null && v.choices[0].delta?.content != null && v.choices[0].delta?.content.toString() != "null") {
+                    response += v.choices[0].delta?.content
                     messages[messages.size - 1]["message"] = response
                     if (messages.size > 2) {
                         adapter?.notifyItemRangeChanged(messages.size - 3, messages.size - 1)
@@ -2366,25 +2367,33 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
     private fun pronounce(st: Boolean, message: String) {
         if ((st && isTTSInitialized && !silenceMode) || preferences!!.getNotSilence()) {
             if (autoLangDetect) {
-                languageIdentifier.identifyLanguage(message)
-                    .addOnSuccessListener { languageCode ->
-                        if (languageCode == "und") {
-                            Log.i("MLKit", "Can't identify language.")
-                        } else {
-                            Log.i("MLKit", "Language: $languageCode")
-                            tts!!.language = Locale.forLanguageTag(
-                                languageCode
-                            )
+                try {
+                    languageIdentifier = LanguageIdentification.getClient()
+                    languageIdentifier?.identifyLanguage(message)
+                        ?.addOnSuccessListener { languageCode ->
+                            if (languageCode == "und") {
+                                Log.i("MLKit", "Can't identify language.")
+                            } else {
+                                Log.i("MLKit", "Language: $languageCode")
+                                tts!!.language = Locale.forLanguageTag(
+                                    languageCode
+                                )
+                            }
+
+                            speak(message)
+                        }?.addOnFailureListener {
+                            // Ignore auto language detection if an error is occurred
+                            autoLangDetect = false
+                            ttsPostInit()
+
+                            speak(message)
                         }
+                } catch (e: NullPointerException) {
+                    autoLangDetect = false
+                    ttsPostInit()
 
-                        speak(message)
-                    }.addOnFailureListener {
-                        // Ignore auto language detection if an error is occurred
-                        autoLangDetect = false
-                        ttsPostInit()
-
-                        speak(message)
-                    }
+                    speak(message)
+                }
             } else {
                 speak(message)
             }
@@ -2527,6 +2536,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
                     // Put timestamp to chat to sort chats by last message
                     ChatPreferences.getChatPreferences().putTimestampToChatById(this@ChatActivity, chatId)
+                    initSettings()
                 }
             }
         } catch (e: CancellationException) {

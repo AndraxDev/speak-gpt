@@ -293,8 +293,8 @@ class PlaygroundFragment : Fragment() {
             completions.collect { v ->
                 run {
                     if (!coroutineContext.isActive) throw CancellationException()
-                    else if (v.choices[0].delta.content != null) {
-                        output += v.choices[0].delta.content
+                    else if (v.choices[0].delta?.content != null) {
+                        output += v.choices[0].delta?.content
                         editTextOut?.setText(output)
                     }
                 }

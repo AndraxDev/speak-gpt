@@ -199,7 +199,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
     private var messagesSelectionProjection: ArrayList<HashMap<String, Any>> = arrayListOf()
     private var adapter: ChatAdapter? = null
     private var chatMessages: ArrayList<ChatMessage> = arrayListOf()
-    private lateinit var languageIdentifier: LanguageIdentifier
+    private var languageIdentifier: LanguageIdentifier? = null
     private var FORCE_SLASH_COMMANDS_ENABLED: Boolean = false
 
     // Init states
@@ -1386,8 +1386,8 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                             stopper = false
                             return@collect
                         }
-                        if (v.choices[0].delta != null && v.choices[0].delta.content != null && v.choices[0].delta.content.toString() != "null") {
-                            response += v.choices[0].delta.content
+                        if (v.choices[0].delta != null && v.choices[0].delta?.content != null && v.choices[0].delta?.content.toString() != "null") {
+                            response += v.choices[0].delta?.content
                             if (response != "null") {
                                 messages[messages.size - 1]["message"] = response
                                 scroll(false)
@@ -1706,8 +1706,8 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                     stopper = false
                     return@collect
                 }
-                if (v.choices[0].delta != null && v.choices[0].delta.content != null && v.choices[0].delta.content.toString() != "null") {
-                    response += v.choices[0].delta.content
+                if (v.choices[0].delta != null && v.choices[0].delta?.content != null && v.choices[0].delta?.content.toString() != "null") {
+                    response += v.choices[0].delta?.content
                     messages[messages.size - 1]["message"] = response
                     scroll(false)
                     if (messages.size > 2) {
@@ -1745,25 +1745,33 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
     private fun pronounce(st: Boolean, message: String) {
         if (st && isTTSInitialized && !silenceMode || preferences!!.getNotSilence()) {
             if (autoLangDetect) {
-                languageIdentifier.identifyLanguage(message)
-                    .addOnSuccessListener { languageCode ->
-                        if (languageCode == "und") {
-                            Log.i("MLKit", "Can't identify language.")
-                        } else {
-                            Log.i("MLKit", "Language: $languageCode")
-                            tts!!.language = Locale.forLanguageTag(
-                                languageCode
-                            )
+                try {
+                    languageIdentifier = LanguageIdentification.getClient()
+                    languageIdentifier?.identifyLanguage(message)
+                        ?.addOnSuccessListener { languageCode ->
+                            if (languageCode == "und") {
+                                Log.i("MLKit", "Can't identify language.")
+                            } else {
+                                Log.i("MLKit", "Language: $languageCode")
+                                tts!!.language = Locale.forLanguageTag(
+                                    languageCode
+                                )
+                            }
+
+                            speak(message)
+                        }?.addOnFailureListener {
+                            // Ignore auto language detection if an error is occurred
+                            autoLangDetect = false
+                            ttsPostInit()
+
+                            speak(message)
                         }
+                } catch (e: NullPointerException) {
+                    autoLangDetect = false
+                    ttsPostInit()
 
-                        speak(message)
-                    }.addOnFailureListener {
-                        // Ignore auto language detection if an error is occurred
-                        autoLangDetect = false
-                        ttsPostInit()
-
-                        speak(message)
-                    }
+                    speak(message)
+                }
             } else {
                 speak(message)
             }
@@ -2145,7 +2153,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
         mediaPlayer = MediaPlayer()
 
-        languageIdentifier = LanguageIdentification.getClient()
+        // languageIdentifier = LanguageIdentification.getClient()
 
         btnAssistantVoice = view.findViewById(R.id.btn_assistant_voice)
         btnAssistantSettings = view.findViewById(R.id.btn_assistant_settings)
@@ -2832,14 +2840,14 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
     private fun conversationToString() : String {
         val stringBuilder = StringBuilder()
 
-        for (m in messagesSelectionProjection) {
-            if (m["selected"].toString() == "true") {
-                if (m["isBot"] == true) {
+        for (m in messagesSelectionProjection.indices) {
+            if (messagesSelectionProjection[m]["selected"].toString() == "true") {
+                if (messages[m]["isBot"] == true) {
                     stringBuilder.append("[Bot] >\n")
                 } else {
                     stringBuilder.append("[User] >\n")
                 }
-                stringBuilder.append(m["message"])
+                stringBuilder.append(messages[m]["message"])
                 stringBuilder.append("\n\n")
             }
         }
