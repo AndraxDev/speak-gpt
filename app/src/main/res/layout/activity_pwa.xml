@@ -31,7 +31,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toTopOf="parent">
 
     </WebView>
 
@@ -40,6 +40,8 @@
         style="?android:attr/progressBarStyle"
         android:layout_width="64dp"
         android:layout_height="64dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="16dp"
         android:elevation="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -56,7 +58,7 @@
         android:elevation="5dp"
         android:src="@drawable/pwa_ic_close"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/web_view"
         app:srcCompat="@drawable/pwa_ic_close" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

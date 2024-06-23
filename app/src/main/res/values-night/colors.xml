@@ -29,8 +29,8 @@
     <color name="text_field">#DEFFFFFF</color>
     <color name="text_hint">#66FFFFFF</color>
     <color name="text_subtitle_inv">#99000000</color>
-    <color name="ripple">#20FFFFFF</color>
-    <color name="ripple_bg">#99FFFFFF</color>
+    <color name="ripple">#32FFFFFF</color>
+    <color name="ripple_bg">#AAFFFFFF</color>
     <color name="error">#FFDBDB</color>
     <color name="success">#DFFFDA</color>
     <color name="text">#eeffffff</color>

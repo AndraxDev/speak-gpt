@@ -11,19 +11,14 @@ configurations {
 
 android {
     namespace 'org.teslasoft.assistant'
-    // compileSdkPreview "VanillaIceCream"
-    compileSdk 34
-
-    // defaultConfig {
-    //     targetSdkPreview "VanillaIceCream"
-    // }
+    compileSdk 35
 
     defaultConfig {
         applicationId "org.teslasoft.assistant"
         minSdk 28
-        targetSdk 34
-        versionCode 415
-        versionName "4.15"
+        targetSdk 35
+        versionCode 416
+        versionName "4.16"
     }
 
     buildTypes {

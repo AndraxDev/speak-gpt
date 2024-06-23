@@ -26,7 +26,7 @@
         android:id="@+id/activity_tips_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="56dp"
         android:text="@string/title_tips"
         android:textColor="@color/text_title"
         android:textSize="24sp"
@@ -52,7 +52,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingBottom="16dp">
+                android:paddingBottom="32dp">
 
                 <LinearLayout
                     android:id="@+id/tip_1"
