@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="activation_prompt_set_message">Toca para establecer el mensaje de activación</string>
     <string name="menu_chat">Chat</string>
     <string name="menu_prompts">Sugerencias</string>
@@ -471,7 +471,6 @@
     <string name="btn_post">Publicar</string>
     <string name="msg_error_calculating_cost">Coste: Error al calcular el coste. Por favor, verifica tu conexión.</string>
     <string name="msg_cost_not_enough_data"><![CDATA[Coste: <SpeakGPT no tiene suficientes datos para calcular el coste para este modelo. Consulta la documentación y calcula el coste manualmente basándote en el uso anterior.>]]></string>
-    <string name="cost_loading">Coste: Cargando...</string>
-    <string name="cost_counter_usage">Uso (tokens): %s entrada / %s salida</string>
-
+    <string name="cost_loading" tools:ignore="TypographyEllipsis">Coste: Cargando...</string>
+    <string formatted="false"  name="cost_counter_usage">Uso (tokens): %s entrada / %s salida</string>
 </resources>

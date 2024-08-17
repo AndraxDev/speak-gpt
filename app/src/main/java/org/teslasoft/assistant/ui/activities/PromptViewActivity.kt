@@ -16,6 +16,7 @@
 
 package org.teslasoft.assistant.ui.activities
 
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -80,6 +81,7 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
     private var root: ConstraintLayout? = null
 
     private val dataListener: RequestNetwork.RequestListener = object : RequestNetwork.RequestListener {
+        @SuppressLint("SetTextI18n")
         override fun onResponse(tag: String, message: String) {
             noInternetLayout?.visibility = View.GONE
             progressBar?.visibility = View.GONE
@@ -94,6 +96,9 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
                 promptBy?.text = "By " + map["author"]
                 btnLike?.text = map["likes"]
                 promptFor = map["type"]
+
+                title = map["name"].toString()
+                activityTitle?.text = title
 
                 textCat?.text = when (map["category"]) {
                     "development" -> String.format(resources.getString(R.string.cat), resources.getString(R.string.cat_development))
@@ -173,12 +178,14 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
         Preferences.getPreferences(this, "")
     }
 
+    @Suppress("DEPRECATION")
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() &&  Preferences.getPreferences(this, "").getAmoledPitchBlack()) {
             if (android.os.Build.VERSION.SDK_INT <= 34) {
                 window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
                 window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme)
             }
+
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
 
             root?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
@@ -204,6 +211,7 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
                 window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
                 window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
             }
+
             window.setBackgroundDrawableResource(R.color.window_background)
 
             root?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
@@ -290,6 +298,7 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
         }
     }
 
+    @Suppress("DEPRECATION")
     private fun allowLaunch() {
         setContentView(R.layout.activity_view_prompt)
 

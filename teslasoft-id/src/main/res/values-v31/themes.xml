@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TeslasoftID.Theme.App" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/teslasoft_services_auth_accent_900</item>
+        <item name="colorOnPrimary">@color/teslasoft_services_auth_white</item>
+        <item name="colorSecondary">@color/teslasoft_services_auth_accent_900</item>
+        <item name="colorOnSecondary">@color/teslasoft_services_auth_black</item>
+        <item name="colorAccent">@color/teslasoft_services_auth_accent_900</item>
+        <item name="android:statusBarColor">@color/teslasoft_services_auth_window_background</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/teslasoft_services_auth_window_background</item>
+        <item name="android:windowBackground">@color/teslasoft_services_auth_window_background</item>
+    </style>
+</resources>

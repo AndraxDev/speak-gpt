@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="teslasoft_services_auth_accent_100">@android:color/system_neutral2_800</color>
+    <color name="teslasoft_services_auth_accent_200">@android:color/system_neutral2_700</color>
+    <color name="teslasoft_services_auth_accent_500">@android:color/system_accent1_300</color>
+    <color name="teslasoft_services_auth_accent_900">@android:color/system_accent1_200</color>
+    <color name="teslasoft_services_auth_icon_50">@android:color/system_accent1_50</color>
+    <color name="teslasoft_services_auth_icon_100">@android:color/system_accent1_100</color>
+    <color name="teslasoft_services_auth_icon_150">@android:color/system_accent1_200</color>
+    <color name="teslasoft_services_auth_icon_500">@android:color/system_accent1_500</color>
+    <color name="teslasoft_services_auth_icon_700">@android:color/system_accent1_700</color>
+    <color name="teslasoft_services_auth_icon_900">@android:color/system_accent1_900</color>
+    <color name="teslasoft_services_auth_fab">@android:color/system_accent2_700</color>
+    <color name="teslasoft_services_auth_icon_background">@android:color/system_neutral1_800</color>
+    <color name="teslasoft_services_auth_icon_foreground">@android:color/system_accent1_100</color>
+    <color name="teslasoft_services_auth_bottom_navbar">@android:color/system_neutral2_900</color>
+    <color name="teslasoft_services_auth_button">@android:color/system_accent1_200</color>
+    <color name="teslasoft_services_auth_window_background">@android:color/system_neutral1_900</color>
+    <color name="teslasoft_services_auth_text_title">#FFFFFFFF</color>
+    <color name="teslasoft_services_auth_ripple">#4DFFFFFF</color>
+    <color name="teslasoft_services_auth_success">#9CE38F</color>
+</resources>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TeslasoftID.Theme.App" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/teslasoft_services_auth_accent_900</item>
+        <item name="colorOnPrimary">@color/teslasoft_services_auth_white</item>
+        <item name="colorSecondary">@color/teslasoft_services_auth_accent_900</item>
+        <item name="colorOnSecondary">@color/teslasoft_services_auth_black</item>
+        <item name="colorAccent">@color/teslasoft_services_auth_accent_900</item>
+        <item name="android:statusBarColor">@color/teslasoft_services_auth_window_background</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/teslasoft_services_auth_window_background</item>
+        <item name="android:windowBackground">@color/teslasoft_services_auth_window_background</item>
+    </style>
+
+    <style name="TeslasoftID.Theme.Transparent" parent="@style/Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/teslasoft_services_auth_shadow</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">#00000000</item>
+        <item name="android:navigationBarColor">#00000000</item>
+        <item name="colorAccent">@color/teslasoft_services_auth_accent_900</item>
+        <item name="colorPrimary">@color/teslasoft_services_auth_window_background</item>
+        <item name="colorPrimaryDark">@color/teslasoft_services_auth_window_background</item>
+    </style>
+
+    <style name="TeslasoftID.MaterialAlertDialog" parent="MaterialAlertDialog.Material3">
+        <item name="buttonBarNegativeButtonStyle">@style/TeslasoftID.NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/TeslasoftID.PositiveButtonStyle</item>
+    </style>
+
+    <style name="TeslasoftID.NegativeButtonStyle" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/teslasoft_services_auth_accent_900</item>
+    </style>
+
+    <style name="TeslasoftID.PositiveButtonStyle" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/teslasoft_services_auth_accent_900</item>
+    </style>
+</resources>

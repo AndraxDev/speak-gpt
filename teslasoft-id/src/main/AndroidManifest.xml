@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="org.teslasoft.core.permission.AUTHENTICATE_ACCOUNTS"/>
+    <uses-permission android:name="org.teslasoft.core.permission.ACCESS_CORE"/>
+
+    <application>
+        <activity
+            android:name="org.teslasoft.core.auth.TeslasoftIDAuth"
+            android:theme="@style/TeslasoftID.Theme.Transparent"
+            android:exported="false">
+        </activity>
+    </application>
+</manifest>

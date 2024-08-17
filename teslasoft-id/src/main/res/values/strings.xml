@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="teslasoft_services_auth_module_name">Teslasoft ID</string>
+    <string name="teslasoft_services_auth_core_name">Teslasoft Core</string>
+    <string name="teslasoft_services_auth_core_unavailable">%s requires one or more Teslasoft Core features that are currently unavailable. Please contact app developer for further assistance.</string>
+    <string name="teslasoft_services_auth_core_sync">App sync</string>
+    <string name="teslasoft_services_auth_core_required">To use your account with multiple apps you need Teslasoft Core.</string>
+    <string name="teslasoft_services_auth_core_permission">To use this feature please allow this app to use Teslasoft Core authentication API.</string>
+    <string name="teslasoft_services_auth_core_permission_denied">You can not use this feature because this app do not have permission.</string>
+    <string name="teslasoft_services_auth_permission_allow">Allow</string>
+    <string name="teslasoft_services_auth_permission_deny">No, thanks</string>
+    <string name="teslasoft_services_auth_dialog_close">Close</string>
+    <string name="teslasoft_services_auth_sync_title">Turn on sync</string>
+    <string name="teslasoft_services_auth_sync_desc">Sign in with Teslasoft ID</string>
+    <string name="teslasoft_services_auth_sync_loading">Sync in progress</string>
+    <string name="teslasoft_services_auth_checking_info">Checking info</string>
+</resources>

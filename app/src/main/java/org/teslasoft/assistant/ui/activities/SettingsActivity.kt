@@ -1329,9 +1329,10 @@ class SettingsActivity : FragmentActivity() {
         }
     }
 
+    @Suppress("DEPRECATION")
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack() == true) {
-            if (android.os.Build.VERSION.SDK_INT <= 34) {
+            if (Build.VERSION.SDK_INT <= 34) {
                 window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
                 window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
             }
@@ -1340,7 +1341,7 @@ class SettingsActivity : FragmentActivity() {
             btnBack?.setBackgroundResource(R.drawable.btn_accent_icon_large_amoled)
             threadLoading?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
         } else {
-            if (android.os.Build.VERSION.SDK_INT <= 34) {
+            if (Build.VERSION.SDK_INT <= 34) {
                 window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
                 window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
             }

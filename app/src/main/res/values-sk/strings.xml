@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="activation_prompt_set_message">Kliknite pre nastavenie aktivačného výzvu</string>
     <string name="menu_chat">Chat</string>
     <string name="menu_prompts">Výzvy</string>
@@ -464,6 +464,6 @@
     <string name="btn_post">Odoslať</string>
     <string name="msg_error_calculating_cost">Cena: Chyba pri výpočte ceny. Prosím, skontrolujte svoje pripojenie.</string>
     <string name="msg_cost_not_enough_data"><![CDATA[Cena: <SpeakGPT nemá dostatok údajov na výpočet ceny pre tento model. Pozrite si dokumentáciu a vypočítajte si cenu ručne na základe vyššie uvedeného použitia.>]]></string>
-    <string name="cost_loading">Cena: Načítava sa...</string>
-    <string name="cost_counter_usage">Použitie (tokeny): %s von / %s dnu</string>
+    <string name="cost_loading" tools:ignore="TypographyEllipsis">Cena: Načítava sa...</string>
+    <string formatted="false" name="cost_counter_usage">Použitie (tokeny): %s von / %s dnu</string>
 </resources>

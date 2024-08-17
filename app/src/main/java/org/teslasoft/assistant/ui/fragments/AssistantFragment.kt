@@ -363,6 +363,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         }
     }
 
+    @Suppress("DEPRECATION")
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() &&  preferences!!.getAmoledPitchBlack()) {
             dialog?.window?.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, mContext?.theme)

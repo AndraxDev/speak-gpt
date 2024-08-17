@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="teslasoft_services_auth_accent_100">#302f36</color>
+    <color name="teslasoft_services_auth_accent_200">#424250</color>
+    <color name="teslasoft_services_auth_accent_500">#a895e9</color>
+    <color name="teslasoft_services_auth_accent_900">#c3b4ff</color>
+    <color name="teslasoft_services_auth_icon_50">@color/teslasoft_services_auth_purple_50</color>
+    <color name="teslasoft_services_auth_icon_100">@color/teslasoft_services_auth_purple_100</color>
+    <color name="teslasoft_services_auth_icon_150">@color/teslasoft_services_auth_purple_150</color>
+    <color name="teslasoft_services_auth_icon_500">@color/teslasoft_services_auth_purple_500</color>
+    <color name="teslasoft_services_auth_icon_700">@color/teslasoft_services_auth_purple_700</color>
+    <color name="teslasoft_services_auth_icon_900">@color/teslasoft_services_auth_purple_900</color>
+    <color name="teslasoft_services_auth_icon_background">@color/teslasoft_services_auth_accent_100</color>
+    <color name="teslasoft_services_auth_icon_foreground">@color/teslasoft_services_auth_accent_900</color>
+    <color name="teslasoft_services_auth_bottom_navbar">@color/teslasoft_services_auth_accent_900</color>
+    <color name="teslasoft_services_auth_button">@color/teslasoft_services_auth_accent_900</color>
+    <color name="teslasoft_services_auth_window_background">#1b1b1e</color>
+</resources>

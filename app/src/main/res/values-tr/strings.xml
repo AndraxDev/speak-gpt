@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="activation_prompt_set_message">Etkinleştirme istemini ayarlamak için dokunun</string>
     <string name="menu_chat">Sohbet</string>
     <string name="menu_prompts">İstemler</string>
@@ -466,6 +466,6 @@
     <string name="btn_post">Gönder</string>
     <string name="msg_error_calculating_cost">Maliyet: Maliyet hesaplanırken hata. Lütfen bağlantınızı kontrol edin.</string>
     <string name="msg_cost_not_enough_data"><![CDATA[Maliyet: <SpeakGPT\'in bu model için maliyeti hesaplamak için yeterli verisi yok. Belgeden yararlanarak kullanımı üzerinden maliyeti manuel olarak hesaplayın.>]]></string>
-    <string name="cost_loading">Maliyet: Yükleniyor...</string>
-    <string name="cost_counter_usage">Kullanım (tokenler): %s gir / %s çık</string>
+    <string name="cost_loading" tools:ignore="TypographyEllipsis">Maliyet: Yükleniyor...</string>
+    <string formatted="false"  name="cost_counter_usage">Kullanım (tokenler): %s gir / %s çık</string>
 </resources>

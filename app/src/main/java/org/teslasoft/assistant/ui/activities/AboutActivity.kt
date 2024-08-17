@@ -41,6 +41,7 @@ import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.Config
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
+import org.teslasoft.core.auth.SystemInfo
 
 class AboutActivity : FragmentActivity() {
 
@@ -50,6 +51,7 @@ class AboutActivity : FragmentActivity() {
     private var btnPrivacy: MaterialButton? = null
     private var btnFeedback: MaterialButton? = null
     private var appVer: TextView? = null
+    private var tidVer: TextView? = null
     private var btnDonate: LinearLayout? = null
     private var btnGithub: LinearLayout? = null
 
@@ -77,6 +79,7 @@ class AboutActivity : FragmentActivity() {
         btnPrivacy = findViewById(R.id.btn_privacy)
         btnFeedback = findViewById(R.id.btn_feedback)
         appVer = findViewById(R.id.app_ver)
+        tidVer = findViewById(R.id.tid_ver)
         btnDonate = findViewById(R.id.btn_donate)
         btnGithub = findViewById(R.id.btn_github)
         btnBack = findViewById(R.id.btn_back)
@@ -122,6 +125,8 @@ class AboutActivity : FragmentActivity() {
 
             activateEasterEggCounter++
         }
+
+        tidVer?.text = "${getString(R.string.teslasoft_id_version)} ${SystemInfo.VERSION} (${SystemInfo.VERSION_CODE})"
 
         try {
             val pInfo: PackageInfo = if (android.os.Build.VERSION.SDK_INT >= 33) {

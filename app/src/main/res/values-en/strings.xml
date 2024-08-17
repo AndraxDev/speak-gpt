@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="activation_prompt_set_message">Tap to set activation prompt</string>
     <string name="menu_chat">Chat</string>
     <string name="menu_prompts">Prompts</string>
@@ -256,7 +256,7 @@
     <string name="label_edit_logit_bias_config">Edit logit bias config</string>
     <string name="hint_logit_bias_config_name">Config name</string>
     <string name="chat_edit_message">Edit message</string>
-    <string name="chat_enter_message_here">Enter message here...</string>
+    <string name="chat_enter_message_here" tools:ignore="TypographyEllipsis">Enter message here...</string>
     <string name="no_internet_show_error_details">Show error details</string>
     <string name="label_quick_settings">Quick Settings</string>
     <string name="cost_explanation">This data is provided for informational purposes only. Cost is calculated based on your model and text only messages. Additional charges may occurr for processing/generating images. We added this card to help users understand their usage and how does the cost is calculated.</string>
@@ -467,6 +467,6 @@
     <string name="btn_post">Post</string>
     <string name="msg_error_calculating_cost">Cost: Error calculating cost. Please check your connection.</string>
     <string name="msg_cost_not_enough_data"><![CDATA[Cost: <SpeakGPT hasn\'t enough data to calculate cost for this model. Look for documentation and calculate cost manually based on the usage above.>]]></string>
-    <string name="cost_loading">Cost: Loading...</string>
-    <string name="cost_counter_usage">Usage (tokens): %s in / %s out</string>
+    <string name="cost_loading" tools:ignore="TypographyEllipsis">Cost: Loading...</string>
+    <string formatted="false" name="cost_counter_usage">Usage (tokens): %s in / %s out</string>
 </resources>

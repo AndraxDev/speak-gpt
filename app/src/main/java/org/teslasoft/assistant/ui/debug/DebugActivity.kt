@@ -17,89 +17,15 @@
 package org.teslasoft.assistant.ui.debug
 
 import android.os.Bundle
-import android.speech.tts.TextToSpeech
-import android.speech.tts.Voice
-import android.widget.EditText
-import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
-import com.google.android.material.button.MaterialButton
-import org.jetbrains.annotations.TestOnly
-import org.teslasoft.assistant.preferences.Preferences
-import org.teslasoft.assistant.util.LocaleParser
 
-@TestOnly
 class DebugActivity : FragmentActivity() {
-    private var btnDebug: MaterialButton? = null
-    private var fieldDebug: EditText? = null
-    private var lng: TextView? = null
-
-    private var isTTSInitialized = false
-
-    // Init TTS
-    private var tts: TextToSpeech? = null
-    private val ttsListener: TextToSpeech.OnInitListener =
-        TextToSpeech.OnInitListener { status ->
-            if (status == TextToSpeech.SUCCESS) {
-                val result = tts!!.setLanguage(LocaleParser.parse(Preferences.getPreferences(this@DebugActivity, "").getLanguage()))
-
-                isTTSInitialized = !(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED)
-
-                val voices: Set<Voice> = tts!!.voices
-                for (v: Voice in voices) {
-                    if (v.name == "en-us-x-iom-local" && Preferences.getPreferences(this@DebugActivity, "").getLanguage() == "en") {
-                        tts!!.voice = v
-                    }
-                }
-
-                /*
-                * Voice models (english: en-us-x):
-                * sfg-local
-                * iob-network
-                * iom-local
-                * iog-network
-                * tpc-local
-                * tpf-local
-                * sfg-network
-                * iob-local
-                * tpd-network
-                * tpc-network
-                * iol-network
-                * iom-network
-                * tpd-local
-                * tpf-network
-                * iog-local
-                * iol-local
-                * */
-            }
-        }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         finish()
-
-        /*
-        setContentView(R.layout.activity_debug)
-
-        btnDebug = findViewById(R.id.btnDebug)
-        fieldDebug = findViewById(R.id.fieldDebug)
-        lng = findViewById(R.id.lng)
-
-        lng?.text = LocaleParser.parse(Preferences.getPreferences(this, "").getLanguage()).language
-
-        tts = TextToSpeech(this, ttsListener)
-
-        btnDebug?.setOnClickListener {
-            tts!!.speak(fieldDebug!!.text, TextToSpeech.QUEUE_FLUSH, null,"")
-        }
-        */
     }
 
     public override fun onDestroy() {
-        if (tts != null) {
-            tts!!.stop()
-            tts!!.shutdown()
-        }
         super.onDestroy()
     }
 }

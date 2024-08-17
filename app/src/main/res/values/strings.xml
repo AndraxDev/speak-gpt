@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name" translatable="false">SpeakGPT</string>
     <string name="app_name_lite" translatable="false">SpeakGPT Lite</string>
     <string name="avatar_gpt" translatable="false">GPT</string>
@@ -496,7 +496,8 @@
     <string name="msg_error_calculating_cost">Cost: Error calculating cost. Please check your connection.</string>
     <string name="msg_cost_not_enough_data"><![CDATA[Cost: <SpeakGPT hasn\'t enough data to calculate cost for this model. Look for documentation and calculate cost manually based on the usage above.>]]></string>
     <string name="cost_template" translatable="false">Cost: $%.5f in / $%.5f out\nTotal: $%.5f\nPrice: $%.2f (in) $%.2f (out) per 1M tokens</string>
-    <string name="cost_loading">Cost: Loading...</string>
-    <string name="cost_counter_usage">Usage (tokens): %s in / %s out</string>
+    <string name="cost_loading" tools:ignore="TypographyEllipsis">Cost: Loading...</string>
+    <string formatted="false"  name="cost_counter_usage">Usage (tokens): %s in / %s out</string>
     <string name="prompt_no_model_provided" translatable="false">No model has been provided.</string>
+    <string name="teslasoft_id_version">Teslasoft ID version:</string>
 </resources>
