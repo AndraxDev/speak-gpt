@@ -20,10 +20,10 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.View
 import android.widget.ListView
-import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.textfield.TextInputLayout
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
@@ -48,19 +48,12 @@ class VoiceSelectorDialogFragment : DialogFragment() {
 
 
     private var builder: AlertDialog.Builder? = null
-
     private var listener: OnVoiceSelectedListener? = null
-
     private var voiceList: ListView? = null
-
     private var voiceListAdapter: VoiceListAdapter? = null
-
     private var availableVoices: ArrayList<String> = arrayListOf()
-
     private var tts: android.speech.tts.TextToSpeech? = null
-
-    private var progressBar: ProgressBar? = null
-
+    private var progressBar: CircularProgressIndicator? = null
     private var fieldSearchLayout: TextInputLayout? = null
 
     private var voiceSelectedListener: VoiceListAdapter.OnItemClickListener =
@@ -73,6 +66,7 @@ class VoiceSelectorDialogFragment : DialogFragment() {
                 } else {
                     preferences.setOpenAIVoice(model)
                 }
+
                 voiceListAdapter?.notifyDataSetChanged()
                 listener?.onVoiceSelected(model)
                 dismiss()

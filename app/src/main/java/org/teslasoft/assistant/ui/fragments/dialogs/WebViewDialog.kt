@@ -21,22 +21,20 @@ import android.app.Dialog
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import org.teslasoft.assistant.Config
 import org.teslasoft.assistant.R
 
 class WebViewDialog : DialogFragment() {
-
     companion object {
         fun newInstance(url: String, title: String): WebViewDialog {
             val dialog = WebViewDialog()
@@ -49,7 +47,7 @@ class WebViewDialog : DialogFragment() {
     }
 
     private var webView: WebView? = null
-    private var loadingBar: ProgressBar? = null
+    private var loadingBar: CircularProgressIndicator? = null
     private var dialogTitle: TextView? = null
     private var dialogBody: ConstraintLayout? = null
 

@@ -23,7 +23,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.ProgressBar
 import android.widget.RadioButton
 import android.widget.ScrollView
 import android.widget.TextView
@@ -34,6 +33,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.elevation.SurfaceColors
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import org.teslasoft.assistant.Api
 import org.teslasoft.assistant.Config.Companion.API_ENDPOINT
 import org.teslasoft.assistant.R
@@ -46,7 +46,7 @@ class ReportAbuseActivity : FragmentActivity() {
     private var reason = ""
 
     private var reportForm: ScrollView? = null
-    private var loadingBar: ProgressBar? = null
+    private var loadingBar: CircularProgressIndicator? = null
 
     private var btnIllegal: RadioButton? = null
     private var btnCp: RadioButton? = null

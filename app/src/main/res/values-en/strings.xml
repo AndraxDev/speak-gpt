@@ -110,7 +110,7 @@
     <string name="cat_entertainment">Entertainment</string>
     <string name="safety_warning">Follow OpenAI safety principles. Do not post any inappropriate or sensitive information. All prompts are being moderated. Inappropriate prompts will be removed without further notice.</string>
     <string name="btn_post_your_prompt">Post your prompt</string>
-    <string name="title_prompts_store">Prompts store</string>
+    <string name="title_prompts_store">Prompts library</string>
     <string name="hint_search">Search</string>
     <string name="title_select_language">Select language</string>
     <string name="title_tips">Tips</string>

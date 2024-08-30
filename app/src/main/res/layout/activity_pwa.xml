@@ -31,13 +31,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"/>
 
-    </WebView>
-
-    <ProgressBar
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/loader"
-        style="?android:attr/progressBarStyle"
+        android:indeterminate="true"
+        style="@style/Widget.Material3.CircularProgressIndicator"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_marginTop="32dp"

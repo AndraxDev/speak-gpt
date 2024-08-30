@@ -18,9 +18,9 @@ package org.teslasoft.assistant.ui.activities
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageButton
 import android.widget.ListView
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
@@ -28,6 +28,7 @@ import com.aallam.ktoken.Encoding
 import com.aallam.ktoken.Tokenizer
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -47,7 +48,7 @@ class LogitBiasConfigActivity : FragmentActivity() {
     private var fieldTokenId: TextInputEditText? = null
     private var fieldLogitBias: TextInputEditText? = null
     private var btnAddPair: MaterialButton? = null
-    private var logitBiasLoader: ProgressBar? = null
+    private var logitBiasLoader: CircularProgressIndicator? = null
 
     private var list: ArrayList<HashMap<String, String>> = arrayListOf()
     private var adapter: LogitBiasItemAdapter? = null
@@ -167,7 +168,7 @@ class LogitBiasConfigActivity : FragmentActivity() {
 
     private fun reloadList() {
         runOnUiThread {
-            logitBiasLoader?.visibility = ProgressBar.VISIBLE
+            logitBiasLoader?.visibility = View.VISIBLE
             listView?.visibility = ListView.GONE
             btnAddPair?.isEnabled = false
         }
@@ -198,7 +199,7 @@ class LogitBiasConfigActivity : FragmentActivity() {
                 listView!!.adapter = adapter
                 adapter!!.notifyDataSetChanged()
 
-                logitBiasLoader?.visibility = ProgressBar.GONE
+                logitBiasLoader?.visibility = View.GONE
                 listView?.visibility = ListView.VISIBLE
                 btnAddPair?.isEnabled = true
             }

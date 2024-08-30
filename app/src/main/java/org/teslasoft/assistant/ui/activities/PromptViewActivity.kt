@@ -28,7 +28,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
@@ -40,6 +39,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.teslasoft.assistant.Api
@@ -55,7 +55,7 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
 
     private var activityTitle: TextView? = null
     private var content: ConstraintLayout? = null
-    private var progressBar: ProgressBar? = null
+    private var progressBar: CircularProgressIndicator? = null
     private var noInternetLayout: ConstraintLayout? = null
     private var btnReconnect: MaterialButton? = null
     private var btnShowDetails: MaterialButton? = null

@@ -65,7 +65,6 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import android.window.OnBackInvokedDispatcher
@@ -105,7 +104,6 @@ import com.aallam.openai.api.image.ImageCreation
 import com.aallam.openai.api.image.ImageSize
 import com.aallam.openai.api.logging.LogLevel
 import com.aallam.openai.api.logging.Logger
-import com.aallam.openai.api.model.Model
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.LoggingConfig
 import com.aallam.openai.client.OpenAI
@@ -114,6 +112,7 @@ import com.aallam.openai.client.OpenAIHost
 import com.aallam.openai.client.RetryStrategy
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.gson.Gson
 import com.google.mlkit.nl.languageid.LanguageIdentification
 import com.google.mlkit.nl.languageid.LanguageIdentifier
@@ -133,8 +132,6 @@ import kotlinx.serialization.json.putJsonArray
 import kotlinx.serialization.json.putJsonObject
 import okio.FileSystem
 import okio.Path.Companion.toPath
-import org.apache.commons.lang3.ObjectUtils.Null
-import org.jetbrains.annotations.TestOnly
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ApiEndpointPreferences
 import org.teslasoft.assistant.preferences.ChatPreferences
@@ -163,7 +160,6 @@ import java.util.Locale
 import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration.Companion.seconds
 
-
 class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
     // Init UI
@@ -171,7 +167,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
     private var btnSend: ImageButton? = null
     private var btnMicro: ImageButton? = null
     private var btnSettings: ImageButton? = null
-    private var progress: ProgressBar? = null
+    private var progress: CircularProgressIndicator? = null
     private var chat: RecyclerView? = null
     private var activityTitle: TextView? = null
     private var btnExport: ImageButton? = null
@@ -438,7 +434,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
             if (bitmap != null) {
                 attachedImage?.visibility = View.VISIBLE
-                selectedImage?.setImageBitmap(roundCorners(bitmap!!, 80f))
+                selectedImage?.setImageBitmap(roundCorners(bitmap!!))
                 imageIsSelected = true
 
                 val mimeType = contentResolver.getType(uri)
@@ -484,6 +480,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         }
     }
 
+    @Suppress("deprecation")
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() && GlobalPreferences.getPreferences(this).getAmoledPitchBlack()) {
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
@@ -795,7 +792,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         }
     }
 
-    @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
+    @SuppressLint("SetTextI18n", "ClickableViewAccessibility", "NotifyDataSetChanged")
     private fun initUI() {
         btnMicro = findViewById(R.id.btn_micro)
         btnSettings = findViewById(R.id.btn_settings)
@@ -958,6 +955,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
             return false
         }
 
+        @SuppressLint("NotifyDataSetChanged")
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
             val position = viewHolder.adapterPosition
 
@@ -1062,7 +1060,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
     private var baseImageString: String? = null
     private var selectedImageType: String? = null
 
-    private fun roundCorners(bitmap: Bitmap, cornerRadius: Float): Bitmap {
+    private fun roundCorners(bitmap: Bitmap): Bitmap {
         // Create a bitmap with the same size as the original.
         val output = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
 
@@ -1080,7 +1078,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         val rectF = RectF(rect)
 
         // Draw rounded rectangle as background.
-        canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, paint)
+        canvas.drawRoundRect(rectF, 80f, 80f, paint)
 
         // Change the paint mode to draw the original bitmap on top.
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
@@ -1099,7 +1097,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
                     if (bitmap != null) {
                         attachedImage?.visibility = View.VISIBLE
-                        selectedImage?.setImageBitmap(roundCorners(bitmap!!, 80f))
+                        selectedImage?.setImageBitmap(roundCorners(bitmap!!))
                         imageIsSelected = true
 
                         val mimeType = contentResolver.getType(uri)
@@ -1228,17 +1226,21 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         }
 
         messageInput?.setOnKeyListener { v, keyCode, event -> run {
-            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER && event.isShiftPressed && isHardKB(this) && preferences!!.getDesktopMode()) {
-                (v as EditText).append("\n")
-                return@run true
-            } else if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER && isHardKB(this) && preferences!!.getDesktopMode()) {
-                parseMessage((v as EditText).text.toString())
-                return@run true
-            } else if (event.action == KeyEvent.ACTION_DOWN && ((keyCode == KeyEvent.KEYCODE_ESCAPE && event.isShiftPressed) || keyCode == KeyEvent.KEYCODE_BACK) && preferences!!.getDesktopMode()) {
-                finish()
-                return@run true
+            when {
+                event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER && event.isShiftPressed && isHardKB() && preferences!!.getDesktopMode() -> {
+                    (v as EditText).append("\n")
+                    return@run true
+                }
+                event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER && isHardKB() && preferences!!.getDesktopMode() -> {
+                    parseMessage((v as EditText).text.toString())
+                    return@run true
+                }
+                event.action == KeyEvent.ACTION_DOWN && ((keyCode == KeyEvent.KEYCODE_ESCAPE && event.isShiftPressed) || keyCode == KeyEvent.KEYCODE_BACK) && preferences!!.getDesktopMode() -> {
+                    finish()
+                    return@run true
+                }
+                else -> return@run false
             }
-            return@run false
         }}
 
         if (preferences!!.getDesktopMode()) {
@@ -1267,7 +1269,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         }
     }
 
-    fun isHardKB(ctx: Context): Boolean {
+    private fun isHardKB(): Boolean {
         return resources.configuration.keyboard == KEYBOARD_QWERTY;
     }
 
@@ -1499,7 +1501,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                     mediaPlayer!!.reset()
                 }
                 tts!!.stop()
-            } catch (_: java.lang.Exception) {/**/}
+            } catch (_: java.lang.Exception) {/* unused */}
             btnMicro?.setImageResource(R.drawable.ic_microphone)
             recognizer?.stopListening()
             isRecording = false
@@ -1510,7 +1512,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                     mediaPlayer!!.reset()
                 }
                 tts!!.stop()
-            } catch (_: java.lang.Exception) {/**/}
+            } catch (_: java.lang.Exception) {/* unused */}
             btnMicro?.setImageResource(R.drawable.ic_stop_recording)
             if (ContextCompat.checkSelfPermission(
                     this, Manifest.permission.RECORD_AUDIO
@@ -1639,25 +1641,6 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         prefix = preferences!!.getPrefix()
     }
 
-    @TestOnly
-    private suspend fun getModels() {
-        val models: List<Model> = ai!!.models()
-
-        var string = "";
-
-        for (m: Model in models) {
-            val tmp: String = m.id.toString().replace(")", "").replace("ModelId(id=", "")
-
-            if (tmp.contains("gpt")) string += "$tmp\n"
-        }
-
-        MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
-            .setTitle(R.string.label_debug)
-            .setMessage(string)
-            .setPositiveButton(R.string.btn_close) { _, _ -> }
-            .show()
-    }
-
     // Init image resolutions
     private fun loadResolution() {
         resolution = preferences!!.getResolution()
@@ -1686,7 +1669,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                 mediaPlayer!!.reset()
             }
             tts!!.stop()
-        } catch (_: java.lang.Exception) {/**/}
+        } catch (_: java.lang.Exception) {/* unused */}
         if (message != "") {
             messageInput?.setText("")
 
@@ -1871,9 +1854,9 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         startActivity(intent)
     }
 
+    @Suppress("deprecation")
     private suspend fun generateResponse(request: String, shouldPronounce: Boolean) {
         disableAutoScroll = false
-        // chat?.transcriptMode = ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL
         try {
             var response = ""
 
@@ -2057,10 +2040,10 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                     if (message?.toolCalls != null) {
                         val toolsCalls = message.toolCalls!!
 
-                        if (toolsCalls.orEmpty().isEmpty()) {
+                        if (toolsCalls.isEmpty()) {
                             regularGPTResponse(shouldPronounce)
                         } else {
-                            for (toolCall in toolsCalls.orEmpty()) {
+                            for (toolCall in toolsCalls) {
                                 require(toolCall is ToolCall.Function) { "Tool call is not a function" }
                                 toolCall.execute()
                             }
@@ -2704,11 +2687,13 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         syncChatProjection()
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBulkSelectionChanged(position: Int, selected: Boolean) {
         messagesSelectionProjection[position]["selected"] = selected
         selectedCount?.text = messagesSelectionProjection.count { it["selected"] == true }.toString()
     }
 
+    @Suppress("deprecation")
     override fun onChangeBulkActionMode(mode: Boolean) {
         bulkSelectionMode = mode
 
@@ -2740,7 +2725,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
             .setTitle("OpenAI API endpoint missing")
             .setMessage("To use $message, you need to add OpenAI API endpoint first. Would you like to add OpenAI endpoint now?")
             .setPositiveButton(R.string.yes) { _, _ -> requestAddApiEndpoint(feature, prompt) }
-            .setNegativeButton(R.string.no) { _, _ -> onCancelOpenAIAction(feature, prompt) }
+            .setNegativeButton(R.string.no) { _, _ -> onCancelOpenAIAction(feature) }
             .show()
     }
 
@@ -2776,7 +2761,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
             if (bitmap != null) {
                 attachedImage?.visibility = View.VISIBLE
-                selectedImage?.setImageBitmap(roundCorners(bitmap!!, 80f))
+                selectedImage?.setImageBitmap(roundCorners(bitmap!!))
             }
         }
     }
@@ -2807,13 +2792,13 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
             }
 
             override fun onCancel(position: Int) {
-                onCancelOpenAIAction(feature, prompt)
+                onCancelOpenAIAction(feature)
             }
         })
         apiEndpointDialog.show(supportFragmentManager, "EditApiEndpointDialogFragment")
     }
 
-    private fun onCancelOpenAIAction(feature: String, prompt: String) {
+    private fun onCancelOpenAIAction(feature: String) {
         if (feature == "dalle") {
             putMessage("DALL-E image generation is disabled. Please add OpenAI API endpoint to enable this feature.", true)
             saveSettings()
@@ -2862,6 +2847,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         }
     }
 
+    @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
     private fun selectAll() {
         adapter?.selectAll()
 
@@ -2875,6 +2861,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         adapter?.notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun deselectAll() {
         adapter?.unselectAll()
 
@@ -2888,6 +2875,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         adapter?.notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun deleteSelectedMessages() {
         MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
             .setTitle("Delete selected messages")
@@ -2897,7 +2885,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                 var p = 0
                 while (pos < messagesSelectionProjection.size) {
                     if (messagesSelectionProjection[pos]["selected"].toString() == "true") {
-                        messages.removeAt(pos-p)
+                        messages.removeAt(pos - p)
                         p++
                     }
 

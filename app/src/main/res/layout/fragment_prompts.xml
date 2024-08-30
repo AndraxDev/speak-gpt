@@ -19,7 +19,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -103,9 +102,10 @@
             app:srcCompat="@drawable/ic_search" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/loading"
-        style="?android:attr/progressBarStyle"
+        android:indeterminate="true"
+        style="@style/Widget.Material3.CircularProgressIndicator"
         android:layout_width="72dp"
         android:layout_height="72dp"
         app:layout_constraintBottom_toBottomOf="parent"

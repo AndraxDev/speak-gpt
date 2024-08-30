@@ -36,9 +36,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ProgressBar
+        <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/progressBar2"
-            style="?android:attr/progressBarStyle"
+            android:indeterminate="true"
+            style="@style/Widget.Material3.CircularProgressIndicator"
             android:layout_width="128dp"
             android:layout_height="128dp"
             android:background="@drawable/btn_accent_tonal_v5"

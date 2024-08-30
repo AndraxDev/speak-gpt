@@ -26,11 +26,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
@@ -54,6 +51,7 @@ import com.aallam.openai.client.OpenAIHost
 import com.aallam.openai.client.RetryStrategy
 import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -80,7 +78,7 @@ class PlaygroundFragment : Fragment() {
     private var btnTokenize: FloatingActionButton? = null
     private var clearIn: ImageButton? = null
     private var clearOut: ImageButton? = null
-    private var runLoader: ProgressBar? = null
+    private var runLoader: CircularProgressIndicator? = null
     private var editTextIn: EditText? = null
     private var editTextOut: EditText? = null
 

@@ -173,9 +173,10 @@
         </com.google.android.material.textfield.TextInputLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/logit_bias_loading"
-        style="?android:attr/progressBarStyle"
+        android:indeterminate="true"
+        style="@style/Widget.Material3.CircularProgressIndicator"
         android:layout_width="72dp"
         android:layout_height="72dp"
         android:layout_marginTop="32dp"

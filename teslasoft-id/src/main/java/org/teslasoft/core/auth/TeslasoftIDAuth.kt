@@ -49,7 +49,29 @@ class TeslasoftIDAuth : FragmentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_teslasoft_id)
 
-        askAuthPermission()
+        if (!checkInstallation()) {
+            MaterialAlertDialogBuilder(this, R.style.TeslasoftID_MaterialAlertDialog)
+                .setTitle(getAppName())
+                .setMessage(String.format(getString(R.string.teslasoft_services_auth_core_unavailable), getAppName()))
+                .setCancelable(false)
+                .setPositiveButton(R.string.teslasoft_services_auth_dialog_close) { _: DialogInterface?, _: Int ->
+                    this.setResult(RESULT_CANCELED)
+                    finish()
+                }.show()
+        } else {
+            askAuthPermission()
+        }
+    }
+
+    private fun checkInstallation(): Boolean {
+        return try {
+            val packageManager = this.packageManager
+            val packageInfo = packageManager.getPackageInfo("com.teslasoft.libraries.support", PackageManager.GET_ACTIVITIES)
+
+            return packageInfo != null
+        } catch (e: PackageManager.NameNotFoundException) {
+            false
+        }
     }
 
     private val activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()

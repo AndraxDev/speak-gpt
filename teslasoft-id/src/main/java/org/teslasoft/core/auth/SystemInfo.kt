@@ -33,8 +33,8 @@ class SystemInfo {
          * 00 - Main build (Maven release)
          * 01 - SpeakGPT build
          ********************************************************************************************/
-        const val VERSION = "1.4.0-speakgpt"
-        const val VERSION_CODE = 140101
+        const val VERSION = "1.4.1-speakgpt"
+        const val VERSION_CODE = 141101
         const val NAME = "Teslasoft ID for SpeakGPT"
     }
 }

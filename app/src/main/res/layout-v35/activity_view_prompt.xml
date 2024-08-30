@@ -40,7 +40,6 @@
         android:paddingRight="64dp"
         android:scrollHorizontally="true"
         android:singleLine="true"
-        android:text="Lorem ipsum"
         android:textColor="@color/text_title"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -48,9 +47,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progress_bar_view"
-        style="?android:attr/progressBarStyle"
+        android:indeterminate="true"
+        style="@style/Widget.Material3.CircularProgressIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"

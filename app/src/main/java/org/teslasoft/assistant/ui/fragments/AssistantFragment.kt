@@ -56,7 +56,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
@@ -65,7 +64,6 @@ import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -109,6 +107,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.gson.Gson
 import com.google.mlkit.nl.languageid.LanguageIdentification
 import com.google.mlkit.nl.languageid.LanguageIdentifier
@@ -158,7 +157,6 @@ import java.util.Base64
 import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
 
-
 class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListener {
 
     // Init UI
@@ -174,7 +172,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
     private var assistantInputLayout: LinearLayout? = null
     private var assistantActionsLayout: LinearLayout? = null
     private var assistantConversation: RecyclerView? = null
-    private var assistantLoading: ProgressBar? = null
+    private var assistantLoading: CircularProgressIndicator? = null
     private var assistantTitle: TextView? = null
     private var ui: RelativeLayout? = null
     private var windowBackground: ConstraintLayout? = null
@@ -259,7 +257,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         mContext = null
     }
 
-    private fun roundCorners(bitmap: Bitmap, cornerRadius: Float): Bitmap {
+    private fun roundCorners(bitmap: Bitmap): Bitmap {
         // Create a bitmap with the same size as the original.
         val output = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
 
@@ -277,7 +275,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         val rectF = RectF(rect)
 
         // Draw rounded rectangle as background.
-        canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, paint)
+        canvas.drawRoundRect(rectF, 80f, 80f, paint)
 
         // Change the paint mode to draw the original bitmap on top.
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
@@ -296,7 +294,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
                     if (bitmap != null) {
                         attachedImage?.visibility = View.VISIBLE
-                        selectedImage?.setImageBitmap(roundCorners(bitmap!!, 80f))
+                        selectedImage?.setImageBitmap(roundCorners(bitmap!!))
                         imageIsSelected = true
 
                         val mimeType = mContext?.contentResolver?.getType(uri)
@@ -390,7 +388,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         override fun onError(fromFile: Boolean, position: Int) {
             Toast.makeText(mContext ?: return, getString(R.string.chat_error_empty), Toast.LENGTH_SHORT).show()
 
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, false, true, "", "", "", "", "", -1)
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", fromFile = false, disableAutoName = false, saveChat = true, "", "", "", "", "", -1)
             chatDialogFragment.setStateChangedListener(this)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -406,7 +404,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         override fun onDuplicate(position: Int) {
             Toast.makeText(mContext ?: return, getString(R.string.chat_error_unique), Toast.LENGTH_SHORT).show()
 
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, false, true, "", "", "", "", "", -1)
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", fromFile = false, disableAutoName = false, saveChat = true, "", "", "", "", "", -1)
             chatDialogFragment.setStateChangedListener(this)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -599,7 +597,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility", "NotifyDataSetChanged")
     @Suppress("unchecked")
     private fun initSettings() {
         key = apiEndpointObject?.apiKey
@@ -696,6 +694,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         }
     }
 
+    @Suppress("deprecation")
     private fun startWhisper() {
         if (openAIKey == null) {
             openAIMissing("whisper", "")
@@ -901,7 +900,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                     mediaPlayer!!.reset()
                 }
                 tts!!.stop()
-            } catch (_: java.lang.Exception) {/**/}
+            } catch (_: java.lang.Exception) {/* unused */}
             btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
             recognizer?.stopListening()
             isRecording = false
@@ -914,7 +913,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                     mediaPlayer!!.reset()
                 }
                 tts!!.stop()
-            } catch (_: java.lang.Exception) {/**/}
+            } catch (_: java.lang.Exception) {/* unused */}
             btnAssistantVoice?.setImageResource(R.drawable.ic_stop_recording)
             if (ContextCompat.checkSelfPermission(
                     mContext ?: return, Manifest.permission.RECORD_AUDIO
@@ -1021,6 +1020,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         }
     }
 
+    @Suppress("deprecation")
     private fun runFromShareIntent() {
         if ((mContext as Activity?)?.intent?.action == Intent.ACTION_SEND && (mContext as Activity?)?.intent?.type == "text/plain") {
             val receivedText = (mContext as Activity?)?.intent?.getStringExtra(Intent.EXTRA_TEXT)
@@ -1045,7 +1045,11 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                 runFromContextMenu()
             }
         } else if ((mContext as Activity?)?.intent?.action == Intent.ACTION_SEND && ((mContext as Activity?)?.intent?.type == "image/png" || (mContext as Activity?)?.intent?.type == "image/jpeg")) {
-            val uri = (mContext as Activity?)?.intent?.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
+            val uri = if (android.os.Build.VERSION.SDK_INT < 33) {
+                (mContext as Activity?)?.intent?.getParcelableExtra(Intent.EXTRA_STREAM)
+            } else {
+                (mContext as Activity?)?.intent?.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
+            }
             if (uri != null) {
                 var bitmap: Bitmap? = null
 
@@ -1058,7 +1062,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
                 if (bitmap != null) {
                     attachedImage?.visibility = View.VISIBLE
-                    selectedImage?.setImageBitmap(roundCorners(bitmap!!, 80f))
+                    selectedImage?.setImageBitmap(roundCorners(bitmap!!))
                     imageIsSelected = true
 
                     val mimeType = mContext?.contentResolver?.getType(uri)
@@ -1338,6 +1342,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         startActivity(intent)
     }
 
+    @Suppress("deprecation")
     private suspend fun generateResponse(request: String, shouldPronounce: Boolean) {
         isProcessing = true
         assistantConversation?.visibility = View.VISIBLE
@@ -1349,13 +1354,13 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
             var response = ""
 
             if (imageIsSelected) {
-                imageIsSelected = false;
+                imageIsSelected = false
 
                 attachedImage?.visibility = View.GONE
 
                 putMessage("", true)
 
-                val reqList: ArrayList<ContentPart> = ArrayList<ContentPart>()
+                val reqList: ArrayList<ContentPart> = ArrayList()
                 reqList.add(TextPart(request))
                 reqList.add(ImagePart(baseImageString!!))
                 val chatCompletionRequest = ChatCompletionRequest(
@@ -1445,7 +1450,8 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                             stopper = false
                             return@collect
                         }
-                        if (v.choices[0] != null && v.choices[0].text != null &&  v.choices[0].text.toString() != "null") {
+
+                        if (v.choices[0] != null && v.choices[0].text != null && v.choices[0].text.toString() != "null") {
                             response += v.choices[0].text
                             messages[messages.size - 1]["message"] = response
                             if (messages.size > 2) {
@@ -1536,10 +1542,10 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                     if (message?.toolCalls != null) {
                         val toolsCalls = message.toolCalls!!
 
-                        if (toolsCalls.orEmpty().isEmpty()) {
+                        if (toolsCalls.isEmpty()) {
                             regularGPTResponse(shouldPronounce)
                         } else {
-                            for (toolCall in toolsCalls.orEmpty()) {
+                            for (toolCall in toolsCalls) {
                                 require(toolCall is ToolCall.Function) { "Tool call is not a function" }
                                 toolCall.execute()
                             }
@@ -1835,8 +1841,8 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
     private fun writeImageToCache(bytes: ByteArray, imageType: String = "png") {
         try {
             mContext?.contentResolver?.openFileDescriptor(Uri.fromFile(File(mContext?.getExternalFilesDir("images")?.absolutePath + "/" + Hash.hash(Base64.getEncoder().encodeToString(bytes)) + "." + imageType)), "w")?.use {
-                FileOutputStream(it.fileDescriptor).use {
-                    it.write(
+                FileOutputStream(it.fileDescriptor).use { stream ->
+                    stream.write(
                         bytes
                     )
                 }
@@ -1896,9 +1902,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
                 (mContext as Activity?)?.runOnUiThread {
                     putMessage(path, true)
-
                     scroll(true)
-
                     saveSettings()
 
                     btnAssistantVoice?.isEnabled = true
@@ -1922,7 +1926,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                     }
 
                     e.stackTraceToString().contains("No address associated with hostname") -> {
-                        putMessage(getString(R.string.prompt_offline), true);
+                        putMessage(getString(R.string.prompt_offline), true)
                     }
 
                     e.stackTraceToString().contains("Incorrect API key") -> {
@@ -1933,7 +1937,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                     }
 
                     e.stackTraceToString().contains("Software caused connection abort") -> {
-                        putMessage(getString(R.string.prompt_error_unknown), true);
+                        putMessage(getString(R.string.prompt_error_unknown), true)
                     }
 
                     e.stackTraceToString().contains("You exceeded your current quota") -> {
@@ -1973,7 +1977,6 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
     private fun saveSettings() {
         if (chatID != "") {
-            // Toast.makeText(context, "A: " + chatID, Toast.LENGTH_SHORT).show()
             val chat = mContext?.getSharedPreferences(
                 "chat_$chatID",
                 FragmentActivity.MODE_PRIVATE
@@ -2057,7 +2060,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
             if (bitmap != null) {
                 attachedImage?.visibility = View.VISIBLE
-                selectedImage?.setImageBitmap(roundCorners(bitmap!!, 80f))
+                selectedImage?.setImageBitmap(roundCorners(bitmap!!))
                 imageIsSelected = true
 
                 val mimeType = mContext?.contentResolver?.getType(uri)
@@ -2133,7 +2136,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility", "NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         dialog!!.setOnShowListener { dialogInterface: DialogInterface ->
             val bottomSheetDialog = dialogInterface as BottomSheetDialog
@@ -2287,7 +2290,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         }
 
         btnSaveToChat?.setOnClickListener {
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, false, true, "", "", "", "", "", -1)
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", fromFile = false, disableAutoName = false, saveChat = false, "", "", "", "", "", -1)
             chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -2332,13 +2335,14 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
             if (bitmap != null) {
                 attachedImage?.visibility = View.VISIBLE
-                selectedImage?.setImageBitmap(roundCorners(bitmap!!, 80f))
+                selectedImage?.setImageBitmap(roundCorners(bitmap!!))
             }
         }
 
         hideKeyboard()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun loadMessages(chatId: String) {
         messages = ChatPreferences.getChatPreferences().getChatById(mContext ?: return, chatId)
 
@@ -2557,7 +2561,6 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
     private fun removeLastAssistantMessageIfAvailable() {
         if (messages.isNotEmpty() && messages.size - 1 > 0 && messages[messages.size - 1]["isBot"] == true) {
             messages.removeAt(messages.size - 1)
-            // adapter?.onDelete(messages.size - 1)
             adapter?.notifyItemRemoved(messages.size - 1)
         }
 
@@ -2653,6 +2656,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         syncChatProjection()
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBulkSelectionChanged(position: Int, selected: Boolean) {
         messagesSelectionProjection[position]["selected"] = selected
         selectedCount?.text = messagesSelectionProjection.count { it["selected"] == true }.toString()
@@ -2707,7 +2711,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
             .setTitle("OpenAI API endpoint missing")
             .setMessage("To use $message, you need to add OpenAI API endpoint first. Would you like to add OpenAI endpoint now?")
             .setPositiveButton(R.string.yes) { _, _ -> requestAddApiEndpoint(feature, prompt) }
-            .setNegativeButton(R.string.no) { _, _ -> onCancelOpenAIAction(feature, prompt) }
+            .setNegativeButton(R.string.no) { _, _ -> onCancelOpenAIAction(feature) }
             .show()
     }
 
@@ -2737,13 +2741,13 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
             }
 
             override fun onCancel(position: Int) {
-                onCancelOpenAIAction(feature, prompt)
+                onCancelOpenAIAction(feature)
             }
         })
         apiEndpointDialog.show(parentFragmentManager, "EditApiEndpointDialogFragment")
     }
 
-    private fun onCancelOpenAIAction(feature: String, prompt: String) {
+    private fun onCancelOpenAIAction(feature: String) {
         if (feature == "dalle") {
             putMessage("DALL-E image generation is disabled. Please add OpenAI API endpoint to enable this feature.", true)
             saveSettings()
@@ -2772,6 +2776,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
     private fun selectAll() {
         adapter?.selectAll()
 
@@ -2785,6 +2790,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         adapter?.notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun deselectAll() {
         adapter?.unselectAll()
 
@@ -2798,6 +2804,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         adapter?.notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun deleteSelectedMessages() {
         MaterialAlertDialogBuilder(mContext ?: return, R.style.App_MaterialAlertDialog)
             .setTitle("Delete selected messages")

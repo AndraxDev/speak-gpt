@@ -28,12 +28,13 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import org.teslasoft.assistant.Config.Companion.API_SERVER_NAME
 import org.teslasoft.assistant.R
 
 class PWAActivity : FragmentActivity() {
     private var webView: WebView? = null
-    private var loader: ProgressBar? = null
+    private var loader: CircularProgressIndicator? = null
     private var btnClose: ImageButton? = null
 
     @SuppressLint("SetJavaScriptEnabled")

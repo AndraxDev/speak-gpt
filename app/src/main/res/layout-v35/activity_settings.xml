@@ -38,9 +38,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ProgressBar
+        <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/progressBar4"
-            style="?android:attr/progressBarStyle"
+            android:indeterminate="true"
+            style="@style/Widget.Material3.CircularProgressIndicator"
             android:layout_width="64dp"
             android:layout_height="64dp" />
     </LinearLayout>

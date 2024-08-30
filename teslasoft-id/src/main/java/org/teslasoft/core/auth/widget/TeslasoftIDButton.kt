@@ -38,6 +38,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.elevation.SurfaceColors
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.teslasoft.core.auth.*
@@ -48,7 +49,7 @@ class TeslasoftIDButton : Fragment() {
     private var accountName: TextView? = null
     private var accountEmail: TextView? = null
     private var authBtn: LinearLayout? = null
-    private var accountLoader: ProgressBar? = null
+    private var accountLoader: CircularProgressIndicator? = null
     private var verificationApi: RequestNetwork? = null
     private var accountSettings: SharedPreferences? = null
     private var listener: AccountSyncListener? = null
