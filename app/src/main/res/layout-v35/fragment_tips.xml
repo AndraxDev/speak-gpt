@@ -52,7 +52,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingBottom="32dp">
+                android:paddingHorizontal="8dp"
+                android:paddingBottom="48dp">
 
                 <LinearLayout
                     android:id="@+id/tip_1"

@@ -45,7 +45,11 @@
 
     <style name="UI.Fade" parent="Theme.App">
         <item name="android:windowAnimationStyle">@style/Theme.Anim.Fade.Material</item>
-        <item name="android:typeface">sans</item>
+    </style>
+
+    <style name="UI.Material" parent="Theme.App">
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowAnimationStyle">@style/Theme.Anim.Material</item>
     </style>
 
     <style name="Theme.Transparent" parent="@style/Theme.Material3.DayNight.NoActionBar">
@@ -80,6 +84,13 @@
         <item name="android:activityOpenExitAnimation">@anim/fade_out</item>
         <item name="android:activityCloseEnterAnimation">@anim/fade_in</item>
         <item name="android:activityCloseExitAnimation">@anim/fade_out</item>
+    </style>
+
+    <style name="Theme.Anim.Material" parent="@style/Theme.Material3.DayNight.NoActionBar">
+        <item name="android:activityOpenEnterAnimation">@anim/activity_entry_open</item>
+        <item name="android:activityOpenExitAnimation">@anim/activity_exit_open</item>
+        <item name="android:activityCloseEnterAnimation">@anim/activity_entry_close</item>
+        <item name="android:activityCloseExitAnimation">@anim/activity_exit_close</item>
     </style>
 
     <style name="App.MaterialAlertDialog" parent="MaterialAlertDialog.Material3">

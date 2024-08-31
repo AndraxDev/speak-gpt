@@ -23,20 +23,18 @@
     android:layout_height="match_parent">
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        style="?attr/extendedFloatingActionButtonPrimaryStyle"
         android:id="@+id/btn_add_prompt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
         android:clickable="true"
         android:contentDescription="@string/btn_post_your_prompt"
         android:text="@string/btn_post_your_prompt"
-        android:textColor="@color/window_background"
         android:tooltipText="@string/btn_post_your_prompt"
-        app:backgroundTint="@color/accent_900"
         app:elevation="6dp"
         app:icon="@drawable/ic_add"
-        app:iconTint="@color/window_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_add" />
@@ -58,9 +56,9 @@
         android:id="@+id/search_bar"
         android:layout_width="0dp"
         android:layout_height="56dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="24dp"
         android:background="@drawable/btn_accent_tonal"
         android:clickable="true"
         android:focusable="true"
@@ -72,16 +70,16 @@
             android:id="@+id/field_search"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
             android:layout_marginEnd="4dp"
             android:autofillHints="Search"
-            android:textColorHint="@color/text_hint"
-            android:textColor="@color/text_field"
             android:background="@color/transparent"
             android:ems="10"
             android:hint="@string/hint_search"
             android:inputType="text"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="@color/text_field"
+            android:textColorHint="@color/text_hint"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_search"
             app:layout_constraintStart_toStartOf="parent"
@@ -94,8 +92,8 @@
             android:layout_marginEnd="4dp"
             android:background="@color/transparent"
             android:contentDescription="@string/hint_search"
-            android:tooltipText="@string/hint_search"
             android:src="@drawable/ic_search"
+            android:tooltipText="@string/hint_search"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -106,8 +104,12 @@
         android:id="@+id/loading"
         android:indeterminate="true"
         style="@style/Widget.Material3.CircularProgressIndicator"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:indicatorSize="72dp"
+        app:trackThickness="8dp"
+        app:trackCornerRadius="8dp"
+        app:indeterminateAnimationTypeCircular="advance"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -147,17 +149,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:listSelector="@android:color/transparent" />
-        </LinearLayout>
 
+        </LinearLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <LinearLayout
         android:id="@+id/prompt_categories"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="24dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -482,9 +484,9 @@
         android:id="@+id/linearLayout23"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="24dp"
         android:orientation="horizontal"
         android:weightSum="3"
         app:layout_constraintEnd_toEndOf="parent"
@@ -492,8 +494,8 @@
         app:layout_constraintTop_toBottomOf="@+id/prompt_categories">
 
         <com.google.android.material.button.MaterialButton
-            style="@style/Widget.Material3.Button"
             android:id="@+id/btn_all_models"
+            style="@style/Widget.Material3.Button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="6dp"
@@ -502,8 +504,8 @@
             android:text="@string/cat_all" />
 
         <com.google.android.material.button.MaterialButton
-            style="@style/Widget.Material3.Button.TonalButton"
             android:id="@+id/btn_text_model"
+            style="@style/Widget.Material3.Button.TonalButton"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="6dp"
@@ -512,8 +514,8 @@
             android:text="GPT" />
 
         <com.google.android.material.button.MaterialButton
-            style="@style/Widget.Material3.Button.TonalButton"
             android:id="@+id/btn_image_model"
+            style="@style/Widget.Material3.Button.TonalButton"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="6dp"

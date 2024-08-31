@@ -24,18 +24,16 @@
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/btn_add"
+        style="?attr/extendedFloatingActionButtonPrimaryStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
         android:clickable="true"
         android:text="@string/btn_new_api_endpoint"
-        android:textColor="@color/window_background"
         android:tooltipText="@string/btn_new_chat"
-        app:backgroundTint="@color/accent_900"
         app:elevation="6dp"
         app:icon="@drawable/ic_add"
-        app:iconTint="@color/window_background"
         app:layout_constraintBottom_toBottomOf="@+id/list_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_add" />

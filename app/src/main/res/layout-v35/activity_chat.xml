@@ -127,8 +127,12 @@
             android:id="@+id/progressBar5"
             android:indeterminate="true"
             style="@style/Widget.Material3.CircularProgressIndicator"
-            android:layout_width="64dp"
-            android:layout_height="64dp" />
+            app:indicatorSize="72dp"
+            app:trackThickness="8dp"
+            app:trackCornerRadius="8dp"
+            app:indeterminateAnimationTypeCircular="advance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
     <LinearLayout
@@ -180,7 +184,7 @@
                 android:paddingTop="13dp"
                 android:paddingRight="12dp"
                 android:paddingBottom="13dp"
-                android:textColorHint="@color/accent_500"
+                android:textColorHint="@color/text_hint"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -189,15 +193,15 @@
 
             <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/progress"
-                android:indeterminate="true"
                 style="@style/Widget.Material3.CircularProgressIndicator"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="32dp"
-                android:background="@drawable/assistant_clear"
+                android:background="@drawable/assistant_clear_v2"
                 android:elevation="0.02dip"
+                android:indeterminate="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

@@ -21,8 +21,9 @@
         <item name="android:statusBarColor">#00000000</item>
         <item name="android:navigationBarColor">#00000000</item>
         <item name="colorAccent">@color/teslasoft_services_auth_accent_900</item>
-        <item name="colorPrimary">@color/teslasoft_services_auth_window_background</item>
-        <item name="colorPrimaryDark">@color/teslasoft_services_auth_window_background</item>
+        <item name="colorPrimary">@color/teslasoft_services_auth_accent_900</item>
+        <item name="colorPrimaryDark">@color/teslasoft_services_auth_accent_900</item>
+        <item name="colorSecondary">@color/teslasoft_services_auth_accent_900</item>
     </style>
 
     <style name="TeslasoftID.MaterialAlertDialog" parent="MaterialAlertDialog.Material3">

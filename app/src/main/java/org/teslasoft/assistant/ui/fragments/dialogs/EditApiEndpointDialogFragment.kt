@@ -82,20 +82,23 @@ class EditApiEndpointDialogFragment : DialogFragment() {
         builder!!.setView(view)
             .setCancelable(false)
             .setPositiveButton(R.string.btn_save) { _, _ -> validateForm() }
-            .setNeutralButton(R.string.btn_delete) { _, _ -> run {
+            .setNegativeButton(R.string.btn_cancel) { _, _ ->  }
+
+        if (requireArguments().getInt("position") != -1) {
+            builder!!.setNeutralButton(R.string.btn_delete) { _, _ -> run {
                 MaterialAlertDialogBuilder(this.requireContext(), R.style.App_MaterialAlertDialog)
                     .setTitle(R.string.label_delete_api_endpoint)
                     .setMessage(R.string.message_delete_api_endpoint)
                     .setPositiveButton(R.string.yes) { _, _ -> listener!!.onDelete(requireArguments().getInt("position"), Hash.hash(requireArguments().getString("label")!!)) }
                     .setNegativeButton(R.string.no) { _, _ ->  listener!!.onCancel(requireArguments().getInt("position"))}
                     .show()
-            } }
-            .setNegativeButton(R.string.btn_cancel) { _, _ ->  }
+            }}
+        }
 
         return builder!!.create()
     }
 
-    fun validateForm() {
+    private fun validateForm() {
         if (fieldLabel?.text.toString().isEmpty()) {
             listener!!.onError(getString(R.string.label_error_api_endpoint_empty), requireArguments().getInt("position"))
             return
@@ -136,10 +139,10 @@ class EditApiEndpointDialogFragment : DialogFragment() {
     }
 
     interface StateChangesListener {
-        fun onAdd(apiEndpoint: ApiEndpointObject) {}
-        fun onEdit(oldLabel: String, apiEndpoint: ApiEndpointObject, position: Int) {}
-        fun onDelete(position: Int, id: String) {}
-        fun onError(message: String, position: Int) {}
-        fun onCancel(position: Int) {}
+        fun onAdd(apiEndpoint: ApiEndpointObject) { /* default */ }
+        fun onEdit(oldLabel: String, apiEndpoint: ApiEndpointObject, position: Int) { /* default */ }
+        fun onDelete(position: Int, id: String) { /* default */ }
+        fun onError(message: String, position: Int) { /* default */ }
+        fun onCancel(position: Int) { /* default */ }
     }
 }

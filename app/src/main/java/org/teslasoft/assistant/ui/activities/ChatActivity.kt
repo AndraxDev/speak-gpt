@@ -29,11 +29,13 @@ import android.content.res.Configuration.KEYBOARD_QWERTY
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.RectF
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.media.MediaPlayer
@@ -159,6 +161,7 @@ import java.net.URL
 import java.util.Locale
 import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration.Companion.seconds
+
 
 class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
@@ -484,10 +487,11 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() && GlobalPreferences.getPreferences(this).getAmoledPitchBlack()) {
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
-            if (android.os.Build.VERSION.SDK_INT <= 34) {
+            if (Build.VERSION.SDK_INT <= 34) {
                 window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme)
                 window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme)
             }
+            progress?.setBackgroundResource(R.drawable.assistant_clear_amoled)
             keyboardFrame?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme))
             actionBar?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme))
             activityTitle?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme))
@@ -542,10 +546,11 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
             )
         } else {
             window.setBackgroundDrawableResource(R.color.window_background)
-            if (android.os.Build.VERSION.SDK_INT <= 34) {
+            if (Build.VERSION.SDK_INT <= 34) {
                 window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
                 window.navigationBarColor = SurfaceColors.SURFACE_2.getColor(this)
             }
+            progress?.setBackgroundResource(R.drawable.assistant_clear_v2)
             keyboardFrame?.setBackgroundColor(SurfaceColors.SURFACE_2.getColor(this))
             actionBar?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
             activityTitle?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
@@ -1305,7 +1310,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
     private fun startWhisper() {
         if (openAIKey == null) {
             openAIMissing("whisper", "")
-        } else if (android.os.Build.VERSION.SDK_INT >= 31) {
+        } else if (Build.VERSION.SDK_INT >= 31) {
             recorder = MediaRecorder(this).apply {
                 setAudioSource(MediaRecorder.AudioSource.MIC)
                 setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
@@ -2698,7 +2703,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         bulkSelectionMode = mode
 
         if (mode) {
-            if (android.os.Build.VERSION.SDK_INT <= 34) {
+            if (Build.VERSION.SDK_INT <= 34) {
                 window.statusBarColor = ResourcesCompat.getColor(resources, R.color.accent_250, theme)
             }
             bulkContainer?.visibility = View.VISIBLE

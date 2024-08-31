@@ -31,7 +31,11 @@
                 style="@style/Widget.Material3.CircularProgressIndicator.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp" />
+                android:layout_margin="8dp"
+                app:indicatorSize="56dp"
+                app:trackThickness="8dp"
+                app:trackCornerRadius="8dp"
+                app:indeterminateAnimationTypeCircular="advance" />
 
             <TextView
                 android:id="@+id/security_check_progress"
@@ -41,7 +45,8 @@
                 android:gravity="center"
                 android:text="@string/teslasoft_services_auth_checking_info"
                 android:textColor="@color/teslasoft_services_auth_accent_900"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 

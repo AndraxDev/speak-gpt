@@ -23,6 +23,8 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
@@ -359,7 +361,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     @Suppress("DEPRECATION")
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack()!!) {
-            if (android.os.Build.VERSION.SDK_INT <= 34) {
+            if (Build.VERSION.SDK_INT <= 34) {
                 window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme)
                 window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
             }
@@ -376,16 +378,10 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
 
             btnDebugger?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, theme)
             btnCloseDebugger?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, theme)
-            btnInitiateCrash?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.amoled_accent_50, theme)
-            btnInitiateCrash?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_600, theme))
-            btnLaunchPWA?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.amoled_accent_50, theme)
-            btnLaunchPWA?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_600, theme))
-            btnTogglePWA?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.amoled_accent_50, theme)
-            btnTogglePWA?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_600, theme))
             devIds?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_16_amoled, theme)
             devIds?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_600, theme))
         } else {
-            if (android.os.Build.VERSION.SDK_INT <= 34) {
+            if (Build.VERSION.SDK_INT <= 34) {
                 window.navigationBarColor = SurfaceColors.SURFACE_3.getColor(this)
                 window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
             }
@@ -402,12 +398,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
 
             btnDebugger?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal, theme)!!)
             btnCloseDebugger?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal, theme)!!)
-            btnInitiateCrash?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_250, theme)
-            btnInitiateCrash?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_900, theme))
-            btnLaunchPWA?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_250, theme)
-            btnLaunchPWA?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_900, theme))
-            btnTogglePWA?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.accent_250, theme)
-            btnTogglePWA?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_900, theme))
             devIds?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_16, theme)!!)
             devIds?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_900, theme))
         }
@@ -419,13 +409,13 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     @Suppress("DEPRECATION")
     private fun preloadAmoled() {
         if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack()!!) {
-            if (android.os.Build.VERSION.SDK_INT <= 34) {
+            if (Build.VERSION.SDK_INT <= 34) {
                 window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
                 window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
             }
             threadLoader?.background = ResourcesCompat.getDrawable(resources, R.color.amoled_window_background, null)
         } else {
-            if (android.os.Build.VERSION.SDK_INT <= 34) {
+            if (Build.VERSION.SDK_INT <= 34) {
                 window.navigationBarColor = SurfaceColors.SURFACE_3.getColor(this)
                 window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
             }

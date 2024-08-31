@@ -3,7 +3,6 @@
     android:shareInterpolator="false"
     android:ordering="sequentially">
 
-
     <translate
         android:fromYDelta="0"
         android:toYDelta="100%p"

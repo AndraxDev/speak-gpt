@@ -27,7 +27,7 @@
     <color name="text_title_inv">#FF000000</color>
     <color name="text_subtitle">#99FFFFFF</color>
     <color name="text_field">#DEFFFFFF</color>
-    <color name="text_hint">#66FFFFFF</color>
+    <color name="text_hint">#99FFFFFF</color>
     <color name="text_subtitle_inv">#99000000</color>
     <color name="ripple">#32FFFFFF</color>
     <color name="ripple_bg">#AAFFFFFF</color>
@@ -38,7 +38,7 @@
     <color name="tip1">#E2FFD4</color>
     <color name="tip">#15E4FFD6</color>
     <color name="marker">#15FFFFFF</color>
-    <color name="warn_bg">#1AA55757</color>
+    <color name="warn_bg">#26AB6A6A</color>
     <color name="delete_active">#FF5647</color>
     <color name="pin_active">#4E6AFF</color>
     <color name="delete">#FFE3E0</color>

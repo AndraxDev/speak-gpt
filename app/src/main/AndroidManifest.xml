@@ -21,7 +21,7 @@
             <action android:name="android.intent.action.TTS_SERVICE" />
         </intent>
         <package android:name="org.teslasoft.assistant" />
-        <package android:name="org.teslasoft.libraries.support" />
+        <package android:name="com.teslasoft.libraries.support" />
     </queries>
 
     <application
@@ -39,7 +39,7 @@
         <activity
             android:name=".ui.activities.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.App"
+            android:theme="@style/UI.Material"
             android:launchMode="singleTask">
 
             <intent-filter android:priority="1000">
@@ -63,27 +63,27 @@
             android:name=".ui.activities.ChatActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize"
-            android:theme="@style/UI.Fade">
+            android:theme="@style/UI.Material">
         </activity>
 
         <activity
             android:name=".ui.activities.ApiEndpointsListActivity"
             android:exported="false"
             android:label="@string/title_api_endpoints"
-            android:theme="@style/UI.Fade">
+            android:theme="@style/UI.Material">
         </activity>
 
         <activity
             android:name=".ui.activities.LogitBiasConfigActivity"
             android:exported="false"
-            android:theme="@style/UI.Fade">
+            android:theme="@style/UI.Material">
         </activity>
 
         <activity
             android:name=".ui.activities.LogitBiasConfigListActivity"
             android:exported="false"
             android:label="@string/label_logit_bias"
-            android:theme="@style/UI.Fade">
+            android:theme="@style/UI.Material">
         </activity>
 
         <activity
@@ -96,7 +96,7 @@
         <activity
             android:name=".ui.activities.PromptViewActivity"
             android:exported="true"
-            android:theme="@style/Theme.App"
+            android:theme="@style/UI.Material"
             android:launchMode="singleTask">
 
             <intent-filter android:autoVerify="true">
@@ -114,7 +114,7 @@
         <activity
             android:name=".ui.activities.ReportAbuseActivity"
             android:exported="false"
-            android:theme="@style/UI.Fade"
+            android:theme="@style/UI.Material"
             android:label="@string/title_report_abuse"
             android:launchMode="singleTask">
         </activity>
@@ -122,7 +122,7 @@
         <activity
             android:name=".ui.activities.TipsActivity"
             android:exported="false"
-            android:theme="@style/UI.Fade"
+            android:theme="@style/UI.Material"
             android:label="@string/menu_tips"
             android:launchMode="singleTask">
         </activity>
@@ -130,7 +130,7 @@
         <activity
             android:name=".ui.activities.DocumentationActivity"
             android:exported="false"
-            android:theme="@style/UI.Fade"
+            android:theme="@style/UI.Material"
             android:label="@string/title_documentation"
             android:launchMode="singleTask">
         </activity>
@@ -234,7 +234,7 @@
         <activity
             android:name=".ui.activities.AboutActivity"
             android:exported="false"
-            android:theme="@style/UI.Fade"
+            android:theme="@style/UI.Material"
             android:label="@string/title_about_app"
             android:launchMode="singleTask">
         </activity>
@@ -258,7 +258,7 @@
         <activity
             android:name=".ui.activities.SettingsActivity"
             android:exported="false"
-            android:theme="@style/UI.Fade"
+            android:theme="@style/UI.Material"
             android:label="@string/settings"
             android:launchMode="singleTask">
         </activity>
@@ -274,7 +274,7 @@
         <activity
             android:name=".ui.activities.LogsActivity"
             android:exported="false"
-            android:theme="@style/UI.Fade"
+            android:theme="@style/UI.Material"
             android:label="@string/title_logs"
             android:launchMode="singleTask">
         </activity>
@@ -290,42 +290,42 @@
         <activity
             android:name=".ui.activities.AIPhotoEditorActivity"
             android:exported="false"
-            android:theme="@style/UI.Fade"
+            android:theme="@style/UI.Material"
             android:launchMode="singleTask">
         </activity>
 
         <activity
             android:name=".ui.activities.PhotoVariationsActivity"
             android:exported="false"
-            android:theme="@style/UI.Fade"
+            android:theme="@style/UI.Material"
             android:launchMode="singleTask">
         </activity>
 
         <activity
             android:name=".ui.activities.ft.FineTuneJobInfoActivity"
             android:exported="false"
-            android:theme="@style/UI.Fade"
+            android:theme="@style/UI.Material"
             android:launchMode="singleTask">
         </activity>
 
         <activity
             android:name=".ui.activities.ft.FineTuneJobsActivity"
             android:exported="false"
-            android:theme="@style/UI.Fade"
+            android:theme="@style/UI.Material"
             android:launchMode="singleTask">
         </activity>
 
         <activity
             android:name=".ui.activities.ft.FineTuneNewJobActivity"
             android:exported="false"
-            android:theme="@style/UI.Fade"
+            android:theme="@style/UI.Material"
             android:launchMode="singleTask">
         </activity>
 
         <activity
             android:name=".ui.activities.TranslatorActivity"
             android:exported="false"
-            android:theme="@style/UI.Fade"
+            android:theme="@style/UI.Material"
             android:launchMode="singleTask">
         </activity>
 

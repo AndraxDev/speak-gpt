@@ -16,12 +16,12 @@
 
 package org.teslasoft.assistant.ui.fragments.tabs
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Canvas
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
@@ -51,18 +51,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import org.teslasoft.assistant.R
-import org.teslasoft.assistant.preferences.ApiEndpointPreferences
 import org.teslasoft.assistant.preferences.ChatPreferences
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.activities.ChatActivity
 import org.teslasoft.assistant.ui.activities.SettingsActivity
 import org.teslasoft.assistant.ui.adapters.ChatListAdapter
 import org.teslasoft.assistant.ui.fragments.dialogs.AddChatDialogFragment
-import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
 import org.teslasoft.assistant.util.Hash
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import kotlin.math.abs
 
 
 class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, ChatListAdapter.OnInteractionListener {
@@ -117,13 +114,13 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
         }
 
         override fun onEdit(name: String, id: String, position: Int) {
-            initSettings("edit", position, name)
+            initSettings("edit", position)
         }
 
         override fun onError(fromFile: Boolean, position: Int) {
             Toast.makeText(mContext ?: return, R.string.chat_error_empty, Toast.LENGTH_SHORT).show()
 
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", fromFile, false, false, "", "", "", "", "", position)
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", fromFile, disableAutoName = false, saveChat = false, "", "", "", "", "", position)
             chatDialogFragment.setStateChangedListener(this)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -139,7 +136,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
         override fun onDuplicate(position: Int) {
             Toast.makeText(mContext ?: return, R.string.chat_error_unique, Toast.LENGTH_SHORT).show()
 
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, false, false, "", "", "", "", "", position)
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", fromFile = false, disableAutoName = false, saveChat = false, "", "", "", "", "", position)
             chatDialogFragment.setStateChangedListener(this)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -175,13 +172,9 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
         if (!isDestroyed && isDarkThemeEnabled() && preferences!!.getAmoledPitchBlack()) {
             btnSettings?.background = ResourcesCompat.getDrawable(context.resources?: return, R.drawable.btn_accent_tonal_amoled, context.theme)!!
             bgSearch?.background = ResourcesCompat.getDrawable(context.resources?: return, R.drawable.btn_accent_tonal_amoled, context.theme)!!
-            btnImport?.backgroundTintList = ResourcesCompat.getColorStateList(context.resources?: return, R.color.amoled_accent_100, context.theme)
-            btnAdd?.backgroundTintList = ResourcesCompat.getColorStateList(context.resources?: return, R.color.accent_600, context.theme)
         } else {
             btnSettings?.background = getDisabledDrawable(ResourcesCompat.getDrawable(context.resources?: return, R.drawable.btn_accent_tonal, context.theme)!!)
             bgSearch?.background = getDisabledDrawable(ResourcesCompat.getDrawable(context.resources?: return, R.drawable.btn_accent_tonal, context.theme)!!)
-            btnImport?.backgroundTintList = ResourcesCompat.getColorStateList(context.resources?: return, R.color.accent_250, context.theme)
-            btnAdd?.backgroundTintList = ResourcesCompat.getColorStateList(context.resources?: return, R.color.accent_900, context.theme)
         }
     }
 
@@ -289,33 +282,37 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
                 cornerRadius = dpToPx(128).toFloat()
             }
 
-            if (dX > 0) { // Swiping to the right
+            if (dX > 0) {
+                // Swiping to the right
                 val iconMargin = (itemView.height - iconDLeft.intrinsicHeight) / 2
                 val iconTop = itemView.top + (itemView.height - iconDLeft.intrinsicHeight) / 2
                 val iconBottom = iconTop + iconDLeft.intrinsicHeight
-                val iconLeft = itemView.left + iconMargin
+                val iconLeft = itemView.left + iconMargin + dpToPx(16)
                 val iconRight = iconLeft + iconDLeft.intrinsicWidth
                 iconDLeft.setBounds(iconLeft, iconTop, iconRight, iconBottom)
                 background.setColor(ResourcesCompat.getColor(mContext?.resources?: return, R.color.pin_tint, mContext?.theme))
+
                 if (maxX(dX.toInt() / 5) == dpToPx(16)) {
                     background.setColor(ResourcesCompat.getColor(mContext?.resources?: return, R.color.pin_tint_active, mContext?.theme))
                 }
-                // background.color = ResourcesCompat.getColor(mContext?.resources?: return, R.color.pin, mContext?.theme)
+
                 background.setBounds(iconLeft - maxX(dX.toInt() / 5), iconTop - maxX(dX.toInt() / 5), iconRight + maxX(dX.toInt() / 5), iconBottom + maxX(dX.toInt() / 5))
                 background.draw(c)
                 iconDLeft.draw(c)
-            } else if (dX < 0) { // Swiping to the left
+            } else if (dX < 0) {
+                // Swiping to the left
                 val iconMargin = (itemView.height - iconDRight.intrinsicHeight) / 2
                 val iconTop = itemView.top + (itemView.height - iconDRight.intrinsicHeight) / 2
                 val iconBottom = iconTop + iconDRight.intrinsicHeight
-                val iconLeft = itemView.right - iconMargin - iconDRight.intrinsicWidth
-                val iconRight = itemView.right - iconMargin
+                val iconLeft = itemView.right - iconMargin - iconDRight.intrinsicWidth - dpToPx(16)
+                val iconRight = itemView.right - iconMargin - dpToPx(16)
                 iconDRight.setBounds(iconLeft, iconTop, iconRight, iconBottom)
                 background.setColor(ResourcesCompat.getColor(mContext?.resources?: return, R.color.delete_tint, mContext?.theme))
+
                 if (maxX(dX.toInt() / 5) == dpToPx(-16)) {
                     background.setColor(ResourcesCompat.getColor(mContext?.resources?: return, R.color.delete_tint_active, mContext?.theme))
                 }
-                // background.color = ResourcesCompat.getColor(mContext?.resources?: return, R.color.delete, mContext?.theme)
+
                 background.setBounds(iconLeft + maxX(dX.toInt() / 5), iconTop + maxX(dX.toInt() / 5), iconRight - maxX(dX.toInt() / 5), iconBottom - maxX(dX.toInt() / 5))
                 background.draw(c)
                 iconDRight.draw(c)
@@ -335,6 +332,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
         return dpToPx(16)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun initChatsList() {
         bulkSelect = false
         bulkSelectContainer?.visibility = View.GONE
@@ -351,7 +349,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
         }
 
         btnAdd?.setOnClickListener {
-            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", false, false, false, "", "", "", "", "", -1)
+            val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, "", fromFile = false, disableAutoName = false, saveChat = false, "", "", "", "", "", -1)
             chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
             chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
         }
@@ -386,7 +384,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
             }
 
             if (selected.size == 1) {
-                val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(true, selected[0]["name"] ?: "", false, false, false, "", "", "", "", "", selectedPosition)
+                val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(true, selected[0]["name"] ?: "", fromFile = false, disableAutoName = false, saveChat = false, "", "", "", "", "", selectedPosition)
                 chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
                 chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
             }
@@ -397,6 +395,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
                 /* unused */
             }
 
+            @SuppressLint("NotifyDataSetChanged")
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchTerm = s.toString().trim()
                 if (s.toString().lowercase().trim() == "") {
@@ -435,7 +434,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
 
                     if (isValidJson(selectedFile)) {
                         val chatDialogFragment: AddChatDialogFragment =
-                            AddChatDialogFragment.newInstance(false, "", true, false, false, "", "", "", "", "", -1)
+                            AddChatDialogFragment.newInstance(false, "", fromFile = true, disableAutoName = false, saveChat = false, "", "", "", "", "", -1)
                         chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
                         chatDialogFragment.show(
                             parentFragmentManager.beginTransaction(),
@@ -488,7 +487,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
         fileIntentLauncher.launch(intent)
     }
 
-    private fun initSettings(action: String = "", position: Int = -1, chatName: String = "") {
+    private fun initSettings(action: String = "", position: Int = -1) {
         chats = ChatPreferences.getChatPreferences().getChatList(mContext?: return)
 
         // R8 went fuck himself...
@@ -515,11 +514,9 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
         if (searchTerm.trim() == "") {
             when (action) {
                 "edit" -> {
-                    // adapter?.editItemAtPosition(position, chatName)
                     initChatsList()
                 }
                 "delete" -> {
-                    // selectionProjection.removeAt(position)
                     adapter?.deleteItemAtPosition(position)
                 }
                 else -> {
@@ -629,7 +626,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
     }
 
     override fun onRename(position: Int, name: String, id: String) {
-        val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(true, name, false, false, false, "", "", "", "", "", position)
+        val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(true, name, fromFile = false, disableAutoName = false, saveChat = false, "", "", "", "", "", position)
         chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
         chatDialogFragment.show(parentFragmentManager.beginTransaction(), "AddChatDialog")
     }
@@ -652,6 +649,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun unselectAll() {
         for (projection in selectionProjection) {
             projection["selected"] = "false"
@@ -671,6 +669,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun selectAll() {
         for (projection in selectionProjection) {
             projection["selected"] = "true"

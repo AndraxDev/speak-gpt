@@ -395,10 +395,8 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     fun reloadAmoled(context: Context) {
         if (isDarkThemeEnabled() && Preferences.getPreferences(context, "").getAmoledPitchBlack()) {
             searchBar?.background = ResourcesCompat.getDrawable(mContext?.resources?: return, R.drawable.btn_accent_tonal_amoled, context.theme)!!
-            btnPost?.backgroundTintList = ResourcesCompat.getColorStateList(mContext?.resources?: return, R.color.accent_600, context.theme)
         } else {
             searchBar?.background = getDisabledDrawable(ResourcesCompat.getDrawable(mContext?.resources?: return, R.drawable.btn_accent_tonal, context.theme)!!)
-            btnPost?.backgroundTintList = ResourcesCompat.getColorStateList(mContext?.resources?: return, R.color.accent_900, context.theme)
         }
     }
 

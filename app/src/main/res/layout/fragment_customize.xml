@@ -16,13 +16,11 @@
 * limitations under the License.
 **************************************************************************/
 -->
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingBottom="24dp">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/text_dialog_title_cust"
@@ -91,10 +89,10 @@
             android:layout_weight="1"
             android:background="@drawable/btn_accent_50_v3"
             android:contentDescription="@string/avatar_gpt"
-            android:tooltipText="@string/avatar_gpt"
             android:padding="12dp"
             android:scaleType="centerCrop"
             android:src="@drawable/chatgpt_icon"
+            android:tooltipText="@string/avatar_gpt"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@id/view2"
@@ -112,10 +110,10 @@
             android:layout_weight="1"
             android:background="@drawable/btn_accent_50_v3"
             android:contentDescription="@string/avatar_gemini"
-            android:tooltipText="@string/avatar_gemini"
             android:padding="12dp"
             android:scaleType="centerCrop"
             android:src="@drawable/google_bard"
+            android:tooltipText="@string/avatar_gemini"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@id/view3"
@@ -132,10 +130,10 @@
             android:layout_weight="1"
             android:background="@drawable/btn_accent_50_v3"
             android:contentDescription="@string/avatar_perplexity_ai"
-            android:tooltipText="@string/avatar_perplexity_ai"
             android:padding="12dp"
             android:scaleType="centerCrop"
             android:src="@drawable/perplexity_ai"
+            android:tooltipText="@string/avatar_perplexity_ai"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@id/view4"
@@ -152,17 +150,17 @@
             android:layout_weight="1"
             android:background="@drawable/btn_accent_50_v3"
             android:contentDescription="Empty"
-            android:tooltipText="Empty"
             android:padding="12dp"
             android:scaleType="centerCrop"
+            android:tooltipText="Empty"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@id/view5"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toEndOf="@id/view3"
             app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/avatars[2]"
-            tools:ignore="HardcodedText" />
+            tools:ignore="HardcodedText"
+            tools:srcCompat="@tools:sample/avatars[2]" />
 
         <ImageButton
             android:id="@+id/view5"
@@ -188,7 +186,7 @@
         android:id="@+id/btn_file_select"
         style="@style/Widget.Material3.Button.TonalButton"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
