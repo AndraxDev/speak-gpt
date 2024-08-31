@@ -30,16 +30,15 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.App"
+        android:theme="@style/UI.Material"
         android:name=".app.MainApplication"
         android:installLocation="auto"
         android:enableOnBackInvokedCallback="true"
-        tools:targetApi="tiramisu">
+        tools:targetApi="35">
 
         <activity
             android:name=".ui.activities.MainActivity"
             android:exported="true"
-            android:theme="@style/UI.Material"
             android:launchMode="singleTask">
 
             <intent-filter android:priority="1000">
@@ -62,28 +61,24 @@
         <activity
             android:name=".ui.activities.ChatActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/UI.Material">
+            android:windowSoftInputMode="adjustResize">
         </activity>
 
         <activity
             android:name=".ui.activities.ApiEndpointsListActivity"
             android:exported="false"
-            android:label="@string/title_api_endpoints"
-            android:theme="@style/UI.Material">
+            android:label="@string/title_api_endpoints">
         </activity>
 
         <activity
             android:name=".ui.activities.LogitBiasConfigActivity"
-            android:exported="false"
-            android:theme="@style/UI.Material">
+            android:exported="false">
         </activity>
 
         <activity
             android:name=".ui.activities.LogitBiasConfigListActivity"
             android:exported="false"
-            android:label="@string/label_logit_bias"
-            android:theme="@style/UI.Material">
+            android:label="@string/label_logit_bias">
         </activity>
 
         <activity
@@ -96,7 +91,6 @@
         <activity
             android:name=".ui.activities.PromptViewActivity"
             android:exported="true"
-            android:theme="@style/UI.Material"
             android:launchMode="singleTask">
 
             <intent-filter android:autoVerify="true">
@@ -114,7 +108,6 @@
         <activity
             android:name=".ui.activities.ReportAbuseActivity"
             android:exported="false"
-            android:theme="@style/UI.Material"
             android:label="@string/title_report_abuse"
             android:launchMode="singleTask">
         </activity>
@@ -122,7 +115,6 @@
         <activity
             android:name=".ui.activities.TipsActivity"
             android:exported="false"
-            android:theme="@style/UI.Material"
             android:label="@string/menu_tips"
             android:launchMode="singleTask">
         </activity>
@@ -130,7 +122,6 @@
         <activity
             android:name=".ui.activities.DocumentationActivity"
             android:exported="false"
-            android:theme="@style/UI.Material"
             android:label="@string/title_documentation"
             android:launchMode="singleTask">
         </activity>
@@ -138,7 +129,6 @@
         <activity
             android:name="org.teslasoft.assistant.ui.onboarding.WelcomeActivity"
             android:exported="false"
-            android:theme="@style/UI.Fade"
             android:label="@string/title_welcome_to_speakgpt"
             android:launchMode="singleTask">
         </activity>
@@ -234,7 +224,6 @@
         <activity
             android:name=".ui.activities.AboutActivity"
             android:exported="false"
-            android:theme="@style/UI.Material"
             android:label="@string/title_about_app"
             android:launchMode="singleTask">
         </activity>
@@ -242,7 +231,6 @@
         <activity
             android:name="org.teslasoft.assistant.ui.onboarding.TermsActivity"
             android:exported="false"
-            android:theme="@style/UI.Fade"
             android:label="@string/title_terms_of_service"
             android:launchMode="singleTask">
         </activity>
@@ -250,7 +238,6 @@
         <activity
             android:name="org.teslasoft.assistant.ui.onboarding.ActivationActivity"
             android:exported="false"
-            android:theme="@style/UI.Fade"
             android:label="@string/title_setup_api_endpoint"
             android:launchMode="singleTask">
         </activity>
@@ -258,7 +245,6 @@
         <activity
             android:name=".ui.activities.SettingsActivity"
             android:exported="false"
-            android:theme="@style/UI.Material"
             android:label="@string/settings"
             android:launchMode="singleTask">
         </activity>
@@ -266,7 +252,6 @@
         <activity
             android:name=".ui.activities.DataSafety"
             android:exported="false"
-            android:theme="@style/UI.Fade"
             android:label="@string/label_privacy_policy"
             android:launchMode="singleTask">
         </activity>
@@ -274,7 +259,6 @@
         <activity
             android:name=".ui.activities.LogsActivity"
             android:exported="false"
-            android:theme="@style/UI.Material"
             android:label="@string/title_logs"
             android:launchMode="singleTask">
         </activity>
@@ -283,49 +267,42 @@
             android:name=".ui.debug.DebugActivity"
             android:exported="false"
             android:enabled="false"
-            android:theme="@style/UI.Fade"
             android:launchMode="singleTask">
         </activity>
 
         <activity
             android:name=".ui.activities.AIPhotoEditorActivity"
             android:exported="false"
-            android:theme="@style/UI.Material"
             android:launchMode="singleTask">
         </activity>
 
         <activity
             android:name=".ui.activities.PhotoVariationsActivity"
             android:exported="false"
-            android:theme="@style/UI.Material"
             android:launchMode="singleTask">
         </activity>
 
         <activity
             android:name=".ui.activities.ft.FineTuneJobInfoActivity"
             android:exported="false"
-            android:theme="@style/UI.Material"
             android:launchMode="singleTask">
         </activity>
 
         <activity
             android:name=".ui.activities.ft.FineTuneJobsActivity"
             android:exported="false"
-            android:theme="@style/UI.Material"
             android:launchMode="singleTask">
         </activity>
 
         <activity
             android:name=".ui.activities.ft.FineTuneNewJobActivity"
             android:exported="false"
-            android:theme="@style/UI.Material"
             android:launchMode="singleTask">
         </activity>
 
         <activity
             android:name=".ui.activities.TranslatorActivity"
             android:exported="false"
-            android:theme="@style/UI.Material"
             android:launchMode="singleTask">
         </activity>
 

@@ -21,6 +21,7 @@ import android.app.role.RoleManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
@@ -1337,7 +1338,6 @@ class SettingsActivity : FragmentActivity() {
                 window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
             }
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
-            root?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
             btnBack?.setBackgroundResource(R.drawable.btn_accent_icon_large_amoled)
             threadLoading?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
         } else {
@@ -1345,8 +1345,8 @@ class SettingsActivity : FragmentActivity() {
                 window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
                 window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
             }
-            window.setBackgroundDrawableResource(R.color.window_background)
-            root?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
+            val colorDrawable = ColorDrawable(SurfaceColors.SURFACE_0.getColor(this))
+            window.setBackgroundDrawable(colorDrawable)
             btnBack?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_icon_large, theme)!!)
             threadLoading?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
         }

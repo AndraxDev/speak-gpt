@@ -420,11 +420,14 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         }
     }
 
+    @Suppress("deprecation")
     private fun preloadAmoled() {
         if (isDarkThemeEnabled() && GlobalPreferences.getPreferences(this).getAmoledPitchBlack()) {
             threadLoader?.background = ResourcesCompat.getDrawable(resources, R.color.amoled_accent_50, null)
         } else {
-            threadLoader?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
+            threadLoader?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
+            window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
+            window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
         }
     }
 
@@ -495,7 +498,6 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
             keyboardFrame?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme))
             actionBar?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme))
             activityTitle?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme))
-            root?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
             messageInput?.setHintTextColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_600, theme))
             btnBack?.background = getAmoledAccentDrawable(
                 AppCompatResources.getDrawable(
@@ -545,7 +547,8 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                 )!!, this
             )
         } else {
-            window.setBackgroundDrawableResource(R.color.window_background)
+            val colorDrawable = ColorDrawable(SurfaceColors.SURFACE_0.getColor(this))
+            window.setBackgroundDrawable(colorDrawable)
             if (Build.VERSION.SDK_INT <= 34) {
                 window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
                 window.navigationBarColor = SurfaceColors.SURFACE_2.getColor(this)
@@ -554,7 +557,6 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
             keyboardFrame?.setBackgroundColor(SurfaceColors.SURFACE_2.getColor(this))
             actionBar?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
             activityTitle?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
-            root?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
             messageInput?.setHintTextColor(ResourcesCompat.getColor(resources, R.color.accent_500, theme))
             btnBack?.background = getDarkAccentDrawable(
                 AppCompatResources.getDrawable(
@@ -947,6 +949,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                     runOnUiThread {
                         threadLoader?.visibility = View.GONE
                         threadLoader?.elevation = 0.0f
+                        reloadAmoled()
                     }
                 }
 

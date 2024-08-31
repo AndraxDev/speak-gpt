@@ -23,6 +23,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
@@ -187,8 +188,6 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
             }
 
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
-
-            root?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
             activityTitle?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme))
             promptBg?.setBackgroundResource(R.drawable.btn_accent_24_amoled)
             promptActions?.setBackgroundResource(R.drawable.btn_accent_24_amoled)
@@ -212,9 +211,8 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
                 window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
             }
 
-            window.setBackgroundDrawableResource(R.color.window_background)
-
-            root?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
+            val colorDrawable = ColorDrawable(SurfaceColors.SURFACE_0.getColor(this))
+            window.setBackgroundDrawable(colorDrawable)
             activityTitle?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
 
             promptBg?.background = getDarkDrawable(

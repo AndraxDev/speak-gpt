@@ -40,7 +40,6 @@
 
     <style name="AssistantWindowStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
-<!--        <item name="android:windowAnimationStyle">@style/AssistantWindowAnimation</item>-->
     </style>
 
     <style name="UI.Fade" parent="Theme.App">
@@ -48,8 +47,7 @@
     </style>
 
     <style name="UI.Material" parent="Theme.App">
-        <item name="android:windowContentTransitions">true</item>
-        <item name="android:windowAnimationStyle">@style/Theme.Anim.Material</item>
+        <item name="android:windowAnimationStyle">@style/Theme.Anim.Fade.Material</item>
     </style>
 
     <style name="Theme.Transparent" parent="@style/Theme.Material3.DayNight.NoActionBar">
@@ -87,10 +85,10 @@
     </style>
 
     <style name="Theme.Anim.Material" parent="@style/Theme.Material3.DayNight.NoActionBar">
-        <item name="android:activityOpenEnterAnimation">@anim/activity_entry_open</item>
-        <item name="android:activityOpenExitAnimation">@anim/activity_exit_open</item>
-        <item name="android:activityCloseEnterAnimation">@anim/activity_entry_close</item>
-        <item name="android:activityCloseExitAnimation">@anim/activity_exit_close</item>
+        <item name="android:activityOpenEnterAnimation">@anim/mtrl_activity_open_enter</item>
+        <item name="android:activityOpenExitAnimation">@anim/mtrl_activity_open_exit</item>
+        <item name="android:activityCloseEnterAnimation">@anim/mtrl_activity_close_enter</item>
+        <item name="android:activityCloseExitAnimation">@anim/mtrl_activity_close_exit</item>
     </style>
 
     <style name="App.MaterialAlertDialog" parent="MaterialAlertDialog.Material3">

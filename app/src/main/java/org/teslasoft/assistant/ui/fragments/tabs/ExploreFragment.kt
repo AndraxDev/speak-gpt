@@ -73,8 +73,13 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
 
     private var error = ""
 
+    private var isInitialized = false
+
+    private var requestFinished = 0
+
     private var requestListener: RequestNetwork.RequestListener = object : RequestNetwork.RequestListener {
         override fun onResponse(tag: String, message: String) {
+            requestFinished = 1
             error = ""
             refreshLayout?.isRefreshing = false
             loading?.visibility = View.GONE
@@ -98,6 +103,7 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
         }
 
         override fun onErrorResponse(tag: String, message: String) {
+            requestFinished = 2
             error = message
             noInternet?.visibility = View.VISIBLE
             refreshLayout?.isRefreshing = false
@@ -110,6 +116,18 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
         super.onAttach(context)
 
         mContext = context
+
+        if (requestFinished == 1) {
+            loading?.visibility = View.GONE
+            noInternet?.visibility = View.GONE
+            setsList?.visibility = View.VISIBLE
+            refreshLayout?.visibility = View.VISIBLE
+        } else if (requestFinished == 2) {
+            noInternet?.visibility = View.VISIBLE
+            refreshLayout?.isRefreshing = false
+            loading?.visibility = View.GONE
+            setsList?.visibility = View.GONE
+        }
     }
 
     override fun onDetach() {
@@ -155,7 +173,16 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
 
         requestNetwork = RequestNetwork((mContext as Activity?) ?: return)
 
-        runRequest()
+        if (!isInitialized || aiSets == null || aiSets.isEmpty()) {
+            runRequest()
+            isInitialized = true
+        } else {
+            loading?.visibility = View.GONE
+            noInternet?.visibility = View.GONE
+            setsList?.visibility = View.VISIBLE
+            refreshLayout?.visibility = View.VISIBLE
+            requestFinished = 1
+        }
 
         btnTips?.setOnClickListener {
             startActivity(Intent(mContext, TipsActivity::class.java))
@@ -218,6 +245,7 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
     }
 
     private fun runRequest() {
+        requestFinished = 0
         error = ""
         loading?.visibility = View.VISIBLE
         setsList?.visibility = View.GONE
@@ -226,6 +254,7 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
     }
 
     override fun onRefresh() {
+        isInitialized = false
         runRequest()
     }
 

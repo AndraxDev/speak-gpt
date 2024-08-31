@@ -18,6 +18,7 @@ package org.teslasoft.assistant.ui.activities
 
 import android.content.Context
 import android.content.res.Configuration
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
@@ -229,6 +230,7 @@ class ReportAbuseActivity : FragmentActivity() {
         reloadAmoled()
     }
 
+    @Suppress("DEPRECATION")
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() &&  Preferences.getPreferences(this, "").getAmoledPitchBlack()) {
             if (android.os.Build.VERSION.SDK_INT <= 34) {
@@ -250,7 +252,9 @@ class ReportAbuseActivity : FragmentActivity() {
                 window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.window_background, theme)
                 window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
             }
-            window.setBackgroundDrawableResource(R.color.window_background)
+
+            val colorDrawable = ColorDrawable(SurfaceColors.SURFACE_0.getColor(this))
+            window.setBackgroundDrawable(colorDrawable)
 
             reportActivityTitle?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
 

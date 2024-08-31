@@ -31,14 +31,14 @@
     <color name="text_subtitle_inv">#99000000</color>
     <color name="ripple">#32FFFFFF</color>
     <color name="ripple_bg">#AAFFFFFF</color>
-    <color name="error">#FFDBDB</color>
+    <color name="error">#FFEEEE</color>
     <color name="success">#DFFFDA</color>
     <color name="text">#eeffffff</color>
     <color name="hint">#aaffffff</color>
-    <color name="tip1">#E2FFD4</color>
+    <color name="tip1">#F3FFED</color>
     <color name="tip">#15E4FFD6</color>
     <color name="marker">#15FFFFFF</color>
-    <color name="warn_bg">#26AB6A6A</color>
+    <color name="warn_bg">#26D49393</color>
     <color name="delete_active">#FF5647</color>
     <color name="pin_active">#4E6AFF</color>
     <color name="delete">#FFE3E0</color>

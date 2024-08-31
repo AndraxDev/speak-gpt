@@ -97,6 +97,8 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private var mContext: Context? = null
     private var requestNetwork: RequestNetwork? = null
 
+    private var isInitialized: Boolean = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -253,7 +255,6 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         btnImageModel = view.findViewById(R.id.btn_image_model)
 
         Thread {
-
             while (!onAttach) {
                 Thread.sleep(100)
             }
@@ -371,7 +372,13 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 .show()
         }
 
-        loadData()
+        if (!isInitialized) {
+            loadData()
+            isInitialized = true
+        } else {
+            promptsList?.visibility = View.VISIBLE
+            progressbar?.visibility = View.GONE
+        }
     }
 
     private fun updateModelsPanel(btnAllBg: Int, btnTextBg: Int, btnImageBg: Int, btnAllText: Int, btnTextText: Int, btnImageText: Int) {

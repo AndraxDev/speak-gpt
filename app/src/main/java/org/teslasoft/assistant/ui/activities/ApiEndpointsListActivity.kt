@@ -17,15 +17,21 @@
 package org.teslasoft.assistant.ui.activities
 
 import android.content.Intent
+import android.content.res.Configuration
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentActivity
+import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ApiEndpointPreferences
+import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
 import org.teslasoft.assistant.ui.adapters.ApiEndpointListItemAdapter
 import org.teslasoft.assistant.ui.fragments.dialogs.EditApiEndpointDialogFragment
@@ -42,6 +48,8 @@ class ApiEndpointsListActivity : FragmentActivity() {
     private var adapter: ApiEndpointListItemAdapter? = null
 
     private var apiEndpointPreferences: ApiEndpointPreferences? = null
+
+    private var actionBar: ConstraintLayout? = null
 
     private var onSelectListener: ApiEndpointListItemAdapter.OnSelectListener = object : ApiEndpointListItemAdapter.OnSelectListener {
         override fun onClick(position: Int) {
@@ -98,20 +106,40 @@ class ApiEndpointsListActivity : FragmentActivity() {
         }
     }
 
+    @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_api_endpoint_list)
 
-        if (android.os.Build.VERSION.SDK_INT <= 34) {
-            window.statusBarColor = getColor(R.color.accent_100)
-            window.navigationBarColor = getColor(R.color.window_background)
-        }
-
         btnAdd = findViewById(R.id.btn_add)
         btnBack = findViewById(R.id.btn_back)
         activityTitle = findViewById(R.id.activity_title)
         listView = findViewById(R.id.list_view)
+        actionBar = findViewById(R.id.action_bar)
+
+        val preferences = Preferences.getPreferences(this, "")
+
+        if (isDarkThemeEnabled() && preferences.getAmoledPitchBlack()) {
+            window.setBackgroundDrawableResource(R.color.amoled_window_background)
+
+            if (android.os.Build.VERSION.SDK_INT <= 34) {
+                window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
+                window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme)
+            }
+
+            actionBar?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme))
+        } else {
+            val colorDrawable = ColorDrawable(SurfaceColors.SURFACE_0.getColor(this))
+            window.setBackgroundDrawable(colorDrawable)
+
+            if (android.os.Build.VERSION.SDK_INT <= 34) {
+                window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
+                window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
+            }
+
+            actionBar?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
+        }
 
         listView?.divider = null
 
@@ -141,6 +169,16 @@ class ApiEndpointsListActivity : FragmentActivity() {
             adapter!!.setOnSelectListener(onSelectListener)
             listView!!.adapter = adapter
             adapter!!.notifyDataSetChanged()
+        }
+    }
+
+    private fun isDarkThemeEnabled(): Boolean {
+        return when (resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> true
+            Configuration.UI_MODE_NIGHT_NO -> false
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> false
+            else -> false
         }
     }
 

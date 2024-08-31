@@ -311,7 +311,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         framePrompts = PromptsFragment()
         frameExplore = ExploreFragment()
 
-        loadFragment(frameChats)
+        loadFragment(frameChats, 1, 1)
         reloadAmoled()
         splashScreen?.setKeepOnScreenCondition { false }
     }
@@ -366,7 +366,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                 window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
             }
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
-            root?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
             navigationBar!!.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme))
 
             val drawable = GradientDrawable()
@@ -385,8 +384,8 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                 window.navigationBarColor = SurfaceColors.SURFACE_3.getColor(this)
                 window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
             }
-            window.setBackgroundDrawableResource(R.color.window_background)
-            root?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
+            val colorDrawable = ColorDrawable(SurfaceColors.SURFACE_0.getColor(this))
+            window.setBackgroundDrawable(colorDrawable)
             navigationBar!!.setBackgroundColor(SurfaceColors.SURFACE_3.getColor(this))
 
             val drawable = GradientDrawable()
@@ -452,28 +451,33 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     }
 
     private fun menuChats() {
+        val st = selectedTab
         selectedTab = 1
-        loadFragment(frameChats)
+        loadFragment(frameChats, st, selectedTab)
     }
 
     private fun menuPlayground() {
+        val st = selectedTab
         selectedTab = 2
-        loadFragment(framePlayground)
+        loadFragment(framePlayground, st, selectedTab)
     }
 
     private fun menuTools() {
+        val st = selectedTab
         selectedTab = 3
-        loadFragment(frameTools)
+        loadFragment(frameTools, st, selectedTab)
     }
 
     private fun menuPrompts() {
+        val st = selectedTab
         selectedTab = 4
-        loadFragment(framePrompts)
+        loadFragment(framePrompts, st, selectedTab)
     }
 
     private fun menuExplore() {
+        val st = selectedTab
         selectedTab = 5
-        loadFragment(frameExplore)
+        loadFragment(frameExplore, st, selectedTab)
     }
 
     private fun onRestoredState(savedInstanceState: Bundle?) {
@@ -482,23 +486,23 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         when (selectedTab) {
             1 -> {
                 navigationBar?.selectedItemId = R.id.menu_chat
-                loadFragment(frameChats)
+                loadFragment(frameChats, 1, 1)
             }
             2 -> {
                 navigationBar?.selectedItemId = R.id.menu_playground
-                loadFragment(framePlayground)
+                loadFragment(framePlayground, 1, 1)
             }
             3 -> {
                 navigationBar?.selectedItemId = R.id.menu_tools
-                loadFragment(frameTools)
+                loadFragment(frameTools, 1, 1)
             }
             4 -> {
                 navigationBar?.selectedItemId = R.id.menu_prompts
-                loadFragment(framePrompts)
+                loadFragment(framePrompts, 1, 1)
             }
             5 -> {
                 navigationBar?.selectedItemId = R.id.menu_tips
-                loadFragment(frameExplore)
+                loadFragment(frameExplore, 1, 1)
             }
         }
     }
@@ -509,14 +513,20 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         }
     }
 
-    private fun loadFragment(fragment: Fragment?): Boolean {
+    private fun loadFragment(fragment: Fragment?, newTab: Int, prevTab: Int): Boolean {
         if (fragment != null) {
              try {
-                val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-                transaction.setCustomAnimations(R.anim.fade_in_tab, R.anim.fade_out_tab)
-                transaction.replace(R.id.fragment, fragment)
-                transaction.commit()
-                return true
+                 val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+                 if (newTab < prevTab) {
+                     transaction.setCustomAnimations(R.anim.mtrl_fragment_open_enter, R.anim.mtrl_fragment_open_exit)
+                 } else if (newTab > prevTab) {
+                     transaction.setCustomAnimations(R.anim.mtrl_fragment_close_enter, R.anim.mtrl_fragment_close_exit)
+                 } else {
+                     transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                 }
+                 transaction.replace(R.id.fragment, fragment)
+                 transaction.commit()
+                 return true
              } catch (e: Exception) {
                  e.printStackTrace()
                  return false
