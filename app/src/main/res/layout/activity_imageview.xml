@@ -40,10 +40,14 @@
             android:id="@+id/progressBar2"
             android:indeterminate="true"
             style="@style/Widget.Material3.CircularProgressIndicator"
-            android:layout_width="128dp"
-            android:layout_height="128dp"
-            android:background="@drawable/btn_accent_tonal_v5"
-            android:padding="24dp" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:indicatorSize="72dp"
+            app:trackThickness="8dp"
+            app:trackCornerRadius="8dp"
+            app:indeterminateAnimationTypeCircular="advance"
+            android:background="@drawable/btn_accent_tonal_v2"
+            android:padding="36dp" />
     </LinearLayout>
 
     <ImageView
@@ -60,11 +64,12 @@
         android:contentDescription="@string/image" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        style="?attr/floatingActionButtonTertiaryStyle"
         android:id="@+id/btn_download"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
         android:clickable="true"
         android:src="@drawable/ic_download"
         app:layout_constraintBottom_toBottomOf="parent"

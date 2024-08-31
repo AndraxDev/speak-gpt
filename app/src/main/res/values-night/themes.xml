@@ -10,6 +10,8 @@
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:navigationBarColor">@color/window_background</item>
         <item name="android:windowBackground">@color/window_background</item>
+        <item name="android:typeface">sans</item>
+        <item name="android:fontFamily">@font/default_font</item>
     </style>
 
     <style name="Theme.PWA" parent="Theme.Material3.Dark.NoActionBar">
@@ -24,6 +26,7 @@
         <item name="android:windowBackground">@color/pwa_background</item>
         <item name="android:windowAnimationStyle">@style/Theme.Anim.Fade.Material</item>
         <item name="android:typeface">sans</item>
+        <item name="android:fontFamily">@font/default_font</item>
     </style>
 
     <style name="AssistantWindowTheme" parent="Theme.Design.BottomSheetDialog">
@@ -33,6 +36,7 @@
         <item name="colorSecondary">@color/accent_900</item>
         <item name="colorOnSecondary">@color/window_background</item>
         <item name="colorAccent">@color/accent_900</item>
-<!--        <item name="android:windowAnimationStyle">@style/AssistantWindowAnimation</item>-->
+        <item name="android:typeface">sans</item>
+        <item name="android:fontFamily">@font/default_font</item>
     </style>
 </resources>

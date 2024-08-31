@@ -35,6 +35,8 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
@@ -180,6 +182,8 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        fileIntentLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult(), activityResultCallback)
 
         Thread {
             while (!isAttached) {
@@ -426,32 +430,6 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
         })
     }
 
-    private val fileIntentLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        run {
-            if (result.resultCode == Activity.RESULT_OK) {
-                result.data?.data?.also { uri ->
-                    selectedFile = readFile(uri)
-
-                    if (isValidJson(selectedFile)) {
-                        val chatDialogFragment: AddChatDialogFragment =
-                            AddChatDialogFragment.newInstance(false, "", fromFile = true, disableAutoName = false, saveChat = false, "", "", "", "", "", -1)
-                        chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
-                        chatDialogFragment.show(
-                            parentFragmentManager.beginTransaction(),
-                            "AddChatDialog"
-                        )
-                    } else {
-                        MaterialAlertDialogBuilder(mContext?: return@also, R.style.App_MaterialAlertDialog)
-                            .setTitle(getString(R.string.label_error))
-                            .setMessage(getString(R.string.msg_error_importing_chat))
-                            .setPositiveButton(R.string.btn_close) { _, _ -> }
-                            .show()
-                    }
-                }
-            }
-        }
-    }
-
     private fun isValidJson(jsonStr: String?): Boolean {
         return try {
             val gson = Gson()
@@ -475,6 +453,32 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
         }
         return stringBuilder.toString()
     }
+
+    val activityResultCallback: ActivityResultCallback<ActivityResult> = ActivityResultCallback<ActivityResult> { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.data?.also { uri ->
+                selectedFile = readFile(uri)
+
+                if (isValidJson(selectedFile)) {
+                    val chatDialogFragment: AddChatDialogFragment =
+                        AddChatDialogFragment.newInstance(false, "", fromFile = true, disableAutoName = false, saveChat = false, "", "", "", "", "", -1)
+                    chatDialogFragment.setStateChangedListener(chatListUpdatedListener)
+                    chatDialogFragment.show(
+                        parentFragmentManager.beginTransaction(),
+                        "AddChatDialog"
+                    )
+                } else {
+                    MaterialAlertDialogBuilder(mContext?: return@also, R.style.App_MaterialAlertDialog)
+                        .setTitle(getString(R.string.label_error))
+                        .setMessage(getString(R.string.msg_error_importing_chat))
+                        .setPositiveButton(R.string.btn_close) { _, _ -> }
+                        .show()
+                }
+            }
+        }
+    }
+
+    private var fileIntentLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult(), activityResultCallback)
 
     private fun openFile(pickerInitialUri: Uri) {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {

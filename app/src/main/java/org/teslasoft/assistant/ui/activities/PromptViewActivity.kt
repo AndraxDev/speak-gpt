@@ -246,7 +246,7 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     private fun getDarkDrawable(drawable: Drawable) : Drawable {
-        DrawableCompat.setTint(DrawableCompat.wrap(drawable), SurfaceColors.SURFACE_2.getColor(this))
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), SurfaceColors.SURFACE_1.getColor(this))
         return drawable
     }
 

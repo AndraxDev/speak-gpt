@@ -194,6 +194,7 @@ class AboutActivity : FragmentActivity() {
         reloadAmoled()
     }
 
+    @Suppress("deprecation")
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() && Preferences.getPreferences(this, "").getAmoledPitchBlack()) {
             if (android.os.Build.VERSION.SDK_INT <= 34) {
@@ -230,7 +231,7 @@ class AboutActivity : FragmentActivity() {
     }
 
     private fun getDarkDrawable(drawable: Drawable) : Drawable {
-        DrawableCompat.setTint(DrawableCompat.wrap(drawable), SurfaceColors.SURFACE_2.getColor(this))
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), SurfaceColors.SURFACE_1.getColor(this))
         return drawable
     }
 
@@ -253,7 +254,7 @@ class AboutActivity : FragmentActivity() {
         return if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack() == true) {
             ResourcesCompat.getColor(resources, R.color.accent_50, theme)
         } else {
-            SurfaceColors.SURFACE_5.getColor(this)
+            SurfaceColors.SURFACE_1.getColor(this)
         }
     }
 }

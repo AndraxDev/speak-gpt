@@ -143,7 +143,7 @@ class AISetAdapter(private val mContext: Context, private val dataArray: ArrayLi
     }
 
     private fun getSurfaceColor() : Int {
-        return SurfaceColors.SURFACE_4.getColor(mContext)
+        return SurfaceColors.SURFACE_5.getColor(mContext)
     }
 
     private fun getAccentDrawable(drawable: Drawable) : Drawable {

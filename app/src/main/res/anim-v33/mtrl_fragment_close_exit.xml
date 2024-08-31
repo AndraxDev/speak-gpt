@@ -25,8 +25,8 @@
         android:fillBefore="true"
         android:fillAfter="true"
         android:interpolator="@android:anim/linear_interpolator"
-        android:startOffset="35"
-        android:duration="83" />
+        android:startOffset="0"
+        android:duration="150" />
 
     <translate
         android:fromXDelta="0"
@@ -36,7 +36,7 @@
         android:fillAfter="true"
         android:interpolator="@android:interpolator/fast_out_extra_slow_in"
         android:startOffset="0"
-        android:duration="450" />
+        android:duration="600" />
 
     <extend
         android:fromExtendLeft="96dp"
@@ -49,5 +49,5 @@
         android:toExtendBottom="0"
         android:interpolator="@android:interpolator/fast_out_extra_slow_in"
         android:startOffset="0"
-        android:duration="450" />
+        android:duration="600" />
 </set>

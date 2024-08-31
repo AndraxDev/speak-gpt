@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Use this file to quickly change app fonts instead of hardcoding it
+to the theme or styles files -->
+<font-family xmlns:android="http://schemas.android.com/apk/res/android">
+    <font
+        android:font="@font/noto_sans_variable"
+        android:fontStyle="normal"
+        android:fontWeight="400"/>
+</font-family>

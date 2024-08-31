@@ -25,7 +25,7 @@
         android:fillBefore="true"
         android:fillAfter="true"
         android:interpolator="@android:anim/linear_interpolator"
-        android:startOffset="50"
+        android:startOffset="35"
         android:duration="83" />
 
     <translate

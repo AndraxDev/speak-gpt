@@ -26,4 +26,5 @@
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@android:color/system_accent1_900</color>
     <color name="text">@android:color/system_accent2_800</color>
     <color name="hint">@android:color/system_accent2_900</color>
+    <color name="colorSurface">@android:color/system_accent2_100</color>
 </resources>

@@ -163,6 +163,7 @@
                                 <com.google.android.material.button.MaterialButton
                                     android:id="@+id/btn_copy"
                                     style="@style/Widget.Material3.Button.TonalButton"
+                                    app:backgroundTint="@color/colorSurface"
                                     android:layout_width="0dp"
                                     android:layout_height="56dp"
                                     android:layout_marginHorizontal="8dp"
@@ -187,6 +188,7 @@
                                 android:layout_weight="1"
                                 android:background="@drawable/btn_accent_tonal_selector_v5"
                                 android:text="0"
+                                app:backgroundTint="@color/colorSurface"
                                 app:icon="@drawable/ic_like_outline"
                                 app:iconGravity="textStart"
                                 app:layout_constraintBottom_toBottomOf="parent"
@@ -237,6 +239,7 @@
                                 android:paddingEnd="12dp"
                                 android:paddingBottom="8dp"
                                 android:text="@string/cat"
+                                android:backgroundTint="@color/colorSurface"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/prompt_text_frame" />
@@ -272,6 +275,7 @@
                                     android:id="@+id/prompt_text"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:backgroundTint="@color/colorSurface"
                                     android:background="@drawable/btn_accent_tonal_selector_v6"
                                     android:hint="Prompt (tap to edit)"
                                     android:paddingStart="12dp"

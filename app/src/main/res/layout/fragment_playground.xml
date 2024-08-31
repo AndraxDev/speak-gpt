@@ -155,7 +155,7 @@
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        style="?attr/extendedFloatingActionButtonPrimaryStyle"
+        style="?attr/extendedFloatingActionButtonTertiaryStyle"
         android:id="@+id/btn_tokenize"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -164,7 +164,6 @@
         android:clickable="true"
         android:contentDescription="Tokenize"
         android:tooltipText="Tokenize"
-        app:backgroundTint="@color/fab"
         app:elevation="6dp"
         app:fabSize="mini"
         app:icon="@drawable/ic_token"

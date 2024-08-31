@@ -23,6 +23,7 @@
     <color name="pin_tint">#334C5ABA</color>
     <color name="delete_tint_active">#55FF4331</color>
     <color name="pin_tint_active">#552F49FF</color>
+    <color name="colorSurface">#ffbb86fc</color>
 
     <color name="amoled_accent_50">#090909</color>
     <color name="amoled_accent_100">#141414</color>
