@@ -235,8 +235,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/btn_accent_assistant_actions">
+                android:layout_height="match_parent">
 
                 <ImageButton
                     android:id="@+id/btn_assistant_settings"

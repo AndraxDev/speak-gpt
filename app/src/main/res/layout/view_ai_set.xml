@@ -43,7 +43,7 @@
             android:id="@+id/set_icon"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:background="@drawable/avd_static_v3"
+            android:background="@drawable/avd_static"
             android:padding="48dp"
             android:src="@drawable/chatgpt_icon"
             app:layout_constraintEnd_toEndOf="parent"

@@ -84,7 +84,6 @@ class AISetAdapter(private val mContext: Context, private val dataArray: ArrayLi
 
         ui = mView?.findViewById(R.id.ui)
         window = mView?.findViewById(R.id.window)
-        window?.background = getAccentDrawable(AppCompatResources.getDrawable(mContext, R.drawable.btn_accent_tonal_selector_v8)!!)
         setIcon = mView?.findViewById(R.id.set_icon)
         setName = mView?.findViewById(R.id.set_name)
         setDescription = mView?.findViewById(R.id.set_description)
@@ -93,6 +92,14 @@ class AISetAdapter(private val mContext: Context, private val dataArray: ArrayLi
         btnUseGlobally = mView?.findViewById(R.id.btn_use_globally)
         btnCreateChat = mView?.findViewById(R.id.btn_create_chat)
         btnGetApiKey = mView?.findViewById(R.id.btn_get_api_key)
+
+        val drawable = ResourcesCompat.getDrawable(mContext.resources, R.drawable.avd_static, null)
+        drawable?.alpha = 230
+        setIcon?.background = getAccentDrawable(drawable!!)
+
+        val drawableBg = ResourcesCompat.getDrawable(mContext.resources, R.drawable.btn_accent_tonal_selector_v8, null)
+        drawableBg?.alpha = 100
+        window?.background = getAccentDrawable(drawableBg!!)
 
         setName?.text = dataArray[position]["name"]
         setDescription?.text = dataArray[position]["desc"]
