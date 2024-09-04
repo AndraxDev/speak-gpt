@@ -27,6 +27,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import org.teslasoft.core.auth.internal.ApplicationSignature
 
 class TeslasoftIDAuth : FragmentActivity() {
     private val requestPermissionLauncher =
@@ -49,18 +50,50 @@ class TeslasoftIDAuth : FragmentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_teslasoft_id)
 
-        if (!checkInstallation()) {
-            MaterialAlertDialogBuilder(this, R.style.TeslasoftID_MaterialAlertDialog)
-                .setTitle(getAppName())
-                .setMessage(String.format(getString(R.string.teslasoft_services_auth_core_unavailable), getAppName()))
-                .setCancelable(false)
-                .setPositiveButton(R.string.teslasoft_services_auth_dialog_close) { _: DialogInterface?, _: Int ->
-                    this.setResult(RESULT_CANCELED)
-                    finish()
-                }.show()
-        } else {
-            askAuthPermission()
-        }
+        val signature = ApplicationSignature(this).getCertificateFingerprint("SHA256")
+        val requestNetwork = RequestNetwork(this)
+        requestNetwork.startRequestNetwork("GET", "https://id.teslasoft.org/xauth/CheckAppIntegrity?i=$packageName&s=$signature", "A", object : RequestNetwork.RequestListener {
+            override fun onResponse(tag: String, message: String) {
+                if (message == "OK") {
+                    runOnUiThread {
+                        if (!checkInstallation()) {
+                            MaterialAlertDialogBuilder(this@TeslasoftIDAuth, R.style.TeslasoftID_MaterialAlertDialog)
+                                .setTitle(getAppName())
+                                .setMessage(String.format(getString(R.string.teslasoft_services_auth_core_unavailable), getAppName()))
+                                .setCancelable(false)
+                                .setPositiveButton(R.string.teslasoft_services_auth_dialog_close) { _: DialogInterface?, _: Int ->
+                                    this@TeslasoftIDAuth.setResult(RESULT_CANCELED)
+                                    finish()
+                                }.show()
+                        } else {
+                            askAuthPermission()
+                        }
+                    }
+                } else {
+                    runOnUiThread {
+                        MaterialAlertDialogBuilder(this@TeslasoftIDAuth, R.style.TeslasoftID_MaterialAlertDialog)
+                            .setTitle(getAppName())
+                            .setMessage("Failed to verify app integrity.\n\nError detail: $message")
+                            .setCancelable(false)
+                            .setPositiveButton(R.string.teslasoft_services_auth_dialog_close) { _: DialogInterface?, _: Int ->
+                                this@TeslasoftIDAuth.setResult(RESULT_CANCELED)
+                                finish()
+                            }.show()
+                    }
+                }
+            }
+
+            override fun onErrorResponse(tag: String, message: String) {
+                MaterialAlertDialogBuilder(this@TeslasoftIDAuth, R.style.TeslasoftID_MaterialAlertDialog)
+                    .setTitle(getAppName())
+                    .setMessage("Failed to verify app integrity.\n\nError detail: $message")
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.teslasoft_services_auth_dialog_close) { _: DialogInterface?, _: Int ->
+                        this@TeslasoftIDAuth.setResult(RESULT_CANCELED)
+                        finish()
+                    }.show()
+            }
+        })
     }
 
     private fun checkInstallation(): Boolean {

@@ -21,9 +21,9 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.InstallSourceInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
@@ -65,6 +65,8 @@ import org.teslasoft.assistant.ui.fragments.tabs.PlaygroundFragment
 import org.teslasoft.assistant.ui.fragments.tabs.PromptsFragment
 import org.teslasoft.assistant.ui.fragments.tabs.ToolsFragment
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
+import org.teslasoft.core.auth.SystemInfo
+import org.teslasoft.core.auth.internal.ApplicationSignature
 
 class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener {
 
@@ -250,7 +252,30 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                         }
                     }
 
+                    val androidVersion = Build.VERSION.RELEASE
+
+                    val pm = packageManager
+                    val pi = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { pm.getInstallSourceInfo(packageName).installingPackageName } else { "<Current OS version is not supported>" }
+
+                    val signature = ApplicationSignature(this)
+                    val sha1 = signature.getCertificateFingerprint("SHA1")
+                    val sha256 = signature.getCertificateFingerprint("SHA256")
+
                     devIds?.text = "${devIds?.text}\n\nInstallation ID: $installationId\nAndroid ID: $androidId"
+                    devIds?.text = "${devIds?.text}\nTeslasoft ID version: ${SystemInfo.NAME} ${SystemInfo.VERSION} (${SystemInfo.VERSION_CODE})"
+                    devIds?.text = "${devIds?.text}\nKotlin language version: ${KotlinVersion.CURRENT}"
+                    devIds?.text = "${devIds?.text}\nJava language version: 21 (LTS)"
+                    devIds?.text = "${devIds?.text}\nRuntime version: ${System.getProperty("java.runtime.name")} version ${System.getProperty("java.runtime.version")}"
+                    devIds?.text = "${devIds?.text}\nOS: Android"
+                    devIds?.text = "${devIds?.text}\nOS version: $androidVersion"
+                    devIds?.text = "${devIds?.text}\nFingerprint: ${Build.FINGERPRINT}"
+                    devIds?.text = "${devIds?.text}\nManufacturer: ${Build.MANUFACTURER}"
+                    devIds?.text = "${devIds?.text}\nModel: ${Build.MODEL}"
+                    devIds?.text = "${devIds?.text}\nProduct: ${Build.PRODUCT}"
+                    devIds?.text = "${devIds?.text}\nBrand: ${Build.BRAND}"
+                    devIds?.text = "${devIds?.text}\nInstall Source: $pi"
+                    devIds?.text = "${devIds?.text}\nCertificate SHA1: $sha1"
+                    devIds?.text = "${devIds?.text}\nCertificate SHA256: $sha256"
                 }
 
                 preInit()

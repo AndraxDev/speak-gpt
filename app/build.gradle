@@ -17,8 +17,8 @@ android {
         applicationId "org.teslasoft.assistant"
         minSdk 28
         targetSdk 35
-        versionCode 419
-        versionName "4.19"
+        versionCode 420
+        versionName "4.20"
     }
 
     buildTypes {
@@ -40,12 +40,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
 
     kotlinOptions {
-        jvmTarget = '17'
+        jvmTarget = '21'
     }
 }
 

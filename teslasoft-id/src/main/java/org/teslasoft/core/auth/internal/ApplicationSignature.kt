@@ -18,6 +18,7 @@ package org.teslasoft.core.auth.internal
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.util.Log
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.security.MessageDigest
@@ -29,7 +30,7 @@ import java.security.cert.X509Certificate
 import java.util.*
 
 class ApplicationSignature(var context: Context) {
-    fun getCertificateFingerprint(method: String): String? {
+    fun getCertificateFingerprint(method: String): String {
         val pm = context.packageManager
         val packageName = context.packageName
         val signatures = pm.getPackageInfo(
@@ -62,7 +63,7 @@ class ApplicationSignature(var context: Context) {
         } catch (e1: CertificateEncodingException) {
             e1.printStackTrace()
         }
-        return hexString
+        return hexString ?: ""
     }
 
     private fun convert(arr: ByteArray): String {
