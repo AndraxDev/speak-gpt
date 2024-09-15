@@ -17,11 +17,17 @@
 package org.teslasoft.assistant.app
 
 import android.app.Application
+import android.content.Context
+import android.content.res.Configuration
 import cat.ereza.customactivityoncrash.config.CaocConfig
+import com.avito.android.blurlayout.BlurLayout
 import com.google.android.material.color.DynamicColors
+import com.google.android.renderscript.Toolkit
 import org.conscrypt.Conscrypt
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.GlobalPreferences
 import org.teslasoft.assistant.preferences.Logger
+import org.teslasoft.assistant.theme.ThemeManager
 import java.security.Security
 
 /**
@@ -36,9 +42,17 @@ import java.security.Security
  */
 class MainApplication : Application() {
     override fun onCreate() {
+        appContext = applicationContext
         super.onCreate()
 
+        BlurLayout.init(
+            onApplyBlur = { bitmap, blurRadius ->
+                Toolkit.blur(inputBitmap = bitmap, radius = blurRadius)
+            },
+        )
+
         DynamicColors.applyToActivitiesIfAvailable(this)
+        ThemeManager.getThemeManager().applyTheme(this, isDarkThemeEnabled() && GlobalPreferences.getPreferences(this).getAmoledPitchBlack())
 
         if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.P) {
             Security.insertProviderAt(Conscrypt.newProvider(), 1)
@@ -61,5 +75,19 @@ class MainApplication : Application() {
             .eventListener(null)
             .customCrashDataCollector(null)
             .apply()
+    }
+
+    private fun isDarkThemeEnabled(): Boolean {
+        return when (resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> true
+            Configuration.UI_MODE_NIGHT_NO -> false
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> false
+            else -> false
+        }
+    }
+
+    companion object {
+        lateinit var appContext: Context
     }
 }

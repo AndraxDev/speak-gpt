@@ -31,12 +31,15 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.DialogFragment
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 
-class AdvancedSettingsDialogFragment : DialogFragment() {
+class AdvancedSettingsDialogFragment : BottomSheetDialogFragment() {
     companion object {
         fun newInstance(name: String, chatId: String) : AdvancedSettingsDialogFragment {
             val advancedSettingsDialogFragment = AdvancedSettingsDialogFragment()
@@ -69,6 +72,8 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
     private var topPSeekbar: com.google.android.material.slider.Slider? = null
     private var frequencyPenaltySeekbar: com.google.android.material.slider.Slider? = null
     private var presencePenaltySeekbar: com.google.android.material.slider.Slider? = null
+    private var btnSave: MaterialButton? = null
+    private var btnCancel: MaterialButton? = null
 
     private var listener: StateChangesListener? = null
 
@@ -85,10 +90,8 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
         return inflater.inflate(R.layout.fragment_advanced_settings, container, false)
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        builder = MaterialAlertDialogBuilder(this.requireContext(), R.style.App_MaterialAlertDialog)
-
-        val view: View = this.layoutInflater.inflate(R.layout.fragment_advanced_settings, null)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         gpt_35_turbo = view.findViewById(R.id.gpt_35_turbo)
         gpt_35_turbo_0125 = view.findViewById(R.id.gpt_35_turbo_0125)
@@ -107,6 +110,8 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
         frequencyPenaltySeekbar = view.findViewById(R.id.frequency_penalty_slider)
         presencePenaltySeekbar = view.findViewById(R.id.presence_penalty_slider)
         topPSeekbar = view.findViewById(R.id.top_p_slider)
+        btnSave = view.findViewById(R.id.btn_post)
+        btnCancel = view.findViewById(R.id.btn_discard)
 
         val preferences: Preferences = Preferences.getPreferences(requireActivity(), arguments?.getString("chatId")!!)
 
@@ -234,15 +239,20 @@ class AdvancedSettingsDialogFragment : DialogFragment() {
             }
         })
 
-        builder!!.setView(view)
-            .setCancelable(false)
-            .setPositiveButton(R.string.btn_save) { _, _ -> validateForm() }
-            .setNegativeButton(R.string.btn_cancel) { _, _ ->  }
+        btnSave?.setOnClickListener {
+            validateForm()
+        }
+
+        btnCancel?.setOnClickListener {
+            dismiss()
+        }
 
         model = requireArguments().getString("name").toString()
         reloadModelList(model)
+    }
 
-        return builder!!.create()
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return BottomSheetDialog(requireContext(), R.style.ThemeOverlay_App_BottomSheetDialog)
     }
 
     private fun reloadModelList(model: String) {

@@ -21,9 +21,9 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.InstallSourceInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
@@ -33,6 +33,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.MenuItem
 import android.view.View
+import android.view.WindowInsets
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageButton
@@ -40,6 +41,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -56,17 +59,21 @@ import com.google.android.material.navigation.NavigationBarView
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ApiEndpointPreferences
 import org.teslasoft.assistant.preferences.DeviceInfoProvider
+import org.teslasoft.assistant.preferences.GlobalPreferences
 import org.teslasoft.assistant.preferences.Logger
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.pwa.PWAActivity
+import org.teslasoft.assistant.theme.ThemeManager
 import org.teslasoft.assistant.ui.fragments.tabs.ChatsListFragment
 import org.teslasoft.assistant.ui.fragments.tabs.ExploreFragment
 import org.teslasoft.assistant.ui.fragments.tabs.PlaygroundFragment
 import org.teslasoft.assistant.ui.fragments.tabs.PromptsFragment
 import org.teslasoft.assistant.ui.fragments.tabs.ToolsFragment
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
+import org.teslasoft.assistant.util.WindowInsetsUtil
 import org.teslasoft.core.auth.SystemInfo
 import org.teslasoft.core.auth.internal.ApplicationSignature
+import java.util.EnumSet
 
 class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener {
 
@@ -87,6 +94,9 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     private var frameExplore: Fragment? = null
     private var root: ConstraintLayout? = null
     private var preferences: Preferences? = null
+    private var btnDebugActivity: MaterialButton? = null
+
+    private var needsRestart: Boolean = false
 
     private var selectedTab: Int = 1
     private var isInitialized: Boolean = false
@@ -95,6 +105,13 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (Build.VERSION.SDK_INT >= 30) {
+            enableEdgeToEdge(
+                statusBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT),
+                navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+            )
+        }
+
         super.onCreate(savedInstanceState)
 
         splashScreen = installSplashScreen()
@@ -120,6 +137,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         debuggerWindow = findViewById(R.id.debugger_window)
         btnCloseDebugger = findViewById(R.id.btn_close_debugger)
         btnInitiateCrash = findViewById(R.id.btn_initiate_crash)
+        btnDebugActivity = findViewById(R.id.btn_debug_activity)
         btnLaunchPWA = findViewById(R.id.btn_launch_pwa)
         btnTogglePWA = findViewById(R.id.btn_toggle_pwa)
         devIds = findViewById(R.id.dev_ids)
@@ -241,6 +259,10 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                         throw RuntimeException("Test crash")
                     }
 
+                    btnDebugActivity?.setOnClickListener {
+                        startActivity(Intent(this, DebugMaterial::class.java))
+                    }
+
                     btnLaunchPWA?.setOnClickListener {
                         if (isPWAActivityEnabled(this)) {
                             startActivity(Intent(this, PWAActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
@@ -281,6 +303,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                 preInit()
 
                 if (savedInstanceState != null) {
+                    adjustPaddings()
                     onRestoredState(savedInstanceState)
                 }
 
@@ -353,26 +376,14 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     }
 
     private fun restartActivity() {
-        runOnUiThread {
-            threadLoader?.visibility = View.VISIBLE
-            threadLoader?.elevation = 100.0f
-            val fadeIn: Animation = AnimationUtils.loadAnimation(this, R.anim.fade_in)
-            threadLoader?.startAnimation(fadeIn)
-
-            fadeIn.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(animation: Animation) { /* UNUSED */ }
-                override fun onAnimationEnd(animation: Animation) {
-                    runOnUiThread {
-                        recreate()
-                    }
-                }
-
-                override fun onAnimationRepeat(animation: Animation) { /* UNUSED */ }
-            })
-        }
+        recreate()
     }
 
     override fun onResume() {
+        if (needsRestart) {
+            restartActivity()
+        }
+
         super.onResume()
 
         if (isInitialized) {
@@ -386,7 +397,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     @Suppress("DEPRECATION")
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack()!!) {
-            if (Build.VERSION.SDK_INT <= 34) {
+            if (Build.VERSION.SDK_INT < 30) {
                 window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme)
                 window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
             }
@@ -398,14 +409,10 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
             drawable.setColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
             drawable.alpha = 242
 
-            debuggerWindow?.background = drawable
-
             btnDebugger?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, theme)
             btnCloseDebugger?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, theme)
-            devIds?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_16_amoled, theme)
-            devIds?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_600, theme))
         } else {
-            if (Build.VERSION.SDK_INT <= 34) {
+            if (Build.VERSION.SDK_INT < 30) {
                 window.navigationBarColor = SurfaceColors.SURFACE_3.getColor(this)
                 window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
             }
@@ -422,8 +429,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
 
             btnDebugger?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal, theme)!!)
             btnCloseDebugger?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal, theme)!!)
-            devIds?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_16, theme)!!)
-            devIds?.setTextColor(ResourcesCompat.getColor(resources, R.color.accent_900, theme))
         }
 
         (frameChats as ChatsListFragment).reloadAmoled(this)
@@ -432,14 +437,15 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
 
     @Suppress("DEPRECATION")
     private fun preloadAmoled() {
+        ThemeManager.getThemeManager().applyTheme(this, isDarkThemeEnabled() && GlobalPreferences.getPreferences(this).getAmoledPitchBlack())
         if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack()!!) {
-            if (Build.VERSION.SDK_INT <= 34) {
+            if (Build.VERSION.SDK_INT < 30) {
                 window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
                 window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
             }
             threadLoader?.background = ResourcesCompat.getDrawable(resources, R.color.amoled_window_background, null)
         } else {
-            if (Build.VERSION.SDK_INT <= 34) {
+            if (Build.VERSION.SDK_INT < 30) {
                 window.navigationBarColor = SurfaceColors.SURFACE_3.getColor(this)
                 window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
             }
@@ -534,29 +540,39 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
 
     override fun onPreferencesChanged(key: String, value: String) {
         if (key == "debug_mode" || key == "amoled_pitch_black" || key == "hide_model_names" || key == "monochrome_background_for_chat_list") {
-            restartActivity()
+            needsRestart = true
         }
     }
 
     private fun loadFragment(fragment: Fragment?, newTab: Int, prevTab: Int): Boolean {
         if (fragment != null) {
-             try {
-                 val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-                 if (newTab < prevTab) {
-                     transaction.setCustomAnimations(R.anim.mtrl_fragment_open_enter, R.anim.mtrl_fragment_open_exit)
-                 } else if (newTab > prevTab) {
-                     transaction.setCustomAnimations(R.anim.mtrl_fragment_close_enter, R.anim.mtrl_fragment_close_exit)
-                 } else {
-                     transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-                 }
-                 transaction.replace(R.id.fragment, fragment)
-                 transaction.commit()
-                 return true
-             } catch (e: Exception) {
-                 e.printStackTrace()
-                 return false
-             }
+            try {
+                val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+                if (newTab < prevTab) {
+                    transaction.setCustomAnimations(R.anim.mtrl_fragment_open_enter, R.anim.mtrl_fragment_open_exit)
+                } else if (newTab > prevTab) {
+                    transaction.setCustomAnimations(R.anim.mtrl_fragment_close_enter, R.anim.mtrl_fragment_close_exit)
+                } else {
+                    transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                }
+                transaction.replace(R.id.fragment, fragment)
+                transaction.commit()
+                return true
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return false
+            }
         }
         return false
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        adjustPaddings()
+    }
+
+    private fun adjustPaddings() {
+        WindowInsetsUtil.adjustPaddings(this, R.id.root, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR))
+        WindowInsetsUtil.adjustPaddings(this, R.id.navigation_bar, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR))
     }
 }

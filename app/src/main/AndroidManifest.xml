@@ -34,12 +34,12 @@
         android:name=".app.MainApplication"
         android:installLocation="auto"
         android:enableOnBackInvokedCallback="true"
+        tools:replace="android:allowBackup"
         tools:targetApi="35">
 
         <activity
             android:name=".ui.activities.MainActivity"
-            android:exported="true"
-            android:launchMode="singleTask">
+            android:exported="true">
 
             <intent-filter android:priority="1000">
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -60,6 +60,12 @@
 
         <activity
             android:name=".ui.activities.ChatActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan">
+        </activity>
+
+        <activity
+            android:name=".ui.activities.DebugMaterial"
             android:exported="false"
             android:windowSoftInputMode="adjustResize">
         </activity>

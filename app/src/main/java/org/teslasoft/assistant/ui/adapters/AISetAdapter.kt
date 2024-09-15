@@ -37,6 +37,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.Config
 import org.teslasoft.assistant.R
@@ -44,7 +45,7 @@ import org.teslasoft.assistant.R
 class AISetAdapter(private val mContext: Context, private val dataArray: ArrayList<Map<String, String>>) : BaseAdapter() {
 
     private var ui: ConstraintLayout? = null
-    private var window: ConstraintLayout? = null
+    private var window: MaterialCardView? = null
     private var setIcon: ImageView? = null
     private var setName: TextView? = null
     private var setDescription: TextView? = null
@@ -97,9 +98,9 @@ class AISetAdapter(private val mContext: Context, private val dataArray: ArrayLi
         drawable?.alpha = 230
         setIcon?.background = getAccentDrawable(drawable!!)
 
-        val drawableBg = ResourcesCompat.getDrawable(mContext.resources, R.drawable.btn_accent_tonal_selector_v8, null)
-        drawableBg?.alpha = 100
-        window?.background = getAccentDrawable(drawableBg!!)
+//        val drawableBg = ResourcesCompat.getDrawable(mContext.resources, R.drawable.btn_accent_tonal_selector_v8, null)
+//        drawableBg?.alpha = 100
+//        window?.background = getAccentDrawable(drawableBg!!)
 
         setName?.text = dataArray[position]["name"]
         setDescription?.text = dataArray[position]["desc"]

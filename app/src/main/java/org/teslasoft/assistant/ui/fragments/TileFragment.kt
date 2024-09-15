@@ -35,6 +35,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
+import org.teslasoft.assistant.ui.fragments.dialogs.SimpleDialogFragment
 
 class TileFragment : Fragment() {
 
@@ -296,7 +297,7 @@ class TileFragment : Fragment() {
         }
 
         tileBg?.setOnLongClickListener {
-            MaterialAlertDialogBuilder(requireActivity())
+            MaterialAlertDialogBuilder(requireActivity(), R.style.App_MaterialAlertDialog)
                 .setTitle(tileText)
                 .setMessage(desc)
                 .setPositiveButton("Close") { _, _ -> }

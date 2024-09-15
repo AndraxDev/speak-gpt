@@ -29,8 +29,10 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.enableEdgeToEdge
 import androidx.fragment.app.FragmentActivity
 import cat.ereza.customactivityoncrash.CustomActivityOnCrash
+import com.google.android.material.button.MaterialButton
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.DeviceInfoProvider
 import org.teslasoft.assistant.preferences.Logger
@@ -45,12 +47,15 @@ class CrashHandlerActivity : FragmentActivity() {
 
     private var error: String? = null
     private var textError: TextView? = null
+    private var btnRestart: MaterialButton? = null
+    private var btnCopy: MaterialButton? = null
 
     @SuppressLint("SetTextI18n", "HardwareIds")
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        if (Build.VERSION.SDK_INT <= 34) {
+        if (Build.VERSION.SDK_INT < 30) {
             window.statusBarColor = getColor(R.color.amoled_window_background)
             window.navigationBarColor = getColor(R.color.amoled_window_background)
         }
@@ -101,6 +106,9 @@ class CrashHandlerActivity : FragmentActivity() {
             }
 
             textError = findViewById(R.id.text_error)
+            btnRestart = findViewById(R.id.btn_restart)
+            btnCopy = findViewById(R.id.btn_copy)
+
             textError!!.setTextIsSelectable(true)
             textError!!.text = "\nApp has been crashed and needs to be restarted.\n\n===== BEGIN SYSTEM INFO =====\nAndroid version: ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT} ${Build.VERSION.CODENAME})\nROM version: ${Build.VERSION.INCREMENTAL}\nApp version: $appVersion ($versionCode)\nDevice model: ${Build.MODEL}\nAndroid device ID: ${Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)}\nInstallation ID: ${IID}\nTeslasoft ID version: ${SystemInfo.VERSION} (${SystemInfo.VERSION_CODE})\nEffective time: ${
                 DateTimeFormatter.ISO_INSTANT.format(
@@ -108,20 +116,25 @@ class CrashHandlerActivity : FragmentActivity() {
 
             Logger.clearCrashLog(this)
             Logger.log(this, "crash", "CrashHandler", "error", textError!!.text.toString())
+
             if (error == "") {
                 finishAndRemoveTask()
             }
+
+            btnRestart!!.setOnClickListener { restart() }
+
+            btnCopy!!.setOnClickListener { copy() }
         } catch (_: Exception) {
             finishAndRemoveTask()
         }
     }
 
-    fun restart(v: View?) {
+    fun restart() {
         startActivity(Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         finish()
     }
 
-    fun copy(v: View?) {
+    fun copy() {
         val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("Error", textError!!.text.toString())
         clipboard.setPrimaryClip(clip)

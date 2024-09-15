@@ -16,26 +16,69 @@
 * limitations under the License.
 **************************************************************************/
 -->
-<ScrollView
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <FrameLayout
+        android:id="@+id/standard_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+            android:id="@+id/drag_handle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+<androidx.core.widget.NestedScrollView
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:paddingBottom="24dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_discard"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/t_menu_bottom_item_background"
+            android:text="@string/cancel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_post" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_post"
+            style="@style/Widget.Material3.Button"
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/t_menu_top_item_background"
+            android:text="@string/btn_post"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView17" />
 
         <TextView
             android:id="@+id/dialog_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="36dp"
             android:layout_marginEnd="24dp"
             android:text="@string/title_post_a_prompt"
             android:textColor="@color/text_title"
             android:textSize="24sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -46,13 +89,17 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="24dp"
             android:layout_weight="1"
             android:ems="10"
             android:hint="@string/hint_name"
             android:textColor="@color/accent_900"
             android:textColorHint="@color/accent_500"
+            app:boxCornerRadiusBottomEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusTopStart="16dp"
             app:boxStrokeColor="@color/button"
             app:boxStrokeErrorColor="@color/error"
             app:layout_constraintEnd_toEndOf="parent"
@@ -77,13 +124,17 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="24dp"
             android:layout_weight="1"
             android:ems="10"
             android:hint="@string/hint_prompt_title"
             android:textColor="@color/accent_900"
             android:textColorHint="@color/accent_500"
+            app:boxCornerRadiusBottomEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusTopStart="16dp"
             app:boxStrokeColor="@color/button"
             app:boxStrokeErrorColor="@color/error"
             app:layout_constraintEnd_toEndOf="parent"
@@ -108,13 +159,17 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="24dp"
             android:layout_weight="1"
             android:ems="10"
             android:hint="@string/hint_prompt_desc"
             android:textColor="@color/accent_900"
             android:textColorHint="@color/accent_500"
+            app:boxCornerRadiusBottomEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusTopStart="16dp"
             app:boxStrokeColor="@color/button"
             app:boxStrokeErrorColor="@color/error"
             app:layout_constraintEnd_toEndOf="parent"
@@ -140,13 +195,17 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="24dp"
             android:layout_weight="1"
             android:ems="10"
             android:hint="@string/hint_prompt"
             android:textColor="@color/accent_900"
             android:textColorHint="@color/accent_500"
+            app:boxCornerRadiusBottomEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusTopStart="16dp"
             app:boxStrokeColor="@color/button"
             app:boxStrokeErrorColor="@color/error"
             app:layout_constraintEnd_toEndOf="parent"
@@ -170,7 +229,7 @@
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/model_for"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="64dp"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
@@ -241,90 +300,105 @@
                 android:id="@+id/cat_development"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:paddingHorizontal="8dp"
                 android:text="@string/cat_development" />
 
             <RadioButton
                 android:id="@+id/cat_music"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:paddingHorizontal="8dp"
                 android:text="@string/cat_music" />
 
             <RadioButton
                 android:id="@+id/cat_art"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:paddingHorizontal="8dp"
                 android:text="@string/cat_art" />
 
             <RadioButton
                 android:id="@+id/cat_culture"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:paddingHorizontal="8dp"
                 android:text="@string/cat_culture" />
 
             <RadioButton
                 android:id="@+id/cat_business"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:paddingHorizontal="8dp"
                 android:text="@string/cat_business" />
 
             <RadioButton
                 android:id="@+id/cat_gaming"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:paddingHorizontal="8dp"
                 android:text="@string/cat_gaming" />
 
             <RadioButton
                 android:id="@+id/cat_education"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:paddingHorizontal="8dp"
                 android:text="@string/cat_education" />
 
             <RadioButton
                 android:id="@+id/cat_history"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:paddingHorizontal="8dp"
                 android:text="@string/cat_history" />
 
             <RadioButton
                 android:id="@+id/cat_health"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:paddingHorizontal="8dp"
                 android:text="@string/cat_health" />
 
             <RadioButton
                 android:id="@+id/cat_food"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:paddingHorizontal="8dp"
                 android:text="@string/cat_food" />
 
             <RadioButton
                 android:id="@+id/cat_tourism"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:paddingHorizontal="8dp"
                 android:text="@string/cat_tourism" />
 
             <RadioButton
                 android:id="@+id/cat_productivity"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:paddingHorizontal="8dp"
                 android:text="@string/cat_productivity" />
 
             <RadioButton
                 android:id="@+id/cat_tools"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:paddingHorizontal="8dp"
                 android:text="@string/cat_tools" />
 
             <RadioButton
                 android:id="@+id/cat_entertainment"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:paddingHorizontal="8dp"
                 android:text="@string/cat_entertainment" />
 
             <RadioButton
                 android:id="@+id/cat_sport"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:paddingHorizontal="8dp"
                 android:text="@string/cat_sport" />
         </RadioGroup>
 
@@ -344,4 +418,6 @@
             app:layout_constraintTop_toBottomOf="@+id/radioGroup3" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>
+    </FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

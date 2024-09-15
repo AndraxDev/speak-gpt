@@ -29,6 +29,7 @@ import android.content.res.Configuration.KEYBOARD_QWERTY
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
@@ -60,6 +61,7 @@ import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
+import android.view.WindowInsets
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.EditText
@@ -70,6 +72,8 @@ import android.widget.TextView
 import android.widget.Toast
 import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -77,6 +81,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.view.WindowCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -111,6 +116,7 @@ import com.aallam.openai.client.OpenAI
 import com.aallam.openai.client.OpenAIConfig
 import com.aallam.openai.client.OpenAIHost
 import com.aallam.openai.client.RetryStrategy
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.progressindicator.CircularProgressIndicator
@@ -140,6 +146,7 @@ import org.teslasoft.assistant.preferences.GlobalPreferences
 import org.teslasoft.assistant.preferences.LogitBiasPreferences
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
+import org.teslasoft.assistant.theme.ThemeManager
 import org.teslasoft.assistant.ui.adapters.chat.ChatAdapter
 import org.teslasoft.assistant.ui.fragments.dialogs.EditApiEndpointDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.QuickSettingsBottomSheetDialogFragment
@@ -148,6 +155,7 @@ import org.teslasoft.assistant.ui.permission.CameraPermissionActivity
 import org.teslasoft.assistant.ui.permission.MicrophonePermissionActivity
 import org.teslasoft.assistant.util.Hash
 import org.teslasoft.assistant.util.LocaleParser
+import org.teslasoft.assistant.util.WindowInsetsUtil
 import java.io.BufferedReader
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -157,6 +165,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStreamReader
 import java.net.URL
+import java.util.EnumSet
 import java.util.Locale
 import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration.Companion.seconds
@@ -425,8 +434,11 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
             threadLoader?.background = ResourcesCompat.getDrawable(resources, R.color.amoled_accent_50, null)
         } else {
             threadLoader?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
-            window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
-            window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
+
+            if (Build.VERSION.SDK_INT < 30) {
+                window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
+                window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
+            }
         }
     }
 
@@ -487,9 +499,10 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
     @Suppress("deprecation")
     private fun reloadAmoled() {
+        ThemeManager.getThemeManager().applyTheme(this, isDarkThemeEnabled() && GlobalPreferences.getPreferences(this).getAmoledPitchBlack())
         if (isDarkThemeEnabled() && GlobalPreferences.getPreferences(this).getAmoledPitchBlack()) {
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
-            if (Build.VERSION.SDK_INT <= 34) {
+            if (Build.VERSION.SDK_INT < 30) {
                 window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme)
                 window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme)
             }
@@ -548,7 +561,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         } else {
             val colorDrawable = ColorDrawable(SurfaceColors.SURFACE_0.getColor(this))
             window.setBackgroundDrawable(colorDrawable)
-            if (Build.VERSION.SDK_INT <= 34) {
+            if (Build.VERSION.SDK_INT < 30) {
                 window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
                 window.navigationBarColor = SurfaceColors.SURFACE_2.getColor(this)
             }
@@ -666,6 +679,15 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
     private val settingsLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { recreate() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (Build.VERSION.SDK_INT >= 30) {
+            enableEdgeToEdge(
+                statusBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT),
+                navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+            )
+        }
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         super.onCreate(savedInstanceState)
 
         if (Build.VERSION.SDK_INT >= 33) {
@@ -696,9 +718,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         reloadAmoled()
 
         mediaPlayer = MediaPlayer()
-
         threadLoader = findViewById(R.id.thread_loader)
-
         threadLoader?.visibility = View.VISIBLE
 
         Thread {
@@ -718,6 +738,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                 initSettings()
 
                 if (savedInstanceState != null) {
+                    adjustPaddings()
                     onRestoredState(savedInstanceState)
                 }
             }
@@ -2705,7 +2726,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         bulkSelectionMode = mode
 
         if (mode) {
-            if (Build.VERSION.SDK_INT <= 34) {
+            if (Build.VERSION.SDK_INT < 30) {
                 window.statusBarColor = ResourcesCompat.getColor(resources, R.color.accent_250, theme)
             }
             bulkContainer?.visibility = View.VISIBLE
@@ -2940,5 +2961,16 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         }
 
         return stringBuilder.toString()
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        adjustPaddings()
+    }
+
+    private fun adjustPaddings() {
+        WindowInsetsUtil.adjustPaddings(this, R.id.action_bar, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR))
+        WindowInsetsUtil.adjustPaddings(this, R.id.bulk_container, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR))
+        WindowInsetsUtil.adjustPaddings(this, R.id.keyboard_frame, EnumSet.of(WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR))
     }
 }

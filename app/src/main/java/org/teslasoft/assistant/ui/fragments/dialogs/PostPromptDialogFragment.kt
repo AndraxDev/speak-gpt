@@ -26,11 +26,13 @@ import android.widget.EditText
 import android.widget.RadioButton
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.teslasoft.assistant.R
 
-class PostPromptDialogFragment : DialogFragment() {
+class PostPromptDialogFragment : BottomSheetDialogFragment() {
     companion object {
         fun newInstance(name: String, title: String, desc: String, prompt: String, type: String, category: String) : PostPromptDialogFragment {
             val postPromptDialogFragment = PostPromptDialogFragment()
@@ -48,8 +50,6 @@ class PostPromptDialogFragment : DialogFragment() {
             return postPromptDialogFragment
         }
     }
-
-    private var builder: AlertDialog.Builder? = null
 
     private var context: Context? = null
 
@@ -78,6 +78,8 @@ class PostPromptDialogFragment : DialogFragment() {
     private var catTools: RadioButton? = null
     private var catEntertainment: RadioButton? = null
     private var catSport: RadioButton? = null
+    private var btnDiscard: MaterialButton? = null
+    private var btnPost: MaterialButton? = null
 
     private var category: String = ""
     private var type: String = ""
@@ -91,10 +93,8 @@ class PostPromptDialogFragment : DialogFragment() {
         return inflater.inflate(R.layout.fragment_post_prompt, container, false)
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        builder = MaterialAlertDialogBuilder(this.requireContext(), R.style.App_MaterialAlertDialog)
-
-        val view: View = this.layoutInflater.inflate(R.layout.fragment_post_prompt, null)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         fieldName = view.findViewById(R.id.field_author_name)
         fieldTitle = view.findViewById(R.id.field_prompt_title)
@@ -117,6 +117,8 @@ class PostPromptDialogFragment : DialogFragment() {
         catTools = view.findViewById(R.id.cat_tools)
         catEntertainment = view.findViewById(R.id.cat_entertainment)
         catSport = view.findViewById(R.id.cat_sport)
+        btnDiscard = view.findViewById(R.id.btn_discard)
+        btnPost = view.findViewById(R.id.btn_post)
 
         gptButton?.setOnClickListener { type = "GPT" }
         dalleButton?.setOnClickListener { type = "DALL-e" }
@@ -166,12 +168,15 @@ class PostPromptDialogFragment : DialogFragment() {
         fieldDesc?.setText(requireArguments().getString("desc"))
         fieldPrompt?.setText(requireArguments().getString("prompt"))
 
-        builder!!.setView(view)
-            .setCancelable(false)
-            .setPositiveButton(R.string.btn_post) { _, _ -> validateForm() }
-            .setNegativeButton(R.string.btn_cancel) { _, _ -> listener!!.onCanceled() }
+        btnDiscard?.setOnClickListener { run {
+            listener!!.onCanceled()
+            dismiss()
+        }}
+        btnPost?.setOnClickListener { validateForm() }
+    }
 
-        return builder!!.create()
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return BottomSheetDialog(requireContext(), R.style.ThemeOverlay_App_BottomSheetDialog)
     }
 
     private fun validateForm() {

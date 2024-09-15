@@ -16,9 +16,14 @@
 * limitations under the License.
 **************************************************************************/
 -->
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -26,10 +31,11 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bulk_container"
         android:layout_width="0dp"
-        android:layout_height="64dp"
+        android:layout_height="wrap_content"
         android:background="@color/accent_250"
         android:clickable="true"
         android:elevation="3dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -39,6 +45,8 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/btn_accent_tonal_v6"
             android:contentDescription="Select all"
             android:src="@drawable/ic_select_all"
@@ -51,6 +59,8 @@
             android:id="@+id/btn_deselect_all"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/btn_accent_tonal_v6"
             android:contentDescription="Deselect all"
             android:src="@drawable/ic_deselect_all"
@@ -63,7 +73,9 @@
             android:id="@+id/btn_share_selected"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/btn_accent_tonal_v6"
             android:contentDescription="Share selected"
             android:src="@drawable/ic_share"
@@ -76,6 +88,8 @@
             android:id="@+id/btn_copy_selected"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/btn_accent_tonal_v6"
             android:contentDescription="Copy selected"
             android:src="@drawable/ic_copy_normal"
@@ -88,6 +102,8 @@
             android:id="@+id/btn_delete_selected"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/btn_accent_tonal_v6"
             android:contentDescription="Delete selected"
             android:src="@drawable/ic_delete"
@@ -101,6 +117,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:text="0"
             android:textColor="@color/text_title"
             android:textSize="24sp"
@@ -240,7 +258,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/action_bar"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="wrap_content"
         android:background="@color/accent_100"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -418,3 +436,4 @@
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

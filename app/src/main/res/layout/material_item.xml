@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.carousel.MaskableFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/carousel_item_container"
+    android:layout_width="250dp"
+    android:layout_height="match_parent"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:foreground="?attr/selectableItemBackground"
+    app:shapeAppearance="?attr/shapeAppearanceCornerExtraLarge">
+
+    <LinearLayout
+        android:id="@+id/carousel_item_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/accent_100"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:foreground="@drawable/ripple_transparent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/test_checkerboard"
+            app:srcCompat="@drawable/test_checkerboard"
+            tools:ignore="ContentDescription" />
+    </LinearLayout>
+</com.google.android.material.carousel.MaskableFrameLayout>

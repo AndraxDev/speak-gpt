@@ -62,6 +62,7 @@ import org.teslasoft.assistant.ui.fragments.dialogs.AddChatDialogFragment
 import org.teslasoft.assistant.util.Hash
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import kotlin.math.abs
 
 
 class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, ChatListAdapter.OnInteractionListener {
@@ -294,7 +295,9 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
                 val iconLeft = itemView.left + iconMargin + dpToPx(16)
                 val iconRight = iconLeft + iconDLeft.intrinsicWidth
                 iconDLeft.setBounds(iconLeft, iconTop, iconRight, iconBottom)
+                iconDLeft.alpha = maxAlpha(abs(dX.toInt()))
                 background.setColor(ResourcesCompat.getColor(mContext?.resources?: return, R.color.pin_tint, mContext?.theme))
+                background.alpha = maxAlpha(abs(dX.toInt()))
 
                 if (maxX(dX.toInt() / 5) == dpToPx(16)) {
                     background.setColor(ResourcesCompat.getColor(mContext?.resources?: return, R.color.pin_tint_active, mContext?.theme))
@@ -311,7 +314,9 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
                 val iconLeft = itemView.right - iconMargin - iconDRight.intrinsicWidth - dpToPx(16)
                 val iconRight = itemView.right - iconMargin - dpToPx(16)
                 iconDRight.setBounds(iconLeft, iconTop, iconRight, iconBottom)
+                iconDRight.alpha = maxAlpha(abs(dX.toInt()))
                 background.setColor(ResourcesCompat.getColor(mContext?.resources?: return, R.color.delete_tint, mContext?.theme))
+                background.alpha = maxAlpha(abs(dX.toInt()))
 
                 if (maxX(dX.toInt() / 5) == dpToPx(-16)) {
                     background.setColor(ResourcesCompat.getColor(mContext?.resources?: return, R.color.delete_tint_active, mContext?.theme))
@@ -334,6 +339,12 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
         if (x < dpToPx(-16)) return dpToPx(-16)
         else if (x < dpToPx(16)) return x
         return dpToPx(16)
+    }
+
+    private fun maxAlpha(x: Int) : Int {
+        if (x < 0) return 0
+        else if (x < 255) return x
+        return 255
     }
 
     @SuppressLint("NotifyDataSetChanged")

@@ -29,7 +29,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="36dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginVertical="48dp"
         android:background="@drawable/ui_dialog_rounded"
         android:elevation="6dp"
         android:gravity="bottom|center_horizontal"
@@ -179,15 +180,12 @@
                 android:orientation="horizontal"
                 android:padding="8dp">
 
-                <Button
-                    style="?android:attr/borderlessButtonStyle"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_copy"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:background="@drawable/btn_accent_outline_v2"
-                    android:onClick="copy"
-                    android:text="@string/btn_copy"
-                    android:textAllCaps="false"
-                    android:textColor="@color/button" />
+                    android:layout_height="56dp"
+                    android:text="@string/btn_copy" />
 
             </LinearLayout>
 
@@ -199,15 +197,12 @@
                 android:orientation="horizontal"
                 android:padding="8dp">
 
-                <Button
-                    style="?android:attr/borderlessButtonStyle"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_restart"
+                    style="@style/Widget.Material3.Button"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:background="@drawable/btn_accent"
-                    android:onClick="restart"
-                    android:text="@string/crash_restart_app"
-                    android:textAllCaps="false"
-                    android:textColor="@color/window_background" />
+                    android:layout_height="56dp"
+                    android:text="@string/crash_restart_app" />
 
             </LinearLayout>
         </LinearLayout>

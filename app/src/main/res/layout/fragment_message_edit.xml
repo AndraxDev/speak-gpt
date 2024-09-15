@@ -36,6 +36,7 @@
             android:text="@string/chat_edit_message"
             android:textColor="@color/text_title"
             android:textSize="24sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -45,8 +46,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="24dp"
+            app:boxCornerRadiusBottomEnd="24dp"
+            app:boxCornerRadiusBottomStart="24dp"
+            app:boxCornerRadiusTopEnd="24dp"
+            app:boxCornerRadiusTopStart="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView6">
@@ -55,10 +60,10 @@
                 android:id="@+id/prompt_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minLines="6"
                 android:gravity="top|start"
                 android:hint="@string/chat_enter_message_here"
-                android:inputType="text|textCapSentences|textMultiLine" />
+                android:inputType="text|textCapSentences|textMultiLine"
+                android:minLines="6" />
         </com.google.android.material.textfield.TextInputLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

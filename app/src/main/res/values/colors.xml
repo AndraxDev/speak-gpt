@@ -48,6 +48,7 @@
     <color name="accent_600">#361759</color>
     <color name="accent_900">#63488f</color>
     <color name="neutral_200">#312e36</color>
+    <color name="shadow_assistant">#e3dfec</color>
     <color name="fab">@color/accent_100</color>
     <color name="icon_background">@color/accent_100</color>
     <color name="icon_foreground">@color/accent_900</color>
@@ -79,22 +80,39 @@
     <color name="disabled_background">#66666666</color>
     <color name="disabled_icon">#FF666666</color>
 
-    <color name="cat_development">#974E00</color>
-    <color name="cat_music">#730000</color>
-    <color name="cat_art">#000E55</color>
-    <color name="cat_culture">#00530A</color>
-    <color name="cat_business">#38006A</color>
-    <color name="cat_gaming">#1C6500</color>
-    <color name="cat_education">#005D63</color>
-    <color name="cat_history">#00602E</color>
-    <color name="cat_food">#60004B</color>
-    <color name="cat_tourism">#460016</color>
-    <color name="cat_productivity">#505900</color>
-    <color name="cat_tools">#001E5A</color>
-    <color name="cat_entertainment">#532A00</color>
-    <color name="cat_sport">#0C4700</color>
-    <color name="cat_health">#004923</color>
-    <color name="grey">#494949</color>
+    <color name="cat_development">#573329</color>
+    <color name="cat_music">#522929</color>
+    <color name="cat_art">#272E4E</color>
+    <color name="cat_culture">#263729</color>
+    <color name="cat_business">#463656</color>
+    <color name="cat_gaming">#2E3E27</color>
+    <color name="cat_education">#2A3E42</color>
+    <color name="cat_history">#2E4539</color>
+    <color name="cat_food">#402A3C</color>
+    <color name="cat_tourism">#422D33</color>
+    <color name="cat_productivity">#393C28</color>
+    <color name="cat_tools">#232C3E</color>
+    <color name="cat_entertainment">#3E3329</color>
+    <color name="cat_sport">#263723</color>
+    <color name="cat_health">#22352C</color>
+    <color name="grey">#000000</color>
+
+    <color name="bg_cat_development">#FFE0D4</color>
+    <color name="bg_cat_music">#FFCBCB</color>
+    <color name="bg_cat_art">#CFD6FF</color>
+    <color name="bg_cat_culture">#CFFFD8</color>
+    <color name="bg_cat_business">#EBD5FF</color>
+    <color name="bg_cat_gaming">#DBFFCE</color>
+    <color name="bg_cat_education">#C4FAFF</color>
+    <color name="bg_cat_history">#C0FFDB</color>
+    <color name="bg_cat_food">#FFC5F7</color>
+    <color name="bg_cat_tourism">#FFC3D3</color>
+    <color name="bg_cat_productivity">#FBFFC4</color>
+    <color name="bg_cat_tools">#C4D5FF</color>
+    <color name="bg_cat_entertainment">#FFE3C5</color>
+    <color name="bg_cat_sport">#CBFFC4</color>
+    <color name="bg_cat_health">#C9FFDF</color>
+    <color name="bg_grey">#D7D7D7</color>
 
     <color name="tint_cat_development">#25974E00</color>
     <color name="tint_cat_music">#25730000</color>
@@ -112,6 +130,23 @@
     <color name="tint_cat_sport">#250C4700</color>
     <color name="tint_cat_health">#25005329</color>
     <color name="tint_grey">#25494949</color>
+
+    <color name="tint2_cat_development">#14974E00</color>
+    <color name="tint2_cat_music">#14730000</color>
+    <color name="tint2_cat_art">#14000E55</color>
+    <color name="tint2_cat_culture">#1400530A</color>
+    <color name="tint2_cat_business">#1438006A</color>
+    <color name="tint2_cat_gaming">#141C6500</color>
+    <color name="tint2_cat_education">#14005D63</color>
+    <color name="tint2_cat_history">#1400602E</color>
+    <color name="tint2_cat_food">#1460004B</color>
+    <color name="tint2_cat_tourism">#14460016</color>
+    <color name="tint2_cat_productivity">#14505900</color>
+    <color name="tint2_cat_tools">#14001E5A</color>
+    <color name="tint2_cat_entertainment">#14532A00</color>
+    <color name="tint2_cat_sport">#140C4700</color>
+    <color name="tint2_cat_health">#14005329</color>
+    <color name="tint2_grey">#14494949</color>
 
     <color name="tint_cat_development_active">#50974E00</color>
     <color name="tint_cat_music_active">#50730000</color>
@@ -150,8 +185,14 @@
     <color name="tint_cyan">#25007373</color>
     <color name="gpt_icon_cyan">#007373</color>
 
+    <color name="tint_epic">#204D0094</color>
+    <color name="gpt_icon_epic">#310090</color>
+
     <color name="border">#33000000</color>
 
     <color name="pwa_background">#191c20</color>
     <color name="pwa_accent">#a9c7ff</color>
+
+    <color name="light_1">#05000000</color>
+    <color name="light_2">#17000000</color>
 </resources>

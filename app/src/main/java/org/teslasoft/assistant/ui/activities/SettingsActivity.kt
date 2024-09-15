@@ -21,6 +21,7 @@ import android.app.role.RoleManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -37,6 +38,8 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -60,11 +63,13 @@ import org.teslasoft.assistant.ui.fragments.dialogs.LanguageSelectorDialogFragme
 import org.teslasoft.assistant.ui.fragments.dialogs.SelectResolutionFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.SystemMessageDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.VoiceSelectorDialogFragment
+import org.teslasoft.assistant.util.WindowInsetsUtil
 import org.teslasoft.core.auth.AccountSyncListener
 import org.teslasoft.core.auth.client.SettingsListener
 import org.teslasoft.core.auth.client.SyncListener
 import org.teslasoft.core.auth.client.TeslasoftIDClient
 import org.teslasoft.core.auth.widget.TeslasoftIDCircledButton
+import java.util.EnumSet
 import java.util.Locale
 
 class SettingsActivity : FragmentActivity() {
@@ -263,6 +268,13 @@ class SettingsActivity : FragmentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (Build.VERSION.SDK_INT >= 30) {
+            enableEdgeToEdge(
+                statusBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT),
+                navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+            )
+        }
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
@@ -353,6 +365,7 @@ class SettingsActivity : FragmentActivity() {
                 }.start()
 
                 initializeLogic()
+                adjustPaddings()
 
                 Handler(Looper.getMainLooper()).postDelayed({
                     val fadeOut: Animation = AnimationUtils.loadAnimation(this, R.anim.fade_out_tab)
@@ -1333,7 +1346,7 @@ class SettingsActivity : FragmentActivity() {
     @Suppress("DEPRECATION")
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack() == true) {
-            if (Build.VERSION.SDK_INT <= 34) {
+            if (Build.VERSION.SDK_INT < 30) {
                 window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
                 window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
             }
@@ -1341,7 +1354,7 @@ class SettingsActivity : FragmentActivity() {
             btnBack?.setBackgroundResource(R.drawable.btn_accent_icon_large_amoled)
             threadLoading?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
         } else {
-            if (Build.VERSION.SDK_INT <= 34) {
+            if (Build.VERSION.SDK_INT < 30) {
                 window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
                 window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
             }
@@ -1390,5 +1403,14 @@ class SettingsActivity : FragmentActivity() {
         } else {
             SurfaceColors.SURFACE_5.getColor(this)
         }
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        adjustPaddings()
+    }
+
+    private fun adjustPaddings() {
+        WindowInsetsUtil.adjustPaddings(this, R.id.scrollable, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
     }
 }

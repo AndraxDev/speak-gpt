@@ -22,6 +22,7 @@ import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
@@ -32,6 +33,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -41,7 +44,9 @@ import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.Config
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
+import org.teslasoft.assistant.util.WindowInsetsUtil
 import org.teslasoft.core.auth.SystemInfo
+import java.util.EnumSet
 
 class AboutActivity : FragmentActivity() {
 
@@ -69,6 +74,11 @@ class AboutActivity : FragmentActivity() {
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT),
+            navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+        )
+
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_about)
@@ -197,7 +207,7 @@ class AboutActivity : FragmentActivity() {
     @Suppress("deprecation")
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() && Preferences.getPreferences(this, "").getAmoledPitchBlack()) {
-            if (android.os.Build.VERSION.SDK_INT <= 34) {
+            if (android.os.Build.VERSION.SDK_INT <= 30) {
                 window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
                 window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
             }
@@ -213,7 +223,7 @@ class AboutActivity : FragmentActivity() {
             root?.setBackgroundResource(R.color.amoled_window_background)
             btnBack?.setBackgroundResource(R.drawable.btn_accent_icon_large_amoled)
         } else {
-            if (android.os.Build.VERSION.SDK_INT <= 34) {
+            if (android.os.Build.VERSION.SDK_INT <= 30) {
                 window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
                 window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
             }
@@ -256,5 +266,10 @@ class AboutActivity : FragmentActivity() {
         } else {
             SurfaceColors.SURFACE_1.getColor(this)
         }
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        WindowInsetsUtil.adjustPaddings(this, R.id.scrollable, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR))
     }
 }

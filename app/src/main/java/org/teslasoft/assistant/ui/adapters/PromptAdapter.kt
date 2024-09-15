@@ -17,6 +17,7 @@
 package org.teslasoft.assistant.ui.adapters
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
@@ -28,11 +29,13 @@ import android.view.animation.AnimationUtils
 import android.widget.BaseAdapter
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import org.teslasoft.assistant.ui.activities.PromptViewActivity
 import org.teslasoft.assistant.R
+import androidx.core.util.Pair
 
 class PromptAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragment) : BaseAdapter() {
     private val dataArray: ArrayList<HashMap<String, String>>? = data
@@ -102,10 +105,21 @@ class PromptAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragment
         textFor?.text = dataArray?.get(position)?.get("type")
 
         background?.setOnClickListener {
-            val i = Intent(mContext.requireActivity(), PromptViewActivity::class.java).setAction(Intent.ACTION_VIEW)
-            i.putExtra("id", dataArray?.get(position)?.get("id"))
-            i.putExtra("title", dataArray?.get(position)?.get("name"))
-            mContext.requireActivity().startActivity(i)
+            val intent = Intent(mContext.requireActivity(), PromptViewActivity::class.java).setAction(Intent.ACTION_VIEW)
+            intent.putExtra("id", dataArray?.get(position)?.get("id"))
+            intent.putExtra("title", dataArray?.get(position)?.get("name"))
+
+            // Creating a pair for shared element transition
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                mContext.requireActivity() as Activity,
+                Pair.create(convertView, "shared_container")
+            )
+            mContext.requireActivity().startActivity(intent, options.toBundle())
+
+//            val i = Intent(mContext.requireActivity(), PromptViewActivity::class.java).setAction(Intent.ACTION_VIEW)
+//            i.putExtra("id", dataArray?.get(position)?.get("id"))
+//            i.putExtra("title", dataArray?.get(position)?.get("name"))
+//            mContext.requireActivity().startActivity(i)
         }
 
         val animation: Animation = AnimationUtils.loadAnimation(mContext.context, R.anim.fade_in)

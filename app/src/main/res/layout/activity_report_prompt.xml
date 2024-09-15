@@ -28,25 +28,23 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/btn_accent_tonal"
         android:contentDescription="@string/go_back"
-        android:elevation="6.01dip"
+        android:elevation="0.01dip"
         android:src="@drawable/ic_back"
         android:tooltipText="Go back"
         app:layout_constraintBottom_toBottomOf="@+id/activity_report_title"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_back" />
 
     <TextView
         android:id="@+id/activity_report_title"
         android:layout_width="0dp"
-        android:layout_height="64dp"
+        android:layout_height="wrap_content"
         android:background="@color/accent_100"
-        android:elevation="6dp"
         android:gravity="start|center_vertical"
+        android:paddingVertical="16dp"
         android:paddingStart="64dp"
         android:paddingEnd="8dp"
         android:text="@string/title_report_abuse"
@@ -74,7 +72,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:paddingBottom="32dp">
 
                 <TextView
                     android:id="@+id/textView12"
@@ -104,54 +103,63 @@
                         android:id="@+id/btn_illegal"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
+                        android:paddingHorizontal="8dp"
                         android:text="@string/illegal_activity" />
 
                     <RadioButton
                         android:id="@+id/btn_cp"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
+                        android:paddingHorizontal="8dp"
                         android:text="@string/child_sexual_abuse" />
 
                     <RadioButton
                         android:id="@+id/btn_hate"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
+                        android:paddingHorizontal="8dp"
                         android:text="@string/generation_of_hateful_harassing_or_violent_content" />
 
                     <RadioButton
                         android:id="@+id/btn_malware"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
+                        android:paddingHorizontal="8dp"
                         android:text="@string/generation_of_malware" />
 
                     <RadioButton
                         android:id="@+id/btn_fraud"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
+                        android:paddingHorizontal="8dp"
                         android:text="@string/fraudulent_or_deceptive_activity" />
 
                     <RadioButton
                         android:id="@+id/btn_adult"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
+                        android:paddingHorizontal="8dp"
                         android:text="@string/adult_content" />
 
                     <RadioButton
                         android:id="@+id/btn_political"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
+                        android:paddingHorizontal="8dp"
                         android:text="@string/political_campaigning_or_lobbying" />
 
                     <RadioButton
                         android:id="@+id/btn_duplicated"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
+                        android:paddingHorizontal="8dp"
                         android:text="@string/duplicated_prompt_or_spam" />
 
                     <RadioButton
                         android:id="@+id/btn_cat_incorrect"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
+                        android:paddingHorizontal="8dp"
                         android:text="@string/incorrect_category" />
                 </RadioGroup>
 
@@ -162,6 +170,10 @@
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="24dp"
+                    app:boxCornerRadiusBottomEnd="24dp"
+                    app:boxCornerRadiusBottomStart="24dp"
+                    app:boxCornerRadiusTopEnd="24dp"
+                    app:boxCornerRadiusTopStart="24dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/radioGroup2">
@@ -178,12 +190,10 @@
                     android:id="@+id/btn_send_report"
                     style="@style/Widget.Material3.Button"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="56dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="24dp"
-                    android:layout_marginBottom="16dp"
                     android:text="@string/btn_send_report"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView11" />
 

@@ -27,7 +27,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
@@ -37,6 +36,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -49,7 +50,7 @@ import org.teslasoft.assistant.Api
 import org.teslasoft.assistant.Config.Companion.API_ENDPOINT
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
-import org.teslasoft.assistant.ui.adapters.PromptAdapter
+import org.teslasoft.assistant.ui.adapters.PromptAdapterNew
 import org.teslasoft.assistant.ui.fragments.dialogs.PostPromptDialogFragment
 import org.teslasoft.core.api.network.RequestNetwork
 import java.net.URLEncoder
@@ -58,8 +59,8 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private var fieldSearch: EditText? = null
     private var btnPost: ExtendedFloatingActionButton? = null
-    private var promptsList: ListView? = null
-    private var promptsAdapter: PromptAdapter? = null
+    private var promptsList: RecyclerView? = null
+    private var promptsAdapter: PromptAdapterNew? = null
     private var refreshLayout: SwipeRefreshLayout? = null
     private var refreshButton: MaterialButton? = null
     private var btnDetails: MaterialButton? = null
@@ -195,7 +196,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private fun filter(plist: ArrayList<HashMap<String, String>>) {
         if (selectedCategory == "all") {
-            promptsAdapter = PromptAdapter(plist, this)
+            promptsAdapter = PromptAdapterNew(plist, this)
 
             promptsList?.adapter = promptsAdapter
 
@@ -209,7 +210,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 }
             }
 
-            promptsAdapter = PromptAdapter(filtered, this)
+            promptsAdapter = PromptAdapterNew(filtered, this)
             promptsList?.adapter = promptsAdapter
             promptsAdapter?.notifyDataSetChanged()
         }
@@ -254,6 +255,8 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         btnTextModel = view.findViewById(R.id.btn_text_model)
         btnImageModel = view.findViewById(R.id.btn_image_model)
 
+        promptsList?.layoutManager = LinearLayoutManager(mContext)
+
         Thread {
             while (!onAttach) {
                 Thread.sleep(100)
@@ -270,19 +273,18 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         initializeCat()
 
-        promptsList?.setOnScrollListener(object : AbsListView.OnScrollListener {
-            override fun onScrollStateChanged(view: AbsListView, scrollState: Int) { /* unused */ }
-
-            override fun onScroll(view: AbsListView, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
+        promptsList?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val topRowVerticalPosition: Int = if (prompts.isEmpty() || promptsList == null || promptsList?.childCount == 0) 0 else promptsList?.getChildAt(0)!!.top
 
-                if (firstVisibleItem == 0 && topRowVerticalPosition >= 0) {
+                if (dy < 0 && topRowVerticalPosition >= 0) {
                     btnPost?.extend()
                 } else {
                     btnPost?.shrink()
                 }
 
-                refreshLayout?.isEnabled = firstVisibleItem == 0 && topRowVerticalPosition >= 0
+                refreshLayout?.isEnabled = dy < 0 && topRowVerticalPosition >= 0
+                super.onScrolled(recyclerView, dx, dy)
             }
         })
 
@@ -304,9 +306,8 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         refreshLayout?.setSize(SwipeRefreshLayout.LARGE)
         refreshLayout?.setOnRefreshListener(this)
 
-        promptsAdapter = PromptAdapter(prompts, this)
+        promptsAdapter = PromptAdapterNew(prompts, this)
 
-        promptsList?.dividerHeight = 0
         promptsList?.adapter = promptsAdapter
         promptsAdapter?.notifyDataSetChanged()
 

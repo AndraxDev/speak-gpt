@@ -155,12 +155,12 @@
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        style="?attr/extendedFloatingActionButtonTertiaryStyle"
         android:id="@+id/btn_tokenize"
+        style="?attr/extendedFloatingActionButtonTertiaryStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
-        android:layout_marginBottom="140dp"
+        android:layout_marginBottom="144dp"
         android:clickable="true"
         android:contentDescription="Tokenize"
         android:tooltipText="Tokenize"

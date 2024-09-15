@@ -22,15 +22,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ui"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingBottom="12dp"
-    android:paddingEnd="12dp"
-    android:paddingStart="12dp">
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/window"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/assistant_normal"
+        android:elevation="16dp"
+        android:outlineAmbientShadowColor="@color/shadow_assistant"
+        android:outlineSpotShadowColor="@color/shadow_assistant">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bulk_container"
@@ -193,7 +198,6 @@
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/assistant_loading"
-            android:indeterminate="true"
             style="@style/Widget.Material3.CircularProgressIndicator"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -201,6 +205,7 @@
             android:background="@drawable/assistant_clear"
             android:clickable="false"
             android:elevation="0.03dip"
+            android:indeterminate="true"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -293,8 +298,8 @@
             android:layout_marginEnd="16dp"
             android:contentDescription="@string/btn_save"
             android:src="@drawable/ic_storage"
-            android:visibility="visible"
             android:tooltipText="@string/btn_save"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

@@ -20,8 +20,10 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.WindowInsets
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.RadioButton
@@ -275,5 +277,23 @@ class ReportAbuseActivity : FragmentActivity() {
             Configuration.UI_MODE_NIGHT_UNDEFINED -> false
             else -> false
         }
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        adjustPaddings()
+    }
+
+    private fun adjustPaddings() {
+        if (Build.VERSION.SDK_INT < 35) return
+        try {
+            val actionBar = findViewById<TextView>(R.id.activity_report_title)
+            actionBar?.setPadding(
+                actionBar.paddingLeft,
+                window.decorView.rootWindowInsets.getInsets(WindowInsets.Type.statusBars()).top + actionBar.paddingTop,
+                actionBar.paddingRight,
+                actionBar.paddingBottom
+            )
+        } catch (_: Exception) { /* unused */ }
     }
 }

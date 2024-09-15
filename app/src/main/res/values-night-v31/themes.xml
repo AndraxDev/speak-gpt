@@ -6,6 +6,7 @@
         <item name="colorSecondary">@color/accent_900</item>
         <item name="colorOnSecondary">@color/window_background</item>
         <item name="colorAccent">@color/accent_900</item>
+        <item name="android:windowContentTransitions">true</item>
         <item name="android:statusBarColor">@color/window_background</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:navigationBarColor">@color/window_background</item>
