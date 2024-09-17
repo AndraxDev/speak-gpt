@@ -12,7 +12,9 @@ SpeakGPT is an advanced and highly intuitive open-source AI assistant that utili
 
 ## Download
 
-<a href='https://play.google.com/store/apps/details?id=org.teslasoft.assistant&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' width='300'/></a>
+> [!WARNING]
+> 
+> Google Play page is deprecated as Google OCR could not read my apartment rental agreement and SpeakGPT may be removed from Google Play. Use "Releases" page to download the latest version.
 
 ## SpeakGPT Web
 
