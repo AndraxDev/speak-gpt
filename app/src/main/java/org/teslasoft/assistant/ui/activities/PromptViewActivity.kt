@@ -22,23 +22,18 @@ import android.content.ClipboardManager
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
-import android.content.res.Configuration
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.os.Looper
-import android.transition.Fade
 import android.transition.TransitionInflater
-import android.transition.TransitionSet
 import android.view.View
+import android.view.Window
 import android.view.WindowInsets
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import android.window.OnBackInvokedDispatcher
@@ -47,11 +42,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.interpolator.view.animation.FastOutLinearInInterpolator
+import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
-import com.google.android.material.progressindicator.CircularProgressIndicator
+import com.google.android.material.loadingindicator.LoadingIndicator
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.teslasoft.assistant.Api
@@ -66,7 +63,8 @@ import java.net.URL
 class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListener {
 
     private var activityTitle: TextView? = null
-    private var progressBar: CircularProgressIndicator? = null
+    private var progressBar: LoadingIndicator? = null
+    private var loaderContainer: LinearLayout? = null
     private var noInternetLayout: ConstraintLayout? = null
     private var btnReconnect: MaterialButton? = null
     private var btnShowDetails: MaterialButton? = null
@@ -91,6 +89,7 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
     private var promptFor: String? = null
     private var btnBack: ImageButton? = null
     private var root: ConstraintLayout? = null
+    private var hideable: ConstraintLayout? = null
     private var uiIsUpdated = false
 
     private val dataListener: RequestNetwork.RequestListener = object : RequestNetwork.RequestListener {
@@ -114,22 +113,24 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
 
                 updateUiFromCat(map["category"].toString())
 
-                Handler(Looper.getMainLooper()).postDelayed({
-                    promptBg?.alpha = 1f
-                    val fadeIn: Animation = AnimationUtils.loadAnimation(this@PromptViewActivity, R.anim.fade_in_slow)
-                    val fadeOut: Animation = AnimationUtils.loadAnimation(this@PromptViewActivity, R.anim.fade_out_slow)
-                    promptBg?.startAnimation(fadeIn)
-                    progressBar?.startAnimation(fadeOut)
+                promptText?.alpha = 0f
+                promptBg?.alpha = 0f
+                loaderContainer?.alpha = 1f
 
-                    fadeOut.setAnimationListener(object : Animation.AnimationListener {
-                        override fun onAnimationStart(animation: Animation) { /* UNUSED */ }
-                        override fun onAnimationEnd(animation: Animation) {
-                            progressBar?.visibility = View.GONE
-                        }
+                Handler(mainLooper).postDelayed({
+                    promptBg?.animate()?.alpha(1f)?.setDuration(200)?.withEndAction {
+                        promptBg?.alpha = 1f
+                    }
 
-                        override fun onAnimationRepeat(animation: Animation) { /* UNUSED */ }
-                    })
-                }, 100)
+                    loaderContainer?.animate()?.alpha(0f)?.setDuration(200)?.withEndAction {
+                        loaderContainer?.alpha = 0f
+                        loaderContainer?.visibility = View.GONE
+                    }
+
+                    promptText?.animate()?.alpha(1f)?.setDuration(200)?.withEndAction {
+                        promptText?.alpha = 1f
+                    }
+                }, 200)
 
                 networkError = ""
             } catch (e: Exception) {
@@ -184,8 +185,8 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
             else -> ResourcesCompat.getColor(resources, R.color.bg_grey, theme)
         }
 
-        val colorDrawable = ColorDrawable(bgColor)
-        window.setBackgroundDrawable(colorDrawable)
+        root?.backgroundTintList = ColorStateList.valueOf(bgColor)
+        loaderContainer?.backgroundTintList = ColorStateList.valueOf(bgColor)
 
         val tintColor = when (cat) {
             "development" -> ResourcesCompat.getColor(resources, R.color.tint2_cat_development, theme)
@@ -273,6 +274,9 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
         btnFlag?.setColorFilter(catColor)
         btnBack?.setColorFilter(catColor)
         uiIsUpdated = true
+
+        refreshPage?.setColorSchemeColors(catColor)
+        refreshPage?.setProgressBackgroundColorSchemeColor(bgColor)
     }
 
     private fun dpToPx(dp: Int): Int {
@@ -322,17 +326,8 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
         Preferences.getPreferences(this, "")
     }
 
-    private fun isDarkThemeEnabled(): Boolean {
-        return when (resources.configuration.uiMode and
-                Configuration.UI_MODE_NIGHT_MASK) {
-            Configuration.UI_MODE_NIGHT_YES -> true
-            Configuration.UI_MODE_NIGHT_NO -> false
-            Configuration.UI_MODE_NIGHT_UNDEFINED -> false
-            else -> false
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         if (Build.VERSION.SDK_INT >= 30) {
             enableEdgeToEdge(
                 statusBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT),
@@ -340,33 +335,43 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
             )
         }
 
+        window.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
+
         if (Build.VERSION.SDK_INT >= 33) {
             onBackInvokedDispatcher.registerOnBackInvokedCallback(
                 OnBackInvokedDispatcher.PRIORITY_DEFAULT
             ) {
-                supportFinishAfterTransition()
+                finishActivity()
             }
         }
 
-        val transitionSet = TransitionInflater.from(this).inflateTransition(R.transition.shared_element_transition) as TransitionSet
-
-        // Exclude the child views from animations
-        transitionSet.excludeTarget(R.id.prompt_bg, true)
-
-        window.sharedElementEnterTransition = transitionSet
-        window.sharedElementReturnTransition = transitionSet
-
-        // Create an enter transition for non-shared elements if needed
-        val windowTransition = Fade().apply {
-            duration = 500
-            excludeTarget("prompt_tile", true)
+        val transition = TransitionInflater.from(this).inflateTransition(android.R.transition.move).apply {
+            interpolator = LinearOutSlowInInterpolator()
+            duration = 375
         }
 
-        // Set up enter and return transitions
-        window.enterTransition = windowTransition
-        window.returnTransition = windowTransition
+        transition.excludeTarget(R.id.prompt_bg, true)
+        transition.excludeTarget(R.id.refresh_page, true)
+        transition.excludeTarget(R.id.prompt_text_frame, true)
+        transition.excludeTarget(R.id.prompt_text, true)
+        transition.excludeTarget(R.id.prompt_by, true)
+        transition.excludeTarget(R.id.text_cat, true)
 
-        super.onCreate(savedInstanceState)
+        val transition2 = TransitionInflater.from(this).inflateTransition(android.R.transition.move).apply {
+            interpolator = FastOutLinearInInterpolator()
+            duration = 200
+        }
+
+        transition2.excludeTarget(R.id.prompt_bg, true)
+        transition2.excludeTarget(R.id.refresh_page, true)
+        transition2.excludeTarget(R.id.prompt_text_frame, true)
+        transition2.excludeTarget(R.id.prompt_text, true)
+        transition2.excludeTarget(R.id.prompt_by, true)
+        transition2.excludeTarget(R.id.text_cat, true)
+
+        // Set the transition as the shared element enter transition
+        window.sharedElementEnterTransition = transition
+        window.sharedElementExitTransition = transition2
 
         setContentView(R.layout.activity_view_prompt)
 
@@ -398,9 +403,9 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
             id = paths[paths.size - 1]
 
             allowLaunch()
-        } catch (e: MalformedURLException) {
+        } catch (_: MalformedURLException) {
             Toast.makeText(this, "Invalid URL", Toast.LENGTH_SHORT).show()
-            supportFinishAfterTransition()
+            finishActivity()
         }
     }
 
@@ -422,6 +427,7 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
     private fun initUI() {
         activityTitle = findViewById(R.id.activity_view_title)
         progressBar = findViewById(R.id.progress_bar_view)
+        loaderContainer = findViewById(R.id.loader_container)
         noInternetLayout = findViewById(R.id.no_internet)
         btnReconnect = findViewById(R.id.btn_reconnect)
         btnShowDetails = findViewById(R.id.btn_show_details)
@@ -437,6 +443,20 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
         root = findViewById(R.id.root)
         promptBg = findViewById(R.id.prompt_bg)
         promptActions = findViewById(R.id.prompt_actions)
+        hideable = findViewById(R.id.hideable)
+
+        refreshPage?.setColorSchemeResources(R.color.accent_900)
+        refreshPage?.setProgressBackgroundColorSchemeColor(
+            SurfaceColors.SURFACE_2.getColor(this)
+        )
+        refreshPage?.setSize(SwipeRefreshLayout.LARGE)
+
+        hideable?.alpha = 0f
+        hideable?.animate()?.alpha(1f)?.setDuration(200)?.withEndAction {
+            hideable?.alpha = 1f
+        }
+
+        loaderContainer?.setOnClickListener { /* Prevent user from interacting with the page until it finishes loading */ }
 
         noInternetLayout?.visibility = View.GONE
         updateUiFromCat(cat)
@@ -446,16 +466,11 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
         activityTitle?.isSelected = true
 
         btnFlag?.setImageResource(R.drawable.ic_flag)
-        btnBack?.setOnClickListener { supportFinishAfterTransition() }
+        btnBack?.setOnClickListener { finishActivity() }
         settings = getSharedPreferences("likes", MODE_PRIVATE)
 
         likeState = settings?.getBoolean(id, false) == true
 
-        refreshPage?.setColorSchemeResources(R.color.accent_900)
-        refreshPage?.setProgressBackgroundColorSchemeColor(
-            SurfaceColors.SURFACE_2.getColor(this)
-        )
-        refreshPage?.setSize(SwipeRefreshLayout.LARGE)
         refreshPage?.setOnRefreshListener(this)
 
         if (likeState) {
@@ -524,7 +539,19 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     override fun onRefresh() {
-        loadData()
+        promptBg?.animate()?.alpha(0f)?.setDuration(200)?.withEndAction {
+            promptBg?.alpha = 0f
+        }
+
+        loaderContainer?.visibility = View.VISIBLE
+        loaderContainer?.animate()?.alpha(1f)?.setDuration(200)?.withEndAction {
+            loaderContainer?.alpha = 1f
+        }
+
+        promptText?.animate()?.alpha(0f)?.setDuration(200)?.withEndAction {
+            promptText?.alpha = 0f
+            loadData()
+        }
     }
 
     private fun loadData() {
@@ -549,5 +576,10 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
                 actionBar.paddingBottom
             )
         } catch (_: Exception) { /* unused */ }
+    }
+
+    private fun finishActivity() {
+        hideable?.animate()?.alpha(0f)?.duration = 200
+        supportFinishAfterTransition()
     }
 }

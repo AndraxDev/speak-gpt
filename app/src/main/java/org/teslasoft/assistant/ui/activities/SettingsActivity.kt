@@ -20,6 +20,7 @@ import android.app.Activity
 import android.app.role.RoleManager
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -30,7 +31,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.transition.TransitionInflater
 import android.view.View
+import android.view.animation.AccelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageButton
@@ -38,6 +41,7 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import android.window.OnBackInvokedDispatcher
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -45,6 +49,9 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
+import androidx.interpolator.view.animation.FastOutLinearInInterpolator
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
@@ -71,6 +78,7 @@ import org.teslasoft.core.auth.client.TeslasoftIDClient
 import org.teslasoft.core.auth.widget.TeslasoftIDCircledButton
 import java.util.EnumSet
 import java.util.Locale
+import kotlin.math.roundToInt
 
 class SettingsActivity : FragmentActivity() {
 
@@ -110,7 +118,7 @@ class SettingsActivity : FragmentActivity() {
     private var tileShowChatErrors: TileFragment? = null
     private var tileHideModelNames: TileFragment? = null
     private var tileMonochromeBackgroundForChatList: TileFragment? = null
-    private var threadLoading: LinearLayout? = null
+//    private var threadLoading: LinearLayout? = null
     private var btnRemoveAds: MaterialButton? = null
     private var root: ScrollView? = null
     private var textGlobal: TextView? = null
@@ -275,15 +283,157 @@ class SettingsActivity : FragmentActivity() {
             )
         }
 
+        val transition = TransitionInflater.from(this).inflateTransition(android.R.transition.move).apply {
+            interpolator = LinearOutSlowInInterpolator()
+            duration = 500
+        }
+
+        transition.excludeTarget(R.id.scrollable, true)
+        transition.excludeTarget(R.id.text_global, true)
+        transition.excludeTarget(R.id.textView30, true)
+        transition.excludeTarget(R.id.textView31, true)
+        transition.excludeTarget(R.id.textView32, true)
+        transition.excludeTarget(R.id.textView33, true)
+        transition.excludeTarget(R.id.textView34, true)
+        transition.excludeTarget(R.id.textView35, true)
+        transition.excludeTarget(R.id.textView36, true)
+        transition.excludeTarget(R.id.textView387, true)
+        transition.excludeTarget(R.id.textView389, true)
+        transition.excludeTarget(R.id.constraintLayout8, true)
+        transition.excludeTarget(R.id.constraintLayout9, true)
+        transition.excludeTarget(R.id.constraintLayout10, true)
+        transition.excludeTarget(R.id.constraintLayout11, true)
+        transition.excludeTarget(R.id.constraintLayout12, true)
+        transition.excludeTarget(R.id.constraintLayout13, true)
+        transition.excludeTarget(R.id.constraintLayout14, true)
+        transition.excludeTarget(R.id.constraintLayout16, true)
+        transition.excludeTarget(R.id.constraintLayout17, true)
+        transition.excludeTarget(R.id.constraintLayout167, true)
+        transition.excludeTarget(R.id.activity_new_settings_title, true)
+        transition.excludeTarget(R.id.btn_back, true)
+        transition.excludeTarget(R.id.tile_account, true)
+        transition.excludeTarget(R.id.tile_assistant, true)
+        transition.excludeTarget(R.id.tile_api, true)
+        transition.excludeTarget(R.id.tile_autosend, true)
+        transition.excludeTarget(R.id.tile_voice, true)
+        transition.excludeTarget(R.id.tile_voice_language, true)
+        transition.excludeTarget(R.id.tile_image_model, true)
+        transition.excludeTarget(R.id.tile_image_resolution, true)
+        transition.excludeTarget(R.id.tile_tts, true)
+        transition.excludeTarget(R.id.tile_stt, true)
+        transition.excludeTarget(R.id.tile_silent_mode, true)
+        transition.excludeTarget(R.id.tile_always_speak, true)
+        transition.excludeTarget(R.id.tile_text_model, true)
+        transition.excludeTarget(R.id.tile_activation_prompt, true)
+        transition.excludeTarget(R.id.tile_system_message, true)
+        transition.excludeTarget(R.id.tile_auto_language_detection, true)
+        transition.excludeTarget(R.id.tile_chat_layout, true)
+        transition.excludeTarget(R.id.tile_function_calling, true)
+        transition.excludeTarget(R.id.tile_slash_commands, true)
+        transition.excludeTarget(R.id.tile_desktop_mode, true)
+        transition.excludeTarget(R.id.tile_about_app, true)
+        transition.excludeTarget(R.id.tile_clear_chat, true)
+        transition.excludeTarget(R.id.tile_documentation, true)
+        transition.excludeTarget(R.id.tile_amoled_mode, true)
+        transition.excludeTarget(R.id.tile_lock_assistant, true)
+        transition.excludeTarget(R.id.tile_customize, true)
+        transition.excludeTarget(R.id.tile_delete_data, true)
+        transition.excludeTarget(R.id.tile_send_diagnostic_data, true)
+        transition.excludeTarget(R.id.tile_revoke_authorization, true)
+        transition.excludeTarget(R.id.tile_assign_new_id, true)
+        transition.excludeTarget(R.id.tile_crash_log, true)
+        transition.excludeTarget(R.id.tile_event_log, true)
+        transition.excludeTarget(R.id.tile_chats_autosave, true)
+        transition.excludeTarget(R.id.tile_show_chat_errors, true)
+        transition.excludeTarget(R.id.tile_hide_model_names, true)
+        transition.excludeTarget(R.id.tile_monochrome_background_for_chat_list, true)
+        transition.excludeTarget(R.id.teslasoft_id_btn, true)
+
+        val transition2 = TransitionInflater.from(this).inflateTransition(android.R.transition.move).apply {
+            interpolator = FastOutLinearInInterpolator()
+            duration = 200
+        }
+
+        transition2.excludeTarget(R.id.scrollable, true)
+        transition2.excludeTarget(R.id.text_global, true)
+        transition2.excludeTarget(R.id.textView30, true)
+        transition2.excludeTarget(R.id.textView31, true)
+        transition2.excludeTarget(R.id.textView32, true)
+        transition2.excludeTarget(R.id.textView33, true)
+        transition2.excludeTarget(R.id.textView34, true)
+        transition2.excludeTarget(R.id.textView35, true)
+        transition2.excludeTarget(R.id.textView36, true)
+        transition2.excludeTarget(R.id.textView387, true)
+        transition2.excludeTarget(R.id.textView389, true)
+        transition2.excludeTarget(R.id.constraintLayout8, true)
+        transition2.excludeTarget(R.id.constraintLayout9, true)
+        transition2.excludeTarget(R.id.constraintLayout10, true)
+        transition2.excludeTarget(R.id.constraintLayout11, true)
+        transition2.excludeTarget(R.id.constraintLayout12, true)
+        transition2.excludeTarget(R.id.constraintLayout13, true)
+        transition2.excludeTarget(R.id.constraintLayout14, true)
+        transition2.excludeTarget(R.id.constraintLayout16, true)
+        transition2.excludeTarget(R.id.constraintLayout17, true)
+        transition2.excludeTarget(R.id.constraintLayout167, true)
+        transition2.excludeTarget(R.id.tile_account, true)
+        transition2.excludeTarget(R.id.tile_assistant, true)
+        transition2.excludeTarget(R.id.tile_api, true)
+        transition2.excludeTarget(R.id.tile_autosend, true)
+        transition2.excludeTarget(R.id.tile_voice, true)
+        transition2.excludeTarget(R.id.tile_voice_language, true)
+        transition2.excludeTarget(R.id.tile_image_model, true)
+        transition2.excludeTarget(R.id.tile_image_resolution, true)
+        transition2.excludeTarget(R.id.tile_tts, true)
+        transition2.excludeTarget(R.id.tile_stt, true)
+        transition2.excludeTarget(R.id.tile_silent_mode, true)
+        transition2.excludeTarget(R.id.tile_always_speak, true)
+        transition2.excludeTarget(R.id.tile_text_model, true)
+        transition2.excludeTarget(R.id.tile_activation_prompt, true)
+        transition2.excludeTarget(R.id.tile_system_message, true)
+        transition2.excludeTarget(R.id.tile_auto_language_detection, true)
+        transition2.excludeTarget(R.id.tile_chat_layout, true)
+        transition2.excludeTarget(R.id.tile_function_calling, true)
+        transition2.excludeTarget(R.id.tile_slash_commands, true)
+        transition2.excludeTarget(R.id.tile_desktop_mode, true)
+        transition2.excludeTarget(R.id.tile_about_app, true)
+        transition2.excludeTarget(R.id.tile_clear_chat, true)
+        transition2.excludeTarget(R.id.tile_documentation, true)
+        transition2.excludeTarget(R.id.tile_amoled_mode, true)
+        transition2.excludeTarget(R.id.tile_lock_assistant, true)
+        transition2.excludeTarget(R.id.tile_customize, true)
+        transition2.excludeTarget(R.id.tile_delete_data, true)
+        transition2.excludeTarget(R.id.tile_send_diagnostic_data, true)
+        transition2.excludeTarget(R.id.tile_revoke_authorization, true)
+        transition2.excludeTarget(R.id.tile_assign_new_id, true)
+        transition2.excludeTarget(R.id.tile_crash_log, true)
+        transition2.excludeTarget(R.id.tile_event_log, true)
+        transition2.excludeTarget(R.id.tile_chats_autosave, true)
+        transition2.excludeTarget(R.id.tile_show_chat_errors, true)
+        transition2.excludeTarget(R.id.tile_hide_model_names, true)
+        transition2.excludeTarget(R.id.tile_monochrome_background_for_chat_list, true)
+        transition2.excludeTarget(R.id.teslasoft_id_btn, true)
+
+        // Set the transition as the shared element enter transition
+        window.sharedElementEnterTransition = transition
+        window.sharedElementExitTransition = transition2
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+
+        if (Build.VERSION.SDK_INT >= 33) {
+            onBackInvokedDispatcher.registerOnBackInvokedCallback(
+                OnBackInvokedDispatcher.PRIORITY_DEFAULT
+            ) {
+                finishActivity()
+            }
+        }
+
+        val expandableWindow = findViewById<LinearLayout>(R.id.expandable_window)
+        expandableWindow.backgroundTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_1.getColor(this))
 
         btnBack = findViewById(R.id.btn_back)
         root = findViewById(R.id.root)
         textGlobal = findViewById(R.id.text_global)
-        threadLoading = findViewById(R.id.thread_loading)
-
-        threadLoading?.visibility = View.VISIBLE
         btnRemoveAds?.visibility = View.GONE
 
         val extras: Bundle? = intent.extras
@@ -344,7 +494,6 @@ class SettingsActivity : FragmentActivity() {
 
         t1.join()
 
-
         Thread {
             t2.join()
             val fragmentTransaction = placeFragments()
@@ -367,31 +516,14 @@ class SettingsActivity : FragmentActivity() {
                 initializeLogic()
                 adjustPaddings()
 
-                Handler(Looper.getMainLooper()).postDelayed({
-                    val fadeOut: Animation = AnimationUtils.loadAnimation(this, R.anim.fade_out_tab)
-                    threadLoading?.startAnimation(fadeOut)
-
-                    fadeOut.setAnimationListener(object : Animation.AnimationListener {
-                        override fun onAnimationStart(animation: Animation) { /* UNUSED */ }
-                        override fun onAnimationEnd(animation: Animation) {
-                            runOnUiThread {
-                                threadLoading?.visibility = View.GONE
-                                threadLoading?.elevation = 0.0f
-
-                                if (chatId == "") {
-                                    tileClearChat?.setEnabled(false)
-                                    tileClearChat?.setVisibility(TileFragment.TileVisibility.GONE)
-                                } else {
-                                    textGlobal?.visibility = TextView.GONE
-                                    tileClearChat?.setEnabled(true)
-                                    tileClearChat?.setVisibility(TileFragment.TileVisibility.VISIBLE)
-                                }
-                            }
-                        }
-
-                        override fun onAnimationRepeat(animation: Animation) { /* UNUSED */ }
-                    })
-                }, 50)
+                if (chatId == "") {
+                    tileClearChat?.setEnabled(false)
+                    tileClearChat?.setVisibility(TileFragment.TileVisibility.GONE)
+                } else {
+                    textGlobal?.visibility = TextView.GONE
+                    tileClearChat?.setEnabled(true)
+                    tileClearChat?.setVisibility(TileFragment.TileVisibility.VISIBLE)
+                }
             }
         }.start()
     }
@@ -980,7 +1112,7 @@ class SettingsActivity : FragmentActivity() {
 
     private fun initializeLogic() {
         btnBack?.setOnClickListener {
-            finish()
+            finishActivity()
         }
 
         tileAccountFragment?.setOnTileClickListener {
@@ -1301,21 +1433,7 @@ class SettingsActivity : FragmentActivity() {
 
     private fun restartActivity() {
         runOnUiThread {
-            threadLoading?.visibility = View.VISIBLE
-            threadLoading?.elevation = 100.0f
-            val fadeIn: Animation = AnimationUtils.loadAnimation(this, R.anim.fade_in)
-            threadLoading?.startAnimation(fadeIn)
-
-            fadeIn.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(animation: Animation) { /* UNUSED */ }
-                override fun onAnimationEnd(animation: Animation) {
-                    runOnUiThread {
-                        recreate()
-                    }
-                }
-
-                override fun onAnimationRepeat(animation: Animation) { /* UNUSED */ }
-            })
+            recreate()
         }
     }
 
@@ -1350,18 +1468,15 @@ class SettingsActivity : FragmentActivity() {
                 window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
                 window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
             }
-            window.setBackgroundDrawableResource(R.color.amoled_window_background)
+
             btnBack?.setBackgroundResource(R.drawable.btn_accent_icon_large_amoled)
-            threadLoading?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
         } else {
             if (Build.VERSION.SDK_INT < 30) {
                 window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
                 window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
             }
-            val colorDrawable = ColorDrawable(SurfaceColors.SURFACE_0.getColor(this))
-            window.setBackgroundDrawable(colorDrawable)
+
             btnBack?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_icon_large, theme)!!)
-            threadLoading?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
         }
     }
 
@@ -1411,6 +1526,17 @@ class SettingsActivity : FragmentActivity() {
     }
 
     private fun adjustPaddings() {
-        WindowInsetsUtil.adjustPaddings(this, R.id.scrollable, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
+        WindowInsetsUtil.adjustPaddings(this, R.id.scrollable, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS), customPaddingBottom = dpToPx(48))
+    }
+
+    private fun dpToPx(dp: Int): Int {
+        val density = resources.displayMetrics.density
+        return (dp.toFloat() * density).roundToInt()
+    }
+
+    private fun finishActivity() {
+        val root: View = findViewById(R.id.root)
+        root.animate().alpha(0.0f).setDuration(200)
+        supportFinishAfterTransition()
     }
 }

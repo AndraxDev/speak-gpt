@@ -50,7 +50,7 @@ import com.aallam.openai.client.OpenAIHost
 import com.aallam.openai.client.RetryStrategy
 import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.progressindicator.CircularProgressIndicator
+import com.google.android.material.loadingindicator.LoadingIndicator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -76,7 +76,7 @@ class PlaygroundFragment : Fragment() {
     private var btnTokenize: FloatingActionButton? = null
     private var clearIn: ImageButton? = null
     private var clearOut: ImageButton? = null
-    private var runLoader: CircularProgressIndicator? = null
+    private var runLoader: LoadingIndicator? = null
     private var editTextIn: EditText? = null
     private var editTextOut: EditText? = null
 

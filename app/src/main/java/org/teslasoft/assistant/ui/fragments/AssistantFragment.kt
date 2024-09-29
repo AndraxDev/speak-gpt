@@ -69,9 +69,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.util.Pair
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -680,6 +683,10 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         }
 
         btnAssistantSettings?.setOnClickListener {
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                requireActivity(),
+                Pair.create(btnAssistantSettings, ViewCompat.getTransitionName(btnAssistantSettings!!))
+            )
             val i = Intent(
                 mContext ?: return@setOnClickListener,
                 SettingsActivity::class.java
@@ -690,7 +697,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
             }
 
             settingsLauncher.launch(
-                i
+                i, options
             )
         }
     }

@@ -30,7 +30,6 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
-import android.widget.ListView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
@@ -43,7 +42,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import com.google.android.material.progressindicator.CircularProgressIndicator
+import com.google.android.material.loadingindicator.LoadingIndicator
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.teslasoft.assistant.Api
@@ -65,7 +64,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private var refreshButton: MaterialButton? = null
     private var btnDetails: MaterialButton? = null
     private var noInternetLayout: LinearLayout? = null
-    private var progressbar: CircularProgressIndicator? = null
+    private var progressbar: LoadingIndicator? = null
     private var catAll: LinearLayout? = null
     private var catDevelopment: LinearLayout? = null
     private var catMusic: LinearLayout? = null

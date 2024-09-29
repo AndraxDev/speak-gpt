@@ -97,22 +97,22 @@
     <color name="cat_health">#22352C</color>
     <color name="grey">#000000</color>
 
-    <color name="bg_cat_development">#FFE0D4</color>
-    <color name="bg_cat_music">#FFCBCB</color>
-    <color name="bg_cat_art">#CFD6FF</color>
-    <color name="bg_cat_culture">#CFFFD8</color>
-    <color name="bg_cat_business">#EBD5FF</color>
-    <color name="bg_cat_gaming">#DBFFCE</color>
-    <color name="bg_cat_education">#C4FAFF</color>
-    <color name="bg_cat_history">#C0FFDB</color>
-    <color name="bg_cat_food">#FFC5F7</color>
-    <color name="bg_cat_tourism">#FFC3D3</color>
-    <color name="bg_cat_productivity">#FBFFC4</color>
-    <color name="bg_cat_tools">#C4D5FF</color>
-    <color name="bg_cat_entertainment">#FFE3C5</color>
+    <color name="bg_cat_development">#FFECE6</color>
+    <color name="bg_cat_music">#FFEBEE</color>
+    <color name="bg_cat_art">#E8EAF6</color>
+    <color name="bg_cat_culture">#E8F5E9</color>
+    <color name="bg_cat_business">#EDE7F6</color>
+    <color name="bg_cat_gaming">#F1F8E9</color>
+    <color name="bg_cat_education">#E0F2F1</color>
+    <color name="bg_cat_history">#E8F5E9</color>
+    <color name="bg_cat_food">#FCE4EC</color>
+    <color name="bg_cat_tourism">#F3E5F5</color>
+    <color name="bg_cat_productivity">#FFFDE7</color>
+    <color name="bg_cat_tools">#E3F2FD</color>
+    <color name="bg_cat_entertainment">#FFF8E1</color>
     <color name="bg_cat_sport">#CBFFC4</color>
-    <color name="bg_cat_health">#C9FFDF</color>
-    <color name="bg_grey">#D7D7D7</color>
+    <color name="bg_cat_health">#E8F5EC</color>
+    <color name="bg_grey">#E6E6E6</color>
 
     <color name="tint_cat_development">#25974E00</color>
     <color name="tint_cat_music">#25730000</color>
@@ -190,8 +190,8 @@
 
     <color name="border">#33000000</color>
 
-    <color name="pwa_background">#191c20</color>
-    <color name="pwa_accent">#a9c7ff</color>
+    <color name="pwa_background">#121417</color>
+    <color name="pwa_accent">#bbd3ff</color>
 
     <color name="light_1">#05000000</color>
     <color name="light_2">#17000000</color>

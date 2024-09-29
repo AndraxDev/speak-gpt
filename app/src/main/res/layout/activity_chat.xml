@@ -20,6 +20,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/expandable_window_background"
+    android:id="@+id/expandable_window_root"
+    android:transitionName="chat_expand"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -141,14 +144,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.progressindicator.CircularProgressIndicator
+        <com.google.android.material.loadingindicator.LoadingIndicator
             android:id="@+id/progressBar5"
             android:indeterminate="true"
-            style="@style/Widget.Material3.CircularProgressIndicator"
+            style="@style/Widget.Material3.LoadingIndicator"
             app:indicatorSize="72dp"
-            app:trackThickness="8dp"
-            app:trackCornerRadius="8dp"
-            app:indeterminateAnimationTypeCircular="advance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -266,6 +266,7 @@
 
         <ImageButton
             android:id="@+id/btn_settings"
+            android:transitionName="settings"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginEnd="8dp"
@@ -324,15 +325,17 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/messages"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="64dp"
         android:listSelector="@android:color/transparent"
+        android:paddingBottom="80dp"
         android:scrollbars="none"
         android:stackFromBottom="true"
-        app:layout_constraintBottom_toTopOf="@+id/keyboard_input"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/action_bar" />
+        app:layout_constraintTop_toBottomOf="@+id/action_bar"
+        tools:listitem="@layout/view_message" />
 
     <LinearLayout
         android:id="@+id/vision_action_selector"

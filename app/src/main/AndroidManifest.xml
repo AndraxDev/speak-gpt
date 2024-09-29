@@ -61,6 +61,7 @@
         <activity
             android:name=".ui.activities.ChatActivity"
             android:exported="false"
+            android:theme="@style/Theme.Transparent"
             android:windowSoftInputMode="adjustPan">
         </activity>
 
@@ -97,6 +98,7 @@
         <activity
             android:name=".ui.activities.PromptViewActivity"
             android:exported="true"
+            android:theme="@style/Theme.Transparent"
             android:launchMode="singleTask">
 
             <intent-filter android:autoVerify="true">
@@ -252,6 +254,7 @@
             android:name=".ui.activities.SettingsActivity"
             android:exported="false"
             android:label="@string/settings"
+            android:theme="@style/Theme.Transparent"
             android:launchMode="singleTask">
         </activity>
 

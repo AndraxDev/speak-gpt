@@ -22,18 +22,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.progressindicator.CircularProgressIndicator
+    <com.google.android.material.loadingindicator.LoadingIndicator
         android:id="@+id/progressBar"
-        style="@style/Widget.Material3.CircularProgressIndicator"
+        style="@style/Widget.Material3.LoadingIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminate="true"
-        android:padding="64dp"
-        android:visibility="visible"
+        android:layout_margin="64dp"
         app:indicatorSize="72dp"
-        app:trackThickness="8dp"
-        app:trackCornerRadius="8dp"
-        app:indeterminateAnimationTypeCircular="advance"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

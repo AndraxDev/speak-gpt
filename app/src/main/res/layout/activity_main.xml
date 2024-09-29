@@ -77,12 +77,39 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:indeterminate="true"
+                    android:visibility="gone"
                     app:indeterminateAnimationTypeCircular="advance"
                     app:indicatorSize="72dp"
                     app:layout_constraintStart_toStartOf="@+id/scrollView2"
                     app:layout_constraintTop_toBottomOf="@+id/scrollView2"
                     app:trackCornerRadius="8dp"
                     app:trackThickness="8dp" />
+
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/progressBar7"
+                    style="@style/Widget.Material3.CircularProgressIndicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:indeterminate="true"
+                    app:indicatorSize="64dp"
+                    app:trackCornerRadius="12dp"
+                    app:trackThickness="8dp"
+                    app:waveAmplitude="8dp"
+                    app:wavelength="64dp"
+                    app:layout_constraintStart_toEndOf="@+id/progressBar8"
+                    app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
+
+                <com.google.android.material.loadingindicator.LoadingIndicator
+                    android:id="@+id/progressBar8"
+                    style="@style/Widget.Material3.LoadingIndicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:indeterminate="true"
+                    app:indicatorSize="72dp"
+                    app:layout_constraintStart_toEndOf="@+id/progressBar6"
+                    app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
 
                 <ImageButton
                     android:id="@+id/btn_close_debugger"

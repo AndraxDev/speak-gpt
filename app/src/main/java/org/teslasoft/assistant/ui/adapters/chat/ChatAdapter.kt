@@ -548,7 +548,7 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
         return if (isDarkThemeEnabled() && preferences.getAmoledPitchBlack()) {
             ResourcesCompat.getColor(context.resources, R.color.amoled_accent_50, null)
         } else {
-            SurfaceColors.SURFACE_1.getColor(context)
+            SurfaceColors.SURFACE_2.getColor(context)
         }
     }
 
@@ -556,7 +556,7 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
         return if (isDarkThemeEnabled() && preferences.getAmoledPitchBlack()) {
             ResourcesCompat.getColor(context.resources, R.color.amoled_window_background, null)
         } else {
-            SurfaceColors.SURFACE_0.getColor(context)
+            SurfaceColors.SURFACE_1.getColor(context)
         }
     }
 

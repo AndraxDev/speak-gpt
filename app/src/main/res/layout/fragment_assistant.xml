@@ -227,7 +227,7 @@
 
         <LinearLayout
             android:id="@+id/assistant_actions"
-            android:layout_width="192dp"
+            android:layout_width="200dp"
             android:layout_height="56dp"
             android:layout_marginBottom="35dp"
             android:background="@drawable/btn_accent_assistant_actions"
@@ -244,6 +244,7 @@
 
                 <ImageButton
                     android:id="@+id/btn_assistant_settings"
+                    android:transitionName="settings"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:layout_marginStart="12dp"

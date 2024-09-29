@@ -24,7 +24,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.ListView
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -39,6 +38,7 @@ import com.aallam.openai.client.OpenAIConfig
 import com.aallam.openai.client.OpenAIHost
 import com.aallam.openai.client.RetryStrategy
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.loadingindicator.LoadingIndicator
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -72,7 +72,7 @@ class AdvancedModelSelectorDialogFragment : DialogFragment() {
 
     private var builder: AlertDialog.Builder? = null
     private var modelList: ListView? = null
-    private var progressBar: ProgressBar? = null
+    private var progressBar: LoadingIndicator? = null
     private var ttsSelectorTitle: TextView? = null
     private var fieldSearch: TextInputEditText? = null
 

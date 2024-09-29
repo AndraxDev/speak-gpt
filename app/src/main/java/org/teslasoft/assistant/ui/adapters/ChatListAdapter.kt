@@ -17,6 +17,7 @@
 package org.teslasoft.assistant.ui.adapters
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -39,8 +40,11 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.util.Pair
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
@@ -206,6 +210,11 @@ class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>,
                 if (bulkActionMode) {
                     switchBulkActionState(projection, chatMessage, position)
                 } else {
+                    val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        mContext.requireActivity() as Activity,
+                        Pair.create(root, ViewCompat.getTransitionName(root))
+                    )
+
                     val i = Intent(
                         mContext.requireActivity(),
                         ChatActivity::class.java
@@ -214,7 +223,7 @@ class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>,
                     i.putExtra("name", chatMessage["name"].toString())
                     i.putExtra("chatId", Hash.hash(chatMessage["name"].toString()))
 
-                    mContext.requireActivity().startActivity(i)
+                    mContext.requireActivity().startActivity(i, options.toBundle())
                 }
             }
 

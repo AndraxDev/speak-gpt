@@ -39,8 +39,11 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.util.Pair
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -360,7 +363,11 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
 
     private fun initLogics() {
         btnSettings?.setOnClickListener {
-            startActivity(Intent(mContext?: return@setOnClickListener, SettingsActivity::class.java).setAction(Intent.ACTION_VIEW))
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                requireActivity() as Activity,
+                Pair.create(btnSettings, ViewCompat.getTransitionName(btnSettings!!))
+            )
+            startActivity(Intent(mContext?: return@setOnClickListener, SettingsActivity::class.java), options.toBundle())
         }
 
         btnAdd?.setOnClickListener {

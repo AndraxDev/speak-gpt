@@ -98,16 +98,17 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_close" />
 
-            <com.google.android.material.progressindicator.CircularProgressIndicator
+            <com.google.android.material.loadingindicator.LoadingIndicator
                 android:id="@+id/run_loader"
-                style="@style/Widget.Material3.CircularProgressIndicator"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
+                style="@style/Widget.Material3.LoadingIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
                 android:elevation="1dp"
                 android:indeterminate="true"
                 android:visibility="gone"
+                app:indicatorSize="56dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -46,6 +46,7 @@
             android:layout_height="match_parent">
 
             <TextView
+                android:transitionName="prompt_title"
                 android:id="@+id/prompt_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

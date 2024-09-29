@@ -24,6 +24,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.RadioButton
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -181,7 +182,7 @@ class PostPromptDialogFragment : BottomSheetDialogFragment() {
 
     private fun validateForm() {
         if (fieldName?.text.toString().trim() == "" || fieldTitle?.text.toString().trim() == "" || fieldDesc?.text.toString().trim() == "" || fieldPrompt?.text.toString().trim() == "" || type == "" || category == "") {
-            listener!!.onFormError(fieldName?.text.toString(), fieldTitle?.text.toString(), fieldDesc?.text.toString(), fieldPrompt?.text.toString(), type, category)
+            Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
         } else {
             listener!!.onFormFilled(fieldName?.text.toString(), fieldTitle?.text.toString(), fieldDesc?.text.toString(), fieldPrompt?.text.toString(), type, category)
         }
@@ -194,7 +195,9 @@ class PostPromptDialogFragment : BottomSheetDialogFragment() {
     interface StateChangesListener {
         fun onFormFilled(name: String, title: String, desc: String, prompt: String, type: String, category: String)
 
+        @Deprecated("No longer needed as BottomSheetDialog does not dismiss when action buttons are clicked")
         fun onFormError(name: String, title: String, desc: String, prompt: String, type: String, category: String)
+
         fun onCanceled()
     }
 }

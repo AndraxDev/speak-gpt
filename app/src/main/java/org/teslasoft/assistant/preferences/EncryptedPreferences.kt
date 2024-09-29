@@ -54,26 +54,6 @@ class EncryptedPreferences {
          * Get encrypted preference
          * */
         fun getEncryptedPreference(context: Context, file: String, key: String) : String {
-//            try {
-//                if (mainKey == null) {
-//                    mainKey = MasterKey.Builder(context)
-//                        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-//                        .build()
-//                }
-//
-//                val sharedPreferences = EncryptedSharedPreferences.create(
-//                    context,
-//                    file,
-//                    mainKey!!,
-//                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-//                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-//                )
-//
-//                return sharedPreferences.getString(key, "")!!
-//            } catch (e: Exception) {
-//                return ""
-//            }
-
             return try {
                 val sharedPreferences = getEncryptedSharedPreferences(context, file)
                 sharedPreferences.getString(key, "") ?: ""
@@ -86,20 +66,6 @@ class EncryptedPreferences {
          * Set encrypted preference
          * */
         fun setEncryptedPreference(context: Context, file: String, key: String, value: String) {
-//            if (mainKey == null) {
-//                mainKey = MasterKey.Builder(context)
-//                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-//                    .build()
-//            }
-//
-//            val sharedPreferences = EncryptedSharedPreferences.create(
-//                context,
-//                file,
-//                mainKey!!,
-//                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-//                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-//            )
-
             with (getEncryptedSharedPreferences(context, file).edit()) {
                 putString(key, value)
                 apply()

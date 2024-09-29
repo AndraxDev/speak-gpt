@@ -24,6 +24,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.content.res.Configuration.KEYBOARD_QWERTY
 import android.graphics.Bitmap
@@ -56,11 +57,13 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.Voice
 import android.text.Editable
 import android.text.TextWatcher
+import android.transition.TransitionInflater
 import android.util.Base64
 import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -77,12 +80,18 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.util.Pair
+import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.interpolator.view.animation.FastOutLinearInInterpolator
+import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -116,7 +125,6 @@ import com.aallam.openai.client.OpenAI
 import com.aallam.openai.client.OpenAIConfig
 import com.aallam.openai.client.OpenAIHost
 import com.aallam.openai.client.RetryStrategy
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.progressindicator.CircularProgressIndicator
@@ -202,6 +210,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
     private var btnCopySelected: ImageButton? = null
     private var btnShareSelected: ImageButton? = null
     private var selectedCount: TextView? = null
+    private var expandableWindowRoot: CoordinatorLayout? = null
 
     // Init chat
     private var messages: ArrayList<HashMap<String, Any>> = arrayListOf()
@@ -431,13 +440,18 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
     @Suppress("deprecation")
     private fun preloadAmoled() {
         if (isDarkThemeEnabled() && GlobalPreferences.getPreferences(this).getAmoledPitchBlack()) {
-            threadLoader?.background = ResourcesCompat.getDrawable(resources, R.color.amoled_accent_50, null)
-        } else {
-            threadLoader?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
+            threadLoader?.backgroundTintList = ColorStateList.valueOf(ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme))
 
             if (Build.VERSION.SDK_INT < 30) {
-                window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
-                window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
+                window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme)
+                window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme)
+            }
+        } else {
+            threadLoader?.backgroundTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_1.getColor(this))
+
+            if (Build.VERSION.SDK_INT < 30) {
+                window.statusBarColor = SurfaceColors.SURFACE_1.getColor(this)
+                window.navigationBarColor = SurfaceColors.SURFACE_1.getColor(this)
             }
         }
     }
@@ -501,7 +515,6 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
     private fun reloadAmoled() {
         ThemeManager.getThemeManager().applyTheme(this, isDarkThemeEnabled() && GlobalPreferences.getPreferences(this).getAmoledPitchBlack())
         if (isDarkThemeEnabled() && GlobalPreferences.getPreferences(this).getAmoledPitchBlack()) {
-            window.setBackgroundDrawableResource(R.color.amoled_window_background)
             if (Build.VERSION.SDK_INT < 30) {
                 window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme)
                 window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme)
@@ -559,8 +572,6 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                 )!!, this
             )
         } else {
-            val colorDrawable = ColorDrawable(SurfaceColors.SURFACE_0.getColor(this))
-            window.setBackgroundDrawable(colorDrawable)
             if (Build.VERSION.SDK_INT < 30) {
                 window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
                 window.navigationBarColor = SurfaceColors.SURFACE_2.getColor(this)
@@ -688,6 +699,20 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
+        val transition = TransitionInflater.from(this).inflateTransition(android.R.transition.move).apply {
+            interpolator = LinearOutSlowInInterpolator()
+            duration = 375
+        }
+
+        val transition2 = TransitionInflater.from(this).inflateTransition(android.R.transition.move).apply {
+            interpolator = FastOutLinearInInterpolator()
+            duration = 200
+        }
+
+        // Set the transition as the shared element enter transition
+        window.sharedElementEnterTransition = transition
+        window.sharedElementExitTransition = transition2
+
         super.onCreate(savedInstanceState)
 
         if (Build.VERSION.SDK_INT >= 33) {
@@ -697,7 +722,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                 if (bulkSelectionMode) {
                     deselectAll()
                 } else {
-                    finish()
+                    finishActivity()
                 }
             }
         } else {
@@ -706,7 +731,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                     if (bulkSelectionMode) {
                         deselectAll()
                     } else {
-                        finish()
+                        finishActivity()
                     }
                 }
             })
@@ -773,7 +798,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
         if (key == null) {
             startActivity(Intent(this, WelcomeActivity::class.java).setAction(Intent.ACTION_VIEW))
-            finish()
+            finishActivity()
         } else {
             silenceMode = preferences!!.getSilence()
             autoLangDetect = preferences!!.getAutoLangDetect()
@@ -847,6 +872,9 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         btnCopySelected = findViewById(R.id.btn_copy_selected)
         btnShareSelected = findViewById(R.id.btn_share_selected)
         selectedCount = findViewById(R.id.text_selected_count)
+        expandableWindowRoot = findViewById(R.id.expandable_window_root)
+
+        expandableWindowRoot?.backgroundTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_1.getColor(this))
 
         bulkContainer?.visibility = View.GONE
 
@@ -910,7 +938,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         )
 
         btnBack?.setOnClickListener {
-            finish()
+            finishActivity()
         }
 
         activityTitle?.setOnClickListener {
@@ -929,7 +957,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
                 override fun onForceUpdate() {
                     startActivity(Intent(this@ChatActivity, ChatActivity::class.java).putExtra("chatId", chatId).putExtra("name", chatName).setAction(Intent.ACTION_VIEW))
-                    finish()
+                    finishActivity()
                 }
             })
             quickSettingsBottomSheetDialogFragment.show(supportFragmentManager, "QuickSettingsBottomSheetDialogFragment")
@@ -1264,7 +1292,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                     return@run true
                 }
                 event.action == KeyEvent.ACTION_DOWN && ((keyCode == KeyEvent.KEYCODE_ESCAPE && event.isShiftPressed) || keyCode == KeyEvent.KEYCODE_BACK) && preferences!!.getDesktopMode() -> {
-                    finish()
+                    finishActivity()
                     return@run true
                 }
                 else -> return@run false
@@ -1276,8 +1304,13 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         }
 
         btnSettings?.setOnClickListener {
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                this,
+                Pair.create(btnSettings, ViewCompat.getTransitionName(btnSettings!!))
+            )
             settingsLauncher.launch(
-                Intent(this, SettingsActivity::class.java).setAction(Intent.ACTION_VIEW).putExtra("chatId", chatId)
+                Intent(this, SettingsActivity::class.java).setAction(Intent.ACTION_VIEW).putExtra("chatId", chatId),
+                options
             )
         }
 
@@ -1572,7 +1605,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
     private fun initAI() {
         if (key == null) {
             startActivity(Intent(this, WelcomeActivity::class.java).setAction(Intent.ACTION_VIEW))
-            finish()
+            finishActivity()
         } else {
             val config = OpenAIConfig(
                 token = key!!,
@@ -2367,7 +2400,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
                     val i = Intent(this, ChatActivity::class.java).setAction(Intent.ACTION_VIEW).putExtra("chatId", Hash.hash(newChatName.toString())).putExtra("name", newChatName.toString())
                     startActivity(i)
-                    finish()
+                    finishActivity()
                 } catch (e: Exception) { /* model might not be available */ }
             }
         }
@@ -2972,5 +3005,23 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         WindowInsetsUtil.adjustPaddings(this, R.id.action_bar, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR))
         WindowInsetsUtil.adjustPaddings(this, R.id.bulk_container, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR))
         WindowInsetsUtil.adjustPaddings(this, R.id.keyboard_frame, EnumSet.of(WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR))
+        WindowInsetsUtil.adjustPaddings(this, R.id.messages, EnumSet.of(WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR))
+
+        val messages = findViewById<RecyclerView>(R.id.messages)
+        val layoutParams = messages.layoutParams as ViewGroup.MarginLayoutParams
+
+        if (Build.VERSION.SDK_INT >= 30) {
+            layoutParams.topMargin = dpToPx(64) + window.decorView.rootWindowInsets.getInsets(WindowInsets.Type.statusBars()).top
+        } else {
+            layoutParams.topMargin = dpToPx(64)
+        }
+
+        messages.layoutParams = layoutParams
+    }
+
+    private fun finishActivity() {
+        val root: View = findViewById(R.id.root)
+        root.animate().alpha(0f).setDuration(200)
+        supportFinishAfterTransition()
     }
 }

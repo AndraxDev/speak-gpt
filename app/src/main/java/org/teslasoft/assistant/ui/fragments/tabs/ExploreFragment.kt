@@ -37,7 +37,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
-import com.google.android.material.progressindicator.CircularProgressIndicator
+import com.google.android.material.loadingindicator.LoadingIndicator
 import com.google.gson.Gson
 import org.teslasoft.assistant.Config
 import org.teslasoft.assistant.R
@@ -56,7 +56,7 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
 
     private var btnTips: ImageButton? = null
     private var refreshLayout: SwipeRefreshLayout? = null
-    private var loading: CircularProgressIndicator? = null
+    private var loading: LoadingIndicator? = null
     private var btnRetry: MaterialButton? = null
     private var btnErrorDetails: MaterialButton? = null
     private var noInternet: LinearLayout? = null

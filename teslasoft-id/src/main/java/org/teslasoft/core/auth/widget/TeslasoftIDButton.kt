@@ -29,8 +29,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.util.Pair
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.bumptech.glide.Glide
@@ -38,7 +41,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.elevation.SurfaceColors
-import com.google.android.material.progressindicator.CircularProgressIndicator
+import com.google.android.material.loadingindicator.LoadingIndicator
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.teslasoft.core.auth.*
@@ -49,7 +52,7 @@ class TeslasoftIDButton : Fragment() {
     private var accountName: TextView? = null
     private var accountEmail: TextView? = null
     private var authBtn: LinearLayout? = null
-    private var accountLoader: CircularProgressIndicator? = null
+    private var accountLoader: LoadingIndicator? = null
     private var verificationApi: RequestNetwork? = null
     private var accountSettings: SharedPreferences? = null
     private var listener: AccountSyncListener? = null
@@ -169,7 +172,11 @@ class TeslasoftIDButton : Fragment() {
         update()
 
         authBtn?.setOnClickListener {
-            activityResultLauncher.launch(Intent(internalActivity ?: return@setOnClickListener, TeslasoftIDAuth::class.java))
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                requireActivity(),
+                Pair.create(authBtn, ViewCompat.getTransitionName(authBtn!!))
+            )
+            activityResultLauncher.launch(Intent(internalActivity ?: return@setOnClickListener, TeslasoftIDAuth::class.java), options)
         }
     }
 

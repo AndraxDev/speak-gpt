@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/teslasoft_services_auth_shadow">
 
     <LinearLayout
         android:id="@+id/auth_v_security"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -16,29 +17,28 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/root"
+            android:layout_width="180dp"
+            android:layout_height="180dp"
             android:background="@drawable/teslasoft_services_auth_backgrounds"
             android:clickable="false"
             android:elevation="3dp"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:transitionName="expand">
 
-            <com.google.android.material.progressindicator.CircularProgressIndicator
-                android:id="@+id/progressBar3"
-                android:indeterminate="true"
-                style="@style/Widget.Material3.CircularProgressIndicator.Medium"
+            <com.google.android.material.loadingindicator.LoadingIndicator
+                android:id="@+id/expandable_element_1"
+                style="@style/Widget.Material3.LoadingIndicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                app:indicatorSize="56dp"
-                app:trackThickness="8dp"
-                app:trackCornerRadius="8dp"
-                app:indeterminateAnimationTypeCircular="advance" />
+                android:indeterminate="true"
+                app:indicatorSize="64dp" />
 
             <TextView
-                android:id="@+id/security_check_progress"
+                android:id="@+id/expandable_element_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
@@ -46,10 +46,9 @@
                 android:text="@string/teslasoft_services_auth_checking_info"
                 android:textColor="@color/teslasoft_services_auth_accent_900"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
         </LinearLayout>
-
     </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

@@ -21,11 +21,24 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.transition.TransitionInflater
+import android.view.View
+import android.view.animation.AnimationUtils
+import android.window.OnBackInvokedDispatcher
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
+import androidx.core.util.Pair
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.interpolator.view.animation.FastOutLinearInInterpolator
+import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.teslasoft.core.auth.internal.ApplicationSignature
 
@@ -41,14 +54,43 @@ class TeslasoftIDAuth : FragmentActivity() {
                     .setCancelable(false)
                     .setPositiveButton(R.string.teslasoft_services_auth_dialog_close) { _: DialogInterface?, _: Int ->
                         this.setResult(2)
-                        finish()
+                        finishActivity()
                     }.show()
             }
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContentView(R.layout.activity_teslasoft_id)
+
+        val transition = TransitionInflater.from(this).inflateTransition(android.R.transition.move).apply {
+            interpolator = LinearOutSlowInInterpolator()
+            duration = 375
+        }
+
+        val transition2 = TransitionInflater.from(this).inflateTransition(android.R.transition.move).apply {
+            interpolator = FastOutLinearInInterpolator()
+            duration = 200
+        }
+
+        // Set the transition as the shared element enter transition
+        window.sharedElementEnterTransition = transition
+        window.sharedElementExitTransition = transition2
+
+        if (Build.VERSION.SDK_INT >= 33) {
+            onBackInvokedDispatcher.registerOnBackInvokedCallback(
+                OnBackInvokedDispatcher.PRIORITY_DEFAULT
+            ) {
+                /* Lock back gesture */
+            }
+        } else {
+            onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    /* Lock back gesture */
+                }
+            })
+        }
 
         val signature = ApplicationSignature(this).getCertificateFingerprint("SHA256")
         val requestNetwork = RequestNetwork(this)
@@ -63,7 +105,7 @@ class TeslasoftIDAuth : FragmentActivity() {
                                 .setCancelable(false)
                                 .setPositiveButton(R.string.teslasoft_services_auth_dialog_close) { _: DialogInterface?, _: Int ->
                                     this@TeslasoftIDAuth.setResult(RESULT_CANCELED)
-                                    finish()
+                                    finishActivity()
                                 }.show()
                         } else {
                             askAuthPermission()
@@ -77,7 +119,7 @@ class TeslasoftIDAuth : FragmentActivity() {
                             .setCancelable(false)
                             .setPositiveButton(R.string.teslasoft_services_auth_dialog_close) { _: DialogInterface?, _: Int ->
                                 this@TeslasoftIDAuth.setResult(RESULT_CANCELED)
-                                finish()
+                                finishActivity()
                             }.show()
                     }
                 }
@@ -90,7 +132,7 @@ class TeslasoftIDAuth : FragmentActivity() {
                     .setCancelable(false)
                     .setPositiveButton(R.string.teslasoft_services_auth_dialog_close) { _: DialogInterface?, _: Int ->
                         this@TeslasoftIDAuth.setResult(RESULT_CANCELED)
-                        finish()
+                        finishActivity()
                     }.show()
             }
         })
@@ -116,10 +158,14 @@ class TeslasoftIDAuth : FragmentActivity() {
                 intent.putExtra("signature", result.data?.getStringExtra("signature"))
                 intent.putExtra("auth_token", result.data!!.getStringExtra("auth_token"))
                 this.setResult(result.resultCode, intent)
-                finish()
+                Handler(mainLooper).postDelayed({
+                    finishActivity()
+                }, 300)
             } else if (result.resultCode == 3 || result.resultCode == 4) {
                 this.setResult(result.resultCode)
-                finish()
+                Handler(mainLooper).postDelayed({
+                    finishActivity()
+                }, 300)
             } else {
                 MaterialAlertDialogBuilder(this, R.style.TeslasoftID_MaterialAlertDialog)
                     .setTitle(getAppName())
@@ -127,13 +173,17 @@ class TeslasoftIDAuth : FragmentActivity() {
                     .setCancelable(false)
                     .setPositiveButton(R.string.teslasoft_services_auth_dialog_close) { _: DialogInterface?, _: Int ->
                         this.setResult(RESULT_CANCELED)
-                        finish()
+                        Handler(mainLooper).postDelayed({
+                            finishActivity()
+                        }, 300)
                     }.show()
             }
         } catch (e: Exception) {
             if (result.resultCode == 3 || result.resultCode == 4) {
                 this.setResult(result.resultCode)
-                finish()
+                Handler(mainLooper).postDelayed({
+                    finishActivity()
+                }, 300)
             } else {
                 this.setResult(result.resultCode)
                 MaterialAlertDialogBuilder(this, R.style.TeslasoftID_MaterialAlertDialog)
@@ -142,7 +192,9 @@ class TeslasoftIDAuth : FragmentActivity() {
                     .setCancelable(false)
                     .setPositiveButton(R.string.teslasoft_services_auth_dialog_close) { _: DialogInterface?, _: Int ->
                         this.setResult(RESULT_CANCELED)
-                        finish()
+                        Handler(mainLooper).postDelayed({
+                            finishActivity()
+                        }, 300)
                     }.show()
             }
         }
@@ -155,7 +207,15 @@ class TeslasoftIDAuth : FragmentActivity() {
                 "com.teslasoft.libraries.support",
                 "org.teslasoft.core.api.account.AccountPickerActivity"
             )
-            activityResultLauncher.launch(apiIntent)
+            val sharedElement: View = findViewById(R.id.root)
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                this,
+                Pair.create(sharedElement, ViewCompat.getTransitionName(sharedElement))
+            )
+
+            Handler(mainLooper).postDelayed({
+                activityResultLauncher.launch(apiIntent, options)
+            }, 600)
         } catch (_: Exception) {
             MaterialAlertDialogBuilder(this, R.style.TeslasoftID_MaterialAlertDialog)
                 .setTitle(getAppName())
@@ -163,7 +223,9 @@ class TeslasoftIDAuth : FragmentActivity() {
                 .setCancelable(false)
                 .setPositiveButton(R.string.teslasoft_services_auth_dialog_close) { _: DialogInterface?, _: Int ->
                     this.setResult(RESULT_CANCELED)
-                    finish()
+                    Handler(mainLooper).postDelayed({
+                        finishActivity()
+                    }, 300)
                 }.show()
         }
     }
@@ -183,10 +245,25 @@ class TeslasoftIDAuth : FragmentActivity() {
                     requestPermissionLauncher.launch("org.teslasoft.core.permission.AUTHENTICATE_ACCOUNTS")
                 }.setNegativeButton("No thanks") { _: DialogInterface?, _: Int ->
                     this.setResult(2)
-                    finish()
+                    Handler(mainLooper).postDelayed({
+                        finishActivity()
+                    }, 300)
                 }.show()
         }
     }
 
     private fun Context.getAppName(): String = applicationInfo.loadLabel(packageManager).toString()
+
+    fun finishActivity() {
+        val expandableElement1: View? = findViewById(R.id.expandable_element_1)
+        val expandableElement2: View? = findViewById(R.id.expandable_element_2)
+
+        if (expandableElement1 == null || expandableElement2 == null) {
+            supportFinishAfterTransition()
+        } else {
+            expandableElement1.animate().alpha(0.0f).interpolator = AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_linear_in)
+            expandableElement2.animate().alpha(0.0f).interpolator = AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_linear_in)
+            supportFinishAfterTransition()
+        }
+    }
 }
