@@ -11,28 +11,18 @@ android {
     defaultConfig {
         minSdk 28
         targetSdk 35
-        // First 3 digits represent the major version, the last digit represents the build flavor
-        // Build flavors:
-        // 1XX - Stable
-        // 2XX - Beta
-        // 3XX - Alpha
-        // 4XX - Dev
-        // 5XX - Canary
-        // 6XX - Nightly
-        // where X is the custom build parameter
-        // Custom params:
-        // 00 - Main build (Maven release)
-        // 01 - SpeakGPT build
     }
 
     buildTypes {
         release {
+            debuggable false
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             multiDexEnabled true
         }
 
         debug {
+            debuggable false
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             multiDexEnabled true

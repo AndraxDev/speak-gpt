@@ -16,6 +16,7 @@
 
 package org.teslasoft.assistant.ui.fragments.dialogs
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -27,6 +28,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.RadioButton
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -90,6 +92,7 @@ class AdvancedSettingsDialogFragment : BottomSheetDialogFragment() {
         return inflater.inflate(R.layout.fragment_advanced_settings, container, false)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -163,7 +166,9 @@ class AdvancedSettingsDialogFragment : BottomSheetDialogFragment() {
             gpt_35_turbo?.background = getDarkAccentDrawableV2(
                 ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
             ftFrame?.visibility = View.GONE
+            validateForm()
         }
+
         gpt_35_turbo_0125?.setOnClickListener {
             model = "gpt-3.5-turbo-0125"
             clearSelection()
@@ -171,7 +176,9 @@ class AdvancedSettingsDialogFragment : BottomSheetDialogFragment() {
             gpt_35_turbo_0125?.background = getDarkAccentDrawableV2(
                 ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
             ftFrame?.visibility = View.GONE
+            validateForm()
         }
+
         gpt_4?.setOnClickListener {
             model = "gpt-4"
             clearSelection()
@@ -179,7 +186,9 @@ class AdvancedSettingsDialogFragment : BottomSheetDialogFragment() {
             gpt_4?.background = getDarkAccentDrawableV2(
                 ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
             ftFrame?.visibility = View.GONE
+            validateForm()
         }
+
         gpt_4_turbo?.setOnClickListener {
             model = "gpt-4-turbo-preview"
             clearSelection()
@@ -187,7 +196,9 @@ class AdvancedSettingsDialogFragment : BottomSheetDialogFragment() {
             gpt_4_turbo?.background = getDarkAccentDrawableV2(
                 ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
             ftFrame?.visibility = View.GONE
+            validateForm()
         }
+
         gpt_4_o?.setOnClickListener {
             model = "gpt-4o"
             clearSelection()
@@ -195,7 +206,9 @@ class AdvancedSettingsDialogFragment : BottomSheetDialogFragment() {
             gpt_4_o?.background = getDarkAccentDrawableV2(
                 ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!)
             ftFrame?.visibility = View.GONE
+            validateForm()
         }
+
         ft?.setOnClickListener {
             model = ftInput?.text.toString()
             clearSelection()
@@ -232,6 +245,7 @@ class AdvancedSettingsDialogFragment : BottomSheetDialogFragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 model = s.toString()
+                validateForm()
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -241,6 +255,7 @@ class AdvancedSettingsDialogFragment : BottomSheetDialogFragment() {
 
         btnSave?.setOnClickListener {
             validateForm()
+            Toast.makeText(requireActivity(), "Settings saved", Toast.LENGTH_SHORT).show()
         }
 
         btnCancel?.setOnClickListener {

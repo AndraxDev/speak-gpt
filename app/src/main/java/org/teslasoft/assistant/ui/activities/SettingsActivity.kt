@@ -23,19 +23,13 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.provider.Settings
 import android.transition.TransitionInflater
 import android.view.View
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ScrollView
@@ -50,7 +44,6 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -118,7 +111,7 @@ class SettingsActivity : FragmentActivity() {
     private var tileShowChatErrors: TileFragment? = null
     private var tileHideModelNames: TileFragment? = null
     private var tileMonochromeBackgroundForChatList: TileFragment? = null
-//    private var threadLoading: LinearLayout? = null
+    // private var threadLoading: LinearLayout? = null
     private var btnRemoveAds: MaterialButton? = null
     private var root: ScrollView? = null
     private var textGlobal: TextView? = null
@@ -285,7 +278,7 @@ class SettingsActivity : FragmentActivity() {
 
         val transition = TransitionInflater.from(this).inflateTransition(android.R.transition.move).apply {
             interpolator = LinearOutSlowInInterpolator()
-            duration = 500
+            duration = 300
         }
 
         transition.excludeTarget(R.id.scrollable, true)
@@ -566,7 +559,8 @@ class SettingsActivity : FragmentActivity() {
                 R.drawable.ic_key,
                 false,
                 chatId,
-                getString(R.string.tile_api_endpoint_desc)
+                getString(R.string.tile_api_endpoint_desc),
+                "expand_api_list"
             )
 
             tileAutoSend = TileFragment.newInstance(
@@ -638,7 +632,8 @@ class SettingsActivity : FragmentActivity() {
                 R.drawable.ic_image,
                 false,
                 chatId,
-                getString(R.string.tile_image_resolution_desc)
+                getString(R.string.tile_image_resolution_desc),
+                "expand_resolution"
             )
 
             tileTTS = TileFragment.newInstance(
@@ -722,7 +717,8 @@ class SettingsActivity : FragmentActivity() {
                 R.drawable.ic_play,
                 false,
                 chatId,
-                getString(R.string.tile_activation_prompt_desc)
+                getString(R.string.tile_activation_prompt_desc),
+                "expand_activation_prompt"
             )
 
             tileSystemMessage = TileFragment.newInstance(
@@ -735,7 +731,8 @@ class SettingsActivity : FragmentActivity() {
                 R.drawable.ic_play,
                 false,
                 chatId,
-                getString(R.string.tile_system_message_desc)
+                getString(R.string.tile_system_message_desc),
+                "expand_system_prompt"
             )
         }
 
@@ -840,7 +837,8 @@ class SettingsActivity : FragmentActivity() {
                 R.drawable.ic_info,
                 false,
                 chatId,
-                getString(R.string.tile_about_app_desc)
+                getString(R.string.tile_about_app_desc),
+                "expand_about"
             )
 
             tileClearChat = TileFragment.newInstance(
@@ -925,7 +923,8 @@ class SettingsActivity : FragmentActivity() {
                 R.drawable.ic_experiment,
                 false,
                 chatId,
-                getString(R.string.tile_assistant_customize_desc)
+                getString(R.string.tile_assistant_customize_desc),
+                "expand_customize"
             )
 
             tileDeleteData = TileFragment.newInstance(
@@ -1229,48 +1228,48 @@ class SettingsActivity : FragmentActivity() {
             promptDialog.show(supportFragmentManager.beginTransaction(), "SystemMessageDialog")
         }
 
-        tileLangDetect?.setOnCheckedChangeListener { ischecked -> run {
-            if (ischecked) {
+        tileLangDetect?.setOnCheckedChangeListener { isChecked -> run {
+            if (isChecked) {
                 preferences?.setAutoLangDetect(true)
             } else {
                 preferences?.setAutoLangDetect(false)
             }
         }}
 
-        tileChatLayout?.setOnCheckedChangeListener { ischecked -> run {
-            if (ischecked) {
+        tileChatLayout?.setOnCheckedChangeListener { isChecked -> run {
+            if (isChecked) {
                 preferences?.setLayout("classic")
             } else {
                 preferences?.setLayout("bubbles")
             }
         }}
 
-        tileFunctionCalling?.setOnCheckedChangeListener { ischecked -> run {
-            if (ischecked) {
+        tileFunctionCalling?.setOnCheckedChangeListener { isChecked -> run {
+            if (isChecked) {
                 preferences?.setFunctionCalling(true)
             } else {
                 preferences?.setFunctionCalling(false)
             }
         }}
 
-        tileSlashCommands?.setOnCheckedChangeListener { ischecked -> run {
-            if (ischecked) {
+        tileSlashCommands?.setOnCheckedChangeListener { isChecked -> run {
+            if (isChecked) {
                 preferences?.setImagineCommand(true)
             } else {
                 preferences?.setImagineCommand(false)
             }
         }}
 
-        tileDesktopMode?.setOnCheckedChangeListener { ischecked -> run {
-            if (ischecked) {
+        tileDesktopMode?.setOnCheckedChangeListener { isChecked -> run {
+            if (isChecked) {
                 preferences?.setDesktopMode(true)
             } else {
                 preferences?.setDesktopMode(false)
             }
         }}
 
-        tileAmoledMode?.setOnCheckedChangeListener { ischecked -> run {
-            if (ischecked) {
+        tileAmoledMode?.setOnCheckedChangeListener { isChecked -> run {
+            if (isChecked) {
                 preferences?.setAmoledPitchBlack(true)
             } else {
                 preferences?.setAmoledPitchBlack(false)
@@ -1279,32 +1278,32 @@ class SettingsActivity : FragmentActivity() {
             restartActivity()
         }}
 
-        tileLockAssistantWindow?.setOnCheckedChangeListener { ischecked -> run {
-            if (ischecked) {
+        tileLockAssistantWindow?.setOnCheckedChangeListener { isChecked -> run {
+            if (isChecked) {
                 preferences?.setLockAssistantWindow(true)
             } else {
                 preferences?.setLockAssistantWindow(false)
             }
         }}
 
-        tileChatsAutoSave?.setOnCheckedChangeListener { ischecked -> run {
-            if (ischecked) {
+        tileChatsAutoSave?.setOnCheckedChangeListener { isChecked -> run {
+            if (isChecked) {
                 preferences?.setChatsAutosave(true)
             } else {
                 preferences?.setChatsAutosave(false)
             }
         }}
 
-        tileHideModelNames?.setOnCheckedChangeListener { ischecked -> run {
-            if (ischecked) {
+        tileHideModelNames?.setOnCheckedChangeListener { isChecked -> run {
+            if (isChecked) {
                 preferences?.setHideModelNames(true)
             } else {
                 preferences?.setHideModelNames(false)
             }
         }}
 
-        tileMonochromeBackgroundForChatList?.setOnCheckedChangeListener { ischecked -> run {
-            if (ischecked) {
+        tileMonochromeBackgroundForChatList?.setOnCheckedChangeListener { isChecked -> run {
+            if (isChecked) {
                 preferences?.setMonochromeBackgroundForChatList(true)
             } else {
                 preferences?.setMonochromeBackgroundForChatList(false)
@@ -1424,7 +1423,7 @@ class SettingsActivity : FragmentActivity() {
             }
         }
 
-        tileCustomize?.setOnTileClickListener {
+        tileCustomize?.setOnTileClickListener { view ->
             val customizeAssistantDialogFragment: CustomizeAssistantDialog = CustomizeAssistantDialog.newInstance(chatId, preferences?.getAssistantName() ?: "SpeakGPT", preferences?.getAvatarType() ?: "builtin", preferences?.getAvatarId() ?: "gpt")
             customizeAssistantDialogFragment.setCustomizeAssistantDialogListener(customizeAssistantDialogListener)
             customizeAssistantDialogFragment.show(supportFragmentManager.beginTransaction(), "CustomizeAssistantDialog")

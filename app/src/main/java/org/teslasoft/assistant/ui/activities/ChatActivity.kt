@@ -36,7 +36,6 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.RectF
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.media.MediaPlayer
@@ -701,7 +700,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
         val transition = TransitionInflater.from(this).inflateTransition(android.R.transition.move).apply {
             interpolator = LinearOutSlowInInterpolator()
-            duration = 375
+            duration = 300
         }
 
         val transition2 = TransitionInflater.from(this).inflateTransition(android.R.transition.move).apply {

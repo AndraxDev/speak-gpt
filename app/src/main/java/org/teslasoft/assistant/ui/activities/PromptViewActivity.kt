@@ -347,7 +347,7 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
 
         val transition = TransitionInflater.from(this).inflateTransition(android.R.transition.move).apply {
             interpolator = LinearOutSlowInInterpolator()
-            duration = 375
+            duration = 300
         }
 
         transition.excludeTarget(R.id.prompt_bg, true)

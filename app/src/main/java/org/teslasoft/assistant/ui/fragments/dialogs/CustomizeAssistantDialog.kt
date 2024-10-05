@@ -30,10 +30,12 @@ import android.graphics.RectF
 import android.net.Uri
 import android.os.Bundle
 import android.provider.DocumentsContract
+import android.transition.TransitionInflater
 import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -41,6 +43,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -98,7 +101,12 @@ class CustomizeAssistantDialog : DialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_customize, container, false)
+        val view = inflater.inflate(R.layout.fragment_customize, container, false)
+
+        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        sharedElementReturnTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+
+        return view
     }
 
     private val fileIntentLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -108,6 +116,24 @@ class CustomizeAssistantDialog : DialogFragment() {
                     readAndDisplay(uri, true)
                 }
             }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Set the shared element transitions
+        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        sharedElementReturnTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        postponeEnterTransition()
+
+        view.doOnPreDraw {
+            startPostponedEnterTransition()
         }
     }
 
@@ -190,7 +216,11 @@ class CustomizeAssistantDialog : DialogFragment() {
             }}
             .setNegativeButton(R.string.btn_cancel) { _, _ -> listener?.onCancel() }
 
-        return builder!!.create()
+        val dialog = builder!!.create()
+
+        dialog.window?.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
+
+        return dialog
     }
 
     private fun readFile(uri: Uri) : Bitmap? {

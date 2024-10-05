@@ -126,14 +126,16 @@ class TeslasoftIDAuth : FragmentActivity() {
             }
 
             override fun onErrorResponse(tag: String, message: String) {
-                MaterialAlertDialogBuilder(this@TeslasoftIDAuth, R.style.TeslasoftID_MaterialAlertDialog)
-                    .setTitle(getAppName())
-                    .setMessage("Failed to verify app integrity.\n\nError detail: $message")
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.teslasoft_services_auth_dialog_close) { _: DialogInterface?, _: Int ->
-                        this@TeslasoftIDAuth.setResult(RESULT_CANCELED)
-                        finishActivity()
-                    }.show()
+                runOnUiThread {
+                    MaterialAlertDialogBuilder(this@TeslasoftIDAuth, R.style.TeslasoftID_MaterialAlertDialog)
+                        .setTitle(getAppName())
+                        .setMessage("Failed to verify app integrity.\n\nError detail: $message")
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.teslasoft_services_auth_dialog_close) { _: DialogInterface?, _: Int ->
+                            this@TeslasoftIDAuth.setResult(RESULT_CANCELED)
+                            finishActivity()
+                        }.show()
+                }
             }
         })
     }
@@ -144,9 +146,7 @@ class TeslasoftIDAuth : FragmentActivity() {
             val packageInfo = packageManager.getPackageInfo("com.teslasoft.libraries.support", PackageManager.GET_ACTIVITIES)
 
             return packageInfo != null
-        } catch (e: PackageManager.NameNotFoundException) {
-            false
-        }
+        } catch (_: PackageManager.NameNotFoundException) { false }
     }
 
     private val activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()

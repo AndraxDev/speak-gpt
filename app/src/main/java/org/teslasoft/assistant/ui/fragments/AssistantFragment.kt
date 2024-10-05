@@ -105,7 +105,6 @@ import com.aallam.openai.client.OpenAI
 import com.aallam.openai.client.OpenAIConfig
 import com.aallam.openai.client.OpenAIHost
 import com.aallam.openai.client.RetryStrategy
-import com.fivehundredpx.android.blur.BlurringView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment

@@ -20,9 +20,7 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
 import cat.ereza.customactivityoncrash.config.CaocConfig
-import com.avito.android.blurlayout.BlurLayout
 import com.google.android.material.color.DynamicColors
-import com.google.android.renderscript.Toolkit
 import org.conscrypt.Conscrypt
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.GlobalPreferences
@@ -42,14 +40,7 @@ import java.security.Security
  */
 class MainApplication : Application() {
     override fun onCreate() {
-        appContext = applicationContext
         super.onCreate()
-
-        BlurLayout.init(
-            onApplyBlur = { bitmap, blurRadius ->
-                Toolkit.blur(inputBitmap = bitmap, radius = blurRadius)
-            },
-        )
 
         DynamicColors.applyToActivitiesIfAvailable(this)
         ThemeManager.getThemeManager().applyTheme(this, isDarkThemeEnabled() && GlobalPreferences.getPreferences(this).getAmoledPitchBlack())
@@ -85,9 +76,5 @@ class MainApplication : Application() {
             Configuration.UI_MODE_NIGHT_UNDEFINED -> false
             else -> false
         }
-    }
-
-    companion object {
-        lateinit var appContext: Context
     }
 }

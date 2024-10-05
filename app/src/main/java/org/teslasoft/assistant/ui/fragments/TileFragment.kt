@@ -20,6 +20,8 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,7 +42,7 @@ import org.teslasoft.assistant.ui.fragments.dialogs.SimpleDialogFragment
 class TileFragment : Fragment() {
 
     companion object {
-        fun newInstance(checked: Boolean, checkable: Boolean, enabledText: String, disabledText: String?, enabledDesc: String, disabledDesc: String?, icon: Int, disabled: Boolean, chatId: String, functionDesc: String): TileFragment {
+        fun newInstance(checked: Boolean, checkable: Boolean, enabledText: String, disabledText: String?, enabledDesc: String, disabledDesc: String?, icon: Int, disabled: Boolean, chatId: String, functionDesc: String, transitionName: String? = null): TileFragment {
 
             val tileFragment = TileFragment()
 
@@ -55,6 +57,7 @@ class TileFragment : Fragment() {
             args.putBoolean("disabled", disabled)
             args.putString("chatId", chatId)
             args.putString("functionDesc", functionDesc)
+            args.putString("transitionName", transitionName)
 
             tileFragment.arguments = args
 
@@ -99,7 +102,7 @@ class TileFragment : Fragment() {
     }
 
     fun interface OnTileClickListener {
-        fun onTileClick()
+        fun onTileClick(view: View)
     }
 
     fun interface OnCheckedChangeListener {
@@ -239,8 +242,8 @@ class TileFragment : Fragment() {
         val disabled = args.getBoolean("disabled")
         val chatId: String = args.getString("chatId").toString()
         val functionDesc: String = args.getString("functionDesc").toString()
-        desc = functionDesc
 
+        desc = functionDesc
         preferences = Preferences.getPreferences(requireActivity(), chatId)
 
         isChecked = checked
@@ -359,12 +362,17 @@ class TileFragment : Fragment() {
                     }
                 }
 
-                onTileClickListener?.onTileClick()
+                onTileClickListener?.onTileClick(tileBg!!)
             }
         }
 
         tileTitle?.isSelected = true
         tileSubtitle?.isSelected = true
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            tileTitle?.isSelected = true
+            tileSubtitle?.isSelected = true
+        }, 400)
     }
 
     private fun getDisabledDrawable(drawable: Drawable) : Drawable {
