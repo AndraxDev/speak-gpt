@@ -17,6 +17,7 @@
 package org.teslasoft.assistant.ui.activities
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Intent
@@ -41,11 +42,13 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.loadingindicator.LoadingIndicator
@@ -167,63 +170,63 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
         }
 
         val bgColor = when (cat) {
-            "development" -> ResourcesCompat.getColor(resources, R.color.bg_cat_development, theme)
-            "music" -> ResourcesCompat.getColor(resources, R.color.bg_cat_music, theme)
-            "art" -> ResourcesCompat.getColor(resources, R.color.bg_cat_art, theme)
-            "culture" -> ResourcesCompat.getColor(resources, R.color.bg_cat_culture, theme)
-            "business" -> ResourcesCompat.getColor(resources, R.color.bg_cat_business, theme)
-            "gaming" -> ResourcesCompat.getColor(resources, R.color.bg_cat_gaming, theme)
-            "education" -> ResourcesCompat.getColor(resources, R.color.bg_cat_education, theme)
-            "history" -> ResourcesCompat.getColor(resources, R.color.bg_cat_history, theme)
-            "health" -> ResourcesCompat.getColor(resources, R.color.bg_cat_health, theme)
-            "food" ->ResourcesCompat.getColor(resources, R.color.bg_cat_food, theme)
-            "tourism" -> ResourcesCompat.getColor(resources, R.color.bg_cat_tourism, theme)
-            "productivity" -> ResourcesCompat.getColor(resources, R.color.bg_cat_productivity, theme)
-            "tools" -> ResourcesCompat.getColor(resources, R.color.bg_cat_tools, theme)
-            "entertainment" -> ResourcesCompat.getColor(resources, R.color.bg_cat_entertainment, theme)
-            "sport" -> ResourcesCompat.getColor(resources, R.color.bg_cat_sport, theme)
-            else -> ResourcesCompat.getColor(resources, R.color.bg_grey, theme)
+            "development" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.bg_cat_development, theme))
+            "music" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.bg_cat_music, theme))
+            "art" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.bg_cat_art, theme))
+            "culture" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.bg_cat_culture, theme))
+            "business" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.bg_cat_business, theme))
+            "gaming" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.bg_cat_gaming, theme))
+            "education" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.bg_cat_education, theme))
+            "history" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.bg_cat_history, theme))
+            "health" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.bg_cat_health, theme))
+            "food" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.bg_cat_food, theme))
+            "tourism" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.bg_cat_tourism, theme))
+            "productivity" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.bg_cat_productivity, theme))
+            "tools" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.bg_cat_tools, theme))
+            "entertainment" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.bg_cat_entertainment, theme))
+            "sport" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.bg_cat_sport, theme))
+            else -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.bg_grey, theme))
         }
 
         root?.backgroundTintList = ColorStateList.valueOf(bgColor)
         loaderContainer?.backgroundTintList = ColorStateList.valueOf(bgColor)
 
         val tintColor = when (cat) {
-            "development" -> ResourcesCompat.getColor(resources, R.color.tint2_cat_development, theme)
-            "music" -> ResourcesCompat.getColor(resources, R.color.tint2_cat_music, theme)
-            "art" -> ResourcesCompat.getColor(resources, R.color.tint2_cat_art, theme)
-            "culture" -> ResourcesCompat.getColor(resources, R.color.tint2_cat_culture, theme)
-            "business" -> ResourcesCompat.getColor(resources, R.color.tint2_cat_business, theme)
-            "gaming" -> ResourcesCompat.getColor(resources, R.color.tint2_cat_gaming, theme)
-            "education" -> ResourcesCompat.getColor(resources, R.color.tint2_cat_education, theme)
-            "history" -> ResourcesCompat.getColor(resources, R.color.tint2_cat_history, theme)
-            "health" -> ResourcesCompat.getColor(resources, R.color.tint2_cat_health, theme)
-            "food" ->ResourcesCompat.getColor(resources, R.color.tint2_cat_food, theme)
-            "tourism" -> ResourcesCompat.getColor(resources, R.color.tint2_cat_tourism, theme)
-            "productivity" -> ResourcesCompat.getColor(resources, R.color.tint2_cat_productivity, theme)
-            "tools" -> ResourcesCompat.getColor(resources, R.color.tint2_cat_tools, theme)
-            "entertainment" -> ResourcesCompat.getColor(resources, R.color.tint2_cat_entertainment, theme)
-            "sport" -> ResourcesCompat.getColor(resources, R.color.tint2_cat_sport, theme)
-            else -> ResourcesCompat.getColor(resources, R.color.tint2_grey, theme)
-        }
+            "development" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.tint2_cat_development, theme))
+            "music" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.tint2_cat_music, theme))
+            "art" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.tint2_cat_art, theme))
+            "culture" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.tint2_cat_culture, theme))
+            "business" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.tint2_cat_business, theme))
+            "gaming" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.tint2_cat_gaming, theme))
+            "education" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.tint2_cat_education, theme))
+            "history" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.tint2_cat_history, theme))
+            "health" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.tint2_cat_health, theme))
+            "food" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.tint2_cat_food, theme))
+            "tourism" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.tint2_cat_tourism, theme))
+            "productivity" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.tint2_cat_productivity, theme))
+            "tools" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.tint2_cat_tools, theme))
+            "entertainment" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.tint2_cat_entertainment, theme))
+            "sport" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.tint2_cat_sport, theme))
+            else -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.tint2_grey, theme))
+        } + 0x15000000
 
         val catColor = when (cat) {
-            "development" -> ResourcesCompat.getColor(resources, R.color.cat_development, theme)
-            "music" -> ResourcesCompat.getColor(resources, R.color.cat_music, theme)
-            "art" -> ResourcesCompat.getColor(resources, R.color.cat_art, theme)
-            "culture" -> ResourcesCompat.getColor(resources, R.color.cat_culture, theme)
-            "business" -> ResourcesCompat.getColor(resources, R.color.cat_business, theme)
-            "gaming" -> ResourcesCompat.getColor(resources, R.color.cat_gaming, theme)
-            "education" -> ResourcesCompat.getColor(resources, R.color.cat_education, theme)
-            "history" -> ResourcesCompat.getColor(resources, R.color.cat_history, theme)
-            "health" -> ResourcesCompat.getColor(resources, R.color.cat_health, theme)
-            "food" ->ResourcesCompat.getColor(resources, R.color.cat_food, theme)
-            "tourism" -> ResourcesCompat.getColor(resources, R.color.cat_tourism, theme)
-            "productivity" -> ResourcesCompat.getColor(resources, R.color.cat_productivity, theme)
-            "tools" -> ResourcesCompat.getColor(resources, R.color.cat_tools, theme)
-            "entertainment" -> ResourcesCompat.getColor(resources, R.color.cat_entertainment, theme)
-            "sport" -> ResourcesCompat.getColor(resources, R.color.cat_sport, theme)
-            else -> ResourcesCompat.getColor(resources, R.color.grey, theme)
+            "development" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.cat_development, theme))
+            "music" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.cat_music, theme))
+            "art" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.cat_art, theme))
+            "culture" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.cat_culture, theme))
+            "business" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.cat_business, theme))
+            "gaming" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.cat_gaming, theme))
+            "education" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.cat_education, theme))
+            "history" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.cat_history, theme))
+            "health" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.cat_health, theme))
+            "food" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.cat_food, theme))
+            "tourism" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.cat_tourism, theme))
+            "productivity" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.cat_productivity, theme))
+            "tools" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.cat_tools, theme))
+            "entertainment" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.cat_entertainment, theme))
+            "sport" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.cat_sport, theme))
+            else -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.grey, theme))
         }
 
         val tintDrawable1 = GradientDrawable()
@@ -277,6 +280,10 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
 
         refreshPage?.setColorSchemeColors(catColor)
         refreshPage?.setProgressBackgroundColorSchemeColor(bgColor)
+    }
+
+    private fun harmonizeColors(color: Int) : Int {
+        return MaterialColors.harmonize(color, ResourcesCompat.getColor(resources, R.color.accent_600, theme))
     }
 
     private fun dpToPx(dp: Int): Int {

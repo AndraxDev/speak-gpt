@@ -38,7 +38,7 @@ class SystemInfo {
 
         const val NAME = "Teslasoft ID for SpeakGPT"
         const val MODIFIER = "-speakgpt"
-        const val VERSION_CODE = 147101
+        const val VERSION_CODE = 148101
         const val MAJOR_VERSION = VERSION_CODE / 100000
         const val MINOR_VERSION = VERSION_CODE % 100000 / 10000
         const val PATCH_VERSION = VERSION_CODE % 10000 / 1000

@@ -21,6 +21,7 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.color.MaterialColors
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.ui.activities.PromptViewActivity
 
@@ -38,41 +39,41 @@ class PromptAdapterNew(private val data: ArrayList<HashMap<String, String>>?, pr
         @SuppressLint("SetTextI18n")
         fun bind(item: HashMap<String, String>, mContext: Fragment) {
             val bgColor = when (item["category"]) {
-                "development" -> ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_development, mContext.requireActivity().theme)
-                "music" -> ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_music, mContext.requireActivity().theme)
-                "art" -> ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_art, mContext.requireActivity().theme)
-                "culture" -> ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_culture, mContext.requireActivity().theme)
-                "business" -> ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_business, mContext.requireActivity().theme)
-                "gaming" -> ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_gaming, mContext.requireActivity().theme)
-                "education" -> ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_education, mContext.requireActivity().theme)
-                "history" -> ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_history, mContext.requireActivity().theme)
-                "health" -> ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_health, mContext.requireActivity().theme)
-                "food" ->ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_food, mContext.requireActivity().theme)
-                "tourism" -> ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_tourism, mContext.requireActivity().theme)
-                "productivity" -> ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_productivity, mContext.requireActivity().theme)
-                "tools" -> ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_tools, mContext.requireActivity().theme)
-                "entertainment" -> ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_entertainment, mContext.requireActivity().theme)
-                "sport" -> ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_sport, mContext.requireActivity().theme)
-                else -> ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_grey, mContext.requireActivity().theme)
+                "development" -> harmonizeColors(ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_development, mContext.requireActivity().theme), mContext)
+                "music" -> harmonizeColors(ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_music, mContext.requireActivity().theme), mContext)
+                "art" -> harmonizeColors(ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_art, mContext.requireActivity().theme), mContext)
+                "culture" -> harmonizeColors(ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_culture, mContext.requireActivity().theme), mContext)
+                "business" -> harmonizeColors(ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_business, mContext.requireActivity().theme), mContext)
+                "gaming" -> harmonizeColors(ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_gaming, mContext.requireActivity().theme), mContext)
+                "education" -> harmonizeColors(ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_education, mContext.requireActivity().theme), mContext)
+                "history" -> harmonizeColors(ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_history, mContext.requireActivity().theme), mContext)
+                "health" -> harmonizeColors(ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_health, mContext.requireActivity().theme), mContext)
+                "food" -> harmonizeColors(ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_food, mContext.requireActivity().theme), mContext)
+                "tourism" -> harmonizeColors(ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_tourism, mContext.requireActivity().theme), mContext)
+                "productivity" -> harmonizeColors(ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_productivity, mContext.requireActivity().theme), mContext)
+                "tools" -> harmonizeColors(ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_tools, mContext.requireActivity().theme), mContext)
+                "entertainment" -> harmonizeColors(ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_entertainment, mContext.requireActivity().theme), mContext)
+                "sport" -> harmonizeColors(ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_sport, mContext.requireActivity().theme), mContext)
+                else -> harmonizeColors(ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_grey, mContext.requireActivity().theme), mContext)
             }
 
             when (item["category"]) {
-                "development" -> applyColorToCard(bgColor, ContextCompat.getColor(mContext.requireActivity(), R.color.cat_development), mContext)
-                "music" -> applyColorToCard(bgColor, ContextCompat.getColor(mContext.requireActivity(), R.color.cat_music), mContext)
-                "art" -> applyColorToCard(bgColor, ContextCompat.getColor(mContext.requireActivity(), R.color.cat_art), mContext)
-                "culture" -> applyColorToCard(bgColor, ContextCompat.getColor(mContext.requireActivity(), R.color.cat_culture), mContext)
-                "business" -> applyColorToCard(bgColor, ContextCompat.getColor(mContext.requireActivity(), R.color.cat_business), mContext)
-                "gaming" -> applyColorToCard(bgColor, ContextCompat.getColor(mContext.requireActivity(), R.color.cat_gaming), mContext)
-                "education" -> applyColorToCard(bgColor, ContextCompat.getColor(mContext.requireActivity(), R.color.cat_education), mContext)
-                "history" -> applyColorToCard(bgColor, ContextCompat.getColor(mContext.requireActivity(), R.color.cat_history), mContext)
-                "health" -> applyColorToCard(bgColor, ContextCompat.getColor(mContext.requireActivity(), R.color.cat_health), mContext)
-                "food" -> applyColorToCard(bgColor, ContextCompat.getColor(mContext.requireActivity(), R.color.cat_food), mContext)
-                "tourism" -> applyColorToCard(bgColor, ContextCompat.getColor(mContext.requireActivity(), R.color.cat_tourism), mContext)
-                "productivity" -> applyColorToCard(bgColor, ContextCompat.getColor(mContext.requireActivity(), R.color.cat_productivity), mContext)
-                "tools" -> applyColorToCard(bgColor, ContextCompat.getColor(mContext.requireActivity(), R.color.cat_tools), mContext)
-                "entertainment" -> applyColorToCard(bgColor, ContextCompat.getColor(mContext.requireActivity(), R.color.cat_entertainment), mContext)
-                "sport" -> applyColorToCard(bgColor, ContextCompat.getColor(mContext.requireActivity(), R.color.cat_sport), mContext)
-                else -> applyColorToCard(bgColor, ContextCompat.getColor(mContext.requireActivity(), R.color.grey), mContext)
+                "development" -> applyColorToCard(bgColor, harmonizeColors(ContextCompat.getColor(mContext.requireActivity(), R.color.cat_development), mContext), mContext)
+                "music" -> applyColorToCard(bgColor, harmonizeColors(ContextCompat.getColor(mContext.requireActivity(), R.color.cat_music), mContext), mContext)
+                "art" -> applyColorToCard(bgColor, harmonizeColors(ContextCompat.getColor(mContext.requireActivity(), R.color.cat_art), mContext), mContext)
+                "culture" -> applyColorToCard(bgColor, harmonizeColors(ContextCompat.getColor(mContext.requireActivity(), R.color.cat_culture), mContext), mContext)
+                "business" -> applyColorToCard(bgColor, harmonizeColors(ContextCompat.getColor(mContext.requireActivity(), R.color.cat_business), mContext), mContext)
+                "gaming" -> applyColorToCard(bgColor, harmonizeColors(ContextCompat.getColor(mContext.requireActivity(), R.color.cat_gaming), mContext), mContext)
+                "education" -> applyColorToCard(bgColor, harmonizeColors(ContextCompat.getColor(mContext.requireActivity(), R.color.cat_education), mContext), mContext)
+                "history" -> applyColorToCard(bgColor, harmonizeColors(ContextCompat.getColor(mContext.requireActivity(), R.color.cat_history), mContext), mContext)
+                "health" -> applyColorToCard(bgColor, harmonizeColors(ContextCompat.getColor(mContext.requireActivity(), R.color.cat_health), mContext), mContext)
+                "food" -> applyColorToCard(bgColor, harmonizeColors(ContextCompat.getColor(mContext.requireActivity(), R.color.cat_food), mContext), mContext)
+                "tourism" -> applyColorToCard(bgColor, harmonizeColors(ContextCompat.getColor(mContext.requireActivity(), R.color.cat_tourism), mContext), mContext)
+                "productivity" -> applyColorToCard(bgColor, harmonizeColors(ContextCompat.getColor(mContext.requireActivity(), R.color.cat_productivity), mContext), mContext)
+                "tools" -> applyColorToCard(bgColor, harmonizeColors(ContextCompat.getColor(mContext.requireActivity(), R.color.cat_tools), mContext), mContext)
+                "entertainment" -> applyColorToCard(bgColor, harmonizeColors(ContextCompat.getColor(mContext.requireActivity(), R.color.cat_entertainment), mContext), mContext)
+                "sport" -> applyColorToCard(bgColor, harmonizeColors(ContextCompat.getColor(mContext.requireActivity(), R.color.cat_sport), mContext), mContext)
+                else -> applyColorToCard(bgColor, harmonizeColors(ContextCompat.getColor(mContext.requireActivity(), R.color.grey), mContext), mContext)
             }
 
             promptName.text = item["name"]
@@ -101,6 +102,10 @@ class PromptAdapterNew(private val data: ArrayList<HashMap<String, String>>?, pr
             animation.duration = 200
             animation.startOffset = 30
             view.startAnimation(animation)
+        }
+
+        private fun harmonizeColors(color: Int, mContext: Fragment) : Int {
+            return MaterialColors.harmonize(color, ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.accent_600, mContext.requireActivity().theme))
         }
 
         private fun applyColorToCard(tintColor: Int, color: Int, mContext: Fragment) {

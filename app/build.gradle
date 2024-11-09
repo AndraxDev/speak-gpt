@@ -17,8 +17,8 @@ android {
         applicationId "org.teslasoft.assistant"
         minSdk 28
         targetSdk 35
-        versionCode 420
-        versionName "4.20"
+        versionCode 421
+        versionName "4.21"
     }
 
     buildTypes {
@@ -55,13 +55,13 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.13.1'
-    implementation 'androidx.activity:activity-ktx:1.9.2'
+    implementation 'androidx.core:core-ktx:1.15.0'
+    implementation 'androidx.activity:activity-ktx:1.9.3'
     implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'com.google.android.material:material:1.13.0-alpha06'
+    implementation 'com.google.android.material:material:1.13.0-alpha07'
     implementation 'com.google.code.gson:gson:2.11.0'
     implementation 'com.aallam.openai:openai-client:3.8.2'
-    implementation 'io.ktor:ktor-client-android:2.3.12'
+    implementation 'io.ktor:ktor-client-android:2.3.12' // Do not update, incompatible with OpenAI API
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0'
     implementation 'com.github.bumptech.glide:glide:4.16.0'

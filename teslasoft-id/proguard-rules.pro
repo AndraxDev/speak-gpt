@@ -81,6 +81,7 @@
 -keep public class androidx.versionedparcelable.ParcelImpl
 -keep @interface androidx.annotation.Keep
 -keep class com.google.gson.reflect.TypeToken
+-keep class com.theokanning.openai.completion.chat.ChatMessage
 
 -dontwarn java.lang.invoke.StringConcatFactory
 

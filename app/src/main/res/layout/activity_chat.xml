@@ -20,7 +20,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/expandable_window_background"
+    android:background="@drawable/expandable_window_background_16"
     android:id="@+id/expandable_window_root"
     android:transitionName="chat_expand"
     android:layout_width="match_parent"

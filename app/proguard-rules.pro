@@ -55,7 +55,7 @@
 -keep class com.google.android.material.** { *; }
 -keep class com.google.android.material.bottomnavigation.** { *; }
 -keep class com.google.android.material.bottomnavigation.BottomNavigationView
--dontwarn com.theokanning.openai.completion.chat.ChatMessage
+-keep class com.theokanning.openai.completion.chat.ChatMessage
 
 -keepattributes InnerClasses
 

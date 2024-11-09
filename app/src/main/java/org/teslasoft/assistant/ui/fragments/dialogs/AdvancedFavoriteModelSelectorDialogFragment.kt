@@ -22,12 +22,12 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.ListView
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.loadingindicator.LoadingIndicator
 import com.google.android.material.textfield.TextInputEditText
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ApiEndpointPreferences
@@ -57,7 +57,7 @@ class AdvancedFavoriteModelSelectorDialogFragment : DialogFragment() {
     private var apiEndpointPreferences: ApiEndpointPreferences? = null
     private var apiEndpointObject: ApiEndpointObject? = null
     private var listener: OnModelSelectedListener? = null
-    private var progressBar: ProgressBar? = null
+    private var progressBar: LoadingIndicator? = null
     private var ttsSelectorTitle: TextView? = null
     private var fieldSearch: TextInputEditText? = null
     private var builder: AlertDialog.Builder? = null

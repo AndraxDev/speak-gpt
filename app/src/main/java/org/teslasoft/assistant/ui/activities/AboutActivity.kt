@@ -127,7 +127,7 @@ class AboutActivity : FragmentActivity() {
                     val intent = Intent(Intent.ACTION_MAIN)
                     intent.setComponent(ComponentName("com.teslasoft.libraries.support", "org.teslasoft.core.easter.JarvisPlatLogo"))
                     startActivity(intent)
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     /* TODO: Open easter egg */
                     Toast.makeText(this, "Easter egg found!", Toast.LENGTH_SHORT).show()
                 }
@@ -148,7 +148,7 @@ class AboutActivity : FragmentActivity() {
             val version = pInfo.versionName
 
             appVer?.text = "${getString(R.string.app_version)} $version"
-        } catch (e: PackageManager.NameNotFoundException) {
+        } catch (_: PackageManager.NameNotFoundException) {
             appVer?.text = "${getString(R.string.app_version)} unknown"
         }
 
