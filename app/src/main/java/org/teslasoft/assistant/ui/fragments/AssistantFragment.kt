@@ -86,6 +86,7 @@ import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatRole
 import com.aallam.openai.api.chat.ContentPart
 import com.aallam.openai.api.chat.ImagePart
+import com.aallam.openai.api.chat.TextContent
 import com.aallam.openai.api.chat.TextPart
 import com.aallam.openai.api.chat.ToolCall
 import com.aallam.openai.api.chat.ToolChoice
@@ -156,6 +157,8 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStreamReader
 import java.net.URL
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Base64
 import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
@@ -1508,8 +1511,8 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                         tools {
                             function(
                                 name = "generateImage",
-                                description = "Generate an image based on the entered prompt"
-                            ) {
+                               description = "Generates and displays an image based on the entered prompt"
+                             ) {
                                 put("type", "object")
                                 putJsonObject("properties") {
                                     putJsonObject("prompt") {
@@ -1524,7 +1527,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
                             function(
                                 name = "searchAtInternet",
-                                description = "Search the Internet",
+                                description = "Search the Internet and display the results for the user",
                             ) {
                                 put("type", "object")
                                 putJsonObject("properties") {
@@ -1537,6 +1540,15 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                                     add("prompt")
                                 }
                             }
+                            
+                            function(
+                                name = "getCurrentTime",
+                                description = "Get the current time",
+                            ) {
+                                put("type", "object")
+                                putJsonObject("properties") {
+                                }
+                            }
                         }
 
                         toolChoice = ToolChoice.Auto
@@ -1545,7 +1557,9 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                     val response1 = openAIAI?.chatCompletion(functionRequest)
 
                     val message = response1?.choices?.first()?.message
-
+                    if (message != null) {
+                        chatMessages.add(message)
+                    }
                     if (message?.toolCalls != null) {
                         val toolsCalls = message.toolCalls!!
 
@@ -1554,12 +1568,17 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                         } else {
                             for (toolCall in toolsCalls) {
                                 require(toolCall is ToolCall.Function) { "Tool call is not a function" }
-                                toolCall.execute()
+                                chatMessages.add(
+                                    ChatMessage(
+                                        role = ChatRole.Tool,
+                                        messageContent = toolCall.execute(),
+                                        toolCallId = toolCall.id        
+                                    )
+                                )
                             }
                         }
-                    } else {
-                        regularGPTResponse(shouldPronounce)
                     }
+                    regularGPTResponse(shouldPronounce)
                 } else if (functionCallingEnabled) {
                     putMessage("Function calling requires OpenAI endpoint which is missing on your device. Please go to the settings and add OpenAI endpoint or disable Function Calling. OpenAI base url (host) is: https://api.openai.com/v1/ (don't forget to add slash at the end otherwise you will receive an error).", true)
                     saveSettings()
@@ -1641,15 +1660,19 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         }
     }
 
-    private val availableFunctions = mapOf("generateImage" to ::generateImage, "searchAtInternet" to ::searchAtInternet)
+    private val availableFunctions = mapOf(
+        "generateImage" to ::generateImage,
+        "searchAtInternet" to ::searchAtInternet,
+        "getCurrentTime" to ::getCurrentTime,
+    )
 
-    private fun ToolCall.Function.execute() {
+    private fun ToolCall.Function.execute(): TextContent {
         val functionToCall = availableFunctions[function.name] ?: error("Function ${function.name} not found")
         val functionArgs = function.argumentsAsJson()
-        functionToCall(functionArgs)
+        return functionToCall(functionArgs)
     }
 
-    private fun generateImage(args: JsonObject) {
+    private fun generateImage(args: JsonObject): TextContent {
         val prompt = args.getValue("prompt").jsonPrimitive.content
 
         (mContext as Activity?)?.runOnUiThread {
@@ -1661,9 +1684,10 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         CoroutineScope(Dispatchers.Main).launch {
             generateImages(prompt)
         }
+        return TextContent("Image generated and displayed successfully")
     }
 
-    private fun searchAtInternet(args: JsonObject) {
+    private fun searchAtInternet(args: JsonObject): TextContent{
         val prompt = args.getValue("prompt").jsonPrimitive.content
 
         (mContext as Activity?)?.runOnUiThread {
@@ -1675,6 +1699,16 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         CoroutineScope(Dispatchers.Main).launch {
             searchInternet(prompt)
         }
+        return TextContent("Search results were displayed to the user successfully.")
+    }
+
+    private fun getCurrentTime(args: JsonObject): TextContent {
+        putMessage("Checking the time...", true)
+
+        val currentDateTime = ZonedDateTime.now()
+        val formatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+        val response = currentDateTime.format(formatter).toString()
+        return TextContent(response)
     }
 
     private suspend fun regularGPTResponse(shouldPronounce: Boolean) {
