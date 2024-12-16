@@ -96,31 +96,6 @@
         </activity>
 
         <activity
-            android:name=".ui.activities.PromptViewActivity"
-            android:exported="true"
-            android:theme="@style/Theme.Transparent"
-            android:launchMode="singleTask">
-
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-                <data android:host="assistant.teslasoft.org"/>
-                <data android:pathPrefix="/prompts"/>
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".ui.activities.ReportAbuseActivity"
-            android:exported="false"
-            android:label="@string/title_report_abuse"
-            android:launchMode="singleTask">
-        </activity>
-
-        <activity
             android:name=".ui.activities.TipsActivity"
             android:exported="false"
             android:label="@string/menu_tips"
@@ -204,28 +179,6 @@
                 <data android:scheme="https" />
                 <data android:host="assistant.teslasoft.org"/>
                 <data android:pathPrefix="/assistant"/>
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".pwa.PWAActivity"
-            android:exported="true"
-            android:icon="@mipmap/ic_launcher_round_lite"
-            android:theme="@style/Theme.PWA"
-            android:taskAffinity=".pwa.PWAActivity"
-            android:label="@string/app_name_lite"
-            android:process=":lite"
-            android:enabled="false"
-            android:launchMode="singleTop">
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-
-            <intent-filter android:priority="500">
-                <category android:name="android.intent.category.LAUNCHER"/>
-                <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
         </activity>
 

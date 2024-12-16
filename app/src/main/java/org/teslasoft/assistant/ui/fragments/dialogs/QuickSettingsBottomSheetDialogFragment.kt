@@ -38,7 +38,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
-import org.teslasoft.assistant.Config
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ApiEndpointPreferences
 import org.teslasoft.assistant.preferences.FavoriteModelsPreferences
@@ -84,7 +83,6 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
     private var textUsage: TextView? = null
     private var textCost: TextView? = null
-    private var btnCostInfo: MaterialButton? = null
     private var textModel: TextView? = null
     private var textHost: TextView? = null
     private var textLogitBiasesConfig: TextView? = null
@@ -307,7 +305,6 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
         textUsage = view.findViewById(R.id.text_usage)
         textCost = view.findViewById(R.id.text_cost)
-        btnCostInfo = view.findViewById(R.id.btn_cost_info)
 
         textHost?.text = if (apiEndpoint?.label != "") apiEndpoint?.label ?: getString(R.string.label_tap_to_set) else getString(R.string.label_tap_to_set)
         textLogitBiasesConfig?.text = if (preferences?.getLogitBiasesConfigId() != ""){
@@ -316,10 +313,6 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
             getString(R.string.label_tap_to_set)
         }
 
-        btnCostInfo?.setOnClickListener {
-            val webViewDialog = WebViewDialog.newInstance("https://${Config.API_SERVER_NAME}/costInfo", "Cost Info")
-            webViewDialog.show(parentFragmentManager, "WebViewDialog@CostInfo")
-        }
 
         usageIn = requireArguments().getInt("usageIn")
         usageOut = requireArguments().getInt("usageOut")

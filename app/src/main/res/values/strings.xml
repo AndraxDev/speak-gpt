@@ -11,7 +11,6 @@
 
     <string name="activation_prompt_set_message">Tap to set activation prompt</string>
     <string name="menu_chat">Chat</string>
-    <string name="menu_prompts">Prompts</string>
     <string name="menu_tips">Tips</string>
     <string name="about_developer">Developer: AndraxDev</string>
     <string name="about_version">"Version: "</string>

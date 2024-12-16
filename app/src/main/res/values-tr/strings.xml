@@ -2,7 +2,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="activation_prompt_set_message">Etkinleştirme istemini ayarlamak için dokunun</string>
     <string name="menu_chat">Sohbet</string>
-    <string name="menu_prompts">İstemler</string>
     <string name="menu_tips">İpuçları</string>
     <string name="about_developer">Geliştirici: AndraxDev</string>
     <string name="about_version">"Sürüm: "</string>

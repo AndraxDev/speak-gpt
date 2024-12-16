@@ -18,9 +18,6 @@ package org.teslasoft.assistant
 
 class Config {
     companion object {
-        const val DOMAIN = "teslasoft.org"
-        const val API_SERVER_NAME = "assistant.teslasoft.org"
-        const val AUTH_SERVER_NAME = "id.teslasoft.org"
-        const val API_ENDPOINT = "https://$API_SERVER_NAME/api/v1"
+        const val DEFAULT_URL = "https://openai.com"
     }
 }

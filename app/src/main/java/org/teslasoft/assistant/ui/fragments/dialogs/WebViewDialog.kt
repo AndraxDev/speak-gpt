@@ -78,7 +78,7 @@ class WebViewDialog : DialogFragment() {
         webView?.settings?.builtInZoomControls = true
         webView?.settings?.displayZoomControls = false
 
-        webView?.loadUrl(arguments?.getString("url") ?: "https://${Config.API_SERVER_NAME}/")
+        webView?.loadUrl(arguments?.getString("url") ?: Config. DEFAULT_URL)
 
         webView?.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {

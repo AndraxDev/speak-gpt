@@ -39,7 +39,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.elevation.SurfaceColors
-import org.teslasoft.assistant.Config
+// import org.teslasoft.assistant.Config
 import org.teslasoft.assistant.R
 
 class AISetAdapter(private val mContext: Context, private val dataArray: ArrayList<Map<String, String>>) : BaseAdapter() {
@@ -107,11 +107,11 @@ class AISetAdapter(private val mContext: Context, private val dataArray: ArrayLi
         setOwner?.text = mContext.getString(R.string.label_provided_by) + " " + dataArray[position]["owner"]
         setModel?.text = "AI Model: ${dataArray[position]["model"]}"
 
-        val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(dpToPx(28f).toInt()))
-        Glide.with(mContext)
-            .load("https://" + Config.API_SERVER_NAME + "/api/v1/exp/" + dataArray[position]["icon"])
-            .apply(requestOptions)
-            .into(setIcon!!)
+        // val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(dpToPx(28f).toInt()))
+        // Glide.with(mContext)
+        //     .load("https://" + Config.API_SERVER_NAME + "/api/v1/exp/" + dataArray[position]["icon"])
+        //     .apply(requestOptions)
+        //     .into(setIcon!!)
 
         btnCreateChat?.setOnClickListener {
             listener?.onCreateChatClick(dataArray[position]["model"] ?: "", dataArray[position]["apiEndpoint"] ?: "", dataArray[position]["apiEndpointName"] ?: "", dataArray[position]["suggestedChatName"] ?: "", dataArray[position]["avatarType"] ?: "", dataArray[position]["avatarId"] ?: "", dataArray[position]["assistantName"] ?: "")

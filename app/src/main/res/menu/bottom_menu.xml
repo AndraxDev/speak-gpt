@@ -28,10 +28,4 @@
         android:enabled="true"
         android:icon="@drawable/ic_terminal"
         android:title="Playground"/>
-
-    <item
-        android:id="@+id/menu_prompts"
-        android:enabled="true"
-        android:icon="@drawable/ic_apps"
-        android:title="@string/menu_prompts"/>
 </menu>

@@ -41,7 +41,6 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.elevation.SurfaceColors
-import org.teslasoft.assistant.Config
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.util.WindowInsetsUtil
@@ -51,14 +50,7 @@ import java.util.EnumSet
 class AboutActivity : FragmentActivity() {
 
     private var appIcon: ImageView? = null
-    private var btnProjects: MaterialButton? = null
-    private var btnTerms: MaterialButton? = null
-    private var btnPrivacy: MaterialButton? = null
-    private var btnFeedback: MaterialButton? = null
     private var appVer: TextView? = null
-    private var tidVer: TextView? = null
-    private var btnDonate: LinearLayout? = null
-    private var btnGithub: LinearLayout? = null
 
     private var actions: ConstraintLayout? = null
     private var system: ConstraintLayout? = null
@@ -84,14 +76,7 @@ class AboutActivity : FragmentActivity() {
         setContentView(R.layout.activity_about)
 
         appIcon = findViewById(R.id.app_icon)
-        btnProjects = findViewById(R.id.btn_projects)
-        btnTerms = findViewById(R.id.btn_terms)
-        btnPrivacy = findViewById(R.id.btn_privacy)
-        btnFeedback = findViewById(R.id.btn_feedback)
         appVer = findViewById(R.id.app_ver)
-        tidVer = findViewById(R.id.tid_ver)
-        btnDonate = findViewById(R.id.btn_donate)
-        btnGithub = findViewById(R.id.btn_github)
         btnBack = findViewById(R.id.btn_back)
 
         actions = findViewById(R.id.common_actions)
@@ -136,8 +121,6 @@ class AboutActivity : FragmentActivity() {
             activateEasterEggCounter++
         }
 
-        tidVer?.text = "${getString(R.string.teslasoft_id_version)} ${SystemInfo.VERSION} (${SystemInfo.VERSION_CODE})"
-
         try {
             val pInfo: PackageInfo = if (android.os.Build.VERSION.SDK_INT >= 33) {
                 packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
@@ -150,48 +133,6 @@ class AboutActivity : FragmentActivity() {
             appVer?.text = "${getString(R.string.app_version)} $version"
         } catch (_: PackageManager.NameNotFoundException) {
             appVer?.text = "${getString(R.string.app_version)} unknown"
-        }
-
-        btnProjects?.setOnClickListener {
-            val i = Intent()
-            i.data = Uri.parse("https://andrax.dev/")
-            i.action = Intent.ACTION_VIEW
-            startActivity(i)
-        }
-
-        btnTerms?.setOnClickListener {
-            val i = Intent()
-            i.data = Uri.parse("https://${Config.API_SERVER_NAME}/terms")
-            i.action = Intent.ACTION_VIEW
-            startActivity(i)
-        }
-
-        btnPrivacy?.setOnClickListener {
-            val i = Intent()
-            i.data = Uri.parse("https://${Config.API_SERVER_NAME}/privacy")
-            i.action = Intent.ACTION_VIEW
-            startActivity(i)
-        }
-
-        btnFeedback?.setOnClickListener {
-            val i = Intent()
-            i.data = Uri.parse("mailto:dostapenko82@gmail.com")
-            i.action = Intent.ACTION_VIEW
-            startActivity(i)
-        }
-
-        btnDonate?.setOnClickListener {
-            val i = Intent()
-            i.data = Uri.parse("https://buymeacoffee.com/andrax_dev")
-            i.action = Intent.ACTION_VIEW
-            startActivity(i)
-        }
-
-        btnGithub?.setOnClickListener {
-            val i = Intent()
-            i.data = Uri.parse("https://github.com/AndraxDev/speak-gpt")
-            i.action = Intent.ACTION_VIEW
-            startActivity(i)
         }
 
         btnBack?.setOnClickListener {

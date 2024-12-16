@@ -2,7 +2,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="activation_prompt_set_message">Toca para establecer el mensaje de activación</string>
     <string name="menu_chat">Chat</string>
-    <string name="menu_prompts">Sugerencias</string>
     <string name="menu_tips">Consejos</string>
     <string name="about_developer">Desarrollador: AndraxDev</string>
     <string name="about_version">"Versión: "</string>

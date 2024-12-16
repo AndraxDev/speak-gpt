@@ -2,7 +2,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="activation_prompt_set_message">Натисніть, щоб встановити запит на активацію</string>
     <string name="menu_chat">Чат</string>
-    <string name="menu_prompts">Запити</string>
     <string name="menu_tips">Поради</string>
     <string name="about_developer">Розробник: AndraxDev</string>
     <string name="about_version">"Версія: "</string>

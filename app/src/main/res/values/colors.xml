@@ -190,9 +190,6 @@
 
     <color name="border">#33000000</color>
 
-    <color name="pwa_background">#121417</color>
-    <color name="pwa_accent">#bbd3ff</color>
-
     <color name="light_1">#05000000</color>
     <color name="light_2">#17000000</color>
 </resources>

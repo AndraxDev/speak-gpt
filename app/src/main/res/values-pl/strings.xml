@@ -2,7 +2,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="activation_prompt_set_message">Dotknij, aby ustawić tekst aktywacyjny</string>
     <string name="menu_chat">Czat</string>
-    <string name="menu_prompts">Komunikaty</string>
     <string name="menu_tips">Porady</string>
     <string name="about_developer">Deweloper: AndraxDev</string>
     <string name="about_version">"Wersja: "</string>

@@ -62,11 +62,9 @@ import org.teslasoft.assistant.preferences.DeviceInfoProvider
 import org.teslasoft.assistant.preferences.GlobalPreferences
 import org.teslasoft.assistant.preferences.Logger
 import org.teslasoft.assistant.preferences.Preferences
-import org.teslasoft.assistant.pwa.PWAActivity
 import org.teslasoft.assistant.theme.ThemeManager
 import org.teslasoft.assistant.ui.fragments.tabs.ChatsListFragment
 import org.teslasoft.assistant.ui.fragments.tabs.PlaygroundFragment
-import org.teslasoft.assistant.ui.fragments.tabs.PromptsFragment
 import org.teslasoft.assistant.ui.fragments.tabs.ToolsFragment
 import org.teslasoft.assistant.ui.onboarding.WelcomeActivity
 import org.teslasoft.assistant.util.WindowInsetsUtil
@@ -82,14 +80,11 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     private var debuggerWindow: ConstraintLayout? = null
     private var btnCloseDebugger: ImageButton? = null
     private var btnInitiateCrash: MaterialButton? = null
-    private var btnLaunchPWA: MaterialButton? = null
-    private var btnTogglePWA: MaterialButton? = null
     private var threadLoader: LinearLayout? = null
     private var devIds: TextView? = null
     private var frameChats: Fragment? = null
     private var framePlayground: Fragment? = null
     private var frameTools: Fragment? = null
-    private var framePrompts: Fragment? = null
     private var root: ConstraintLayout? = null
     private var preferences: Preferences? = null
     private var btnDebugActivity: MaterialButton? = null
@@ -136,8 +131,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         btnCloseDebugger = findViewById(R.id.btn_close_debugger)
         btnInitiateCrash = findViewById(R.id.btn_initiate_crash)
         btnDebugActivity = findViewById(R.id.btn_debug_activity)
-        btnLaunchPWA = findViewById(R.id.btn_launch_pwa)
-        btnTogglePWA = findViewById(R.id.btn_toggle_pwa)
         devIds = findViewById(R.id.dev_ids)
         threadLoader = findViewById(R.id.thread_loader)
 
@@ -184,31 +177,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
             })
         }
 
-        if (isPWAActivityEnabled(this)) {
-            btnTogglePWA?.text = "Disable PWA"
-        } else {
-            btnTogglePWA?.text = "Enable PWA"
-        }
-
-        btnTogglePWA?.setOnClickListener {
-            val pm = packageManager
-            if (isPWAActivityEnabled(this)) {
-                btnTogglePWA?.text = "Enable PWA"
-                pm.setComponentEnabledSetting(
-                    ComponentName(this, "org.teslasoft.assistant.pwa.PWAActivity"),
-                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP
-                )
-                Logger.log(this, "event", "ComponentManager", "info", "Component disabled: org.teslasoft.assistant.pwa.PWAActivity")
-            } else {
-                btnTogglePWA?.text = "Disable PWA"
-                pm.setComponentEnabledSetting(
-                    ComponentName(this, "org.teslasoft.assistant.pwa.PWAActivity"),
-                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP
-                )
-                Logger.log(this, "event", "ComponentManager", "info", "Component enabled: org.teslasoft.assistant.pwa.PWAActivity")
-            }
-        }
-
         Thread {
             DeviceInfoProvider.assignInstallationId(this)
 
@@ -225,10 +193,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                         }
                         R.id.menu_tools -> {
                             menuTools()
-                            return@OnItemSelectedListener true
-                        }
-                        R.id.menu_prompts -> {
-                            menuPrompts()
                             return@OnItemSelectedListener true
                         }
                     }
@@ -255,17 +219,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
 
                     btnDebugActivity?.setOnClickListener {
                         startActivity(Intent(this, DebugMaterial::class.java))
-                    }
-
-                    btnLaunchPWA?.setOnClickListener {
-                        if (isPWAActivityEnabled(this)) {
-                            startActivity(Intent(this, PWAActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-                        } else {
-                            MaterialAlertDialogBuilder(this)
-                                .setMessage("This component is disabled by the component manager.")
-                                .setPositiveButton(R.string.btn_close) { _, _ -> }
-                                .show()
-                        }
                     }
 
                     val androidVersion = Build.VERSION.RELEASE
@@ -350,22 +303,10 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         frameChats = ChatsListFragment()
         framePlayground = PlaygroundFragment()
         frameTools = ToolsFragment()
-        framePrompts = PromptsFragment()
 
         loadFragment(frameChats, 1, 1)
         reloadAmoled()
         splashScreen?.setKeepOnScreenCondition { false }
-    }
-
-    private fun isPWAActivityEnabled(context: Context): Boolean {
-        try {
-            val manager = context.packageManager
-            val componentName = ComponentName(context, "org.teslasoft.assistant.pwa.PWAActivity")
-            manager.getActivityInfo(componentName, PackageManager.GET_META_DATA)
-            return true
-        } catch (e: Exception) { /* unused */ }
-
-        return false
     }
 
     private fun restartActivity() {
@@ -425,7 +366,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         }
 
         (frameChats as ChatsListFragment).reloadAmoled(this)
-        (framePrompts as PromptsFragment).reloadAmoled(this)
     }
 
     @Suppress("DEPRECATION")
@@ -492,12 +432,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         loadFragment(frameTools, st, selectedTab)
     }
 
-    private fun menuPrompts() {
-        val st = selectedTab
-        selectedTab = 4
-        loadFragment(framePrompts, st, selectedTab)
-    }
-
     private fun onRestoredState(savedInstanceState: Bundle?) {
         selectedTab = savedInstanceState!!.getInt("tab")
 
@@ -513,10 +447,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
             3 -> {
                 navigationBar?.selectedItemId = R.id.menu_tools
                 loadFragment(frameTools, 1, 1)
-            }
-            4 -> {
-                navigationBar?.selectedItemId = R.id.menu_prompts
-                loadFragment(framePrompts, 1, 1)
             }
         }
     }

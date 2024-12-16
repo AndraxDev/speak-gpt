@@ -1,81 +1,6 @@
 # SpeakGPT
 
-<img src="https://assistant.teslasoft.org/SPEAKGPT_BANNER_ANDROID.png" style="width: 100%;"/>
-
-SpeakGPT is an advanced and highly intuitive open-source AI assistant that utilizes the powerful large language models (LLM) to provide you with unparalleled performance and functionality. Officially it supports GPT models, LLAMA, MIXTRAL, GEMMA, Gemini (regular and pro) Vision, DALL-E and other models.
-
-> [!NOTE]
-> 
-> This project is a part of my Bachelor Thesis. Attribution is required to use this work. Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
->
-> Cite as: Dmytro Ostapenko (2024), "Review Program Automation Using Copilot Services" Bachelor Thesis, Technical University of Košice, 2024.
-
-## Download
-
-<a href = "https://play.google.com/store/apps/details?id=org.teslasoft.assistant"><img src="play.webp" alt="Get it on Play" width="200"/></a>
-
-## SpeakGPT Web
-
-Launch SpeakGPT Web: [https://assistant.teslasoft.org/](https://assistant.teslasoft.org/)
-
-GitHub Repo: [Click here](https://github.com/AndraxDev/speak-gpt-web)
-
-## Screenshots
-
-<div align = "center">
-	<img src="https://gpt.teslasoft.org/s/1.png" width="200"/>
-	<img src="https://gpt.teslasoft.org/s/2.png" width="200"/>
-	<img src="https://gpt.teslasoft.org/s/3.png" width="200"/>
-</div>
-<div align = "center">
-	<img src="https://gpt.teslasoft.org/s/4.png" width="200"/>
-	<img src="https://gpt.teslasoft.org/s/5.png" width="200"/>
-	<img src="https://gpt.teslasoft.org/s/6.png" width="200"/>
-</div>
-
-## API providers supported
-
-- OpenAI (Full support)
-- GROQ (Partial support)
-- Azure (Partial support)
-- OpenRouter (Text generation only, tested with Gemini, Claude, Perplexity, Llama, Gemma, Mistral, OpenAI models)
-- Other (must be tested by community, don't be shy and provide your feedback)
-
-> [!NOTE]
-> 
-> To change your API provider, go to settings and select the API endpoint. You can also add your custom API provider.
-
-## Basic features
-
-- [x] Chat (saved locally but can be imported/exported if needed)
-- [x] Images generation (DALL-e)
-- [x] GPT 4 Vision (use your images and photos with ChatGPT)
-- [x] Activation prompt
-- [x] System message
-- [x] Voice input (Whisper and Google)
-- [x] Assistant
-- [x] SpeakGPT in context menu
-- [x] SpeakGPT in Share sheet
-- [x] Function calling features
-- [x] Prompts store
-- [x] Different chat layout
-- [x] Adaptive design
-- [x] A lot of different models
-- [x] No captcha
-- [x] Pay as you go system
-- [x] Tips for newbies
-- [x] Custom fine-tuned models are supported
-- [x] AMOLED dark mode
-- [x] Custom API provider support
-- [x] Customize models params like temperature, topP, frequencyPenalty, presencePenalty and logit_bias
-- [x] Playground
-- [x] GPT 4o
-
-## ❌ Planned to add (Share your ideas in Issues)
-
-- [ ] Device routines (like set alarm or open app)
-- [ ] Sync chat history
-- [ ] Add models exchange portal like prompts store
+SpeakGPT is an advanced and highly intuitive open-source AI assistant that utilizes the powerful large language models (LLM) to provide you with unparalleled performance and functionality. 
 
 ## API key safety:
 
@@ -100,19 +25,6 @@ To secure your API key perform the following steps:
 > Contact: dostapenko82@gmail.com, +421951829517\
 > Legal address: Južná trieda 4B, 04001 Košice, Slovakia 04001\
 > Legal entity ID: 55545386
-
-## You are appreciated to:
-
-- Report any bugs
-- Support me :)
-- Request new features. Don't forget to mark issue with a tag
-
-
-## Buy me a coffee:
-
-<a href="https://buymeacoffee.com/andrax_dev"><img src="https://andrax.dev/bmc_qr.png" width="200"/></a>
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/S6S6X3NCE)
 
 ## License
 
