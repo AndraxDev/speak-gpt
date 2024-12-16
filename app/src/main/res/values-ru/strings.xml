@@ -171,7 +171,6 @@
     <string name="chat_settings_title">Настройки чата</string>
     <string name="title_control_center">Центр управления</string>
     <string name="tip_12">Долгое нажатие на плитку настроек для отображения описания функции. Работает только в новом интерфейсе настроек. Вы можете получить доступ к новому интерфейсу настроек (Центр управления) нажав на иконку \'лаборатории\' в обычных настройках.</string>
-    <string name="menu_explore">Исследовать</string>
     <string name="chat_role_user">Пользователь</string>
     <string name="control_center_general">Основные</string>
     <string name="control_center_image_generation">Генерация изображений</string>

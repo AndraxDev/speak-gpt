@@ -171,7 +171,6 @@
     <string name="chat_settings_title">Impostazioni chat</string>
     <string name="title_control_center">Centro di controllo</string>
     <string name="tip_12">Premi a lungo sulla tessera delle impostazioni per mostrare la descrizione della funzione. Funziona solo con la nuova UI delle impostazioni. Puoi accedere alla nuova UI delle impostazioni (Centro di controllo) premendo sull\'icona "lab" nelle impostazioni regolari.</string>
-    <string name="menu_explore">Esplora</string>
     <string name="chat_role_user">Utente</string>
     <string name="control_center_general">Generale</string>
     <string name="control_center_image_generation">Generazione immagini</string>

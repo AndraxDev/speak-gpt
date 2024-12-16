@@ -170,7 +170,6 @@
     <string name="chat_settings_title">Chat-Einstellungen</string>
     <string name="title_control_center">Kontrollzentrum</string>
     <string name="tip_12">Halten Sie lange auf das Einstellungskachel, um die Funktionsbeschreibung anzuzeigen. Funktioniert nur mit der neuen Einstellungsoberfläche. Sie können auf die neue Einstellungsoberfläche (Kontrollzentrum) zugreifen, indem Sie im regulären Einstellungsmenü auf das \'Lab\'-Symbol drücken.</string>
-    <string name="menu_explore">Erkunden</string>
     <string name="chat_role_user">Benutzer</string>
     <string name="control_center_general">Allgemein</string>
     <string name="control_center_image_generation">Bildgenerierung</string>

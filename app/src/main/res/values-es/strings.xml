@@ -172,7 +172,6 @@
     <string name="chat_settings_title">Ajustes del chat</string>
     <string name="title_control_center">Centro de control</string>
     <string name="tip_12">Mantén presionado en el mosaico de ajustes para mostrar la descripción de la función. Funciona solo en la nueva interfaz de ajustes. Puedes acceder a la nueva interfaz de ajustes (Centro de control) presionando el icono de \'laboratorio\' en los ajustes regulares.</string>
-    <string name="menu_explore">Explorar</string>
     <string name="chat_role_user">Usuario</string>
     <string name="control_center_general">General</string>
     <string name="control_center_image_generation">Generación de imágenes</string>

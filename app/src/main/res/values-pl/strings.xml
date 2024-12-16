@@ -170,7 +170,6 @@
     <string name="chat_settings_title">Ustawienia czatu</string>
     <string name="title_control_center">Centrum sterowania</string>
     <string name="tip_12">Długie naciśnięcie na kafelku ustawień, aby pokazać opis funkcji. Działa tylko w nowym interfejsie ustawień. Możesz uzyskać dostęp do nowego interfejsu ustawień (Centrum sterowania) naciskając na ikonę \'lab\' w regularnych ustawieniach.</string>
-    <string name="menu_explore">Odkrywaj</string>
     <string name="chat_role_user">Użytkownik</string>
     <string name="control_center_general">Ogólne</string>
     <string name="control_center_image_generation">Generowanie obrazu</string>

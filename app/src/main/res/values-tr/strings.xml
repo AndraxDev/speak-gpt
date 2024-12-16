@@ -170,7 +170,6 @@
     <string name="chat_settings_title">Sohbet Ayarları</string>
     <string name="title_control_center">Kontrol Merkezi</string>
     <string name="tip_12">Ayar döşemesine uzun basarak fonksiyon açıklamasını gösterin. Bu özellik yalnızca yeni ayarlar UI\'da çalışır. Yeni ayarlar UI\'na (Kontrol merkezi) düzenli ayarlar içindeki \'lab\' simgesine basarak erişebilirsiniz.</string>
-    <string name="menu_explore">Keşfet</string>
     <string name="chat_role_user">Kullanıcı</string>
     <string name="control_center_general">Genel</string>
     <string name="control_center_image_generation">Resim Üretimi</string>

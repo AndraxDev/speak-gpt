@@ -170,7 +170,6 @@
     <string name="chat_settings_title">Chat settings</string>
     <string name="title_control_center">Control center</string>
     <string name="tip_12">Long press on setting tile to show function description. Works only on new settings UI. You can access new settings UI (Control center) by pressing on the \'lab\' icon in the regular settings.</string>
-    <string name="menu_explore">Explore</string>
     <string name="chat_role_user">User</string>
     <string name="control_center_general">General</string>
     <string name="control_center_image_generation">Image generation</string>

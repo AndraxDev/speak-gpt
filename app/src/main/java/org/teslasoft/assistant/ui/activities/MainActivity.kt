@@ -65,7 +65,6 @@ import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.pwa.PWAActivity
 import org.teslasoft.assistant.theme.ThemeManager
 import org.teslasoft.assistant.ui.fragments.tabs.ChatsListFragment
-import org.teslasoft.assistant.ui.fragments.tabs.ExploreFragment
 import org.teslasoft.assistant.ui.fragments.tabs.PlaygroundFragment
 import org.teslasoft.assistant.ui.fragments.tabs.PromptsFragment
 import org.teslasoft.assistant.ui.fragments.tabs.ToolsFragment
@@ -91,7 +90,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     private var framePlayground: Fragment? = null
     private var frameTools: Fragment? = null
     private var framePrompts: Fragment? = null
-    private var frameExplore: Fragment? = null
     private var root: ConstraintLayout? = null
     private var preferences: Preferences? = null
     private var btnDebugActivity: MaterialButton? = null
@@ -233,10 +231,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                             menuPrompts()
                             return@OnItemSelectedListener true
                         }
-                        R.id.menu_tips -> {
-                            menuExplore()
-                            return@OnItemSelectedListener true
-                        }
                     }
 
                     return@OnItemSelectedListener false
@@ -357,7 +351,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         framePlayground = PlaygroundFragment()
         frameTools = ToolsFragment()
         framePrompts = PromptsFragment()
-        frameExplore = ExploreFragment()
 
         loadFragment(frameChats, 1, 1)
         reloadAmoled()
@@ -505,12 +498,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         loadFragment(framePrompts, st, selectedTab)
     }
 
-    private fun menuExplore() {
-        val st = selectedTab
-        selectedTab = 5
-        loadFragment(frameExplore, st, selectedTab)
-    }
-
     private fun onRestoredState(savedInstanceState: Bundle?) {
         selectedTab = savedInstanceState!!.getInt("tab")
 
@@ -530,10 +517,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
             4 -> {
                 navigationBar?.selectedItemId = R.id.menu_prompts
                 loadFragment(framePrompts, 1, 1)
-            }
-            5 -> {
-                navigationBar?.selectedItemId = R.id.menu_tips
-                loadFragment(frameExplore, 1, 1)
             }
         }
     }

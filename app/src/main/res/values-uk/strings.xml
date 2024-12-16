@@ -170,7 +170,6 @@
     <string name="chat_settings_title">Налаштування чату</string>
     <string name="title_control_center">Контрольний центр</string>
     <string name="tip_12">Утримуйте натиснутою плитку налаштування, щоб показати опис функції. Функціонує тільки в новому ІЇ налаштувань. Доступ до нового ІЇ налаштувань (контрольний центр) ви можете отримати, натиснувши на іконку \'лабораторії\' у звичайних налаштуваннях.</string>
-    <string name="menu_explore">Досліджувати</string>
     <string name="chat_role_user">Користувач</string>
     <string name="control_center_general">Загальні</string>
     <string name="control_center_image_generation">Створення зображення</string>

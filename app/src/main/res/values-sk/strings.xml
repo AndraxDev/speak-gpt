@@ -170,7 +170,6 @@
     <string name="chat_settings_title">Nastavenia chatu</string>
     <string name="title_control_center">Ovládacie centrum</string>
     <string name="tip_12">Dlhým stlačením dlaždice s nastavením zobrazíte popis funkcie. Funguje iba v novom užívateľskom rozhraní nastavení. Do nového užívateľského rozhrania nastavení (ovládacie centrum) sa dostanete stlačením ikony \'lab\' v klasických nastaveniach.</string>
-    <string name="menu_explore">Preskúmať</string>
     <string name="chat_role_user">Používateľ</string>
     <string name="control_center_general">Všeobecné</string>
     <string name="control_center_image_generation">Generovanie obrázkov</string>
