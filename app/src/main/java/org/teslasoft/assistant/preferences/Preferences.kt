@@ -204,14 +204,10 @@ class Preferences private constructor(private var preferences: SharedPreferences
     /**
      * Retrieves the model name from the shared preferences.
      *
-     * @return The model name or "gpt-3.5-turbo" if not found.
+     * @return The model name or "gpt-4o" if not found.
      */
     fun getModel() : String {
-        var model = getString("model", "gpt-3.5-turbo")
-
-        // Migrate from legacy dated model
-        if (model == "gpt-4-1106-preview") model = "gpt-4-turbo-preview"
-        return model
+        return getString("model", "gpt-4o")
     }
 
     /**
@@ -220,12 +216,7 @@ class Preferences private constructor(private var preferences: SharedPreferences
      * @param model The model name to be stored.
      */
     fun setModel(model: String) {
-        // Migrate from legacy dated model
-        if (model == "gpt-4-1106-preview") {
-            putString("model", "gpt-4-turbo-preview")
-        } else {
-            putString("model", model)
-        }
+        putString("model", model)
     }
 
     /**

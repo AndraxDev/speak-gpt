@@ -207,45 +207,9 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         var outPrice = 0.0
 
         when {
-            (model.contains("gpt-4") && (model.contains("turbo") || model.contains("vision"))) || model == "gpt-4-0125-preview" || model == "gpt-4-1106-preview" || model == "gpt-4-vision-preview" -> {
-                inPrice = 0.00001
-                outPrice = 0.00003
-            }
-            model.contains("gpt-4-32k") -> {
-                inPrice = 0.00006
-                outPrice = 0.00012
-            }
             model.contains("gpt-4o") -> {
                 inPrice = 0.000005
                 outPrice = 0.000015
-            }
-            model.contains("gpt-4") -> {
-                inPrice = 0.00003
-                outPrice = 0.00006
-            }
-            (model.contains("gpt-3.5") && model.contains("instruct")) || model == "gpt-3.5-turbo-0613" || model == "gpt-3.5-turbo-0301" -> {
-                inPrice = 0.0000015
-                outPrice = 0.000002
-            }
-            model == "gpt-3.5-turbo-1106" -> {
-                inPrice = 0.000001
-                outPrice = 0.000002
-            }
-            model == "gpt-3.5-turbo-16k-0613" -> {
-                inPrice = 0.000003
-                outPrice = 0.000004
-            }
-            model.contains("gpt-3.5") -> {
-                inPrice = 0.0000005
-                outPrice = 0.0000015
-            }
-            model.contains("davinci") -> {
-                inPrice = 0.000002
-                outPrice = 0.000002
-            }
-            model.contains("babbage") -> {
-                inPrice = 0.0000004
-                outPrice = 0.0000004
             }
         }
 

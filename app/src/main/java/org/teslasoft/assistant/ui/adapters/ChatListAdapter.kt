@@ -257,16 +257,6 @@ class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>,
         private fun initModelName(model: String) {
             textModel.text = "CUSTOM"
             textModel.text = if (model.lowercase().contains("o1")) "O1" else textModel.text
-            textModel.text = if (model.lowercase().contains("gemini")) "GEMINI" else textModel.text
-            textModel.text = if (model.lowercase().contains("gemma")) "GEMMA" else textModel.text
-            textModel.text = if (model.lowercase().contains("mistral") || model.lowercase().contains("mixtral")) "MISTRAL" else textModel.text
-            textModel.text = if (model.lowercase().contains("perplexity")) "PERPLEXITY" else textModel.text
-            textModel.text = if (model.lowercase().contains("claude")) "CLAUDE" else textModel.text
-            textModel.text = if (model.lowercase().contains("llama")) "META" else textModel.text
-            textModel.text = if (model.lowercase().contains("gpt-4") && model.lowercase().contains("turbo")) "GPT 4 Turbo" else textModel.text
-            textModel.text = if (model.lowercase().contains("gpt-4") && !model.lowercase().contains("turbo")) "GPT 4" else textModel.text
-            textModel.text = if (model.lowercase().contains("gpt-3.5") && model.lowercase().contains("turbo") && model.lowercase().contains("0125")) "GPT 3.5 (0125)" else textModel.text
-            textModel.text = if (model.lowercase().contains("gpt-3.5") && model.lowercase().contains("turbo") && !model.lowercase().contains("0125")) "GPT 3.5 Turbo" else textModel.text
             textModel.text = if (model.lowercase().contains("gpt-4o")) "GPT 4o" else textModel.text
         }
 
@@ -274,30 +264,6 @@ class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>,
             when (textModel.text) {
                 "O1" -> {
                     updateCard(root, icon, pinMarker, R.color.tint_epic, R.color.gpt_icon_epic, chatMessage, false)
-                }
-
-                "GPT 4", "GEMINI" -> {
-                    updateCard(root, icon, pinMarker, R.color.tint_red, R.color.gpt_icon_red, chatMessage, false)
-                }
-
-                "GPT 3.5 Turbo", "GEMMA" -> {
-                    updateCard(root, icon, pinMarker, R.color.tint_yellow, R.color.gpt_icon_yellow, chatMessage, false)
-                }
-
-                "GPT 3.5 (0125)", "PERPLEXITY" -> {
-                    updateCard(root, icon, pinMarker, R.color.tint_purple, R.color.gpt_icon_purple, chatMessage, false)
-                }
-
-                "GPT 4 Turbo", "CLAUDE" -> {
-                    updateCard(root, icon, pinMarker, R.color.tint_green, R.color.gpt_icon_green, chatMessage, false)
-                }
-
-                "MISTRAL", "META" -> {
-                    updateCard(root, icon, pinMarker, R.color.tint_orange, R.color.gpt_icon_orange, chatMessage, false)
-                }
-
-                "CUSTOM" -> {
-                    updateCard(root, icon, pinMarker, R.color.tint_blue, R.color.gpt_icon_blue, chatMessage, false)
                 }
 
                 "GPT 4o" -> {

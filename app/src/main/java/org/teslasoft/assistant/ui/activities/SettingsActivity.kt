@@ -451,7 +451,7 @@ class SettingsActivity : FragmentActivity() {
         apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(this)
         apiEndpoint = apiEndpointPreferences?.getApiEndpoint(this, preferences?.getApiEndpointId()!!)
 
-        model = preferences?.getModel() ?: "gpt-3.5-turbo"
+        model = preferences?.getModel() ?: "gpt-4o"
         activationPrompt = preferences?.getPrompt() ?: ""
         systemMessage = preferences?.getSystemMessage() ?: ""
         language = preferences?.getLanguage() ?: "en"
