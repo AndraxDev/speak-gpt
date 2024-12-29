@@ -397,7 +397,7 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
                     .usePlugin(TablePlugin.create(context))
                     .usePlugin(TaskListPlugin.create(context))
                     .usePlugin(StrikethroughPlugin.create())
-                     .usePlugin(MarkwonInlineParserPlugin.create())
+                    .usePlugin(MarkwonInlineParserPlugin.create())
                     .usePlugin(JLatexMathPlugin.create(message.textSize) { builder ->
                          builder.inlinesEnabled(true)
                     })

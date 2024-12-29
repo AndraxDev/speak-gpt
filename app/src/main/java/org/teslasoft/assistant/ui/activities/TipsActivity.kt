@@ -16,6 +16,7 @@
 
 package org.teslasoft.assistant.ui.activities
 
+import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -53,11 +54,13 @@ class TipsActivity : FragmentActivity() {
         setContentView(R.layout.activity_tips)
 
         ui = findViewById(R.id.ui)
+        btnBack = findViewById(R.id.btn_back)
 
         val preferences = Preferences.getPreferences(this, "")
 
         if (isDarkThemeEnabled() && preferences.getAmoledPitchBlack()) {
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
+            btnBack?.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.amoled_accent_50, theme)
 
             if (Build.VERSION.SDK_INT < 30) {
                 window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
@@ -66,14 +69,13 @@ class TipsActivity : FragmentActivity() {
         } else {
             val colorDrawable = ColorDrawable(SurfaceColors.SURFACE_0.getColor(this))
             window.setBackgroundDrawable(colorDrawable)
+            btnBack?.backgroundTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_1.getColor(this))
 
             if (Build.VERSION.SDK_INT < 30) {
                 window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
                 window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
             }
         }
-
-        btnBack = findViewById(R.id.btn_back)
 
         btnBack?.setOnClickListener {
             finish()

@@ -23,6 +23,7 @@ import android.os.StrictMode
 import androidx.activity.enableEdgeToEdge
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.elevation.SurfaceColors
+import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.fragments.AssistantFragment
 

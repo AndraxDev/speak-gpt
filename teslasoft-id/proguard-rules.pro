@@ -21,7 +21,7 @@
 #-renamesourcefileattribute SourceFile
 -renamesourcefileattribute SourceFile
 -keepattributes SourceFile,LineNumberTable
--optimizationpasses 5
+# -optimizationpasses 5
 -dontusemixedcaseclassnames
 -verbose
 
@@ -64,24 +64,20 @@
 -keep public class * implements com.bumptech.glide.module.GlideModule
 
 -keep !interface * implements androidx.lifecycle.LifecycleObserver
--keep,allowshrinking class * extends androidx.startup.Initializer
 -keep public class androidx.versionedparcelable.ParcelImpl
 -keep @interface androidx.annotation.Keep
 -keep class * extends com.google.gson.reflect.TypeToken
 -keep,allowoptimization @com.google.gson.annotations.JsonAdapter class *
 
--keep public class com.google.vending.licensing.ILicensingService
--keep public class com.android.vending.licensing.ILicensingService
--keep public class com.google.android.vending.licensing.ILicensingService
--keep class android.support.annotation.Keep
 -keep class com.google.android.material.bottomnavigation.BottomNavigationView
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep !interface * implements androidx.lifecycle.LifecycleObserver
--keep,allowshrinking class * extends androidx.startup.Initializer
 -keep public class androidx.versionedparcelable.ParcelImpl
 -keep @interface androidx.annotation.Keep
 -keep class com.google.gson.reflect.TypeToken
--keep class com.theokanning.openai.completion.chat.ChatMessage
+-keep class org.scilab.forge.jlatexmath.** { *; }
+-keep class org.commonmark.node.** { *; }
+-keep class io.noties.markwon.ext.latex.** { *; }
 
 -dontwarn java.lang.invoke.StringConcatFactory
 

@@ -33,7 +33,6 @@ import android.os.Handler
 import android.os.Looper
 import android.view.MenuItem
 import android.view.View
-import android.view.WindowInsets
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageButton
@@ -407,7 +406,9 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
             val drawable = GradientDrawable()
             drawable.shape = GradientDrawable.RECTANGLE
             drawable.setColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
-            drawable.alpha = 242
+            drawable.alpha = 160
+
+            debuggerWindow?.background = drawable
 
             btnDebugger?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, theme)
             btnCloseDebugger?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, theme)

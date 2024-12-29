@@ -52,6 +52,7 @@ import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ApiEndpointPreferences
 import org.teslasoft.assistant.preferences.ChatPreferences
 import org.teslasoft.assistant.preferences.DeviceInfoProvider
+import org.teslasoft.assistant.preferences.GlobalPreferences
 import org.teslasoft.assistant.preferences.Logger
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
@@ -422,7 +423,12 @@ class SettingsActivity : FragmentActivity() {
         }
 
         val expandableWindow = findViewById<LinearLayout>(R.id.expandable_window)
-        expandableWindow.backgroundTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_1.getColor(this))
+
+        if (isDarkThemeEnabled() && GlobalPreferences.getPreferences(this).getAmoledPitchBlack()) {
+            expandableWindow?.backgroundTintList = ColorStateList.valueOf(getColor(R.color.amoled_window_background))
+        } else {
+            expandableWindow?.backgroundTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_1.getColor(this))
+        }
 
         btnBack = findViewById(R.id.btn_back)
         root = findViewById(R.id.root)

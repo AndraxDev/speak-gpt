@@ -18,6 +18,8 @@ package org.teslasoft.assistant.ui.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
+import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -28,7 +30,6 @@ import android.view.animation.AnimationUtils
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -41,6 +42,7 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.Config
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.preferences.GlobalPreferences
 
 class AISetAdapter(private val mContext: Context, private val dataArray: ArrayList<Map<String, String>>) : BaseAdapter() {
 
@@ -94,13 +96,18 @@ class AISetAdapter(private val mContext: Context, private val dataArray: ArrayLi
         btnCreateChat = mView?.findViewById(R.id.btn_create_chat)
         btnGetApiKey = mView?.findViewById(R.id.btn_get_api_key)
 
-        val drawable = ResourcesCompat.getDrawable(mContext.resources, R.drawable.avd_static, null)
-        drawable?.alpha = 230
-        setIcon?.background = getAccentDrawable(drawable!!)
+        if (isDarkThemeEnabled() && GlobalPreferences.getPreferences(mContext).getAmoledPitchBlack()) {
+            window?.backgroundTintList = ColorStateList.valueOf(mContext.getColor(R.color.amoled_accent_50))
+            btnUseGlobally?.backgroundTintList = ColorStateList.valueOf(mContext.getColor(R.color.amoled_accent_200))
+            btnGetApiKey?.backgroundTintList = ColorStateList.valueOf(mContext.getColor(R.color.amoled_accent_200))
 
-//        val drawableBg = ResourcesCompat.getDrawable(mContext.resources, R.drawable.btn_accent_tonal_selector_v8, null)
-//        drawableBg?.alpha = 100
-//        window?.background = getAccentDrawable(drawableBg!!)
+            val drawable = ResourcesCompat.getDrawable(mContext.resources, R.drawable.avd_static, null)
+            setIcon?.background = getAccentAmoledDrawable(drawable!!)
+        } else {
+            val drawable = ResourcesCompat.getDrawable(mContext.resources, R.drawable.avd_static, null)
+            drawable?.alpha = 230
+            setIcon?.background = getAccentDrawable(drawable!!)
+        }
 
         setName?.text = dataArray[position]["name"]
         setDescription?.text = dataArray[position]["desc"]
@@ -133,6 +140,16 @@ class AISetAdapter(private val mContext: Context, private val dataArray: ArrayLi
         return mView!!
     }
 
+    private fun isDarkThemeEnabled(): Boolean {
+        return when (mContext.resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> true
+            Configuration.UI_MODE_NIGHT_NO -> false
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> false
+            else -> false
+        }
+    }
+
     interface OnInteractionListener {
         fun onUseGloballyClick(model: String, endpointUrl: String, endpointName: String, avatarType: String, avatarId: String, assistantName: String)
         fun onCreateChatClick(model: String, endpointUrl: String, endpointName: String, suggestedChatName: String, avatarType: String, avatarId: String, assistantName: String)
@@ -149,6 +166,11 @@ class AISetAdapter(private val mContext: Context, private val dataArray: ArrayLi
 
     private fun getAccentDrawable(drawable: Drawable) : Drawable {
         DrawableCompat.setTint(DrawableCompat.wrap(drawable), getSurfaceColor())
+        return drawable
+    }
+
+    private fun getAccentAmoledDrawable(drawable: Drawable) : Drawable {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), mContext.getColor(R.color.amoled_accent_200))
         return drawable
     }
 }

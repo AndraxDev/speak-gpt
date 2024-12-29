@@ -20,7 +20,7 @@
 # hide the original source file name.
 -renamesourcefileattribute SourceFile
 -keepattributes SourceFile,LineNumberTable
--optimizationpasses 5
+# -optimizationpasses 5
 -dontusemixedcaseclassnames
 -verbose
 
@@ -55,7 +55,9 @@
 -keep class com.google.android.material.** { *; }
 -keep class com.google.android.material.bottomnavigation.** { *; }
 -keep class com.google.android.material.bottomnavigation.BottomNavigationView
--keep class com.theokanning.openai.completion.chat.ChatMessage
+-keep class org.scilab.forge.jlatexmath.** { *; }
+-keep class org.commonmark.node.** { *; }
+-keep class io.noties.markwon.ext.latex.** { *; }
 
 -keepattributes InnerClasses
 

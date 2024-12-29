@@ -57,6 +57,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -75,6 +76,8 @@ import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.util.Pair
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -158,6 +161,7 @@ import java.io.InputStreamReader
 import java.net.URL
 import java.util.Base64
 import java.util.Locale
+import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.seconds
 
 class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListener {
@@ -2143,18 +2147,25 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         }
     }
 
+
+
     @SuppressLint("ClickableViewAccessibility", "NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        dialog!!.setOnShowListener { dialogInterface: DialogInterface ->
-            val bottomSheetDialog = dialogInterface as BottomSheetDialog
-            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
-            if (bottomSheet != null) {
-                val behavior = BottomSheetBehavior.from(bottomSheet)
-                behavior.state = BottomSheetBehavior.STATE_EXPANDED
-            }
-        }
-
         super.onViewCreated(view, savedInstanceState)
+//        dialog!!.setOnShowListener { dialogInterface: DialogInterface ->
+//            val bottomSheetDialog = dialogInterface as BottomSheetDialog
+//            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+//            if (bottomSheet != null) {
+//                val behavior = BottomSheetBehavior.from(bottomSheet)
+//                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+//            }
+//        }
+
+        val bottomSheet: FrameLayout? = dialog?.findViewById(com.google.android.material.R.id.design_bottom_sheet)
+        bottomSheet?.let {
+            val bottomSheetBehavior = BottomSheetBehavior.from(it)
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
 
         preferences = Preferences.getPreferences(mContext ?: return, "")
 
@@ -2439,8 +2450,64 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         }
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return BottomSheetDialog(mContext ?: return onCreateDialog(savedInstanceState), R.style.AssistantWindowTheme)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
+        object : BottomSheetDialog(requireContext(), theme) {
+            override fun onAttachedToWindow() {
+                super.onAttachedToWindow()
+
+                window?.let {
+                    WindowCompat.setDecorFitsSystemWindows(it, false)
+                }
+
+                findViewById<View>(com.google.android.material.R.id.container)?.apply {
+                    fitsSystemWindows = false
+                    ViewCompat.setOnApplyWindowInsetsListener(this) { view, insets ->
+                        insets.apply {
+                            view.updatePadding(
+                                0,
+                                0,
+                                0,
+                                0
+                            )
+
+                            val vx = findViewById<View>(R.id.window)
+
+                            if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.R) {
+                                setMargins(
+                                    vx,
+                                    0,
+                                    systemGestureInsets.top,
+                                    0,
+                                    systemGestureInsets.bottom
+                                )
+                            } else {
+                                setMargins(
+                                    vx,
+                                    0,
+                                    (activity?.window?.decorView?.rootWindowInsets?.getInsets(WindowInsets.Type.statusBars())?.top ?: 0),
+                                    0,
+                                    (activity?.window?.decorView?.rootWindowInsets?.getInsets(WindowInsets.Type.navigationBars())?.bottom ?: 0)
+                                )
+                            }
+                        }
+                    }
+                }
+
+                findViewById<View>(com.google.android.material.R.id.coordinator)?.fitsSystemWindows = false
+            }
+        }
+
+    private fun dpToPx(activity: Activity, dp: Int): Int {
+        val density = activity.resources.displayMetrics.density
+        return (dp.toFloat() * density).roundToInt()
+    }
+
+    fun setMargins(v: View, l: Int, t: Int, r: Int, b: Int) {
+        val params = v.layoutParams
+        if (params is ViewGroup.MarginLayoutParams) {
+            params.setMargins(l, t, r, b)
+            v.requestLayout()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

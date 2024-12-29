@@ -873,7 +873,11 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         selectedCount = findViewById(R.id.text_selected_count)
         expandableWindowRoot = findViewById(R.id.expandable_window_root)
 
-        expandableWindowRoot?.backgroundTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_1.getColor(this))
+        if (isDarkThemeEnabled() && GlobalPreferences.getPreferences(this).getAmoledPitchBlack()) {
+            expandableWindowRoot?.backgroundTintList = ColorStateList.valueOf(getColor(R.color.amoled_window_background))
+        } else {
+            expandableWindowRoot?.backgroundTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_1.getColor(this))
+        }
 
         bulkContainer?.visibility = View.GONE
 
@@ -1323,7 +1327,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                 addCategory(Intent.CATEGORY_OPENABLE)
                 type = "application/json"
                 putExtra(Intent.EXTRA_TITLE, "$chatId.json")
-                putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.parse("/storage/emulated/0/SpeakGPT/$chatId.json"))
+                putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.parse("/mnt/sdcard/SpeakGPT/$chatId.json"))
             }
             fileSaveIntentLauncher.launch(intent)
         }
@@ -1335,7 +1339,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
     private val fileSaveIntentLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         run {
-            if (result.resultCode == Activity.RESULT_OK) {
+            if (result.resultCode == RESULT_OK) {
                 result.data?.data?.also { uri ->
                     writeToFile(uri)
                 }
