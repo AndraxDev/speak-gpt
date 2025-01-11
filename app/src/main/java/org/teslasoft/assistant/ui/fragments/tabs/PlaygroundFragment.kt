@@ -272,16 +272,28 @@ class PlaygroundFragment : Fragment() {
                 )
             )
 
-            val chatCompletionRequest = ChatCompletionRequest(
-                model = ModelId(model),
-                temperature = if (preferences?.getTemperature()?.toDouble() == 0.7) null else preferences?.getTemperature()?.toDouble(),
-                topP = if (preferences?.getTopP()?.toDouble() == 1.0) null else preferences?.getTopP()?.toDouble(),
-                frequencyPenalty = if (preferences?.getFrequencyPenalty()?.toDouble() == 0.0) null else preferences?.getFrequencyPenalty()?.toDouble(),
-                presencePenalty = if (preferences?.getPresencePenalty()?.toDouble() == 0.0) null else preferences?.getPresencePenalty()?.toDouble(),
-                seed = if (preferences?.getSeed() != "") preferences?.getSeed()?.toInt() else null,
-                logitBias = if (preferences?.getLogitBiasesConfigId() == null || preferences?.getLogitBiasesConfigId() == "null" || preferences?.getLogitBiasesConfigId() == "") null else logitBiasPreferences?.getLogitBiasesMap(),
-                messages = msgs
-            )
+            val chatCompletionRequest = if (preferences?.getLogitBiasesConfigId() == null || preferences?.getLogitBiasesConfigId() == "null" || preferences?.getLogitBiasesConfigId() == "") {
+                ChatCompletionRequest(
+                    model = ModelId(model),
+                    temperature = if (model == "o1" || model == "o1-mini") 1.0 else if (preferences?.getTemperature()?.toDouble() == 0.7) null else preferences?.getTemperature()?.toDouble(),
+                    topP = if (preferences?.getTopP()?.toDouble() == 1.0) null else preferences?.getTopP()?.toDouble(),
+                    frequencyPenalty = if (preferences?.getFrequencyPenalty()?.toDouble() == 0.0) null else preferences?.getFrequencyPenalty()?.toDouble(),
+                    presencePenalty = if (preferences?.getPresencePenalty()?.toDouble() == 0.0) null else preferences?.getPresencePenalty()?.toDouble(),
+                    seed = if (preferences?.getSeed() != "") preferences?.getSeed()?.toInt() else null,
+                    logitBias = logitBiasPreferences?.getLogitBiasesMap(),
+                    messages = msgs
+                )
+            } else {
+                ChatCompletionRequest(
+                    model = ModelId(model),
+                    temperature = if (model == "o1" || model == "o1-mini") 1.0 else if (preferences?.getTemperature()?.toDouble() == 0.7) null else preferences?.getTemperature()?.toDouble(),
+                    topP = if (preferences?.getTopP()?.toDouble() == 1.0) null else preferences?.getTopP()?.toDouble(),
+                    frequencyPenalty = if (preferences?.getFrequencyPenalty()?.toDouble() == 0.0) null else preferences?.getFrequencyPenalty()?.toDouble(),
+                    presencePenalty = if (preferences?.getPresencePenalty()?.toDouble() == 0.0) null else preferences?.getPresencePenalty()?.toDouble(),
+                    seed = if (preferences?.getSeed() != "") preferences?.getSeed()?.toInt() else null,
+                    messages = msgs
+                )
+            }
 
             val completions: Flow<ChatCompletionChunk> =
                 ai!!.chatCompletions(chatCompletionRequest)

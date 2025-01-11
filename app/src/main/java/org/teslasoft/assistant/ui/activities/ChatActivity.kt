@@ -499,7 +499,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
     private val permissionResultLauncherCamera = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         run {
-            if (result.resultCode == Activity.RESULT_OK) {
+            if (result.resultCode == RESULT_OK) {
                 val intent = Intent().setAction(MediaStore.ACTION_IMAGE_CAPTURE)
                 intent.putExtra("android.intent.extra.quickCapture", true)
                 val externalFilesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
@@ -672,7 +672,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
     // Init permissions screen
     private val permissionResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         run {
-            if (result.resultCode == Activity.RESULT_OK) {
+            if (result.resultCode == RESULT_OK) {
                 startRecognition()
             }
         }
@@ -680,7 +680,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
     private val permissionResultLauncherV2 = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         run {
-            if (result.resultCode == Activity.RESULT_OK) {
+            if (result.resultCode == RESULT_OK) {
                 startWhisper()
             }
         }
@@ -746,8 +746,6 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         threadLoader?.visibility = View.VISIBLE
 
         Thread {
-            // languageIdentifier = LanguageIdentification.getClient()
-
             val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
             StrictMode.setThreadPolicy(policy)
 
@@ -1934,25 +1932,46 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                 val reqList: ArrayList<ContentPart> = ArrayList<ContentPart>()
                 reqList.add(TextPart(request))
                 reqList.add(ImagePart(baseImageString!!))
-                val chatCompletionRequest = ChatCompletionRequest(
-                    model = ModelId("gpt-4o"),
-                    temperature = if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
-                    topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble(),
-                    frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
-                    presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble(),
-                    logitBias = if (preferences?.getLogitBiasesConfigId() == null || preferences?.getLogitBiasesConfigId() == "null" || preferences?.getLogitBiasesConfigId() == "") null else logitBiasPreferences?.getLogitBiasesMap(),
-                    seed = if (preferences!!.getSeed() != "") preferences!!.getSeed().toInt() else null,
-                    messages = listOf(
-                        ChatMessage(
-                            role = ChatRole.System,
-                            content = "You are a helpful assistant!"
-                        ),
-                        ChatMessage(
-                            role = ChatRole.User,
-                            content = reqList
+                val chatCompletionRequest = if (preferences?.getLogitBiasesConfigId() == null || preferences?.getLogitBiasesConfigId() == "null" || preferences?.getLogitBiasesConfigId() == "") {
+                    ChatCompletionRequest(
+                        model = ModelId("gpt-4o"),
+                        temperature = if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
+                        topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble(),
+                        frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
+                        presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble(),
+                        logitBias = logitBiasPreferences?.getLogitBiasesMap(),
+                        seed = if (preferences!!.getSeed() != "") preferences!!.getSeed().toInt() else null,
+                        messages = listOf(
+                            ChatMessage(
+                                role = ChatRole.System,
+                                content = "You are a helpful assistant!"
+                            ),
+                            ChatMessage(
+                                role = ChatRole.User,
+                                content = reqList
+                            )
                         )
                     )
-                )
+                } else {
+                    ChatCompletionRequest(
+                        model = ModelId("gpt-4o"),
+                        temperature = if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
+                        topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble(),
+                        frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
+                        presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble(),
+                        seed = if (preferences!!.getSeed() != "") preferences!!.getSeed().toInt() else null,
+                        messages = listOf(
+                            ChatMessage(
+                                role = ChatRole.System,
+                                content = "You are a helpful assistant!"
+                            ),
+                            ChatMessage(
+                                role = ChatRole.User,
+                                content = reqList
+                            )
+                        )
+                    )
+                }
 
                 val completions: Flow<ChatCompletionChunk> = ai!!.chatCompletions(chatCompletionRequest)
 
@@ -1998,16 +2017,28 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                 messageInput?.requestFocus()
             } else if (model.contains(":ft") || model.contains("ft:")) {
                 putMessage("", true)
-                val completionRequest = CompletionRequest(
-                    model = ModelId(model),
-                    temperature = if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
-                    topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble(),
-                    frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
-                    presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble(),
-                    prompt = request,
-                    logitBias = if (preferences?.getLogitBiasesConfigId() == null || preferences?.getLogitBiasesConfigId() == "null" || preferences?.getLogitBiasesConfigId() == "") null else logitBiasPreferences?.getLogitBiasesMap(),
-                    echo = false
-                )
+                val completionRequest = if (preferences?.getLogitBiasesConfigId() == null || preferences?.getLogitBiasesConfigId() == "null" || preferences?.getLogitBiasesConfigId() == "") {
+                    CompletionRequest(
+                        model = ModelId(model),
+                        temperature = if (model == "o1" || model == "o1-mini") 1.0 else if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
+                        topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble(),
+                        frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
+                        presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble(),
+                        prompt = request,
+                        logitBias = logitBiasPreferences?.getLogitBiasesMap(),
+                        echo = false
+                    )
+                } else {
+                    CompletionRequest(
+                        model = ModelId(model),
+                        temperature = if (model == "o1" || model == "o1-mini") 1.0 else if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
+                        topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble(),
+                        frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
+                        presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble(),
+                        prompt = request,
+                        echo = false
+                    )
+                }
 
                 val completions: Flow<TextCompletion> = ai!!.completions(completionRequest)
 
@@ -2260,16 +2291,28 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
         msgs.addAll(chatMessages)
 
-        val chatCompletionRequest = ChatCompletionRequest(
-            model = ModelId(model),
-            temperature = if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
-            topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble(),
-            frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
-            presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble(),
-            seed = if (preferences!!.getSeed() != "") preferences!!.getSeed().toInt() else null,
-            logitBias = if (preferences?.getLogitBiasesConfigId() == null || preferences?.getLogitBiasesConfigId() == "null" || preferences?.getLogitBiasesConfigId() == "") null else logitBiasPreferences?.getLogitBiasesMap(),
-            messages = msgs
-        )
+        val chatCompletionRequest = if (preferences?.getLogitBiasesConfigId() == null || preferences?.getLogitBiasesConfigId() == "null" || preferences?.getLogitBiasesConfigId() == "") {
+            ChatCompletionRequest(
+                model = ModelId(model),
+                temperature = if (model == "o1" || model == "o1-mini") 1.0 else if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
+                topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble(),
+                frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
+                presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble(),
+                seed = if (preferences!!.getSeed() != "") preferences!!.getSeed().toInt() else null,
+                logitBias = logitBiasPreferences?.getLogitBiasesMap(),
+                messages = msgs
+            )
+        } else {
+            ChatCompletionRequest(
+                model = ModelId(model),
+                temperature = if (model == "o1" || model == "o1-mini") 1.0 else if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
+                topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble(),
+                frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
+                presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble(),
+                seed = if (preferences!!.getSeed() != "") preferences!!.getSeed().toInt() else null,
+                messages = msgs
+            )
+        }
 
         val completions: Flow<ChatCompletionChunk> =
             ai!!.chatCompletions(chatCompletionRequest)
@@ -2586,7 +2629,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                     initSettings()
                 }
             }
-        } catch (e: CancellationException) {
+        } catch (_: CancellationException) {
             runOnUiThread {
                 restoreUIState()
             }
