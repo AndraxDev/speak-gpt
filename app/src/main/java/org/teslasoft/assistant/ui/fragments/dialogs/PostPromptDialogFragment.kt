@@ -185,6 +185,8 @@ class PostPromptDialogFragment : BottomSheetDialogFragment() {
             Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
         } else {
             listener!!.onFormFilled(fieldName?.text.toString(), fieldTitle?.text.toString(), fieldDesc?.text.toString(), fieldPrompt?.text.toString(), type, category)
+            Toast.makeText(context, "Prompt posted", Toast.LENGTH_SHORT).show()
+            dismiss()
         }
     }
 
