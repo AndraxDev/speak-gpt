@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /**************************************************************************
-* Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+* Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -175,6 +175,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
+                    android:contentDescription="@string/view_source_code"
                     android:background="@drawable/btn_accent_tonal_selector_v5"
                     android:backgroundTint="@color/colorSurface"
                     android:gravity="center"
@@ -194,6 +195,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
+                    android:contentDescription="@string/buy_me_a_coffee"
                     android:background="@drawable/btn_accent_tonal_selector_v5"
                     android:backgroundTint="@color/colorSurface"
                     android:gravity="center"
@@ -294,6 +296,7 @@
                 android:background="@drawable/btn_accent_50"
                 android:contentDescription="@string/app_name"
                 android:padding="12dp"
+                android:backgroundTint="@color/accent_250"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

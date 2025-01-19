@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /**************************************************************************
-* Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+* Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -76,11 +76,13 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_next"
                 style="@style/Widget.Material3.Button"
-                android:layout_width="200dp"
-                android:layout_height="64dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/btn_accent_selector_v2"
+                android:paddingHorizontal="48dp"
+                android:paddingVertical="16dp"
                 android:text="@string/btn_next"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

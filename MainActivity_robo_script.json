@@ -1,0 +1,462 @@
+"roboscript": {
+  "executionMode": {
+    "strict": false
+  },
+  "postscript": {
+    "terminate": false
+  }
+}
+[
+  {
+    "crawlStage": "crawl",
+    "contextDescriptor": {
+      "condition": "app_under_test_shown"
+    },
+    "actions": [
+      {
+        "eventType": "VIEW_CLICKED",
+        "timestamp": 1737283974367,
+        "replacementText": "Accept",
+        "actionCode": -1,
+        "delayTime": 0,
+        "canScrollTo": true,
+        "elementDescriptors": [
+          {
+            "className": "com.google.android.material.button.MaterialButton",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 1,
+            "resourceId": "org.teslasoft.assistant:id/btn_accept",
+            "contentDescription": "",
+            "text": "Accept"
+          },
+          {
+            "className": "android.widget.LinearLayout",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 20,
+            "resourceId": "org.teslasoft.assistant:id/linearLayout15",
+            "contentDescription": "",
+            "text": ""
+          },
+          {
+            "className": "androidx.constraintlayout.widget.ConstraintLayout",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 0,
+            "resourceId": "",
+            "contentDescription": "",
+            "text": ""
+          }
+        ]
+      },
+      {
+        "eventType": "VIEW_CLICKED",
+        "timestamp": 1737283979433,
+        "replacementText": "Get started",
+        "actionCode": -1,
+        "delayTime": 0,
+        "canScrollTo": true,
+        "elementDescriptors": [
+          {
+            "className": "com.google.android.material.button.MaterialButton",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 3,
+            "resourceId": "org.teslasoft.assistant:id/btn_next",
+            "contentDescription": "",
+            "text": "Get started"
+          },
+          {
+            "className": "androidx.constraintlayout.widget.ConstraintLayout",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 0,
+            "resourceId": "",
+            "contentDescription": "",
+            "text": ""
+          },
+          {
+            "className": "android.widget.ScrollView",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 0,
+            "resourceId": "",
+            "contentDescription": "",
+            "text": ""
+          }
+        ]
+      },
+      {
+        "eventType": "VIEW_CLICKED",
+        "timestamp": 1737283983139,
+        "replacementText": "Next",
+        "actionCode": -1,
+        "delayTime": 0,
+        "canScrollTo": true,
+        "elementDescriptors": [
+          {
+            "className": "com.google.android.material.button.MaterialButton",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 3,
+            "resourceId": "org.teslasoft.assistant:id/btn_next",
+            "contentDescription": "",
+            "text": "Next"
+          },
+          {
+            "className": "androidx.constraintlayout.widget.ConstraintLayout",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 0,
+            "resourceId": "",
+            "contentDescription": "",
+            "text": ""
+          },
+          {
+            "className": "android.widget.ScrollView",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 0,
+            "resourceId": "",
+            "contentDescription": "",
+            "text": ""
+          }
+        ]
+      },
+      {
+        "eventType": "VIEW_TEXT_CHANGED",
+        "timestamp": 1737283988116,
+        "replacementText": "dykdjgtjc",
+        "actionCode": -1,
+        "delayTime": 0,
+        "canScrollTo": true,
+        "elementDescriptors": [
+          {
+            "className": "com.google.android.material.textfield.TextInputEditText",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 0,
+            "resourceId": "org.teslasoft.assistant:id/key_input",
+            "contentDescription": "",
+            "text": ""
+          },
+          {
+            "className": "android.widget.FrameLayout",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 0,
+            "resourceId": "",
+            "contentDescription": "",
+            "text": ""
+          },
+          {
+            "className": "com.google.android.material.textfield.TextInputLayout",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 5,
+            "resourceId": "org.teslasoft.assistant:id/textInputLayout",
+            "contentDescription": "",
+            "text": ""
+          }
+        ]
+      },
+      {
+        "eventType": "VIEW_CLICKED",
+        "timestamp": 1737284029111,
+        "replacementText": "Let\u0027s begin",
+        "actionCode": -1,
+        "delayTime": 0,
+        "canScrollTo": true,
+        "elementDescriptors": [
+          {
+            "className": "com.google.android.material.button.MaterialButton",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 3,
+            "resourceId": "org.teslasoft.assistant:id/btn_next",
+            "contentDescription": "",
+            "text": "Let\u0027s begin"
+          },
+          {
+            "className": "androidx.constraintlayout.widget.ConstraintLayout",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 0,
+            "resourceId": "",
+            "contentDescription": "",
+            "text": ""
+          },
+          {
+            "className": "android.widget.ScrollView",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 0,
+            "resourceId": "",
+            "contentDescription": "",
+            "text": ""
+          }
+        ]
+      },
+      {
+        "eventType": "VIEW_CLICKED",
+        "timestamp": 1737284033672,
+        "replacementText": "",
+        "actionCode": -1,
+        "delayTime": 0,
+        "canScrollTo": false,
+        "elementDescriptors": [
+          {
+            "className": "android.widget.ImageButton",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 4,
+            "resourceId": "org.teslasoft.assistant:id/btn_settings_",
+            "contentDescription": "Settings",
+            "text": ""
+          },
+          {
+            "className": "androidx.constraintlayout.widget.ConstraintLayout",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 0,
+            "resourceId": "",
+            "contentDescription": "",
+            "text": ""
+          },
+          {
+            "className": "androidx.constraintlayout.widget.ConstraintLayout",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 3,
+            "resourceId": "org.teslasoft.assistant:id/fragment",
+            "contentDescription": "",
+            "text": ""
+          }
+        ]
+      },
+      {
+        "eventType": "VIEW_CLICKED",
+        "timestamp": 1737284041624,
+        "replacementText": "",
+        "actionCode": -1,
+        "delayTime": 0,
+        "canScrollTo": true,
+        "elementDescriptors": [
+          {
+            "className": "android.widget.ImageButton",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 0,
+            "resourceId": "org.teslasoft.assistant:id/btn_back",
+            "contentDescription": "Go back",
+            "text": ""
+          },
+          {
+            "className": "androidx.constraintlayout.widget.ConstraintLayout",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 0,
+            "resourceId": "org.teslasoft.assistant:id/scrollable",
+            "contentDescription": "",
+            "text": ""
+          },
+          {
+            "className": "android.widget.ScrollView",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 1,
+            "resourceId": "org.teslasoft.assistant:id/root",
+            "contentDescription": "",
+            "text": ""
+          }
+        ]
+      },
+      {
+        "eventType": "VIEW_CLICKED",
+        "timestamp": 1737284045195,
+        "replacementText": "",
+        "actionCode": -1,
+        "delayTime": 0,
+        "canScrollTo": false,
+        "elementDescriptors": [
+          {
+            "className": "com.google.android.material.bottomnavigation.BottomNavigationItemView",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 2,
+            "resourceId": "org.teslasoft.assistant:id/menu_prompts",
+            "contentDescription": "Prompts",
+            "text": ""
+          },
+          {
+            "className": "com.google.android.material.bottomnavigation.BottomNavigationMenuView",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 0,
+            "resourceId": "",
+            "contentDescription": "",
+            "text": ""
+          },
+          {
+            "className": "com.google.android.material.bottomnavigation.BottomNavigationView",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 4,
+            "resourceId": "org.teslasoft.assistant:id/navigation_bar",
+            "contentDescription": "",
+            "text": ""
+          }
+        ]
+      },
+      {
+        "eventType": "VIEW_CLICKED",
+        "timestamp": 1737284051410,
+        "replacementText": "",
+        "actionCode": -1,
+        "delayTime": 0,
+        "canScrollTo": false,
+        "elementDescriptors": [
+          {
+            "className": "com.google.android.material.card.MaterialCardView",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 0,
+            "resourceId": "org.teslasoft.assistant:id/tile_bg",
+            "contentDescription": "",
+            "text": ""
+          },
+          {
+            "className": "androidx.constraintlayout.widget.ConstraintLayout",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 0,
+            "resourceId": "",
+            "contentDescription": "",
+            "text": ""
+          },
+          {
+            "className": "androidx.recyclerview.widget.RecyclerView",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 1,
+            "resourceId": "org.teslasoft.assistant:id/prompts",
+            "contentDescription": "",
+            "text": ""
+          }
+        ]
+      },
+      {
+        "eventType": "VIEW_CLICKED",
+        "timestamp": 1737284056834,
+        "replacementText": "",
+        "actionCode": -1,
+        "delayTime": 0,
+        "canScrollTo": false,
+        "elementDescriptors": [
+          {
+            "className": "android.widget.ImageButton",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 5,
+            "resourceId": "org.teslasoft.assistant:id/btn_back",
+            "contentDescription": "Go back",
+            "text": ""
+          },
+          {
+            "className": "androidx.constraintlayout.widget.ConstraintLayout",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 0,
+            "resourceId": "org.teslasoft.assistant:id/hideable",
+            "contentDescription": "",
+            "text": ""
+          },
+          {
+            "className": "androidx.constraintlayout.widget.ConstraintLayout",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 0,
+            "resourceId": "org.teslasoft.assistant:id/root",
+            "contentDescription": "",
+            "text": ""
+          }
+        ]
+      },
+      {
+        "eventType": "VIEW_CLICKED",
+        "timestamp": 1737284062636,
+        "replacementText": "",
+        "actionCode": -1,
+        "delayTime": 0,
+        "canScrollTo": false,
+        "elementDescriptors": [
+          {
+            "className": "com.google.android.material.bottomnavigation.BottomNavigationItemView",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 3,
+            "resourceId": "org.teslasoft.assistant:id/menu_tips",
+            "contentDescription": "Explore",
+            "text": ""
+          },
+          {
+            "className": "com.google.android.material.bottomnavigation.BottomNavigationMenuView",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 0,
+            "resourceId": "",
+            "contentDescription": "",
+            "text": ""
+          },
+          {
+            "className": "com.google.android.material.bottomnavigation.BottomNavigationView",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 4,
+            "resourceId": "org.teslasoft.assistant:id/navigation_bar",
+            "contentDescription": "",
+            "text": ""
+          }
+        ]
+      },
+      {
+        "eventType": "VIEW_CLICKED",
+        "timestamp": 1737284067602,
+        "replacementText": "",
+        "actionCode": -1,
+        "delayTime": 0,
+        "canScrollTo": false,
+        "elementDescriptors": [
+          {
+            "className": "com.google.android.material.bottomnavigation.BottomNavigationItemView",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 0,
+            "resourceId": "org.teslasoft.assistant:id/menu_chat",
+            "contentDescription": "Chat",
+            "text": ""
+          },
+          {
+            "className": "com.google.android.material.bottomnavigation.BottomNavigationMenuView",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 0,
+            "resourceId": "",
+            "contentDescription": "",
+            "text": ""
+          },
+          {
+            "className": "com.google.android.material.bottomnavigation.BottomNavigationView",
+            "recyclerViewChildPosition": -1,
+            "adapterViewChildPosition": -1,
+            "groupViewChildPosition": 4,
+            "resourceId": "org.teslasoft.assistant:id/navigation_bar",
+            "contentDescription": "",
+            "text": ""
+          }
+        ]
+      }
+    ]
+  }
+]

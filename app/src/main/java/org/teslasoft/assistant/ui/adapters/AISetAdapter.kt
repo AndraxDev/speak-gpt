@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,7 +82,7 @@ class AISetAdapter(private val mContext: Context, private val dataArray: ArrayLi
         var mView: View? = convertView
 
         if (mView == null) {
-            mView = inflater.inflate(R.layout.view_ai_set, null)
+            mView = inflater.inflate(R.layout.view_ai_set, parent, false)
         }
 
         ui = mView?.findViewById(R.id.ui)
@@ -105,8 +105,8 @@ class AISetAdapter(private val mContext: Context, private val dataArray: ArrayLi
             setIcon?.background = getAccentAmoledDrawable(drawable!!)
         } else {
             val drawable = ResourcesCompat.getDrawable(mContext.resources, R.drawable.avd_static, null)
-            drawable?.alpha = 230
-            setIcon?.background = getAccentDrawable(drawable!!)
+            // setIcon?.background = getAccentDrawable(drawable!!)
+            setIcon?.background = drawable
         }
 
         setName?.text = dataArray[position]["name"]

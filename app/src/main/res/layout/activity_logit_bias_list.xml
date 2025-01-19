@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /**************************************************************************
-* Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+* Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -116,6 +116,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
+                android:textColorHint="@color/text_hint"
+                app:boxStrokeColor="@drawable/box_stroke_color"
                 app:boxCornerRadiusBottomEnd="16dp"
                 app:boxCornerRadiusBottomStart="16dp"
                 app:boxCornerRadiusTopEnd="16dp"
@@ -123,6 +125,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/field_token"
+                    android:textColorHint="@color/text_hint"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/field_token_word"
@@ -134,6 +137,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
+                android:textColorHint="@color/text_hint"
+                app:boxStrokeColor="@drawable/box_stroke_color"
                 app:boxCornerRadiusBottomEnd="16dp"
                 app:boxCornerRadiusBottomStart="16dp"
                 app:boxCornerRadiusTopEnd="16dp"
@@ -144,6 +149,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/field_token_id"
+                    android:textColorHint="@color/text_hint"
                     android:inputType="number|numberSigned"
                     android:singleLine="true" />
 
@@ -154,11 +160,13 @@
             android:id="@+id/btn_add_pair"
             style="@style/Widget.Material3.Button.TonalButton"
             android:layout_width="0dp"
-            android:layout_height="56dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="20dp"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="16dp"
             android:text="@string/btn_add"
             app:backgroundTint="@color/accent_250"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -173,6 +181,8 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
+            android:textColorHint="@color/text_hint"
+            app:boxStrokeColor="@drawable/box_stroke_color"
             app:boxCornerRadiusBottomEnd="16dp"
             app:boxCornerRadiusBottomStart="16dp"
             app:boxCornerRadiusTopEnd="16dp"
@@ -185,6 +195,7 @@
                 android:id="@+id/field_logit_bias"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColorHint="@color/text_hint"
                 android:hint="@string/field_logit_bias_with_desc"
                 android:inputType="number|numberSigned"
                 android:singleLine="true" />

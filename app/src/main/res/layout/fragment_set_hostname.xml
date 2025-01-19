@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /**************************************************************************
-* Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+* Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -43,6 +43,8 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="24dp"
+        android:textColorHint="@color/text_hint"
+        app:boxStrokeColor="@drawable/box_stroke_color"
         app:boxCornerRadiusBottomEnd="16dp"
         app:boxCornerRadiusBottomStart="16dp"
         app:boxCornerRadiusTopEnd="16dp"
@@ -58,7 +60,8 @@
             android:focusedByDefault="true"
             android:hint="API endpoint"
             android:imeOptions="actionDone"
-            android:inputType="text" />
+            android:inputType="text"
+            android:textColorHint="@color/text_hint" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView

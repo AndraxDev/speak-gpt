@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /**************************************************************************
-* Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+* Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -184,7 +184,9 @@
                     android:id="@+id/btn_copy"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="24dp"
+                    android:paddingVertical="16dp"
                     android:text="@string/btn_copy" />
 
             </LinearLayout>
@@ -201,7 +203,9 @@
                     android:id="@+id/btn_restart"
                     style="@style/Widget.Material3.Button"
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="24dp"
+                    android:paddingVertical="16dp"
                     android:text="@string/crash_restart_app" />
 
             </LinearLayout>

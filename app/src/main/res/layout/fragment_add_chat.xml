@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /**************************************************************************
-* Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+* Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -57,12 +57,12 @@
             android:ems="10"
             android:hint="@string/hint_chat_name"
             android:textColor="@color/accent_900"
-            android:textColorHint="@color/accent_500"
+            android:textColorHint="@color/text_hint"
             app:boxCornerRadiusBottomEnd="16dp"
             app:boxCornerRadiusBottomStart="16dp"
             app:boxCornerRadiusTopEnd="16dp"
             app:boxCornerRadiusTopStart="16dp"
-            app:boxStrokeColor="@color/button"
+            app:boxStrokeColor="@drawable/box_stroke_color"
             app:boxStrokeErrorColor="@color/error">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -73,8 +73,7 @@
                 android:inputType="text|textCapSentences"
                 android:textColor="@color/accent_900"
                 android:textColorHighlight="@color/accent_100"
-                android:textColorHint="@color/accent_500"
-                app:backgroundTint="@color/button" />
+                android:textColorHint="@color/text_hint" />
 
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
@@ -87,6 +86,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
         android:checked="true"
+        android:paddingVertical="16dp"
         android:text="@string/chat_generate_name_automatically"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

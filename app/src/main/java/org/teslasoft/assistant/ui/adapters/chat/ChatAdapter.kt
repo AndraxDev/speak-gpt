@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -185,7 +185,7 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
         private val icon: ImageView = itemView.findViewById(R.id.icon)
         private val message: TextView = itemView.findViewById(R.id.message)
         private val username: TextView = itemView.findViewById(R.id.username)
-        private val bubbleBg: ConstraintLayout? = itemView.findViewById(R.id.bubble_bg) ?: null
+        private val bubbleBg: ConstraintLayout? = itemView.findViewById(R.id.bubble_bg)
         private val dalleImage: ImageView = itemView.findViewById(R.id.dalle_image)
         private val btnCopy: ImageButton = itemView.findViewById(R.id.btn_copy)
         private val btnEdit: ImageButton = itemView.findViewById(R.id.btn_edit)

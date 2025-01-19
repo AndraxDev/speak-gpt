@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /**************************************************************************
-* Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+* Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -102,64 +102,73 @@
                     <RadioButton
                         android:id="@+id/btn_illegal"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_height="wrap_content"
                         android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
                         android:text="@string/illegal_activity" />
 
                     <RadioButton
                         android:id="@+id/btn_cp"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_height="wrap_content"
                         android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
                         android:text="@string/child_sexual_abuse" />
 
                     <RadioButton
                         android:id="@+id/btn_hate"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_height="wrap_content"
                         android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
                         android:text="@string/generation_of_hateful_harassing_or_violent_content" />
 
                     <RadioButton
                         android:id="@+id/btn_malware"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_height="wrap_content"
                         android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
                         android:text="@string/generation_of_malware" />
 
                     <RadioButton
                         android:id="@+id/btn_fraud"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_height="wrap_content"
                         android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
                         android:text="@string/fraudulent_or_deceptive_activity" />
 
                     <RadioButton
                         android:id="@+id/btn_adult"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_height="wrap_content"
                         android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
                         android:text="@string/adult_content" />
 
                     <RadioButton
                         android:id="@+id/btn_political"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_height="wrap_content"
                         android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
                         android:text="@string/political_campaigning_or_lobbying" />
 
                     <RadioButton
                         android:id="@+id/btn_duplicated"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_height="wrap_content"
                         android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
                         android:text="@string/duplicated_prompt_or_spam" />
 
                     <RadioButton
                         android:id="@+id/btn_cat_incorrect"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_height="wrap_content"
                         android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
                         android:text="@string/incorrect_category" />
                 </RadioGroup>
 
@@ -170,6 +179,8 @@
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="24dp"
+                    android:textColorHint="@color/text_hint"
+                    app:boxStrokeColor="@drawable/box_stroke_color"
                     app:boxCornerRadiusBottomEnd="24dp"
                     app:boxCornerRadiusBottomStart="24dp"
                     app:boxCornerRadiusTopEnd="24dp"
@@ -183,16 +194,19 @@
                         android:layout_width="match_parent"
                         android:layout_height="120dp"
                         android:gravity="top|start"
-                        android:hint="@string/hint_additional_info" />
+                        android:hint="@string/hint_additional_info"
+                        android:textColorHint="@color/text_hint" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_send_report"
                     style="@style/Widget.Material3.Button"
                     android:layout_width="wrap_content"
-                    android:layout_height="56dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="24dp"
+                    android:paddingHorizontal="24dp"
+                    android:paddingVertical="12dp"
                     android:text="@string/btn_send_report"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView11" />

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /**************************************************************************
-* Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+* Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -78,6 +79,7 @@
         android:paddingBottom="16dp"
         android:paddingTop="40dp"
         android:scrollbars="none"
+        android:contentDescription="@string/menu_chat"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -123,7 +125,7 @@
             android:autofillHints="Search"
             android:background="@color/transparent"
             android:ems="10"
-            android:hint="@string/hint_search"
+            android:hint="@string/label_search_chats"
             android:inputType="text"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
@@ -140,7 +142,7 @@
             android:layout_height="48dp"
             android:layout_marginEnd="4dp"
             android:background="@color/transparent"
-            android:contentDescription="@string/hint_search"
+            android:contentDescription="@string/waffle_play_01"
             android:src="@drawable/ic_search"
             android:tooltipText="@string/hint_search"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -166,11 +168,11 @@
 
         <ImageButton
             android:id="@+id/btn_bulk_select_all"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
             android:background="@drawable/btn_accent_tonal_unmodifiable"
             android:contentDescription="Select all"
             android:src="@drawable/ic_select_all"
@@ -181,8 +183,8 @@
 
         <ImageButton
             android:id="@+id/btn_bulk_deselect_all"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/btn_accent_tonal_unmodifiable"
@@ -195,10 +197,10 @@
 
         <ImageButton
             android:id="@+id/btn_bulk_edit"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
             android:background="@drawable/btn_accent_tonal_unmodifiable"
             android:contentDescription="Rename"
             android:src="@drawable/ic_edit_action"
@@ -209,11 +211,11 @@
 
         <ImageButton
             android:id="@+id/btn_bulk_delete"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
             android:background="@drawable/btn_accent_tonal_unmodifiable"
             android:contentDescription="Delete selected"
             android:src="@drawable/ic_delete"

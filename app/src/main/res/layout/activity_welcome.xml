@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /**************************************************************************
-* Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+* Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -64,9 +64,9 @@
                 android:id="@+id/textView2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
+                android:layout_marginStart="32dp"
                 android:layout_marginTop="36dp"
-                android:layout_marginEnd="24dp"
+                android:layout_marginEnd="32dp"
                 android:gravity="center"
                 android:text="@string/app_desc"
                 android:textColor="@color/text"
@@ -78,11 +78,13 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_next"
                 style="@style/Widget.Material3.Button"
-                android:layout_width="200dp"
-                android:layout_height="64dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="48dp"
                 android:layout_marginBottom="24dp"
                 android:background="@drawable/btn_accent_selector_v2"
+                android:paddingHorizontal="32dp"
+                android:paddingVertical="16dp"
                 android:text="@string/btn_get_started"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

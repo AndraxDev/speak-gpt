@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /**************************************************************************
-* Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+* Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -30,7 +30,10 @@
         <com.google.android.material.bottomsheet.BottomSheetDragHandleView
             android:id="@+id/drag_handle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:alpha="1.0"
+            android:tint="@color/accent_900"
+            android:visibility="gone" />
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -46,7 +49,7 @@
                     android:id="@+id/textView65"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="36dp"
+                    android:layout_marginTop="24dp"
                     android:paddingBottom="8dp"
                     android:text="@string/label_quick_settings"
                     android:textColor="@color/text_title"
@@ -63,10 +66,12 @@
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="12dp"
                     android:layout_marginEnd="24dp"
+                    android:textColorHint="@color/text_hint"
                     app:boxCornerRadiusBottomEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
                     app:boxCornerRadiusTopEnd="16dp"
                     app:boxCornerRadiusTopStart="16dp"
+                    app:boxStrokeColor="@drawable/box_stroke_color"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/constraintLayout5">
@@ -78,7 +83,8 @@
                         android:hint="@string/label_seed"
                         android:imeOptions="actionDone"
                         android:inputType="number|numberSigned"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:textColorHint="@color/text_hint" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
@@ -143,6 +149,7 @@
                         android:value="7"
                         android:valueFrom="0"
                         android:valueTo="20"
+                        android:contentDescription="@string/set_temperature"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView66" />
@@ -184,6 +191,7 @@
                         android:value="10"
                         android:valueFrom="0"
                         android:valueTo="10"
+                        android:contentDescription="@string/label_top_p"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -195,7 +203,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="12dp"
-                        android:text="@string/label_top_p"
+                        android:text="@string/set_top_p"
                         android:textColor="@color/accent_900"
                         android:textSize="16sp"
                         android:textStyle="bold"
@@ -227,6 +235,7 @@
                         android:value="0"
                         android:valueFrom="-20"
                         android:valueTo="20"
+                        android:contentDescription="@string/set_frequency_penalty"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -271,6 +280,7 @@
                         android:value="0"
                         android:valueFrom="-20"
                         android:valueTo="20"
+                        android:contentDescription="@string/set_presence_penalty"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -337,7 +347,7 @@
                 <LinearLayout
                     android:id="@+id/linearLayout25"
                     android:layout_width="0dp"
-                    android:layout_height="64dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="24dp"
@@ -351,10 +361,11 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/btn_select_model"
                         android:layout_width="0dp"
-                        android:layout_height="64dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:layout_weight="1"
-                        android:background="@drawable/btn_accent_tonal_selector_v7">
+                        android:background="@drawable/btn_accent_tonal_selector_v7"
+                        android:paddingBottom="8dp">
 
                         <TextView
                             android:id="@+id/textView71"
@@ -393,10 +404,11 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/btn_select_system"
                         android:layout_width="0dp"
-                        android:layout_height="64dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_weight="1"
-                        android:background="@drawable/btn_accent_tonal_selector_v7">
+                        android:background="@drawable/btn_accent_tonal_selector_v7"
+                        android:paddingBottom="8dp">
 
                         <TextView
                             android:id="@+id/textView73"
@@ -427,7 +439,7 @@
                 <LinearLayout
                     android:id="@+id/linearLayout26"
                     android:layout_width="0dp"
-                    android:layout_height="64dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="24dp"
@@ -441,10 +453,11 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/btn_set_logit_biases"
                         android:layout_width="0dp"
-                        android:layout_height="64dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:layout_weight="1"
-                        android:background="@drawable/btn_accent_tonal_selector_v7">
+                        android:background="@drawable/btn_accent_tonal_selector_v7"
+                        android:paddingBottom="8dp">
 
                         <TextView
                             android:id="@+id/text_logit_biases_config"
@@ -473,10 +486,11 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/btn_select_api_endpoint"
                         android:layout_width="0dp"
-                        android:layout_height="64dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_weight="1"
-                        android:background="@drawable/btn_accent_tonal_selector_v7">
+                        android:background="@drawable/btn_accent_tonal_selector_v7"
+                        android:paddingBottom="8dp">
 
                         <TextView
                             android:id="@+id/text_host"
@@ -559,6 +573,7 @@
                         android:layout_marginEnd="4dp"
                         android:paddingHorizontal="16dp"
                         android:text="@string/btn_learn_more"
+                        android:textColor="@color/text_title"
                         app:boxCornerRadiusBottomEnd="16dp"
                         app:boxCornerRadiusBottomStart="16dp"
                         app:boxCornerRadiusTopEnd="16dp"

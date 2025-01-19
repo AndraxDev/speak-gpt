@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import android.os.StrictMode
 import androidx.activity.enableEdgeToEdge
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.elevation.SurfaceColors
-import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.fragments.AssistantFragment
 

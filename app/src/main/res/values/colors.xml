@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <color name="black">#ff000000</color>
-    <color name="purple_50">#ffF6F0FF</color>
-    <color name="purple_100">#ffe7d4ff</color>
-    <color name="purple_150">#FFDBBEFF</color>
-    <color name="purple_200">#ffbb86fc</color>
+    <color name="purple_50">#F7F6F8</color>
+    <color name="purple_100">#F3EBFF</color>
+    <color name="purple_150">#E7D6FF</color>
+    <color name="purple_200">#DAB8FF</color>
     <color name="purple_500">#ff6200ee</color>
     <color name="purple_700">#ff3700b3</color>
     <color name="purple_800">#FF240077</color>
@@ -37,16 +37,17 @@
     <color name="amoled_button">@color/accent_100</color>
     <color name="amoled_window_background">#000000</color>
 
-    <color name="accent_50">#F0EDF6</color>
-    <color name="accent_100">#e3dfec</color>
-    <color name="accent_100x2">#e3dfec</color>
-    <color name="accent_200">#c7c4cf</color>
-    <color name="accent_250">#9C8EC2</color>
-    <color name="accent_300">#fdfbff</color>
-    <color name="accent_400">#c7c4cf</color>
-    <color name="accent_500">#361759</color>
-    <color name="accent_600">#361759</color>
-    <color name="accent_900">#63488f</color>
+    <color name="accent_50">#FFF4FE</color>
+    <color name="accent_100">#EFEBFF</color>
+    <color name="accent_100x2">#F4ECFF</color>
+    <color name="accent_200">#F3E6FF</color>
+    <color name="accent_250">#E8DEFF</color>
+    <color name="accent_250_static">#E8DEFF</color>
+    <color name="accent_300">#EAD9FF</color>
+    <color name="accent_400">#DAD0FF</color>
+    <color name="accent_500">#302936</color>
+    <color name="accent_600">#221F28</color>
+    <color name="accent_900">#27222D</color>
     <color name="neutral_200">#312e36</color>
     <color name="shadow_assistant">#e3dfec</color>
     <color name="fab">@color/accent_100</color>
@@ -54,7 +55,7 @@
     <color name="icon_foreground">@color/accent_900</color>
     <color name="bottom_navbar">@color/accent_900</color>
     <color name="button">@color/accent_900</color>
-    <color name="error">#452220</color>
+    <color name="error">#4F1E1A</color>
     <color name="success">#263E22</color>
     <color name="gray">#99999999</color>
     <color name="window_background">#fdfbff</color>
@@ -69,14 +70,14 @@
     <color name="text_title_inv">#FFFFFFFF</color>
     <color name="text_subtitle">#AA000000</color>
     <color name="text_field">#CC000000</color>
-    <color name="text_hint">#99000000</color>
+    <color name="text_hint">#000000</color>
     <color name="text_subtitle_inv">#AAFFFFFF</color>
     <color name="ripple">#32000000</color>
     <color name="ripple_bg">#FF000000</color>
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/accent_900</color>
     <color name="system_bars">@color/accent_100</color>
     <color name="marker">#15000000</color>
-    <color name="warn_bg">#33CA746C</color>
+    <color name="warn_bg">#22CB493D</color>
     <color name="disabled_background">#66666666</color>
     <color name="disabled_icon">#FF666666</color>
 

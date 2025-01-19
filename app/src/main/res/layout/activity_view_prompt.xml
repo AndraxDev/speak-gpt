@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /**************************************************************************
-* Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+* Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -45,7 +45,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_view_title">
+            app:layout_constraintTop_toBottomOf="@+id/activity_view_title"
+            tools:visibility="gone">
 
             <com.google.android.material.loadingindicator.LoadingIndicator
                 android:id="@+id/progress_bar_view"
@@ -57,7 +58,6 @@
         </LinearLayout>
 
         <TextView
-            android:transitionName="prompt_title"
             android:id="@+id/activity_view_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -77,6 +77,7 @@
             android:textColor="@color/text_title"
             android:textSize="20sp"
             android:textStyle="bold"
+            android:transitionName="prompt_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -130,7 +131,7 @@
                 <LinearLayout
                     android:id="@+id/linearLayout"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="horizontal"
                     android:weightSum="2"
@@ -142,10 +143,11 @@
                         android:id="@+id/btn_try"
                         style="@style/Widget.Material3.Button"
                         android:layout_width="0dp"
-                        android:layout_height="56dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginHorizontal="8dp"
                         android:layout_weight="1"
                         android:background="@drawable/btn_accent_tonal_12"
+                        android:padding="16dp"
                         android:text="@string/btn_try_it"
                         app:icon="@drawable/ic_play"
                         app:iconGravity="textStart"
@@ -157,10 +159,11 @@
                         android:id="@+id/btn_copy"
                         style="@style/Widget.Material3.Button.TonalButton"
                         android:layout_width="0dp"
-                        android:layout_height="56dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginHorizontal="8dp"
                         android:layout_weight="1"
                         android:background="@drawable/btn_accent_tonal_selector_v5"
+                        android:padding="16dp"
                         android:text="@string/btn_copy"
                         app:icon="@drawable/ic_copy"
                         app:iconGravity="textStart"
@@ -174,11 +177,12 @@
                     android:id="@+id/btn_like"
                     style="@style/Widget.Material3.Button.TonalButton"
                     android:layout_width="0dp"
-                    android:layout_height="56dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginHorizontal="8dp"
                     android:layout_marginTop="16dp"
                     android:layout_weight="1"
                     android:background="@drawable/btn_accent_tonal_selector_v5"
+                    android:padding="16dp"
                     android:text="0"
                     app:icon="@drawable/ic_like_outline"
                     app:iconGravity="textStart"

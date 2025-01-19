@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -114,12 +114,8 @@ class PromptAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragment
                 mContext.requireActivity() as Activity,
                 Pair.create(convertView, "shared_container")
             )
-            mContext.requireActivity().startActivity(intent, options.toBundle())
 
-//            val i = Intent(mContext.requireActivity(), PromptViewActivity::class.java).setAction(Intent.ACTION_VIEW)
-//            i.putExtra("id", dataArray?.get(position)?.get("id"))
-//            i.putExtra("title", dataArray?.get(position)?.get("name"))
-//            mContext.requireActivity().startActivity(i)
+            mContext.requireActivity().startActivity(intent, options.toBundle())
         }
 
         val animation: Animation = AnimationUtils.loadAnimation(mContext.context, R.anim.fade_in)

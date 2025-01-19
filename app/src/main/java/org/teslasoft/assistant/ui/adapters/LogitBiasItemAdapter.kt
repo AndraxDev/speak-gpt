@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.teslasoft.assistant.ui.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -55,6 +56,7 @@ class LogitBiasItemAdapter(private val dataArray: ArrayList<HashMap<String, Stri
         this.listener = listener
     }
 
+    @SuppressLint("SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val inflater = mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 

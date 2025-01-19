@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /**************************************************************************
-* Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+* Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -94,7 +94,8 @@
                     android:background="@drawable/btn_tip2"
                     android:padding="16dp"
                     android:text="@string/image_resolution_note"
-                    android:textColor="@color/error" />
+                    android:textColor="@color/error"
+                    android:textStyle="bold" />
             </RadioGroup>
         </LinearLayout>
     </ScrollView>

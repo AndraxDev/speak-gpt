@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /**************************************************************************
-* Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+* Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -30,7 +30,8 @@
         <com.google.android.material.bottomsheet.BottomSheetDragHandleView
             android:id="@+id/drag_handle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="fill_parent"
@@ -220,6 +221,8 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="24dp"
                     android:layout_marginBottom="8dp"
+                    android:textColorHint="@color/text_hint"
+                    app:boxStrokeColor="@drawable/box_stroke_color"
                     app:boxCornerRadiusBottomEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
                     app:boxCornerRadiusTopEnd="16dp"
@@ -231,7 +234,8 @@
                         android:layout_height="wrap_content"
                         android:hint="base:org_id:name"
                         android:imeOptions="actionDone"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:textColorHint="@color/text_hint" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
@@ -290,6 +294,7 @@
                         android:value="7"
                         android:valueFrom="0"
                         android:valueTo="20"
+                        android:contentDescription="@string/label_temperature"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView66" />
@@ -331,6 +336,7 @@
                         android:value="10"
                         android:valueFrom="0"
                         android:valueTo="10"
+                        android:contentDescription="@string/label_top_p"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -374,6 +380,7 @@
                         android:value="0"
                         android:valueFrom="-20"
                         android:valueTo="20"
+                        android:contentDescription="@string/label_frequency_penalty"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -418,6 +425,7 @@
                         android:value="0"
                         android:valueFrom="-20"
                         android:valueTo="20"
+                        android:contentDescription="@string/label_presence_penalty"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -476,6 +484,8 @@
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="24dp"
+                    android:textColorHint="@color/text_hint"
+                    app:boxStrokeColor="@drawable/box_stroke_color"
                     app:boxCornerRadiusBottomEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
                     app:boxCornerRadiusTopEnd="16dp"
@@ -485,7 +495,8 @@
                         android:id="@+id/prefix"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/hint_prefix" />
+                        android:hint="@string/hint_prefix"
+                        android:textColorHint="@color/text_hint" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -494,6 +505,8 @@
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="24dp"
+                    android:textColorHint="@color/text_hint"
+                    app:boxStrokeColor="@drawable/box_stroke_color"
                     app:boxCornerRadiusBottomEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
                     app:boxCornerRadiusTopEnd="16dp"
@@ -503,7 +516,8 @@
                         android:id="@+id/end_separator"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/hint_end_separator" />
+                        android:hint="@string/hint_end_separator"
+                        android:textColorHint="@color/text_hint" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
@@ -527,11 +541,13 @@
                 android:id="@+id/btn_discard"
                 style="@style/Widget.Material3.Button.TonalButton"
                 android:layout_width="0dp"
-                android:layout_height="64dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="6dp"
                 android:layout_marginEnd="24dp"
                 android:background="@drawable/t_menu_bottom_item_background"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="20dp"
                 android:text="@string/cancel"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -541,11 +557,13 @@
                 android:id="@+id/btn_post"
                 style="@style/Widget.Material3.Button"
                 android:layout_width="0dp"
-                android:layout_height="64dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="24dp"
                 android:background="@drawable/t_menu_top_item_background"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="20dp"
                 android:text="@string/btn_save"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

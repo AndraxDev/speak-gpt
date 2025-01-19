@@ -117,7 +117,7 @@ To secure your API key perform the following steps:
 ## License
 
 ```
-Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

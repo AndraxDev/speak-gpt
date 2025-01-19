@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -167,7 +167,8 @@ import kotlin.time.Duration.Companion.seconds
 class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListener {
 
     // Init UI
-    private var btnAssistantVoice: ImageButton? = null
+    private var btnAssistantVoice: LinearLayout? = null
+    private var btnAssistantVoiceClickable: ImageButton? = null
     private var btnAssistantSettings: ImageButton? = null
     private var btnAssistantShowKeyboard: ImageButton? = null
     private var btnAssistantHideKeyboard: ImageButton? = null
@@ -457,32 +458,32 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
             isRecording = false
             animation?.stop()
             animation?.reset()
-            btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+            btnAssistantVoiceClickable?.setImageResource(R.drawable.ic_microphone)
         }
 
         override fun onError(error: Int) {
             isRecording = false
             animation?.stop()
             animation?.reset()
-            btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+            btnAssistantVoiceClickable?.setImageResource(R.drawable.ic_microphone)
         }
 
         override fun onResults(results: Bundle?) {
             if (cancelState) {
                 cancelState = false
 
-                btnAssistantVoice?.isEnabled = true
+                btnAssistantVoiceClickable?.isEnabled = true
                 btnAssistantSend?.isEnabled = true
                 assistantLoading?.visibility = View.GONE
                 isRecording = false
                 animation?.stop()
                 animation?.reset()
-                btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+                btnAssistantVoiceClickable?.setImageResource(R.drawable.ic_microphone)
             } else {
                 isRecording = false
                 animation?.stop()
                 animation?.reset()
-                btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+                btnAssistantVoiceClickable?.setImageResource(R.drawable.ic_microphone)
                 val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                 if (!matches.isNullOrEmpty()) {
                     val recognizedText = matches[0]
@@ -499,7 +500,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                     putMessage(prefix + recognizedText + endSeparator, false)
 
                     hideKeyboard()
-                    btnAssistantVoice?.isEnabled = false
+                    btnAssistantVoiceClickable?.isEnabled = false
                     btnAssistantSend?.isEnabled = false
                     assistantLoading?.visibility = View.VISIBLE
 
@@ -653,7 +654,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
     }
 
     private fun initLogic() {
-        btnAssistantVoice?.setOnClickListener {
+        btnAssistantVoiceClickable?.setOnClickListener {
             if (preferences!!.getAudioModel() == "google") {
                 handleGoogleSpeechRecognition()
             } else {
@@ -661,7 +662,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
             }
         }
 
-        btnAssistantVoice?.setOnLongClickListener {
+        btnAssistantVoiceClickable?.setOnLongClickListener {
             if (isRecording) {
                 cancelState = true
                 try {
@@ -671,7 +672,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                     }
                     tts!!.stop()
                 } catch (_: java.lang.Exception) {/* ignored */}
-                btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+                btnAssistantVoiceClickable?.setImageResource(R.drawable.ic_microphone)
                 if (preferences!!.getAudioModel() == "google") recognizer?.stopListening()
                 isRecording = false
                 animation?.stop()
@@ -723,7 +724,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                     try {
                         prepare()
                     } catch (e: IOException) {
-                        btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+                        btnAssistantVoiceClickable?.setImageResource(R.drawable.ic_microphone)
                         isRecording = false
                         animation?.stop()
                         animation?.reset()
@@ -740,7 +741,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                     start()
                 } else {
                     cancelState = false
-                    btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+                    btnAssistantVoiceClickable?.setImageResource(R.drawable.ic_microphone)
                     isRecording = false
                     animation?.stop()
                     animation?.reset()
@@ -760,7 +761,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                     try {
                         prepare()
                     } catch (e: IOException) {
-                        btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+                        btnAssistantVoiceClickable?.setImageResource(R.drawable.ic_microphone)
                         isRecording = false
                         animation?.stop()
                         animation?.reset()
@@ -774,7 +775,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                     start()
                 } else {
                     cancelState = false
-                    btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+                    btnAssistantVoiceClickable?.setImageResource(R.drawable.ic_microphone)
                     isRecording = false
                     animation?.stop()
                     animation?.reset()
@@ -790,7 +791,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         }
         recorder = null
 
-        btnAssistantVoice?.isEnabled = false
+        btnAssistantVoiceClickable?.isEnabled = false
         btnAssistantSend?.isEnabled = false
         assistantLoading?.visibility = View.VISIBLE
 
@@ -807,7 +808,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
             }
         } else {
             cancelState = false
-            btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+            btnAssistantVoiceClickable?.setImageResource(R.drawable.ic_microphone)
             isRecording = false
             animation?.stop()
             animation?.reset()
@@ -829,10 +830,10 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                 isRecording = false
                 animation?.stop()
                 animation?.reset()
-                btnAssistantVoice?.isEnabled = true
+                btnAssistantVoiceClickable?.isEnabled = true
                 btnAssistantSend?.isEnabled = true
                 assistantLoading?.visibility = View.GONE
-                btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+                btnAssistantVoiceClickable?.setImageResource(R.drawable.ic_microphone)
             } else {
                 if (preferences?.autoSend() == true) {
                     putMessage(prefix + transcription + endSeparator, false)
@@ -846,7 +847,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
                     saveSettings()
 
-                    btnAssistantVoice?.isEnabled = false
+                    btnAssistantVoiceClickable?.isEnabled = false
                     btnAssistantSend?.isEnabled = false
                     assistantLoading?.visibility = View.VISIBLE
 
@@ -869,7 +870,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
             }
         } catch (e: Exception) {
             Toast.makeText(mContext, getString(R.string.label_record_error), Toast.LENGTH_SHORT).show()
-            btnAssistantVoice?.isEnabled = true
+            btnAssistantVoiceClickable?.isEnabled = true
             btnAssistantSend?.isEnabled = true
             assistantLoading?.visibility = View.GONE
         }
@@ -877,13 +878,13 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
     private fun handleWhisperSpeechRecognition() {
         if (isRecording) {
-            btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+            btnAssistantVoiceClickable?.setImageResource(R.drawable.ic_microphone)
             isRecording = false
             animation?.stop()
             animation?.reset()
             stopWhisper()
         } else {
-            btnAssistantVoice?.setImageResource(R.drawable.ic_stop_recording)
+            btnAssistantVoiceClickable?.setImageResource(R.drawable.ic_stop_recording)
             isRecording = true
             animation?.start()
 
@@ -912,7 +913,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                 }
                 tts!!.stop()
             } catch (_: java.lang.Exception) {/* unused */}
-            btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+            btnAssistantVoiceClickable?.setImageResource(R.drawable.ic_microphone)
             recognizer?.stopListening()
             isRecording = false
             animation?.stop()
@@ -925,7 +926,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                 }
                 tts!!.stop()
             } catch (_: java.lang.Exception) {/* unused */}
-            btnAssistantVoice?.setImageResource(R.drawable.ic_stop_recording)
+            btnAssistantVoiceClickable?.setImageResource(R.drawable.ic_stop_recording)
             if (ContextCompat.checkSelfPermission(
                     mContext ?: return, Manifest.permission.RECORD_AUDIO
                 ) == PackageManager.PERMISSION_GRANTED
@@ -1162,7 +1163,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                 )
 
                 hideKeyboard()
-                btnAssistantVoice?.isEnabled = false
+                btnAssistantVoiceClickable?.isEnabled = false
                 btnAssistantSend?.isEnabled = false
                 assistantLoading?.visibility = View.VISIBLE
 
@@ -1235,7 +1236,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
             saveSettings()
 
             hideKeyboard()
-            btnAssistantVoice?.isEnabled = false
+            btnAssistantVoiceClickable?.isEnabled = false
             btnAssistantSend?.isEnabled = false
             assistantLoading?.visibility = View.VISIBLE
 
@@ -1254,7 +1255,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
                 saveSettings()
 
-                btnAssistantVoice?.isEnabled = true
+                btnAssistantVoiceClickable?.isEnabled = true
                 btnAssistantSend?.isEnabled = true
                 assistantLoading?.visibility = View.GONE
             } else {
@@ -1341,7 +1342,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
         saveSettings()
 
-        btnAssistantVoice?.isEnabled = true
+        btnAssistantVoiceClickable?.isEnabled = true
         btnAssistantSend?.isEnabled = true
         assistantLoading?.visibility = View.GONE
 
@@ -1455,7 +1456,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
                 saveSettings()
 
-                btnAssistantVoice?.isEnabled = true
+                btnAssistantVoiceClickable?.isEnabled = true
                 btnAssistantSend?.isEnabled = true
                 assistantLoading?.visibility = View.GONE
                 isProcessing = false
@@ -1522,7 +1523,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
                 saveSettings()
 
-                btnAssistantVoice?.isEnabled = true
+                btnAssistantVoiceClickable?.isEnabled = true
                 btnAssistantSend?.isEnabled = true
                 assistantLoading?.visibility = View.GONE
                 isProcessing = false
@@ -1666,7 +1667,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
             saveSettings()
 
-            btnAssistantVoice?.isEnabled = true
+            btnAssistantVoiceClickable?.isEnabled = true
             btnAssistantSend?.isEnabled = true
             assistantLoading?.visibility = View.GONE
             isProcessing = false
@@ -1689,7 +1690,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         val prompt = args.getValue("prompt").jsonPrimitive.content
 
         (mContext as Activity?)?.runOnUiThread {
-            btnAssistantVoice?.isEnabled = false
+            btnAssistantVoiceClickable?.isEnabled = false
             hideKeyboard()
             assistantLoading?.visibility = View.VISIBLE
         }
@@ -1703,7 +1704,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         val prompt = args.getValue("prompt").jsonPrimitive.content
 
         (mContext as Activity?)?.runOnUiThread {
-            btnAssistantVoice?.isEnabled = false
+            btnAssistantVoiceClickable?.isEnabled = false
             hideKeyboard()
             assistantLoading?.visibility = View.VISIBLE
         }
@@ -1797,7 +1798,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
         saveSettings()
 
-        btnAssistantVoice?.isEnabled = true
+        btnAssistantVoiceClickable?.isEnabled = true
         btnAssistantSend?.isEnabled = true
         assistantLoading?.visibility = View.GONE
         isProcessing = false
@@ -1911,12 +1912,12 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
     @SuppressLint("ClickableViewAccessibility")
     private suspend fun generateImageR(p: String) {
         isProcessing = true
-        btnAssistantVoice?.isEnabled = false
+        btnAssistantVoiceClickable?.isEnabled = false
         assistantConversation?.setOnTouchListener(null)
         assistantConversation?.visibility = View.VISIBLE
         btnSaveToChat?.visibility = View.VISIBLE
         assistantLoading?.visibility = View.VISIBLE
-        btnAssistantVoice?.setImageResource(R.drawable.ic_stop_recording)
+        btnAssistantVoiceClickable?.setImageResource(R.drawable.ic_stop_recording)
         hideKeyboard()
 
         disableAutoScroll = false
@@ -1959,7 +1960,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                     scroll(true)
                     saveSettings()
 
-                    btnAssistantVoice?.isEnabled = true
+                    btnAssistantVoiceClickable?.isEnabled = true
                     btnAssistantSend?.isEnabled = true
                     assistantLoading?.visibility = View.GONE
                     isProcessing = false
@@ -2006,7 +2007,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
             saveSettings()
 
-            btnAssistantVoice?.isEnabled = true
+            btnAssistantVoiceClickable?.isEnabled = true
             btnAssistantSend?.isEnabled = true
             assistantLoading?.visibility = View.GONE
             isProcessing = false
@@ -2018,13 +2019,13 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
     }
 
     private fun restoreUIState() {
-        btnAssistantVoice?.isEnabled = true
+        btnAssistantVoiceClickable?.isEnabled = true
         btnAssistantSend?.isEnabled = true
         assistantLoading?.visibility = View.GONE
         isProcessing = false
         isRecording = false
         cancelState = false
-        btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+        btnAssistantVoiceClickable?.setImageResource(R.drawable.ic_microphone)
         animation?.stop()
         animation?.reset()
     }
@@ -2221,6 +2222,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         // languageIdentifier = LanguageIdentification.getClient()
 
         btnAssistantVoice = view.findViewById(R.id.btn_assistant_voice)
+        btnAssistantVoiceClickable = view.findViewById(R.id.assistant_voice_clickable)
         btnAssistantSettings = view.findViewById(R.id.btn_assistant_settings)
         btnAssistantShowKeyboard = view.findViewById(R.id.btn_assistant_show_keyboard)
         btnAssistantHideKeyboard = view.findViewById(R.id.btn_assistant_hide_keyboard)
@@ -2303,7 +2305,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
         visionActions?.visibility = View.GONE
 
-        btnAssistantVoice?.setImageResource(R.drawable.ic_microphone)
+        btnAssistantVoiceClickable?.setImageResource(R.drawable.ic_microphone)
         btnAssistantSettings?.setImageResource(R.drawable.ic_settings)
         btnAssistantShowKeyboard?.setImageResource(R.drawable.ic_keyboard)
         btnAssistantHideKeyboard?.setImageResource(R.drawable.ic_keyboard_hide)
@@ -2447,6 +2449,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         btnAssistantSend?.isEnabled = false
         btnAssistantHideKeyboard?.isEnabled = false
         btnAssistantVoice?.visibility = View.VISIBLE
+        btnAssistantVoiceClickable?.visibility = View.VISIBLE
         visionActions?.visibility = View.GONE
     }
 
@@ -2458,11 +2461,12 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         btnAssistantSend?.isEnabled = true
         btnAssistantHideKeyboard?.isEnabled = true
         btnAssistantVoice?.visibility = View.GONE
+        btnAssistantVoiceClickable?.visibility = View.GONE
 
         try {
             cancelState = true
             stopWhisper()
-            btnAssistantVoice?.isEnabled = true
+            btnAssistantVoiceClickable?.isEnabled = true
             btnAssistantSend?.isEnabled = true
             isRecording = false
             isProcessing = false
@@ -2693,7 +2697,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         val message = findLastUserMessage()
 
         hideKeyboard()
-        btnAssistantVoice?.isEnabled = false
+        btnAssistantVoiceClickable?.isEnabled = false
         btnAssistantSend?.isEnabled = false
         assistantLoading?.visibility = View.VISIBLE
 
@@ -2875,7 +2879,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         when (feature) {
             "dalle" -> {
                 hideKeyboard()
-                btnAssistantVoice?.isEnabled = false
+                btnAssistantVoiceClickable?.isEnabled = false
                 btnAssistantSend?.isEnabled = false
                 assistantLoading?.visibility = View.VISIBLE
 

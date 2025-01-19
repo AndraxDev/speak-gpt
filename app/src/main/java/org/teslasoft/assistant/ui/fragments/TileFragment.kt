@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,11 +66,9 @@ class TileFragment : Fragment() {
     }
 
     private var isChecked: Boolean = false
-
     private var isEnabled: Boolean = true
 
     private var onTileClickListener: OnTileClickListener? = null
-
     private var onCheckedChangeListener: OnCheckedChangeListener? = null
 
     private var tileBg: ConstraintLayout? = null
@@ -273,7 +271,8 @@ class TileFragment : Fragment() {
         tileTitle?.text = tileText
         tileSubtitle?.text = tileDesc
 
-        tileIcon?.contentDescription = tileText
+        tileIcon?.contentDescription = getString(R.string.icon) + "" + tileText
+        tileBg?.contentDescription = getString(R.string.function) + "" + tileText
         tileBg?.tooltipText = tileText
 
         if (checked) {

@@ -467,4 +467,19 @@
     <string name="msg_cost_not_enough_data"><![CDATA[Koszt: <SpeakGPT nie posiada wystarczających danych do obliczenia kosztów dla tego modelu. Zapoznaj się z dokumentacją i oblicz koszty ręcznie na podstawie powyższego użycia.>]]></string>
     <string name="cost_loading" tools:ignore="TypographyEllipsis">Koszt: Ładowanie...</string>
     <string formatted="false"  name="cost_counter_usage">Użycie (tokeny): %s wejście / %s wyjście</string>
+    <string name="teslasoft_id_version">Wersja Teslasoft ID:</string>
+    <string name="buy_me_a_coffee">Kup mi kawę</string>
+    <string name="view_source_code">Zobacz kod źródłowy</string>
+    <string name="cat_all_new">Wszystkie kategorie</string>
+    <string name="search_chats">wyszukaj czaty</string>
+    <string name="waffle_play_01">ikona wyszukiwania czatów</string>
+    <string name="label_search_chats">Wyszukaj czaty</string>
+    <string name="waffle_play_2">ikona wyszukiwania podpowiedzi</string>
+    <string name="label_search_prompts">Wyszukaj podpowiedzi</string>
+    <string name="function">Funkcja</string>
+    <string name="icon">Ikona</string>
+    <string name="set_temperature">Ustaw temperaturę</string>
+    <string name="set_frequency_penalty">Ustaw karę za częstotliwość</string>
+    <string name="set_top_p">Ustaw top_p</string>
+    <string name="set_presence_penalty">Ustaw karę za obecność</string>
 </resources>

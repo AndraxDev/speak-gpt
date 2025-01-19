@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /**************************************************************************
-* Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+* Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -44,6 +44,12 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
+        android:textColorHint="@color/text_hint"
+        app:boxStrokeColor="@drawable/box_stroke_color"
+        app:boxCornerRadiusBottomEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusTopStart="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_dialog_title_cust">
@@ -53,7 +59,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_assistant_name"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textColorHint="@color/text_hint" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
@@ -91,7 +98,7 @@
             android:layout_weight="1"
             android:background="@drawable/btn_accent_50_v3"
             android:contentDescription="@string/avatar_gpt"
-            android:padding="12dp"
+            android:padding="16dp"
             android:scaleType="centerCrop"
             android:src="@drawable/chatgpt_icon"
             android:tooltipText="@string/avatar_gpt"
@@ -112,7 +119,7 @@
             android:layout_weight="1"
             android:background="@drawable/btn_accent_50_v3"
             android:contentDescription="@string/avatar_gemini"
-            android:padding="12dp"
+            android:padding="16dp"
             android:scaleType="centerCrop"
             android:src="@drawable/google_bard"
             android:tooltipText="@string/avatar_gemini"
@@ -132,7 +139,7 @@
             android:layout_weight="1"
             android:background="@drawable/btn_accent_50_v3"
             android:contentDescription="@string/avatar_perplexity_ai"
-            android:padding="12dp"
+            android:padding="16dp"
             android:scaleType="centerCrop"
             android:src="@drawable/perplexity_ai"
             android:tooltipText="@string/avatar_perplexity_ai"
@@ -155,6 +162,7 @@
             android:padding="12dp"
             android:scaleType="centerCrop"
             android:tooltipText="Empty"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@id/view5"
@@ -172,7 +180,7 @@
             android:layout_weight="1"
             android:background="@drawable/btn_accent_50_v3"
             android:contentDescription="@string/app_name"
-            android:padding="12dp"
+            android:padding="16dp"
             android:scaleType="centerCrop"
             android:src="@drawable/assistant"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -188,10 +196,12 @@
         android:id="@+id/btn_file_select"
         style="@style/Widget.Material3.Button.TonalButton"
         android:layout_width="0dp"
-        android:layout_height="56dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="16dp"
         android:text="@string/label_select_from_gallery"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

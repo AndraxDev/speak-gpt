@@ -469,4 +469,19 @@
     <string name="msg_cost_not_enough_data"><![CDATA[Стоимость: <SpeakGPT не имеет достаточно данных для расчета стоимости этой модели. Изучите документацию и рассчитайте стоимость вручную на основе вышеуказанного использования.>]]></string>
     <string name="cost_loading" tools:ignore="TypographyEllipsis">Стоимость: Загрузка...</string>
     <string formatted="false" name="cost_counter_usage">Использование (токены): %s в / %s из</string>
+    <string name="teslasoft_id_version">Версия Teslasoft ID:</string>
+    <string name="buy_me_a_coffee">Купите мне кофе</string>
+    <string name="view_source_code">Просмотреть исходный код</string>
+    <string name="cat_all_new">Все категории</string>
+    <string name="search_chats">поиск чатов</string>
+    <string name="waffle_play_01">значок поиска чатов</string>
+    <string name="label_search_chats">Поиск чатов</string>
+    <string name="waffle_play_2">значок поиска подсказок</string>
+    <string name="label_search_prompts">Поиск подсказок</string>
+    <string name="function">Функция</string>
+    <string name="icon">Значок</string>
+    <string name="set_temperature">Установить температуру</string>
+    <string name="set_frequency_penalty">Установить штраф за частоту</string>
+    <string name="set_top_p">Установить топ_p</string>
+    <string name="set_presence_penalty">Установить штраф за присутствие</string>
 </resources>

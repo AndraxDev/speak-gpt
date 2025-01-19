@@ -497,5 +497,20 @@
     <string name="cost_loading" tools:ignore="TypographyEllipsis">Cost: Loading...</string>
     <string formatted="false"  name="cost_counter_usage">Usage (tokens): %s in / %s out</string>
     <string name="prompt_no_model_provided" translatable="false">No model has been provided.</string>
+
     <string name="teslasoft_id_version">Teslasoft ID version:</string>
+    <string name="buy_me_a_coffee">Buy me a coffee</string>
+    <string name="view_source_code">View source code</string>
+    <string name="cat_all_new">All categories</string>
+    <string name="search_chats">search chats</string>
+    <string name="waffle_play_01">search chats icon</string>
+    <string name="label_search_chats">Search chats</string>
+    <string name="waffle_play_2">search prompts icon</string>
+    <string name="label_search_prompts">Search prompts</string>
+    <string name="function">Function</string>
+    <string name="icon">Icon</string>
+    <string name="set_temperature">Set temperature</string>
+    <string name="set_frequency_penalty">Set frequency penalty</string>
+    <string name="set_top_p">Set top_p</string>
+    <string name="set_presence_penalty">Set presence penalty</string>
 </resources>

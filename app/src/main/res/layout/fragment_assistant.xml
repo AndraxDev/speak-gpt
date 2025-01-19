@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /**************************************************************************
-* Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+* Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -40,23 +40,23 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bulk_container"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:background="@drawable/btn_accent_tonal_selector_v5"
             android:clickable="true"
             android:elevation="3dp"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageButton
                 android:id="@+id/btn_select_all"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/btn_accent_tonal_v6"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/btn_accent_tonal_selector_v5"
                 android:contentDescription="Select all"
                 android:src="@drawable/ic_select_all"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -66,10 +66,9 @@
 
             <ImageButton
                 android:id="@+id/btn_deselect_all"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/btn_accent_tonal_v6"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/btn_accent_tonal_selector_v5"
                 android:contentDescription="Deselect all"
                 android:src="@drawable/ic_deselect_all"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -79,10 +78,9 @@
 
             <ImageButton
                 android:id="@+id/btn_share_selected"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/btn_accent_tonal_v6"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/btn_accent_tonal_selector_v5"
                 android:contentDescription="Share selected"
                 android:src="@drawable/ic_share"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -92,10 +90,9 @@
 
             <ImageButton
                 android:id="@+id/btn_copy_selected"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/btn_accent_tonal_v6"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/btn_accent_tonal_selector_v5"
                 android:contentDescription="Copy selected"
                 android:src="@drawable/ic_copy_normal"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -105,10 +102,9 @@
 
             <ImageButton
                 android:id="@+id/btn_delete_selected"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/btn_accent_tonal_v6"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/btn_accent_tonal_selector_v5"
                 android:contentDescription="Delete selected"
                 android:src="@drawable/ic_delete"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -123,7 +119,7 @@
                 android:layout_marginStart="8dp"
                 android:text="0"
                 android:textColor="@color/text_title"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/btn_deselect_all"
@@ -184,17 +180,30 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
 
-        <ImageButton
+        <LinearLayout
             android:id="@+id/btn_assistant_voice"
             android:layout_width="128dp"
             android:layout_height="128dp"
             android:background="@drawable/avd_anim_v3"
-            android:contentDescription="@string/btn_speak"
             android:elevation="0.02dp"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/ic_microphone" />
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageButton
+            android:id="@+id/assistant_voice_clickable"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:elevation="0.03dip"
+            android:contentDescription="@string/btn_speak"
+            android:orientation="horizontal"
+            android:background="@null"
+            app:srcCompat="@drawable/ic_microphone"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_assistant_voice"
+            app:layout_constraintEnd_toEndOf="@+id/btn_assistant_voice"
+            app:layout_constraintStart_toStartOf="@+id/btn_assistant_voice"
+            app:layout_constraintTop_toTopOf="@+id/btn_assistant_voice" />
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/assistant_loading"
@@ -204,7 +213,7 @@
             android:layout_marginBottom="40dp"
             android:background="@drawable/assistant_clear"
             android:clickable="false"
-            android:elevation="0.03dip"
+            android:elevation="0.04dip"
             android:indeterminate="true"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -244,12 +253,14 @@
 
                 <ImageButton
                     android:id="@+id/btn_assistant_settings"
-                    android:transitionName="settings"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_marginStart="12dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
                     android:background="@drawable/btn_accent_assistant_actions"
                     android:contentDescription="@string/btn_settings"
+                    android:transitionName="settings"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -257,9 +268,9 @@
 
                 <ImageButton
                     android:id="@+id/btn_assistant_show_keyboard"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_marginEnd="12dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="4dp"
                     android:background="@drawable/btn_accent_assistant_actions"
                     android:contentDescription="@string/btn_show_keyboard"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -293,10 +304,10 @@
         <ImageButton
             android:id="@+id/btn_save"
             style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:contentDescription="@string/btn_save"
             android:src="@drawable/ic_storage"
             android:tooltipText="@string/btn_save"
@@ -307,10 +318,10 @@
         <ImageButton
             android:id="@+id/btn_exit"
             style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:contentDescription="@string/btn_exit"
             android:src="@drawable/ic_back"
             android:tooltipText="@string/btn_exit"
@@ -320,10 +331,9 @@
         <ImageButton
             android:id="@+id/btn_clear_conversation"
             style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="2dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
             android:contentDescription="@string/btn_clear_chat"
             android:src="@drawable/ic_close"
             android:tooltipText="@string/btn_clear_chat"
@@ -391,7 +401,7 @@
             <LinearLayout
                 android:id="@+id/input_layout"
                 android:layout_width="0dp"
-                android:layout_height="128dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/btn_accent_tonal"
@@ -409,58 +419,50 @@
 
                     <ImageButton
                         android:id="@+id/btn_assistant_hide_keyboard"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:background="@drawable/btn_accent_tonal"
                         android:contentDescription="@string/btn_hide_keyboard"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/assistant_message"
                         app:srcCompat="@drawable/ic_keyboard_hide" />
 
                     <ImageButton
                         android:id="@+id/btn_assistant_attach"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:background="@drawable/btn_accent_tonal"
                         android:contentDescription="@string/btn_attach"
                         android:src="@drawable/ic_attach"
                         android:tooltipText="@string/btn_attach"
                         app:layout_constraintStart_toEndOf="@+id/btn_assistant_hide_keyboard"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/btn_assistant_hide_keyboard"
                         app:srcCompat="@drawable/ic_attach" />
 
                     <ImageButton
                         android:id="@+id/btn_assistant_send"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:background="@drawable/btn_accent_tonal"
                         android:contentDescription="@string/btn_send"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/assistant_message"
                         app:srcCompat="@drawable/ic_send" />
 
                     <EditText
                         android:id="@+id/assistant_message"
                         android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_marginEnd="8dp"
+                        android:layout_height="100dp"
                         android:autofillHints="message"
                         android:background="@color/transparent"
                         android:ems="10"
                         android:gravity="top|start"
                         android:hint="@string/hint_message"
                         android:inputType="text|textMultiLine|textCapSentences"
-                        android:paddingTop="16dp"
-                        android:paddingBottom="16dp"
-                        android:textSize="16sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/btn_assistant_send"
-                        app:layout_constraintStart_toEndOf="@+id/btn_assistant_attach"
+                        android:padding="16dp"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>

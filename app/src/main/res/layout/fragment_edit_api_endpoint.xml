@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /**************************************************************************
-* Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+* Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -41,6 +41,8 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="24dp"
+        android:textColorHint="@color/text_hint"
+        app:boxStrokeColor="@drawable/box_stroke_color"
         app:boxCornerRadiusBottomEnd="16dp"
         app:boxCornerRadiusBottomStart="16dp"
         app:boxCornerRadiusTopEnd="16dp"
@@ -54,7 +56,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/api_endpoint_friendly_name"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textColorHint="@color/text_hint" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -64,6 +67,8 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="24dp"
+        android:textColorHint="@color/text_hint"
+        app:boxStrokeColor="@drawable/box_stroke_color"
         app:boxCornerRadiusBottomEnd="16dp"
         app:boxCornerRadiusBottomStart="16dp"
         app:boxCornerRadiusTopEnd="16dp"
@@ -77,7 +82,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/api_endpoint_host"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textColorHint="@color/text_hint" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -87,10 +93,12 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="24dp"
+        android:textColorHint="@color/text_hint"
         app:boxCornerRadiusBottomEnd="16dp"
         app:boxCornerRadiusBottomStart="16dp"
         app:boxCornerRadiusTopEnd="16dp"
         app:boxCornerRadiusTopStart="16dp"
+        app:boxStrokeColor="@drawable/box_stroke_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout11">
@@ -100,7 +108,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/api_endpoint_key_unchanged"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textColorLink="@color/text_hint" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView

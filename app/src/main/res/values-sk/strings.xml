@@ -466,4 +466,19 @@
     <string name="msg_cost_not_enough_data"><![CDATA[Cena: <SpeakGPT nemá dostatok údajov na výpočet ceny pre tento model. Pozrite si dokumentáciu a vypočítajte si cenu ručne na základe vyššie uvedeného použitia.>]]></string>
     <string name="cost_loading" tools:ignore="TypographyEllipsis">Cena: Načítava sa...</string>
     <string formatted="false" name="cost_counter_usage">Použitie (tokeny): %s von / %s dnu</string>
+    <string name="teslasoft_id_version">Verzia Teslasoft ID:</string>
+    <string name="buy_me_a_coffee">Kúp mi kávu</string>
+    <string name="view_source_code">Zobraziť zdrojový kód</string>
+    <string name="cat_all_new">Všetky kategórie</string>
+    <string name="search_chats">vyhľadávanie chatov</string>
+    <string name="waffle_play_01">ikona vyhľadávania chatov</string>
+    <string name="label_search_chats">Vyhľadávanie chatov</string>
+    <string name="waffle_play_2">ikona vyhľadávania výziev</string>
+    <string name="label_search_prompts">Vyhľadávanie výziev</string>
+    <string name="function">Funkcia</string>
+    <string name="icon">Ikona</string>
+    <string name="set_temperature">Nastaviť teplotu</string>
+    <string name="set_frequency_penalty">Nastaviť pokutu za frekvenciu</string>
+    <string name="set_top_p">Nastaviť top_p</string>
+    <string name="set_presence_penalty">Nastaviť pokutu za prítomnosť</string>
 </resources>
