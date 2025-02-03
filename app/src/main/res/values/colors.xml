@@ -33,6 +33,7 @@
     <color name="amoled_accent_300">#323232</color>
     <color name="amoled_accent_500">#3F3F3F</color>
     <color name="amoled_accent_600">#3F3F3F</color>
+    <color name="amoled_accent_900">#CECECE</color>
     <color name="amoled_bottom_navbar">@color/accent_50</color>
     <color name="amoled_button">@color/accent_100</color>
     <color name="amoled_window_background">#000000</color>
@@ -177,7 +178,7 @@
     <color name="tint_blue">#25003873</color>
     <color name="gpt_icon_blue">#003D73</color>
 
-    <color name="tint_purple">#25540073</color>
+    <color name="tint_purple">#25631780</color>
     <color name="gpt_icon_purple">#5A0073</color>
 
     <color name="tint_orange">#25733600</color>
@@ -186,8 +187,8 @@
     <color name="tint_cyan">#25007373</color>
     <color name="gpt_icon_cyan">#007373</color>
 
-    <color name="tint_epic">#204D0094</color>
-    <color name="gpt_icon_epic">#310090</color>
+    <color name="tint_epic">#207F45B4</color>
+    <color name="gpt_icon_epic">#46218E</color>
 
     <color name="border">#33000000</color>
 

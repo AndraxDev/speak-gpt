@@ -19,6 +19,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -90,13 +91,16 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:background="@drawable/avd_static_v3"
+                android:background="@drawable/mtrl_shape_clover"
+                android:backgroundTint="@color/warn_bg"
                 android:contentDescription="Clear input"
                 android:src="@drawable/ic_close"
                 android:tooltipText="Clear"
+                android:tint="@color/error"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_close" />
+                app:srcCompat="@drawable/ic_close"
+                tools:ignore="UseAppTint" />
 
             <com.google.android.material.loadingindicator.LoadingIndicator
                 android:id="@+id/run_loader"
@@ -145,13 +149,16 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:background="@drawable/avd_static_v3"
+                android:background="@drawable/mtrl_shape_clover"
                 android:contentDescription="Clear outputt"
+                android:backgroundTint="@color/warn_bg"
                 android:src="@drawable/ic_close"
                 android:tooltipText="Clear"
+                android:tint="@color/error"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_close" />
+                app:srcCompat="@drawable/ic_close"
+                tools:ignore="UseAppTint" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 

@@ -95,6 +95,7 @@
                     android:padding="16dp"
                     android:text="@string/image_resolution_note"
                     android:textColor="@color/error"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
             </RadioGroup>
         </LinearLayout>

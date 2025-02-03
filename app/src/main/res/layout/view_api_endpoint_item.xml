@@ -26,9 +26,9 @@
         android:id="@+id/ui"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginHorizontal="24dp"
+        android:layout_marginHorizontal="16dp"
         android:layout_marginVertical="8dp"
-        android:background="@drawable/btn_accent_tonal_selector_v7"
+        android:background="@drawable/btn_accent_tonal_selector_v3"
         android:backgroundTint="@color/accent_250"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -46,7 +46,7 @@
             android:lines="1"
             android:text="OpenAI"
             android:textColor="@color/accent_900"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -54,13 +54,15 @@
 
         <TextView
             android:id="@+id/endpoint_host"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginBottom="12dp"
             android:text="https://api.openai.com/api/v1/"
             android:textColor="@color/text_subtitle"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/endpoint_label"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/endpoint_label" />
 

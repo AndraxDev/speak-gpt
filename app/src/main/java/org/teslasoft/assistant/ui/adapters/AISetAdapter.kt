@@ -30,7 +30,6 @@ import android.view.animation.AnimationUtils
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.bumptech.glide.Glide
@@ -44,11 +43,12 @@ import org.teslasoft.assistant.Config
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.GlobalPreferences
 
+@Deprecated("Use AISetAdapterNew instead")
 class AISetAdapter(private val mContext: Context, private val dataArray: ArrayList<Map<String, String>>) : BaseAdapter() {
 
-    private var ui: ConstraintLayout? = null
     private var window: MaterialCardView? = null
     private var setIcon: ImageView? = null
+    private var setIconBg: ImageView? = null
     private var setName: TextView? = null
     private var setDescription: TextView? = null
     private var setOwner: TextView? = null
@@ -85,9 +85,9 @@ class AISetAdapter(private val mContext: Context, private val dataArray: ArrayLi
             mView = inflater.inflate(R.layout.view_ai_set, parent, false)
         }
 
-        ui = mView?.findViewById(R.id.ui)
         window = mView?.findViewById(R.id.window)
         setIcon = mView?.findViewById(R.id.set_icon)
+        setIconBg = mView?.findViewById(R.id.set_icon_bg)
         setName = mView?.findViewById(R.id.set_name)
         setDescription = mView?.findViewById(R.id.set_description)
         setOwner = mView?.findViewById(R.id.set_owner)
@@ -102,11 +102,12 @@ class AISetAdapter(private val mContext: Context, private val dataArray: ArrayLi
             btnGetApiKey?.backgroundTintList = ColorStateList.valueOf(mContext.getColor(R.color.amoled_accent_200))
 
             val drawable = ResourcesCompat.getDrawable(mContext.resources, R.drawable.avd_static, null)
-            setIcon?.background = getAccentAmoledDrawable(drawable!!)
+            val drawable2 = getAccentAmoledDrawable(drawable!!)
+
+            Glide.with(mContext).load(drawable2).into(setIconBg!!)
         } else {
             val drawable = ResourcesCompat.getDrawable(mContext.resources, R.drawable.avd_static, null)
-            // setIcon?.background = getAccentDrawable(drawable!!)
-            setIcon?.background = drawable
+            Glide.with(mContext).load(drawable!!).into(setIconBg!!)
         }
 
         setName?.text = dataArray[position]["name"]

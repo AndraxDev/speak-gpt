@@ -98,7 +98,8 @@
                     android:padding="16dp"
                     android:text="@string/note_qs_autosave"
                     android:textColor="@color/success"
-                    android:textSize="12sp"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
@@ -112,6 +113,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="24dp"
                     android:background="@drawable/btn_accent_tonal_selector_v7"
+                    android:backgroundTint="@color/accent_250"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/linearLayout26">
@@ -176,6 +178,8 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="24dp"
                     android:background="@drawable/btn_accent_tonal_selector_v7"
+                    android:backgroundTint="@color/accent_250"
+                    android:paddingBottom="4dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
@@ -186,12 +190,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="2dp"
                         android:layout_marginEnd="2dp"
+                        android:contentDescription="@string/label_top_p"
                         android:scrollbarStyle="outsideInset"
                         android:stepSize="1"
                         android:value="10"
                         android:valueFrom="0"
                         android:valueTo="10"
-                        android:contentDescription="@string/label_top_p"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -220,6 +224,8 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="24dp"
                     android:background="@drawable/btn_accent_tonal_selector_v7"
+                    android:backgroundTint="@color/accent_250"
+                    android:paddingBottom="4dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/constraintLayout6">
@@ -230,12 +236,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="2dp"
                         android:layout_marginEnd="2dp"
+                        android:contentDescription="@string/set_frequency_penalty"
                         android:scrollbarStyle="outsideInset"
                         android:stepSize="1"
                         android:value="0"
                         android:valueFrom="-20"
                         android:valueTo="20"
-                        android:contentDescription="@string/set_frequency_penalty"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -265,6 +271,8 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="24dp"
                     android:background="@drawable/btn_accent_tonal_selector_v7"
+                    android:backgroundTint="@color/accent_250"
+                    android:paddingBottom="4dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/constraintLayout4">
@@ -275,12 +283,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="2dp"
                         android:layout_marginEnd="2dp"
+                        android:contentDescription="@string/set_presence_penalty"
                         android:scrollbarStyle="outsideInset"
                         android:stepSize="1"
                         android:value="0"
                         android:valueFrom="-20"
                         android:valueTo="20"
-                        android:contentDescription="@string/set_presence_penalty"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -365,6 +373,7 @@
                         android:layout_marginEnd="8dp"
                         android:layout_weight="1"
                         android:background="@drawable/btn_accent_tonal_selector_v7"
+                        android:backgroundTint="@color/accent_250"
                         android:paddingBottom="8dp">
 
                         <TextView
@@ -408,6 +417,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_weight="1"
                         android:background="@drawable/btn_accent_tonal_selector_v7"
+                        android:backgroundTint="@color/accent_250"
                         android:paddingBottom="8dp">
 
                         <TextView
@@ -457,6 +467,7 @@
                         android:layout_marginEnd="8dp"
                         android:layout_weight="1"
                         android:background="@drawable/btn_accent_tonal_selector_v7"
+                        android:backgroundTint="@color/accent_250"
                         android:paddingBottom="8dp">
 
                         <TextView
@@ -490,6 +501,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_weight="1"
                         android:background="@drawable/btn_accent_tonal_selector_v7"
+                        android:backgroundTint="@color/accent_250"
                         android:paddingBottom="8dp">
 
                         <TextView
@@ -534,6 +546,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="24dp"
                     android:background="@drawable/btn_accent_tonal_selector_v7"
+                    android:backgroundTint="@color/accent_250"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView65">

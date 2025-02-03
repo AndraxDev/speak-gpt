@@ -29,11 +29,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.updatePadding
 import androidx.core.widget.addTextChangedListener
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
@@ -50,7 +46,6 @@ import org.teslasoft.assistant.ui.activities.LogitBiasConfigListActivity
 import org.teslasoft.core.api.network.RequestNetwork
 
 class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
-
     companion object {
         fun newInstance(chatId: String, usageIn: Int, usageOut: Int, priceIn: Float, priceOut: Float): QuickSettingsBottomSheetDialogFragment {
             val quickSettingsBottomSheetDialogFragment = QuickSettingsBottomSheetDialogFragment()
@@ -209,45 +204,42 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         var outPrice = 0.0
 
         when {
-            (model.contains("gpt-4") && (model.contains("turbo") || model.contains("vision"))) || model == "gpt-4-0125-preview" || model == "gpt-4-1106-preview" || model == "gpt-4-vision-preview" -> {
-                inPrice = 0.00001
-                outPrice = 0.00003
+
+            model.contains("gpt-4o-audio-preview") || model.contains("gpt-4o-audio-preview-2024-12-17") || model.contains("gpt-4o-audio-preview-2024-10-01") -> {
+                inPrice = 0.000025
+                outPrice = 0.0001
             }
-            model.contains("gpt-4-32k") -> {
-                inPrice = 0.00006
-                outPrice = 0.00012
+            model.contains("gpt-4o-realtime-preview") || model.contains("gpt-4o-realtime-preview-2024-12-17") || model.contains("gpt-4o-realtime-preview-2024-10-01") -> {
+                inPrice = 0.00005
+                outPrice = 0.0002
             }
-            model.contains("gpt-4o") -> {
-                inPrice = 0.000005
-                outPrice = 0.000015
-            }
-            model.contains("gpt-4") -> {
-                inPrice = 0.00003
-                outPrice = 0.00006
-            }
-            (model.contains("gpt-3.5") && model.contains("instruct")) || model == "gpt-3.5-turbo-0613" || model == "gpt-3.5-turbo-0301" -> {
+            model.contains("gpt-4o-mini-audio-preview") || model.contains("gpt-4o-mini-audio-preview-2024-12-17") -> {
                 inPrice = 0.0000015
-                outPrice = 0.000002
+                outPrice = 0.000006
             }
-            model == "gpt-3.5-turbo-1106" -> {
-                inPrice = 0.000001
-                outPrice = 0.000002
+            model.contains("gpt-4o-mini-realtime-preview") || model.contains("gpt-4o-mini-realtime-preview-2024-12-17") -> {
+                inPrice = 0.000006
+                outPrice = 0.000024
             }
-            model == "gpt-3.5-turbo-16k-0613" -> {
-                inPrice = 0.000003
-                outPrice = 0.000004
+            model.contains("gpt-4o-mini") || model.contains("gpt-4o-mini-2024-07-18") -> {
+                inPrice = 0.0000015
+                outPrice = 0.000006
             }
-            model.contains("gpt-3.5") -> {
-                inPrice = 0.0000005
-                outPrice = 0.0000015
+            model.contains("gpt-4o") || model.contains("gpt-4o-2024-11-20") || model.contains("gpt-4o-2024-08-06") || model.contains("gpt-4o-2024-05-13") -> {
+                inPrice = 0.000025
+                outPrice = 0.0001
             }
-            model.contains("davinci") -> {
-                inPrice = 0.000002
-                outPrice = 0.000002
+            model.contains("o1-mini") || model.contains("o1-mini-2024-09-12") -> {
+                inPrice = 0.000011
+                outPrice = 0.000044
             }
-            model.contains("babbage") -> {
-                inPrice = 0.0000004
-                outPrice = 0.0000004
+            model.contains("o1") || model.contains("o1-2024-12-17") -> {
+                inPrice = 0.00015
+                outPrice = 0.0006
+            }
+            model.contains("o3-mini") || model.contains("o3-mini-2025-01-31") -> {
+                inPrice = 0.000011
+                outPrice = 0.000044
             }
         }
 
@@ -310,7 +302,7 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         btnCostInfo = view.findViewById(R.id.btn_cost_info)
 
         textHost?.text = if (apiEndpoint?.label != "") apiEndpoint?.label ?: getString(R.string.label_tap_to_set) else getString(R.string.label_tap_to_set)
-        textLogitBiasesConfig?.text = if (preferences?.getLogitBiasesConfigId() != ""){
+        textLogitBiasesConfig?.text = if (preferences?.getLogitBiasesConfigId() != "") {
             logitBiasConfigPreferences?.getConfigById(preferences?.getLogitBiasesConfigId()!!)?.get("label") ?: getString(R.string.label_tap_to_set)
         } else {
             getString(R.string.label_tap_to_set)

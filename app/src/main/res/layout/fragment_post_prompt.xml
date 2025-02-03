@@ -36,10 +36,15 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
+</androidx.core.widget.NestedScrollView>
+    </FrameLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="24dp">
+        android:paddingBottom="24dp"
+        app:layout_anchor="@+id/standard_bottom_sheet"
+        app:layout_anchorGravity="center">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_discard"
@@ -101,11 +106,11 @@
             android:hint="@string/hint_name"
             android:textColor="@color/accent_900"
             android:textColorHint="@color/text_hint"
-            app:boxStrokeColor="@drawable/box_stroke_color"
             app:boxCornerRadiusBottomEnd="16dp"
             app:boxCornerRadiusBottomStart="16dp"
             app:boxCornerRadiusTopEnd="16dp"
             app:boxCornerRadiusTopStart="16dp"
+            app:boxStrokeColor="@drawable/box_stroke_color"
             app:boxStrokeErrorColor="@color/error"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -136,11 +141,11 @@
             android:hint="@string/hint_prompt_title"
             android:textColor="@color/accent_900"
             android:textColorHint="@color/text_hint"
-            app:boxStrokeColor="@drawable/box_stroke_color"
             app:boxCornerRadiusBottomEnd="16dp"
             app:boxCornerRadiusBottomStart="16dp"
             app:boxCornerRadiusTopEnd="16dp"
             app:boxCornerRadiusTopStart="16dp"
+            app:boxStrokeColor="@drawable/box_stroke_color"
             app:boxStrokeErrorColor="@color/error"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -171,11 +176,11 @@
             android:hint="@string/hint_prompt_desc"
             android:textColor="@color/accent_900"
             android:textColorHint="@color/text_hint"
-            app:boxStrokeColor="@drawable/box_stroke_color"
             app:boxCornerRadiusBottomEnd="16dp"
             app:boxCornerRadiusBottomStart="16dp"
             app:boxCornerRadiusTopEnd="16dp"
             app:boxCornerRadiusTopStart="16dp"
+            app:boxStrokeColor="@drawable/box_stroke_color"
             app:boxStrokeErrorColor="@color/error"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -207,11 +212,11 @@
             android:hint="@string/hint_prompt"
             android:textColor="@color/accent_900"
             android:textColorHint="@color/text_hint"
-            app:boxStrokeColor="@drawable/box_stroke_color"
             app:boxCornerRadiusBottomEnd="16dp"
             app:boxCornerRadiusBottomStart="16dp"
             app:boxCornerRadiusTopEnd="16dp"
             app:boxCornerRadiusTopStart="16dp"
+            app:boxStrokeColor="@drawable/box_stroke_color"
             app:boxStrokeErrorColor="@color/error"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -433,11 +438,11 @@
             android:padding="16dp"
             android:text="@string/safety_warning"
             android:textColor="@color/error"
+            android:textSize="14sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/radioGroup3" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.core.widget.NestedScrollView>
-    </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

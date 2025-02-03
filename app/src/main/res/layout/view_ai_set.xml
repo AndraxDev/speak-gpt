@@ -19,6 +19,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ui"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -54,16 +55,30 @@
             app:layout_constraintVertical_bias="0.0">
 
             <ImageView
-                android:id="@+id/set_icon"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:background="@drawable/avd_static"
-                android:padding="48dp"
-                android:src="@drawable/chatgpt_icon"
+                android:id="@+id/set_icon_bg"
+                android:layout_width="108dp"
+                android:layout_height="108dp"
+                android:layout_marginTop="32dp"
+                android:src="@drawable/mtrl_shape_clover"
+                android:tint="@color/accent_250"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/chatgpt_icon" />
+                app:srcCompat="@drawable/mtrl_shape_clover"
+                tools:ignore="UseAppTint" /> <!-- NOPE! -->
+
+            <ImageView
+                android:id="@+id/set_icon"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:elevation="0.01dip"
+                android:padding="48dp"
+                android:src="@drawable/assistant"
+                app:layout_constraintBottom_toBottomOf="@+id/set_icon_bg"
+                app:layout_constraintEnd_toEndOf="@+id/set_icon_bg"
+                app:layout_constraintStart_toStartOf="@+id/set_icon_bg"
+                app:layout_constraintTop_toTopOf="@+id/set_icon_bg"
+                app:srcCompat="@drawable/assistant" />
 
             <TextView
                 android:id="@+id/set_name"

@@ -75,6 +75,8 @@
         android:padding="16dp"
         android:text="Leave this blank to set default OpenAI API endpoint."
         android:textColor="@color/success"
+        android:textSize="14sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout8" />

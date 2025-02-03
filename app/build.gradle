@@ -12,13 +12,15 @@ configurations {
 android {
     namespace 'org.teslasoft.assistant'
     compileSdk 35
+    // compileSdkPreview "Baklava"
 
     defaultConfig {
         applicationId "org.teslasoft.assistant"
         minSdk 28
         targetSdk 35
-        versionCode 42610
-        versionName "4.26"
+        // targetSdkPreview "Baklava"
+        versionCode 42701
+        versionName "4.27"
     }
 
     buildTypes {
@@ -32,8 +34,8 @@ android {
 
         debug {
             debuggable false
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             multiDexEnabled true
         }
@@ -58,8 +60,8 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.15.0'
     implementation 'androidx.activity:activity-ktx:1.10.0'
     implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'com.google.android.material:material:1.13.0-alpha09'
-    implementation 'com.google.code.gson:gson:2.11.0'
+    implementation 'com.google.android.material:material:1.13.0-alpha10'
+    implementation 'com.google.code.gson:gson:2.12.1'
     implementation 'com.aallam.openai:openai-client:3.8.2'
     implementation 'io.ktor:ktor-client-android:2.3.12' // Do not update, incompatible with OpenAI API
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1'

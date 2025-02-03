@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+/**************************************************************************
+* Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*  http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+**************************************************************************/
+-->
+<animated-vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:name="vector"
+            android:width="108dp"
+            android:height="108dp"
+            android:viewportWidth="250"
+            android:viewportHeight="250">
+            <group
+                android:name="group"
+                android:pivotX="92"
+                android:pivotY="92"
+                android:translateX="32"
+                android:translateY="32">
+                <path
+                    android:pathData="M92 12C80.568 12 69.9033 6.62805 59.1725 2.68596C54.4428 0.948493 49.3322 0 44 0C19.6995 0 0 19.6995 0 44C0 49.3322 0.948493 54.4428 2.68596 59.1725C6.62806 69.9033 12 80.568 12 92C12 103.432 6.62806 114.097 2.68596 124.828C0.948493 129.557 0 134.668 0 140C0 164.301 19.6995 184 44 184C49.3322 184 54.4428 183.052 59.1724 181.314C69.9033 177.372 80.568 172 92 172C103.432 172 114.097 177.372 124.828 181.314C129.557 183.052 134.668 184 140 184C164.301 184 184 164.301 184 140C184 134.668 183.052 129.557 181.314 124.828C177.372 114.097 172 103.432 172 92C172 80.568 177.372 69.9033 181.314 59.1724C183.052 54.4428 184 49.3322 184 44C184 19.6995 164.301 0 140 0C134.668 0 129.557 0.948493 124.828 2.68596C114.097 6.62806 103.432 12 92 12Z"
+                    android:fillColor="@color/accent_900" />
+            </group>
+        </vector>
+    </aapt:attr>
+    <target android:name="group">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:repeatCount="infinite"
+                android:propertyName="rotation"
+                android:duration="4000"
+                android:valueFrom="0"
+                android:valueTo="90"
+                android:valueType="floatType"
+                android:interpolator="@android:anim/linear_interpolator"/>
+        </aapt:attr>
+    </target>
+</animated-vector>

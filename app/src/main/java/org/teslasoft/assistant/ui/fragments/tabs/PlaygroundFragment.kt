@@ -275,7 +275,7 @@ class PlaygroundFragment : Fragment() {
             val chatCompletionRequest = if (preferences?.getLogitBiasesConfigId() == null || preferences?.getLogitBiasesConfigId() == "null" || preferences?.getLogitBiasesConfigId() == "") {
                 ChatCompletionRequest(
                     model = ModelId(model),
-                    temperature = if (model == "o1" || model == "o1-mini") 1.0 else if (preferences?.getTemperature()?.toDouble() == 0.7) null else preferences?.getTemperature()?.toDouble(),
+                    temperature = if (model == "o1" || model == "o1-mini" || model == "o3" || model == "o3-mini") 1.0 else if (preferences?.getTemperature()?.toDouble() == 0.7) null else preferences?.getTemperature()?.toDouble(),
                     topP = if (preferences?.getTopP()?.toDouble() == 1.0) null else preferences?.getTopP()?.toDouble(),
                     frequencyPenalty = if (preferences?.getFrequencyPenalty()?.toDouble() == 0.0) null else preferences?.getFrequencyPenalty()?.toDouble(),
                     presencePenalty = if (preferences?.getPresencePenalty()?.toDouble() == 0.0) null else preferences?.getPresencePenalty()?.toDouble(),
@@ -286,7 +286,7 @@ class PlaygroundFragment : Fragment() {
             } else {
                 ChatCompletionRequest(
                     model = ModelId(model),
-                    temperature = if (model == "o1" || model == "o1-mini") 1.0 else if (preferences?.getTemperature()?.toDouble() == 0.7) null else preferences?.getTemperature()?.toDouble(),
+                    temperature = if (model == "o1" || model == "o1-mini" || model == "o3" || model == "o3-mini") 1.0 else if (preferences?.getTemperature()?.toDouble() == 0.7) null else preferences?.getTemperature()?.toDouble(),
                     topP = if (preferences?.getTopP()?.toDouble() == 1.0) null else preferences?.getTopP()?.toDouble(),
                     frequencyPenalty = if (preferences?.getFrequencyPenalty()?.toDouble() == 0.0) null else preferences?.getFrequencyPenalty()?.toDouble(),
                     presencePenalty = if (preferences?.getPresencePenalty()?.toDouble() == 0.0) null else preferences?.getPresencePenalty()?.toDouble(),

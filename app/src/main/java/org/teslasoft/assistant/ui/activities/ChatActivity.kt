@@ -522,7 +522,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
             keyboardFrame?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme))
             actionBar?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme))
             activityTitle?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme))
-            messageInput?.setHintTextColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_600, theme))
+            messageInput?.setHintTextColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_900, theme))
             btnBack?.background = getAmoledAccentDrawable(
                 AppCompatResources.getDrawable(
                     this,
@@ -579,7 +579,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
             keyboardFrame?.setBackgroundColor(SurfaceColors.SURFACE_2.getColor(this))
             actionBar?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
             activityTitle?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
-            messageInput?.setHintTextColor(ResourcesCompat.getColor(resources, R.color.accent_500, theme))
+            messageInput?.setHintTextColor(ResourcesCompat.getColor(resources, R.color.accent_900, theme))
             btnBack?.background = getDarkAccentDrawable(
                 AppCompatResources.getDrawable(
                     this,
@@ -2020,7 +2020,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                 val completionRequest = if (preferences?.getLogitBiasesConfigId() == null || preferences?.getLogitBiasesConfigId() == "null" || preferences?.getLogitBiasesConfigId() == "") {
                     CompletionRequest(
                         model = ModelId(model),
-                        temperature = if (model == "o1" || model == "o1-mini") 1.0 else if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
+                        temperature = if (model == "o1" || model == "o1-mini" || model == "o3" || model == "o3-mini") 1.0 else if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
                         topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble(),
                         frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
                         presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble(),
@@ -2031,7 +2031,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                 } else {
                     CompletionRequest(
                         model = ModelId(model),
-                        temperature = if (model == "o1" || model == "o1-mini") 1.0 else if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
+                        temperature = if (model == "o1" || model == "o1-mini" || model == "o3" || model == "o3-mini") 1.0 else if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
                         topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble(),
                         frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
                         presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble(),
@@ -2294,7 +2294,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         val chatCompletionRequest = if (preferences?.getLogitBiasesConfigId() == null || preferences?.getLogitBiasesConfigId() == "null" || preferences?.getLogitBiasesConfigId() == "") {
             ChatCompletionRequest(
                 model = ModelId(model),
-                temperature = if (model == "o1" || model == "o1-mini") 1.0 else if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
+                temperature = if (model == "o1" || model == "o1-mini" || model == "o3" || model == "o3-mini") 1.0 else if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
                 topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble(),
                 frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
                 presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble(),
@@ -2305,7 +2305,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         } else {
             ChatCompletionRequest(
                 model = ModelId(model),
-                temperature = if (model == "o1" || model == "o1-mini") 1.0 else if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
+                temperature = if (model == "o1" || model == "o1-mini" || model == "o3" || model == "o3-mini") 1.0 else if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
                 topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble(),
                 frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
                 presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble(),

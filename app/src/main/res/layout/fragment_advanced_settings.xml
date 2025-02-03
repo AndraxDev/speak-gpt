@@ -45,6 +45,7 @@
         android:text="@string/title_advanced_settings"
         android:textColor="@color/text_title"
         android:textSize="24sp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -60,7 +61,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="124dp">
+            android:paddingBottom="24dp">
 
             <RadioGroup
                 android:id="@+id/radioGroup"
@@ -74,17 +75,30 @@
                     android:id="@+id/textView22"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:background="@color/accent_900"
                     android:clickable="false"
                     android:gravity="center_horizontal|center_vertical"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
                     android:text="@string/select_ai_model"
-                    android:textColor="@color/window_background"
-                    android:textSize="18sp" />
+                    android:textColor="@color/text_title"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textView14"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/btn_tip2"
+                    android:padding="16dp"
+                    android:text="Models o1, o3, o1-mini and o3-mini don't support custom params like temperature, presence/frequency penalty and logit bias. Setting these params with these models will do nothing. Additionally these models may require special API access. If these models are not working for you, it may be because you don't have required usage tier or are not signed up in OpenAI beta program.\n\nTrick: You can try to access these models using OpenRouter provider without purchasing necessary OpenAI API Usage Tier."
+                    android:textColor="@color/error"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
                 <RadioButton
-                    android:id="@+id/gpt_35_turbo"
+                    android:id="@+id/gpt_o3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
@@ -94,11 +108,11 @@
                     android:minHeight="56dp"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:text="GPT 3.5"
+                    android:text="o3"
                     android:textSize="16sp" />
 
                 <RadioButton
-                    android:id="@+id/gpt_35_turbo_0125"
+                    android:id="@+id/gpt_o3_mini"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
@@ -107,23 +121,11 @@
                     android:minHeight="56dp"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:text="GPT 3.5 (Cost effective) (0125)"
+                    android:text="o3-mini"
                     android:textSize="16sp" />
 
                 <RadioButton
-                    android:id="@+id/gpt_35_turbo_0301"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:button="@null"
-                    android:minHeight="56dp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:text=" gpt-3.5-turbo-0301 (deprecated)"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
-
-                <RadioButton
-                    android:id="@+id/gpt_4"
+                    android:id="@+id/gpt_o1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
@@ -132,7 +134,33 @@
                     android:minHeight="56dp"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:text="GPT 4"
+                    android:text="o1"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/gpt_o1_mini"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:button="@null"
+                    android:minHeight="56dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:text="o1-mini"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/gpt_4_o"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:button="@null"
+                    android:minHeight="56dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:text="GPT 4o"
                     android:textSize="16sp" />
 
                 <RadioButton
@@ -149,19 +177,7 @@
                     android:textSize="16sp" />
 
                 <RadioButton
-                    android:id="@+id/gpt_4_0314"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:button="@null"
-                    android:minHeight="56dp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:text=" gpt-4-0314 (deprecated)"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
-
-                <RadioButton
-                    android:id="@+id/gpt_4_o"
+                    android:id="@+id/gpt_4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
@@ -170,7 +186,20 @@
                     android:minHeight="56dp"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:text="GPT 4o (Most capable model)"
+                    android:text="GPT 4"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/gpt_35_turbo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:button="@null"
+                    android:minHeight="56dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:text="GPT 3.5"
                     android:textSize="16sp" />
 
                 <RadioButton
@@ -222,11 +251,11 @@
                     android:layout_marginEnd="24dp"
                     android:layout_marginBottom="8dp"
                     android:textColorHint="@color/text_hint"
-                    app:boxStrokeColor="@drawable/box_stroke_color"
                     app:boxCornerRadiusBottomEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
                     app:boxCornerRadiusTopEnd="16dp"
-                    app:boxCornerRadiusTopStart="16dp">
+                    app:boxCornerRadiusTopStart="16dp"
+                    app:boxStrokeColor="@drawable/box_stroke_color">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/ft_input"
@@ -243,11 +272,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="8dp"
-                    android:background="@color/accent_900"
                     android:gravity="center_horizontal|center_vertical"
                     android:text="@string/other_params"
-                    android:textColor="@color/window_background"
-                    android:textSize="18sp" />
+                    android:textColor="@color/accent_900"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/constraintLayout2"
@@ -289,12 +318,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="2dp"
                         android:layout_marginEnd="2dp"
+                        android:contentDescription="@string/label_temperature"
                         android:scrollbarStyle="outsideInset"
                         android:stepSize="1"
                         android:value="7"
                         android:valueFrom="0"
                         android:valueTo="20"
-                        android:contentDescription="@string/label_temperature"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView66" />
@@ -321,6 +350,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="24dp"
                     android:background="@drawable/btn_accent_tonal_selector"
+                    android:paddingBottom="4dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
@@ -331,12 +361,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="2dp"
                         android:layout_marginEnd="2dp"
+                        android:contentDescription="@string/label_top_p"
                         android:scrollbarStyle="outsideInset"
                         android:stepSize="1"
                         android:value="10"
                         android:valueFrom="0"
                         android:valueTo="10"
-                        android:contentDescription="@string/label_top_p"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -365,6 +395,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="24dp"
                     android:background="@drawable/btn_accent_tonal_selector"
+                    android:paddingBottom="4dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/constraintLayout6">
@@ -375,12 +406,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="2dp"
                         android:layout_marginEnd="2dp"
+                        android:contentDescription="@string/label_frequency_penalty"
                         android:scrollbarStyle="outsideInset"
                         android:stepSize="1"
                         android:value="0"
                         android:valueFrom="-20"
                         android:valueTo="20"
-                        android:contentDescription="@string/label_frequency_penalty"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -410,6 +441,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="24dp"
                     android:background="@drawable/btn_accent_tonal_selector"
+                    android:paddingBottom="4dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/constraintLayout4">
@@ -420,12 +452,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="2dp"
                         android:layout_marginEnd="2dp"
+                        android:contentDescription="@string/label_presence_penalty"
                         android:scrollbarStyle="outsideInset"
                         android:stepSize="1"
                         android:value="0"
                         android:valueFrom="-20"
                         android:valueTo="20"
-                        android:contentDescription="@string/label_presence_penalty"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -482,14 +514,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="24dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="12dp"
                     android:layout_marginEnd="24dp"
                     android:textColorHint="@color/text_hint"
-                    app:boxStrokeColor="@drawable/box_stroke_color"
                     app:boxCornerRadiusBottomEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
                     app:boxCornerRadiusTopEnd="16dp"
-                    app:boxCornerRadiusTopStart="16dp">
+                    app:boxCornerRadiusTopStart="16dp"
+                    app:boxStrokeColor="@drawable/box_stroke_color">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/prefix"
@@ -503,14 +535,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="24dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="12dp"
                     android:layout_marginEnd="24dp"
                     android:textColorHint="@color/text_hint"
-                    app:boxStrokeColor="@drawable/box_stroke_color"
                     app:boxCornerRadiusBottomEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
                     app:boxCornerRadiusTopEnd="16dp"
-                    app:boxCornerRadiusTopStart="16dp">
+                    app:boxCornerRadiusTopStart="16dp"
+                    app:boxStrokeColor="@drawable/box_stroke_color">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/end_separator"
@@ -527,14 +559,20 @@
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="24dp"
-                    android:text="@string/end_separator_desc" />
+                    android:background="@drawable/btn_tip1"
+                    android:padding="16dp"
+                    android:text="@string/end_separator_desc"
+                    android:textColor="@color/success"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
                 <View
                     android:id="@+id/divider9"
                     android:layout_width="match_parent"
                     android:layout_height="0.5dip"
                     android:layout_marginTop="16dp"
-                    android:background="?android:attr/listDivider" />
+                    android:background="?android:attr/listDivider"
+                    android:visibility="gone" />
             </RadioGroup>
 
             <com.google.android.material.button.MaterialButton
@@ -559,7 +597,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
                 android:background="@drawable/t_menu_top_item_background"
                 android:paddingHorizontal="24dp"

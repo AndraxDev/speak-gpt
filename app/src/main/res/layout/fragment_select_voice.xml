@@ -43,6 +43,7 @@
         android:elevation="1dp"
         android:listSelector="@android:color/transparent"
         android:paddingBottom="150dp"
+        android:clipToPadding="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/field_search" />

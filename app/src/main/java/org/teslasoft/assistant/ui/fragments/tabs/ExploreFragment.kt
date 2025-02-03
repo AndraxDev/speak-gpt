@@ -16,6 +16,7 @@
 
 package org.teslasoft.assistant.ui.fragments.tabs
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -25,14 +26,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView
 import android.widget.ImageButton
 import android.widget.LinearLayout
-import android.widget.ListView
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -46,13 +47,14 @@ import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
 import org.teslasoft.assistant.ui.activities.ChatActivity
 import org.teslasoft.assistant.ui.activities.TipsActivity
-import org.teslasoft.assistant.ui.adapters.AISetAdapter
+import org.teslasoft.assistant.ui.adapters.AISetAdapterNew
 import org.teslasoft.assistant.ui.fragments.dialogs.AddChatDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.EditApiEndpointDialogFragment
 import org.teslasoft.assistant.util.Hash
 import org.teslasoft.core.api.network.RequestNetwork
+import androidx.core.net.toUri
 
-class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetAdapter.OnInteractionListener {
+class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetAdapterNew.OnInteractionListener {
 
     private var btnTips: ImageButton? = null
     private var refreshLayout: SwipeRefreshLayout? = null
@@ -61,9 +63,9 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
     private var btnErrorDetails: MaterialButton? = null
     private var noInternet: LinearLayout? = null
 
-    private var setsList: ListView? = null
+    private var setsList: RecyclerView? = null
     private var aiSets: ArrayList<Map<String, String>> = ArrayList()
-    private var setsAdapter: AISetAdapter? = null
+    private var aiSetsAdapter: AISetAdapterNew? = null
     private var requestNetwork: RequestNetwork? = null
 
     private var apiEndpointPreferences: ApiEndpointPreferences? = null
@@ -78,6 +80,7 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
     private var requestFinished = 0
 
     private var requestListener: RequestNetwork.RequestListener = object : RequestNetwork.RequestListener {
+        @SuppressLint("NotifyDataSetChanged")
         override fun onResponse(tag: String, message: String) {
             requestFinished = 1
             error = ""
@@ -94,7 +97,7 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
 
                 aiSets.clear()
                 aiSets.addAll(response)
-                setsAdapter?.notifyDataSetChanged()
+                aiSetsAdapter?.notifyDataSetChanged()
             } catch (e: Exception) {
                 error = e.message ?: "Unknown error"
                 noInternet?.visibility = View.VISIBLE
@@ -162,14 +165,13 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
         refreshLayout?.setSize(SwipeRefreshLayout.LARGE)
         refreshLayout?.setOnRefreshListener(this)
 
-        setsList?.divider = null
+        setsList?.layoutManager = LinearLayoutManager(mContext)
 
         aiSets = arrayListOf()
 
-        setsAdapter = AISetAdapter(mContext ?: return, aiSets)
-        setsAdapter?.setOnInteractionListener(this)
+        aiSetsAdapter = AISetAdapterNew(mContext ?: return, aiSets, this)
 
-        setsList?.adapter = setsAdapter
+        setsList?.adapter = aiSetsAdapter
 
         requestNetwork = RequestNetwork((mContext as Activity?) ?: return)
 
@@ -192,13 +194,13 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
             runRequest()
         }
 
-        setsList?.setOnScrollListener(object : AbsListView.OnScrollListener {
-            override fun onScrollStateChanged(view: AbsListView, scrollState: Int) { /* unused */ }
+        setsList?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) { /* unused */ }
 
-            override fun onScroll(view: AbsListView, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val topRowVerticalPosition: Int = if (aiSets.isEmpty() || setsList == null || setsList?.childCount == 0) 0 else setsList?.getChildAt(0)!!.top
 
-                refreshLayout?.isEnabled = firstVisibleItem == 0 && topRowVerticalPosition >= 0
+                refreshLayout?.isEnabled = (setsList?.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == 0 && topRowVerticalPosition >= 0
             }
         })
 
@@ -272,7 +274,7 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
 
     override fun onGetApiKeyClicked(apiKeyUrl: String) {
         val i = Intent().setAction(Intent.ACTION_VIEW)
-        i.data = android.net.Uri.parse(apiKeyUrl)
+        i.data = apiKeyUrl.toUri()
         startActivity(i)
     }
 

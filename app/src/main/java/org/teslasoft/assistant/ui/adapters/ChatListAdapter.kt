@@ -18,10 +18,8 @@ package org.teslasoft.assistant.ui.adapters
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -39,7 +37,6 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -48,7 +45,6 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.activities.ChatActivity
@@ -57,6 +53,7 @@ import org.teslasoft.assistant.util.StaticAvatarParser
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
+import androidx.core.graphics.createBitmap
 
 class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>, private val selectorProjection: ArrayList<HashMap<String, String>>, private val mContext: Fragment, private var size: Int = dataArray.size) : RecyclerView.Adapter<ChatListAdapter.ViewHolder>() {
 
@@ -85,15 +82,6 @@ class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>,
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, itemCount)
     }
-
-    fun editItemAtPosition(position: Int, name: String) {
-        dataArray[position]["name"] = name
-        dataArray[position]["id"] = Hash.hash(name)
-        selectorProjection[position]["name"] = name
-        selectorProjection[position]["id"] = Hash.hash(name)
-        notifyItemChanged(position)
-    }
-
     override fun onViewDetachedFromWindow(holder: ViewHolder) {
         super.onViewDetachedFromWindow(holder)
         holder.itemView.clearAnimation()
@@ -152,7 +140,6 @@ class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>,
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val name: TextView = itemView.findViewById(R.id.name)
-        private val selector: ConstraintLayout = itemView.findViewById(R.id.chat_selector)
         private val icon: ImageView = itemView.findViewById(R.id.chat_icon)
         private val textFirstMessage: TextView = itemView.findViewById(R.id.chat_first_message)
         private val modelName: TextView = itemView.findViewById(R.id.model_name)
@@ -170,14 +157,6 @@ class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>,
                 readAndDisplay(Uri.fromFile(File(mContext.requireActivity().getExternalFilesDir("images")?.absolutePath + "/avatar_" + preferences?.getAvatarIdByChatId(Hash.hash(chatMessage["name"].toString()), mContext.requireActivity()) + ".png")), icon)
             }
 
-//            if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack() == true) {
-//                root.background = getAccentDrawable(
-//                    ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_selector_backdrop_amoled)!!, mContext.requireActivity().getColor(R.color.amoled_window_background))
-//            } else {
-//                root.background = getAccentDrawable(
-//                    ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_selector_backdrop)!!, SurfaceColors.SURFACE_0.getColor(mContext.requireActivity()))
-//            }
-
             if (chatMessage["pinned"] == "true") {
                 pinMarker.visibility = View.VISIBLE
             } else {
@@ -194,11 +173,6 @@ class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>,
 
             modelName.text = model
             initModelName(model)
-
-            icon.setBackgroundResource(R.drawable.btn_accent_tonal_v3)
-
-            icon.background = getDarkAccentDrawableV2(
-                ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_v3)!!, mContext.requireActivity())
 
             if (bulkActionMode && (projection["selected"] ?: "false") == "true") {
                 updateCard(root, icon, pinMarker, R.color.accent_300, R.color.accent_900, chatMessage, true)
@@ -249,6 +223,7 @@ class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>,
                 projection["selected"] = "true"
                 updateCard(root, icon, pinMarker, R.color.accent_300, R.color.accent_900, chatMessage, true)
             }
+
             listener?.onBulkSelectionChanged(position, (projection["selected"] ?: "false") == "true")
             listener?.onChangeBulkActionMode(bulkActionMode)
         }
@@ -256,6 +231,8 @@ class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>,
         @SuppressLint("SetTextI18n")
         private fun initModelName(model: String) {
             textModel.text = "CUSTOM"
+            textModel.text = if (model.lowercase().contains("deepseek")) "DEEPSEEK" else textModel.text
+            textModel.text = if (model.lowercase().contains("o3")) "O3" else textModel.text
             textModel.text = if (model.lowercase().contains("o1")) "O1" else textModel.text
             textModel.text = if (model.lowercase().contains("gemini")) "GEMINI" else textModel.text
             textModel.text = if (model.lowercase().contains("gemma")) "GEMMA" else textModel.text
@@ -265,14 +242,13 @@ class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>,
             textModel.text = if (model.lowercase().contains("llama")) "META" else textModel.text
             textModel.text = if (model.lowercase().contains("gpt-4") && model.lowercase().contains("turbo")) "GPT 4 Turbo" else textModel.text
             textModel.text = if (model.lowercase().contains("gpt-4") && !model.lowercase().contains("turbo")) "GPT 4" else textModel.text
-            textModel.text = if (model.lowercase().contains("gpt-3.5") && model.lowercase().contains("turbo") && model.lowercase().contains("0125")) "GPT 3.5 (0125)" else textModel.text
-            textModel.text = if (model.lowercase().contains("gpt-3.5") && model.lowercase().contains("turbo") && !model.lowercase().contains("0125")) "GPT 3.5 Turbo" else textModel.text
+            textModel.text = if (model.lowercase().contains("gpt-3.5") && model.lowercase().contains("turbo")) "GPT 3.5 Turbo" else textModel.text
             textModel.text = if (model.lowercase().contains("gpt-4o")) "GPT 4o" else textModel.text
         }
 
         private fun reloadCards(chatMessage: HashMap<String, String>) {
             when (textModel.text) {
-                "O1" -> {
+                "O1", "O3" -> {
                     updateCard(root, icon, pinMarker, R.color.tint_epic, R.color.gpt_icon_epic, chatMessage, false)
                 }
 
@@ -284,7 +260,7 @@ class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>,
                     updateCard(root, icon, pinMarker, R.color.tint_yellow, R.color.gpt_icon_yellow, chatMessage, false)
                 }
 
-                "GPT 3.5 (0125)", "PERPLEXITY" -> {
+                "PERPLEXITY" -> {
                     updateCard(root, icon, pinMarker, R.color.tint_purple, R.color.gpt_icon_purple, chatMessage, false)
                 }
 
@@ -300,7 +276,7 @@ class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>,
                     updateCard(root, icon, pinMarker, R.color.tint_blue, R.color.gpt_icon_blue, chatMessage, false)
                 }
 
-                "GPT 4o" -> {
+                "GPT 4o", "DEEPSEEK" -> {
                     updateCard(root, icon, pinMarker, R.color.tint_cyan, R.color.gpt_icon_cyan, chatMessage, false)
                 }
 
@@ -310,96 +286,114 @@ class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>,
                 }
             }
         }
-    }
 
-    private fun updateCard(selector: MaterialCardView, icon: ImageView, pin: ImageView, tintColor: Int, iconColor: Int, chatMessage: HashMap<String, String>, isSelected: Boolean) {
-        if (isSelected) {
-            selector.backgroundTintList = ColorStateList.valueOf(mContext.requireActivity().getColor(R.color.accent_300) + 0x99000000.toInt()) // Kotlin programming language bug (actually integer can handle values from -0x80000000 to 0x7FFFFFFF)
-        } else if (Preferences.getPreferences(mContext.requireActivity(), "").getMonochromeBackgroundForChatList()) {
-            selector.backgroundTintList = ColorStateList.valueOf(mContext.requireActivity().getColor(R.color.accent_100) + 0x66000000)
-        } else {
-            selector.backgroundTintList = ColorStateList.valueOf(mContext.requireActivity().getColor(tintColor) - 0x11000000)
-        }
+        private fun updateCard(selector: MaterialCardView, icon: ImageView, pin: ImageView, tintColor: Int, iconColor: Int, chatMessage: HashMap<String, String>, isSelected: Boolean) {
+            if (isSelected) {
+                selector.backgroundTintList = ColorStateList.valueOf(mContext.requireActivity().getColor(R.color.accent_300) + 0x99000000.toInt()) // Kotlin programming language bug (actually integer can handle values from -0x80000000 to 0x7FFFFFFF)
+            } else if (Preferences.getPreferences(mContext.requireActivity(), "").getMonochromeBackgroundForChatList()) {
+                selector.backgroundTintList = ColorStateList.valueOf(mContext.requireActivity().getColor(R.color.accent_100) + 0x66000000)
+            } else {
+                selector.backgroundTintList = ColorStateList.valueOf(mContext.requireActivity().getColor(tintColor) - 0x11000000)
+            }
 
-        icon.background = getAccentDrawable(
-            ContextCompat.getDrawable(mContext.requireActivity(), R.drawable.btn_accent_tonal_transparent)!!, mContext.requireActivity().getColor(tintColor))
+            icon.background = getAccentDrawable(
+                ContextCompat.getDrawable(mContext.requireActivity(), getResourceFromModelName())!!, mContext.requireActivity().getColor(tintColor))
 
-        DrawableCompat.setTint(pin.getDrawable(), ContextCompat.getColor(mContext.requireActivity(), iconColor))
+            DrawableCompat.setTint(pin.getDrawable(), ContextCompat.getColor(mContext.requireActivity(), iconColor))
 
-        if (preferences?.getAvatarTypeByChatId(Hash.hash(chatMessage["name"].toString()), mContext.requireActivity()) == "builtin") {
-            DrawableCompat.setTint(icon.getDrawable(), ContextCompat.getColor(mContext.requireActivity(), iconColor))
-        }
-    }
-
-    private fun getAccentDrawable(drawable: Drawable, color: Int) : Drawable {
-        DrawableCompat.setTint(DrawableCompat.wrap(drawable), color)
-        return drawable
-    }
-
-    private fun getDarkAccentDrawableV2(drawable: Drawable, context: Context) : Drawable {
-        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getSurfaceColorV2(context))
-        return drawable
-    }
-
-    private fun getSurfaceColor(context: Context) : Int {
-        return SurfaceColors.SURFACE_2.getColor(context)
-    }
-
-    private fun getSurfaceColorV2(context: Context) : Int {
-        return SurfaceColors.SURFACE_5.getColor(context)
-    }
-
-    private fun readAndDisplay(uri: Uri, icon: ImageView?) {
-        val bitmap = readFile(uri)
-
-        if (bitmap != null) {
-            icon?.setImageBitmap(roundCorners(bitmap))
-        }
-    }
-
-    private fun readFile(uri: Uri) : Bitmap? {
-        return mContext.requireActivity().contentResolver?.openInputStream(uri)?.use { inputStream ->
-            BufferedReader(InputStreamReader(inputStream)).use { _ ->
-                BitmapFactory.decodeStream(inputStream)
+            if (preferences?.getAvatarTypeByChatId(Hash.hash(chatMessage["name"].toString()), mContext.requireActivity()) == "builtin") {
+                DrawableCompat.setTint(icon.getDrawable(), ContextCompat.getColor(mContext.requireActivity(), iconColor))
             }
         }
-    }
 
-    private fun roundCorners(bitmap: Bitmap): Bitmap {
-        // Create a bitmap with the same size as the original.
-        val output = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
+        private fun getResourceFromModelName() : Int {
+            return when (textModel.text) {
+                "O1", "O3" -> {
+                    R.drawable.mtrl_shape_clover
+                }
 
-        // Prepare a canvas with the new bitmap.
-        val canvas = Canvas(output)
+                "GPT 4", "GEMINI" -> {
+                    R.drawable.mtrl_shape_scallop
+                }
 
-        // The paint used to draw the original bitmap onto the new one.
-        val paint = Paint().apply {
-            isAntiAlias = true
-            color = -0xbdbdbe
+                "GPT 3.5 Turbo", "GEMMA" -> {
+                    R.drawable.mtrl_shape_hive
+                }
+
+                "PERPLEXITY" -> {
+                    R.drawable.mtrl_shape_diamond
+                }
+
+                "GPT 4 Turbo", "CLAUDE" -> {
+                    R.drawable.mtrl_shape_pill
+                }
+
+                "MISTRAL", "META" -> {
+                    R.drawable.mtrl_shape_diamond
+                }
+
+                "CUSTOM" -> {
+                    R.drawable.mtrl_shape_scallop
+                }
+
+                "GPT 4o", "DEEPSEEK" -> {
+                    R.drawable.mtrl_shape_pill
+                }
+
+                else -> {
+                    R.drawable.mtrl_shape_clover
+                }
+            }
         }
 
-        // The rectangle bounds for the original bitmap.
-        val rect = Rect(0, 0, bitmap.width, bitmap.height)
-        val rectF = RectF(rect)
+        private fun getAccentDrawable(drawable: Drawable, color: Int) : Drawable {
+            DrawableCompat.setTint(DrawableCompat.wrap(drawable), color)
+            return drawable
+        }
 
-        // Draw rounded rectangle as background.
-        canvas.drawRoundRect(rectF, 80.0f, 80.0f, paint)
+        private fun readAndDisplay(uri: Uri, icon: ImageView?) {
+            val bitmap = readFile(uri)
 
-        // Change the paint mode to draw the original bitmap on top.
-        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+            if (bitmap != null) {
+                icon?.setImageBitmap(roundCorners(bitmap))
+            }
+        }
 
-        // Draw the original bitmap.
-        canvas.drawBitmap(bitmap, rect, rect, paint)
+        private fun readFile(uri: Uri) : Bitmap? {
+            return mContext.requireActivity().contentResolver?.openInputStream(uri)?.use { inputStream ->
+                BufferedReader(InputStreamReader(inputStream)).use { _ ->
+                    BitmapFactory.decodeStream(inputStream)
+                }
+            }
+        }
 
-        return output
-    }
+        private fun roundCorners(bitmap: Bitmap): Bitmap {
+            // Create a bitmap with the same size as the original.
+            val output = createBitmap(bitmap.width, bitmap.height)
 
-    private fun isDarkThemeEnabled(): Boolean {
-        return when (mContext.resources.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
-            Configuration.UI_MODE_NIGHT_YES -> true
-            Configuration.UI_MODE_NIGHT_NO -> false
-            Configuration.UI_MODE_NIGHT_UNDEFINED -> false
-            else -> false
+            // Prepare a canvas with the new bitmap.
+            val canvas = Canvas(output)
+
+            // The paint used to draw the original bitmap onto the new one.
+            val paint = Paint().apply {
+                isAntiAlias = true
+                color = -0xbdbdbe
+            }
+
+            // The rectangle bounds for the original bitmap.
+            val rect = Rect(0, 0, bitmap.width, bitmap.height)
+            val rectF = RectF(rect)
+
+            // Draw rounded rectangle as background.
+            canvas.drawRoundRect(rectF, 80.0f, 80.0f, paint)
+
+            // Change the paint mode to draw the original bitmap on top.
+            paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+
+            // Draw the original bitmap.
+            canvas.drawBitmap(bitmap, rect, rect, paint)
+
+            return output
         }
     }
 }

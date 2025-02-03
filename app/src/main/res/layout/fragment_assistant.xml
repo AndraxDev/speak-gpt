@@ -184,9 +184,10 @@
             android:id="@+id/btn_assistant_voice"
             android:layout_width="128dp"
             android:layout_height="128dp"
-            android:background="@drawable/avd_anim_v3"
+            android:background="@drawable/mtrl_clove_anim"
             android:elevation="0.02dp"
             android:orientation="horizontal"
+            android:backgroundTint="@color/accent_250"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -236,7 +237,7 @@
 
         <LinearLayout
             android:id="@+id/assistant_actions"
-            android:layout_width="200dp"
+            android:layout_width="190dp"
             android:layout_height="56dp"
             android:layout_marginBottom="35dp"
             android:background="@drawable/btn_accent_assistant_actions"

@@ -17,6 +17,7 @@
 package org.teslasoft.assistant.ui.activities
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
@@ -41,6 +42,7 @@ import org.teslasoft.assistant.theme.ThemeManager
 import org.teslasoft.assistant.ui.adapters.ApiEndpointListItemAdapter
 import org.teslasoft.assistant.ui.fragments.dialogs.EditApiEndpointDialogFragment
 import org.teslasoft.assistant.util.Hash
+import androidx.core.graphics.drawable.toDrawable
 
 
 class ApiEndpointsListActivity : FragmentActivity() {
@@ -131,22 +133,24 @@ class ApiEndpointsListActivity : FragmentActivity() {
         if (isDarkThemeEnabled() && preferences.getAmoledPitchBlack()) {
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
 
-            if (android.os.Build.VERSION.SDK_INT <= 34) {
+            if (Build.VERSION.SDK_INT <= 34) {
                 window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
                 window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme)
             }
 
             actionBar?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme))
+            btnBack?.backgroundTintList = ColorStateList.valueOf(ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme))
         } else {
-            val colorDrawable = ColorDrawable(SurfaceColors.SURFACE_0.getColor(this))
+            val colorDrawable = SurfaceColors.SURFACE_0.getColor(this).toDrawable()
             window.setBackgroundDrawable(colorDrawable)
 
-            if (android.os.Build.VERSION.SDK_INT <= 34) {
+            if (Build.VERSION.SDK_INT <= 34) {
                 window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
                 window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
             }
 
             actionBar?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
+            btnBack?.backgroundTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_4.getColor(this))
         }
 
         listView?.divider = null
@@ -224,7 +228,7 @@ class ApiEndpointsListActivity : FragmentActivity() {
             val list = findViewById<ListView>(R.id.list_view)
             list?.setPadding(
                 0,
-                0,
+                pxToDp(8),
                 0,
                 window.decorView.rootWindowInsets.getInsets(WindowInsets.Type.navigationBars()).bottom
             )
@@ -239,5 +243,10 @@ class ApiEndpointsListActivity : FragmentActivity() {
             params.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
             extendedFab.layoutParams = params
         } catch (_: Exception) { /* unused */ }
+    }
+
+    private fun pxToDp(px: Int): Int {
+        val density = resources.displayMetrics.density
+        return (px * density).toInt()
     }
 }
