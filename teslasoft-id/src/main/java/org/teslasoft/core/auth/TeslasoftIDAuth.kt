@@ -21,6 +21,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -40,6 +41,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.core.auth.internal.ApplicationSignature
 
 class TeslasoftIDAuth : FragmentActivity() {
@@ -91,6 +93,9 @@ class TeslasoftIDAuth : FragmentActivity() {
                 }
             })
         }
+
+        val windowBackground: View = findViewById(R.id.root)
+        windowBackground.backgroundTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_2.getColor(this))
 
         val signature = ApplicationSignature(this).getCertificateFingerprint("SHA256")
         val requestNetwork = RequestNetwork(this)
@@ -178,7 +183,7 @@ class TeslasoftIDAuth : FragmentActivity() {
                         }, 300)
                     }.show()
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             if (result.resultCode == 3 || result.resultCode == 4) {
                 this.setResult(result.resultCode)
                 Handler(mainLooper).postDelayed({

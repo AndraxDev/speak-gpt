@@ -77,6 +77,9 @@ import java.io.FileInputStream
 import java.io.InputStreamReader
 import java.util.Base64
 import java.util.Collections
+import androidx.core.graphics.createBitmap
+import androidx.core.net.toUri
+import androidx.core.content.edit
 
 
 class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, private val selectorProjection: ArrayList<HashMap<String, Any>>, private val context: FragmentActivity, private val preferences: Preferences, private val isAssistant: Boolean, private var chatId: String) : RecyclerView.Adapter<ChatAdapter.ViewHolder>(), EditMessageDialogFragment.StateChangesListener {
@@ -344,7 +347,7 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
         }
 
         private fun roundCorners(bitmap: Bitmap): Bitmap {
-            val output = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
+            val output = createBitmap(bitmap.width, bitmap.height)
             val canvas = Canvas(output)
 
             val paint = Paint().apply {
@@ -504,7 +507,7 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
 
         private fun loadImage(url: String) {
             val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(convertDpToPixel(context).toInt()))
-            Glide.with(context).load(Uri.parse(url)).apply(requestOptions).into(dalleImage)
+            Glide.with(context).load(url.toUri()).apply(requestOptions).into(dalleImage)
         }
 
         private fun updateImageClickListener(url: String) {
@@ -513,9 +516,9 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
                     switchBulkActionState(adapterPosition)
                 } else {
                     val sharedPreferences: SharedPreferences = context.getSharedPreferences("tmp", Context.MODE_PRIVATE)
-                    val editor: SharedPreferences.Editor = sharedPreferences.edit()
-                    editor.putString("tmp", url)
-                    editor.apply()
+                    sharedPreferences.edit {
+                        putString("tmp", url)
+                    }
                     val intent = Intent(context, ImageBrowserActivity::class.java).setAction(Intent.ACTION_VIEW)
                     intent.putExtra("tmp", "1")
                     context.startActivity(intent)

@@ -29,6 +29,7 @@
         android:layout_marginHorizontal="12dp"
         android:layout_marginVertical="6dp"
         android:background="@drawable/btn_accent_tonal_selector_v7"
+        android:backgroundTint="@color/accent_250"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

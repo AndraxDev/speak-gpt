@@ -21,6 +21,8 @@ import android.app.Activity
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,7 +54,7 @@ class PromptAdapterNew(private val data: ArrayList<HashMap<String, String>>?, pr
         private var textFor: TextView = view.findViewById(R.id.text_for)
         private var likeIcon: LinearLayout = view.findViewById(R.id.like_icon)
 
-        @SuppressLint("SetTextI18n")
+        @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
         fun bind(item: HashMap<String, String>, mContext: Fragment) {
             val bgColor = when (item["category"]) {
                 "development" -> harmonizeColors(ResourcesCompat.getColor(mContext.requireActivity().resources, R.color.bg_cat_development, mContext.requireActivity().theme), mContext)

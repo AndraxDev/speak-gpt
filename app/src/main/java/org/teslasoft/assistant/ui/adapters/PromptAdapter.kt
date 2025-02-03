@@ -37,6 +37,7 @@ import org.teslasoft.assistant.ui.activities.PromptViewActivity
 import org.teslasoft.assistant.R
 import androidx.core.util.Pair
 
+@Deprecated("Use PromptAdapterNew instead")
 class PromptAdapter(data: ArrayList<HashMap<String, String>>?, context: Fragment) : BaseAdapter() {
     private val dataArray: ArrayList<HashMap<String, String>>? = data
     private val mContext: Fragment = context

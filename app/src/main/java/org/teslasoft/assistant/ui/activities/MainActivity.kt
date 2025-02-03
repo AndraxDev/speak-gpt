@@ -24,7 +24,6 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
@@ -73,6 +72,7 @@ import org.teslasoft.assistant.util.WindowInsetsUtil
 import org.teslasoft.core.auth.SystemInfo
 import org.teslasoft.core.auth.internal.ApplicationSignature
 import java.util.EnumSet
+import androidx.core.graphics.drawable.toDrawable
 
 class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener {
 
@@ -94,12 +94,9 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     private var root: ConstraintLayout? = null
     private var preferences: Preferences? = null
     private var btnDebugActivity: MaterialButton? = null
-
     private var needsRestart: Boolean = false
-
     private var selectedTab: Int = 1
     private var isInitialized: Boolean = false
-
     private var splashScreen: SplashScreen? = null
 
     @SuppressLint("SetTextI18n")
@@ -273,7 +270,11 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                         }
                     }
 
-                    val androidVersion = Build.VERSION.RELEASE
+                    var androidVersion = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Build.VERSION.RELEASE_OR_PREVIEW_DISPLAY else Build.VERSION.RELEASE
+
+                    if (androidVersion.lowercase() == "baklava") {
+                        androidVersion = "16 (Beta)"
+                    }
 
                     val pm = packageManager
                     val pi = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { pm.getInstallSourceInfo(packageName).installingPackageName } else { "<Current OS version is not supported>" }
@@ -283,6 +284,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                     val sha256 = signature.getCertificateFingerprint("SHA256")
 
                     devIds?.text = "${devIds?.text}\n\nInstallation ID: $installationId\nAndroid ID: $androidId"
+                    devIds?.text = "${devIds?.text}\nApp Version: ${packageManager.getPackageInfo(packageName, 0).versionName} (${packageManager.getPackageInfo(packageName, 0).versionCode})"
                     devIds?.text = "${devIds?.text}\nTeslasoft ID version: ${SystemInfo.NAME} ${SystemInfo.VERSION} (${SystemInfo.VERSION_CODE})"
                     devIds?.text = "${devIds?.text}\nKotlin language version: ${KotlinVersion.CURRENT}"
                     devIds?.text = "${devIds?.text}\nJava language version: 21 (LTS)"
@@ -295,8 +297,8 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                     devIds?.text = "${devIds?.text}\nProduct: ${Build.PRODUCT}"
                     devIds?.text = "${devIds?.text}\nBrand: ${Build.BRAND}"
                     devIds?.text = "${devIds?.text}\nInstall Source: $pi"
-                    devIds?.text = "${devIds?.text}\nCertificate SHA1: $sha1"
-                    devIds?.text = "${devIds?.text}\nCertificate SHA256: $sha256"
+                    devIds?.text = "${devIds?.text}\nPackage Certificate SHA1: $sha1"
+                    devIds?.text = "${devIds?.text}\nPackage Certificate SHA256: $sha256"
                 }
 
                 preInit()
@@ -335,7 +337,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
             if (preferences!!.getApiKey(this) == "") {
                 if (preferences!!.getOldApiKey() == "") {
                     startActivity(Intent(this, WelcomeActivity::class.java).setAction(Intent.ACTION_VIEW))
-                    getSharedPreferences("chat_list", Context.MODE_PRIVATE)?.edit()?.putString("data", "[]")?.apply()
+                    getSharedPreferences("chat_list", MODE_PRIVATE)?.edit()?.putString("data", "[]")?.apply()
                     finish()
                 } else {
                     preferences!!.secureApiKey(this)
@@ -369,7 +371,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
             val componentName = ComponentName(context, "org.teslasoft.assistant.pwa.PWAActivity")
             manager.getActivityInfo(componentName, PackageManager.GET_META_DATA)
             return true
-        } catch (e: Exception) { /* unused */ }
+        } catch (_: Exception) { /* unused */ }
 
         return false
     }
@@ -417,7 +419,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                 window.navigationBarColor = SurfaceColors.SURFACE_3.getColor(this)
                 window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
             }
-            val colorDrawable = ColorDrawable(SurfaceColors.SURFACE_0.getColor(this))
+            val colorDrawable = SurfaceColors.SURFACE_0.getColor(this).toDrawable()
             window.setBackgroundDrawable(colorDrawable)
             navigationBar!!.setBackgroundColor(SurfaceColors.SURFACE_3.getColor(this))
 

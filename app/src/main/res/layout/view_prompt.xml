@@ -110,9 +110,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="18dp"
+                android:layout_marginBottom="14dp"
                 android:maxLines="1"
                 android:text="%s"
+                android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/like_icon" />
 
