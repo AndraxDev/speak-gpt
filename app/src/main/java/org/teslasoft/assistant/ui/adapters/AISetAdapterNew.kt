@@ -77,14 +77,9 @@ class AISetAdapterNew(private val mContext: Context, private val dataArray: Arra
                 window.backgroundTintList = ColorStateList.valueOf(mContext.getColor(R.color.amoled_accent_50))
                 btnUseGlobally.backgroundTintList = ColorStateList.valueOf(mContext.getColor(R.color.amoled_accent_200))
                 btnGetApiKey.backgroundTintList = ColorStateList.valueOf(mContext.getColor(R.color.amoled_accent_200))
-
-                val drawable = ResourcesCompat.getDrawable(mContext.resources, R.drawable.mtrl_shape_clover, null)
-                val drawable2 = getAccentAmoledDrawable(drawable!!)
-
-                Glide.with(mContext).load(drawable2).into(setIconBg)
+                setIconBg.imageTintList = ColorStateList.valueOf(mContext.getColor(R.color.amoled_accent_200))
             } else {
-                val drawable = ResourcesCompat.getDrawable(mContext.resources, R.drawable.mtrl_shape_clover, null)
-                Glide.with(mContext).load(drawable!!).into(setIconBg)
+                setIconBg.imageTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_4.getColor(mContext))
             }
 
             setName.text = data["name"]

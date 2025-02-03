@@ -78,7 +78,7 @@
         android:listSelector="@android:color/transparent"
         android:nestedScrollingEnabled="false"
         android:paddingTop="40dp"
-        android:paddingBottom="16dp"
+        android:paddingBottom="20dp"
         android:scrollbars="none"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"

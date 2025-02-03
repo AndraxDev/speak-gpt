@@ -148,6 +148,8 @@
                 android:id="@+id/prompts"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:paddingBottom="16dp"
+                android:clipToPadding="false"
                 tools:listitem="@layout/view_prompt" />
 
         </LinearLayout>

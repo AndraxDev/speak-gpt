@@ -36,15 +36,10 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-</androidx.core.widget.NestedScrollView>
-    </FrameLayout>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="24dp"
-        app:layout_anchor="@+id/standard_bottom_sheet"
-        app:layout_anchorGravity="center">
+        android:paddingBottom="24dp">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_discard"
@@ -445,4 +440,7 @@
             app:layout_constraintTop_toBottomOf="@+id/radioGroup3" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
+    </FrameLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
