@@ -280,7 +280,7 @@ class PlaygroundFragment : Fragment() {
                     frequencyPenalty = if (preferences?.getFrequencyPenalty()?.toDouble() == 0.0) null else preferences?.getFrequencyPenalty()?.toDouble(),
                     presencePenalty = if (preferences?.getPresencePenalty()?.toDouble() == 0.0) null else preferences?.getPresencePenalty()?.toDouble(),
                     seed = if (preferences?.getSeed() != "") preferences?.getSeed()?.toInt() else null,
-                    logitBias = logitBiasPreferences?.getLogitBiasesMap(),
+                    logitBias = if (model == "o1" || model == "o1-mini" || model == "o3" || model == "o3-mini") null else logitBiasPreferences?.getLogitBiasesMap(),
                     messages = msgs
                 )
             } else {

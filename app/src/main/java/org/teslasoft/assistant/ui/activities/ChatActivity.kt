@@ -138,14 +138,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.io.files.Path
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.add
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonArray
 import kotlinx.serialization.json.putJsonObject
-import okio.FileSystem
-import okio.Path.Companion.toPath
+import kotlinx.io.files.SystemFileSystem
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ApiEndpointPreferences
 import org.teslasoft.assistant.preferences.ChatPreferences
@@ -176,6 +176,8 @@ import java.util.EnumSet
 import java.util.Locale
 import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration.Companion.seconds
+import androidx.core.graphics.scale
+import androidx.core.graphics.createBitmap
 
 
 class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
@@ -455,8 +457,27 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         }
     }
 
+    fun resizeBitmapToMaxHeight(bitmap: Bitmap, maxHeight: Int = 100): Bitmap {
+        val originalHeight = bitmap.height
+        val originalWidth = bitmap.width
+
+        if (originalHeight <= maxHeight) {
+            // Return a copy of the original bitmap if already smaller than or equal to maxHeight
+            return bitmap.copy(bitmap.config ?: return bitmap, true)
+        }
+
+        // Calculate the new dimensions while keeping the aspect ratio
+        val aspectRatio = originalWidth.toFloat() / originalHeight.toFloat()
+        val newHeight = maxHeight
+        val newWidth = (newHeight * aspectRatio).toInt()
+
+        // Create the scaled bitmap
+        return bitmap.scale(newWidth, newHeight)
+    }
+
+
     private var cameraIntentLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
+        if (result.resultCode == RESULT_OK) {
             val imageFile = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "tmp.jpg")
             val uri = FileProvider.getUriForFile(this, "org.teslasoft.assistant.fileprovider", imageFile)
 
@@ -464,7 +485,10 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
             if (bitmap != null) {
                 attachedImage?.visibility = View.VISIBLE
-                selectedImage?.setImageBitmap(roundCorners(bitmap!!))
+
+                val bitmapResizedForPreview = resizeBitmapToMaxHeight(bitmap!!, 100)
+
+                selectedImage?.setImageBitmap(roundCorners(bitmapResizedForPreview))
                 imageIsSelected = true
 
                 val mimeType = contentResolver.getType(uri)
@@ -1119,7 +1143,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
     private fun roundCorners(bitmap: Bitmap): Bitmap {
         // Create a bitmap with the same size as the original.
-        val output = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
+        val output = createBitmap(bitmap.width, bitmap.height)
 
         // Prepare a canvas with the new bitmap.
         val canvas = Canvas(output)
@@ -1135,7 +1159,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         val rectF = RectF(rect)
 
         // Draw rounded rectangle as background.
-        canvas.drawRoundRect(rectF, 80f, 80f, paint)
+        canvas.drawRoundRect(rectF, 16f, 16f, paint)
 
         // Change the paint mode to draw the original bitmap on top.
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
@@ -1154,7 +1178,10 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
                     if (bitmap != null) {
                         attachedImage?.visibility = View.VISIBLE
-                        selectedImage?.setImageBitmap(roundCorners(bitmap!!))
+
+                        val resizedBitmap = resizeBitmapToMaxHeight(bitmap!!, 100)
+
+                        selectedImage?.setImageBitmap(roundCorners(resizedBitmap))
                         imageIsSelected = true
 
                         val mimeType = contentResolver.getType(uri)
@@ -1473,8 +1500,8 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         try {
             val transcriptionRequest = TranscriptionRequest(
                 audio = FileSource(
-                    path = "${externalCacheDir?.absolutePath}/tmp.m4a".toPath(),
-                    fileSystem = FileSystem.SYSTEM
+                    path = Path("${externalCacheDir?.absolutePath}/tmp.m4a"),
+                    fileSystem = SystemFileSystem
                 ),
                 model = ModelId("whisper-1"),
             )
@@ -2025,7 +2052,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                         frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
                         presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble(),
                         prompt = request,
-                        logitBias = logitBiasPreferences?.getLogitBiasesMap(),
+                        logitBias = if (model == "o1" || model == "o1-mini" || model == "o3" || model == "o3-mini") null else logitBiasPreferences?.getLogitBiasesMap(),
                         echo = false
                     )
                 } else {
@@ -2299,7 +2326,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                 frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
                 presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble(),
                 seed = if (preferences!!.getSeed() != "") preferences!!.getSeed().toInt() else null,
-                logitBias = logitBiasPreferences?.getLogitBiasesMap(),
+                logitBias = if (model == "o1" || model == "o1-mini" || model == "o3" || model == "o3-mini") null else logitBiasPreferences?.getLogitBiasesMap(),
                 messages = msgs
             )
         } else {
@@ -2868,7 +2895,9 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
             if (bitmap != null) {
                 attachedImage?.visibility = View.VISIBLE
-                selectedImage?.setImageBitmap(roundCorners(bitmap!!))
+
+                val resizedBitmap = resizeBitmapToMaxHeight(bitmap!!, 100)
+                selectedImage?.setImageBitmap(roundCorners(resizedBitmap))
             }
         }
     }

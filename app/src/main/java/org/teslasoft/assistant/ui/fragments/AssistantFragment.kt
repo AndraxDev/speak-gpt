@@ -74,6 +74,7 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.scale
 import androidx.core.util.Pair
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -124,14 +125,14 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.add
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonArray
 import kotlinx.serialization.json.putJsonObject
-import okio.FileSystem
-import okio.Path.Companion.toPath
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ApiEndpointPreferences
 import org.teslasoft.assistant.preferences.ChatPreferences
@@ -163,6 +164,7 @@ import java.util.Base64
 import java.util.Locale
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.seconds
+import androidx.core.graphics.createBitmap
 
 class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListener {
 
@@ -267,7 +269,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
     private fun roundCorners(bitmap: Bitmap): Bitmap {
         // Create a bitmap with the same size as the original.
-        val output = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
+        val output = createBitmap(bitmap.width, bitmap.height)
 
         // Prepare a canvas with the new bitmap.
         val canvas = Canvas(output)
@@ -283,7 +285,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         val rectF = RectF(rect)
 
         // Draw rounded rectangle as background.
-        canvas.drawRoundRect(rectF, 80f, 80f, paint)
+        canvas.drawRoundRect(rectF, 16f, 16f, paint)
 
         // Change the paint mode to draw the original bitmap on top.
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
@@ -294,6 +296,24 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         return output
     }
 
+    fun resizeBitmapToMaxHeight(bitmap: Bitmap, maxHeight: Int = 100): Bitmap {
+        val originalHeight = bitmap.height
+        val originalWidth = bitmap.width
+
+        if (originalHeight <= maxHeight) {
+            // Return a copy of the original bitmap if already smaller than or equal to maxHeight
+            return bitmap.copy(bitmap.config ?: return bitmap, true)
+        }
+
+        // Calculate the new dimensions while keeping the aspect ratio
+        val aspectRatio = originalWidth.toFloat() / originalHeight.toFloat()
+        val newHeight = maxHeight
+        val newWidth = (newHeight * aspectRatio).toInt()
+
+        // Create the scaled bitmap
+        return bitmap.scale(newWidth, newHeight)
+    }
+
     private val fileIntentLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         run {
             if (result.resultCode == Activity.RESULT_OK) {
@@ -302,7 +322,10 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
                     if (bitmap != null) {
                         attachedImage?.visibility = View.VISIBLE
-                        selectedImage?.setImageBitmap(roundCorners(bitmap!!))
+
+                        val bitmapResizedForPreview = resizeBitmapToMaxHeight(bitmap!!, 100)
+
+                        selectedImage?.setImageBitmap(roundCorners(bitmapResizedForPreview))
                         imageIsSelected = true
 
                         val mimeType = mContext?.contentResolver?.getType(uri)
@@ -819,8 +842,8 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         try {
             val transcriptionRequest = TranscriptionRequest(
                 audio = FileSource(
-                    path = "${mContext?.externalCacheDir?.absolutePath}/tmp.m4a".toPath(),
-                    fileSystem = FileSystem.SYSTEM
+                    path = Path("${mContext?.externalCacheDir?.absolutePath}/tmp.m4a"),
+                    fileSystem = SystemFileSystem
                 ),
                 model = ModelId("whisper-1"),
             )
@@ -1074,7 +1097,10 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
                 if (bitmap != null) {
                     attachedImage?.visibility = View.VISIBLE
-                    selectedImage?.setImageBitmap(roundCorners(bitmap!!))
+
+                    val bitmapResizedForPreview = resizeBitmapToMaxHeight(bitmap!!, 100)
+
+                    selectedImage?.setImageBitmap(roundCorners(bitmapResizedForPreview))
                     imageIsSelected = true
 
                     val mimeType = mContext?.contentResolver?.getType(uri)
@@ -1382,7 +1408,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                         topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble(),
                         frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
                         presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble(),
-                        logitBias = logitBiasPreferences?.getLogitBiasesMap(),
+                        logitBias = if (model == "o1" || model == "o1-mini" || model == "o3" || model == "o3-mini") null else logitBiasPreferences?.getLogitBiasesMap(),
                         messages = listOf(
                             ChatMessage(
                                 role = ChatRole.System,
@@ -1471,7 +1497,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                         topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble(),
                         frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
                         presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble(),
-                        logitBias = logitBiasPreferences?.getLogitBiasesMap(),
+                        logitBias = if (model == "o1" || model == "o1-mini" || model == "o3" || model == "o3-mini") null else logitBiasPreferences?.getLogitBiasesMap(),
                         echo = false
                     )
                 } else {
@@ -1743,7 +1769,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                 topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble()
                 frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble()
                 presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble()
-                logitBias = logitBiasPreferences ?. getLogitBiasesMap ()
+                logitBias = if (this@AssistantFragment.model == "o1" || this@AssistantFragment.model == "o1-mini" || this@AssistantFragment.model == "o3" || this@AssistantFragment.model == "o3-mini") null else logitBiasPreferences ?. getLogitBiasesMap ()
                 messages = msgs
             }
         } else {
@@ -2115,7 +2141,10 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
             if (bitmap != null) {
                 attachedImage?.visibility = View.VISIBLE
-                selectedImage?.setImageBitmap(roundCorners(bitmap!!))
+
+                val resizedBitmap = resizeBitmapToMaxHeight(bitmap!!, 100)
+
+                selectedImage?.setImageBitmap(roundCorners(resizedBitmap))
                 imageIsSelected = true
 
                 val mimeType = mContext?.contentResolver?.getType(uri)
@@ -2398,7 +2427,9 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
             if (bitmap != null) {
                 attachedImage?.visibility = View.VISIBLE
-                selectedImage?.setImageBitmap(roundCorners(bitmap!!))
+
+                val resizedBitmap = resizeBitmapToMaxHeight(bitmap!!, 100)
+                selectedImage?.setImageBitmap(roundCorners(resizedBitmap))
             }
         }
 
@@ -2528,13 +2559,23 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                                     systemGestureInsets.bottom
                                 )
                             } else {
-                                setMargins(
-                                    vx,
-                                    0,
-                                    (activity?.window?.decorView?.rootWindowInsets?.getInsets(WindowInsets.Type.statusBars())?.top ?: 0),
-                                    0,
-                                    (activity?.window?.decorView?.rootWindowInsets?.getInsets(WindowInsets.Type.navigationBars())?.bottom ?: 0)
-                                )
+                                if ((activity?.window?.decorView?.rootWindowInsets?.getInsets(WindowInsets.Type.navigationBars())?.bottom ?: 0) == 0) {
+                                    setMargins(
+                                        vx,
+                                        0,
+                                        (activity?.window?.decorView?.rootWindowInsets?.getInsets(WindowInsets.Type.statusBars())?.top ?: 0),
+                                        0,
+                                        ((activity?.resources?.displayMetrics?.density ?: 0f) * 16).toInt()
+                                    )
+                                } else {
+                                    setMargins(
+                                        vx,
+                                        0,
+                                        (activity?.window?.decorView?.rootWindowInsets?.getInsets(WindowInsets.Type.statusBars())?.top ?: 0),
+                                        0,
+                                        (activity?.window?.decorView?.rootWindowInsets?.getInsets(WindowInsets.Type.navigationBars())?.bottom ?: 0)
+                                    )
+                                }
                             }
                         }
                     }

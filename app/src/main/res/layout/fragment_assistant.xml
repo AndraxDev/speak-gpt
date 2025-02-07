@@ -29,11 +29,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/assistant_normal"
-        android:elevation="16dp"
+        android:elevation="24dp"
         android:outlineAmbientShadowColor="@color/shadow_assistant"
         android:outlineSpotShadowColor="@color/shadow_assistant">
 
@@ -185,9 +185,9 @@
             android:layout_width="128dp"
             android:layout_height="128dp"
             android:background="@drawable/mtrl_clove_anim"
+            android:backgroundTint="@color/accent_250"
             android:elevation="0.02dp"
             android:orientation="horizontal"
-            android:backgroundTint="@color/accent_250"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -196,15 +196,15 @@
             android:id="@+id/assistant_voice_clickable"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:elevation="0.03dip"
-            android:contentDescription="@string/btn_speak"
-            android:orientation="horizontal"
             android:background="@null"
-            app:srcCompat="@drawable/ic_microphone"
+            android:contentDescription="@string/btn_speak"
+            android:elevation="0.03dip"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="@+id/btn_assistant_voice"
             app:layout_constraintEnd_toEndOf="@+id/btn_assistant_voice"
             app:layout_constraintStart_toStartOf="@+id/btn_assistant_voice"
-            app:layout_constraintTop_toTopOf="@+id/btn_assistant_voice" />
+            app:layout_constraintTop_toTopOf="@+id/btn_assistant_voice"
+            app:srcCompat="@drawable/ic_microphone" />
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/assistant_loading"

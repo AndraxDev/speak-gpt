@@ -32,6 +32,8 @@ import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.RectF
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.LineHeightSpan
@@ -80,6 +82,7 @@ import java.util.Collections
 import androidx.core.graphics.createBitmap
 import androidx.core.net.toUri
 import androidx.core.content.edit
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 
 class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, private val selectorProjection: ArrayList<HashMap<String, Any>>, private val context: FragmentActivity, private val preferences: Preferences, private val isAssistant: Boolean, private var chatId: String) : RecyclerView.Adapter<ChatAdapter.ViewHolder>(), EditMessageDialogFragment.StateChangesListener {
@@ -122,7 +125,7 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
             else -> R.layout.view_message
         }
         val view = LayoutInflater.from(parent.context).inflate(layoutId, parent, false)
-        return ViewHolder(view)
+        return ViewHolder(view, context)
     }
 
     fun setOnUpdateListener(listener: OnUpdateListener) {
@@ -183,7 +186,7 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
         listener?.onChangeBulkActionMode(true)
     }
 
-    open inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    open inner class ViewHolder(itemView: View, private val debugContext: Context) : RecyclerView.ViewHolder(itemView) {
         private val ui: ConstraintLayout = itemView.findViewById(R.id.ui)
         private val icon: ImageView = itemView.findViewById(R.id.icon)
         private val message: TextView = itemView.findViewById(R.id.message)
@@ -428,14 +431,30 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
                     })
                     .build()
 
-                markwon.setMarkdown(message, parseLatex(src))
+                markwon.setMarkdown(message, parseLatex(trimLineByLine(src)))
+
+                Handler(Looper.getMainLooper()).postDelayed({
+                    (debugContext as FragmentActivity).runOnUiThread {
+                        markwon.setMarkdown(message, parseLatex(trimLineByLine(src)))
+                    }
+                }, 100)
             } else {
                 message.text = chatMessage["message"].toString()
             }
         }
 
+        private fun trimLineByLine(str: String) : String {
+            val lines = str.split("\n")
+            val sb = StringBuilder()
+            for (line in lines) {
+                sb.append(line.trim()).append("\n")
+            }
+            return sb.toString()
+        }
+
         private fun parseLatex(markdown: String): String {
             val pattern = Regex("(`[^`]*`|```[\\s\\S]*?```)|\\\\\\[|\\\\\\]|\\\\\\(|\\\\\\)")
+            // val pattern = Regex("(`[^`]*`|```[\\s\\S]*?```)|\\\\\\[|\\\\]|\\\\\\(|\\\\\\)")
             val sb = StringBuilder()
             var index = 0
 

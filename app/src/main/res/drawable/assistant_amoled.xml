@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape>
-            <corners android:topLeftRadius="24dp" android:topRightRadius="24dp" android:bottomRightRadius="24dp" android:bottomLeftRadius="24dp"/>
-            <gradient android:type="linear" android:angle="315" android:startColor="@color/amoled_window_background" android:centerColor="@color/amoled_window_background" android:endColor="@color/amoled_window_background" android:useLevel="true"/>
+            <solid android:color="@color/amoled_window_background"/>
+            <corners android:radius="36dp"/>
         </shape>
     </item>
 </ripple>
