@@ -145,11 +145,13 @@ class AdvancedModelSelectorDialogFragment : DialogFragment() {
                 modelListAdapter?.notifyDataSetChanged()
                 progressBar?.visibility = View.GONE
             } catch (e: Exception) {
-                MaterialAlertDialogBuilder(requireContext())
-                    .setTitle(R.string.label_error)
-                    .setMessage(getString(R.string.msg_model_loading_error_with_details) + e.message.toString())
-                    .setPositiveButton(R.string.btn_ok) { _, _ -> this@AdvancedModelSelectorDialogFragment.dismiss() }
-                    .show()
+                if (context !== null) {
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(R.string.label_error)
+                        .setMessage(getString(R.string.msg_model_loading_error_with_details) + e.message.toString())
+                        .setPositiveButton(R.string.btn_ok) { _, _ -> this@AdvancedModelSelectorDialogFragment.dismiss() }
+                        .show()
+                }
             }
         }
 

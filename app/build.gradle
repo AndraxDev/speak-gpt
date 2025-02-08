@@ -19,7 +19,7 @@ android {
         minSdk 28
         targetSdk 35
         // targetSdkPreview "Baklava"
-        versionCode 42701
+        versionCode 42710
         versionName "4.27"
     }
 
