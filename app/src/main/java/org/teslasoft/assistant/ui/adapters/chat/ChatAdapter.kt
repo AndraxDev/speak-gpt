@@ -255,7 +255,13 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
             } else if (chatMessage["message"].toString().contains("~file:")) {
                 processFile(chatMessage, position, "png", dalleImageStringList, true)
             } else {
-                applyMarkdown(chatMessage, position)
+                applyMarkdown(chatMessage)
+
+                Handler(Looper.getMainLooper()).postDelayed({
+                    (debugContext as FragmentActivity).runOnUiThread {
+                        applyMarkdown(chatMessage)
+                    }
+                }, 100)
 
                 if (chatMessage["isBot"] == false && chatMessage["image"] !== null) {
                     dalleImage.visibility = View.VISIBLE
@@ -395,8 +401,8 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
         }
 
         @SuppressLint("SetTextI18n")
-        private fun applyMarkdown(chatMessage: HashMap<String, Any>, position: Int) {
-            if (dataArray[position]["isBot"] == true) {
+        private fun applyMarkdown(chatMessage: HashMap<String, Any>) {
+            if (chatMessage["isBot"] == true) {
                 val src = chatMessage["message"].toString()
                 val markwon: Markwon = Markwon.builder(context)
                     .usePlugin(HtmlPlugin.create())
@@ -433,11 +439,11 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
 
                 markwon.setMarkdown(message, parseLatex(trimLineByLine(src)))
 
-                Handler(Looper.getMainLooper()).postDelayed({
-                    (debugContext as FragmentActivity).runOnUiThread {
-                        markwon.setMarkdown(message, parseLatex(trimLineByLine(src)))
-                    }
-                }, 100)
+//                Handler(Looper.getMainLooper()).postDelayed({
+//                    (debugContext as FragmentActivity).runOnUiThread {
+//                        markwon.setMarkdown(message, parseLatex(trimLineByLine(src)))
+//                    }
+//                }, 100)
             } else {
                 message.text = chatMessage["message"].toString()
             }

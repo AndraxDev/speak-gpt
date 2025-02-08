@@ -19,8 +19,8 @@ android {
         minSdk 28
         targetSdk 35
         // targetSdkPreview "Baklava"
-        versionCode 42710
-        versionName "4.27"
+        versionCode 42810
+        versionName "4.28"
     }
 
     buildTypes {
@@ -34,8 +34,8 @@ android {
 
         debug {
             debuggable false
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             multiDexEnabled true
         }
