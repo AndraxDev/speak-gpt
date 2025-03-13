@@ -11,14 +11,12 @@ configurations {
 
 android {
     namespace 'org.teslasoft.assistant'
-    compileSdk 35
-    // compileSdkPreview "Baklava"
+    compileSdk 36
 
     defaultConfig {
         applicationId "org.teslasoft.assistant"
         minSdk 28
-        targetSdk 35
-        // targetSdkPreview "Baklava"
+        targetSdk 36
         versionCode 42810
         versionName "4.28"
     }
@@ -58,9 +56,9 @@ android {
 
 dependencies {
     implementation 'androidx.core:core-ktx:1.15.0'
-    implementation 'androidx.activity:activity-ktx:1.10.0'
+    implementation 'androidx.activity:activity-ktx:1.10.1'
     implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'com.google.android.material:material:1.13.0-alpha10'
+    implementation 'com.google.android.material:material:1.13.0-alpha11'
     implementation 'com.google.code.gson:gson:2.12.1'
     implementation 'com.aallam.openai:openai-client:4.0.1'
     implementation 'io.ktor:ktor-client-android:3.0.3'

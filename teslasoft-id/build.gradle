@@ -6,11 +6,11 @@ plugins {
 
 android {
     namespace 'org.teslasoft.core.auth'
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
         minSdk 28
-        targetSdk 35
+        targetSdk 36
     }
 
     buildTypes {
