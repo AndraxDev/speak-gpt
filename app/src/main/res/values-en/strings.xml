@@ -484,4 +484,5 @@
     <string name="set_frequency_penalty">Set frequency penalty</string>
     <string name="set_top_p">Set top_p</string>
     <string name="set_presence_penalty">Set presence penalty</string>
+    <string name="text_warn_shitposting">WARNING! Shitposting like random sequence of characters or words is not allowed. Please fill title and description properly so other people can understand what your prompt is about. Additionally, search algorithm indexes description and title. All prompts with unusual names will be either renamed or removed without notice. Thanks for understanding.\n\nFaithfully, App Developer!</string>
 </resources>

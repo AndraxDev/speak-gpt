@@ -481,4 +481,6 @@
     <string name="set_frequency_penalty">Nastaviť pokutu za frekvenciu</string>
     <string name="set_top_p">Nastaviť top_p</string>
     <string name="set_presence_penalty">Nastaviť pokutu za prítomnosť</string>
+    <string name="text_warn_shitposting">UPOZORNENIE! Shitposting, ako sú náhodné sekvencie znakov alebo slov, nie je povolený. Prosím, správne vyplňte názov a popis, aby ostatní pochopili, o čo vo vašom prompte ide. Navyše, vyhľadávací algoritmus indexuje názov a popis. Všetky prompty s neobvyklými názvami budú bez upozornenia premenované alebo odstránené. Ďakujeme za pochopenie.\n\nS úctou, Vývojár aplikácie!</string>
+
 </resources>

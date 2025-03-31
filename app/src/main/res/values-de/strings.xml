@@ -484,4 +484,6 @@
     <string name="set_frequency_penalty">Frequenzstrafe einstellen</string>
     <string name="set_top_p">Top_p einstellen</string>
     <string name="set_presence_penalty">Präsenzstrafe einstellen</string>
+    <string name="text_warn_shitposting">WARNUNG! Shitposting wie zufällige Zeichen- oder Wortfolgen ist nicht erlaubt. Bitte fülle Titel und Beschreibung korrekt aus, damit andere verstehen, worum es in deinem Prompt geht. Zusätzlich indiziert der Suchalgorithmus Titel und Beschreibung. Alle Prompts mit ungewöhnlichen Namen werden ohne Ankündigung umbenannt oder entfernt. Danke für dein Verständnis.\n\nMit freundlichen Grüßen, App-Entwickler!</string>
+
 </resources>

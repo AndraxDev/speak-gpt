@@ -482,4 +482,6 @@
     <string name="set_frequency_penalty">Ustaw karę za częstotliwość</string>
     <string name="set_top_p">Ustaw top_p</string>
     <string name="set_presence_penalty">Ustaw karę za obecność</string>
+    <string name="text_warn_shitposting">OSTRZEŻENIE! Shitposting, czyli losowe ciągi znaków lub słów, jest zabroniony. Proszę poprawnie wypełnić tytuł i opis, aby inni mogli zrozumieć, o co chodzi w Twoim promptcie. Dodatkowo algorytm wyszukiwania indeksuje tytuł i opis. Wszystkie promptcy z nietypowymi nazwami będą zmieniane lub usuwane bez ostrzeżenia. Dziękujemy za zrozumienie.\n\nZ poważaniem, Twórca aplikacji!</string>
+
 </resources>

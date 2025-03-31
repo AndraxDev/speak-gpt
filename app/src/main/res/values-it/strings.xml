@@ -485,4 +485,6 @@
     <string name="set_frequency_penalty">Imposta penalità di frequenza</string>
     <string name="set_top_p">Imposta top_p</string>
     <string name="set_presence_penalty">Imposta penalità di presenza</string>
+    <string name="text_warn_shitposting">ATTENZIONE! Non è consentito fare shitposting come sequenze casuali di caratteri o parole. Compila correttamente titolo e descrizione affinché gli altri possano capire di cosa tratta il tuo prompt. Inoltre, l\'algoritmo di ricerca indicizza titolo e descrizione. Tutti i prompt con nomi insoliti verranno rinominati o rimossi senza preavviso. Grazie per la comprensione.\n\nCordiali saluti, Sviluppatore dell\'app!</string>
+
 </resources>

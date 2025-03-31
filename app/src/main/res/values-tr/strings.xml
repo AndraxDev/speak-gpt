@@ -483,4 +483,6 @@
     <string name="set_frequency_penalty">Frekans cezasını ayarla</string>
     <string name="set_top_p">Top_p ayarla</string>
     <string name="set_presence_penalty">Varsayılan ceza ayarla</string>
+    <string name="text_warn_shitposting">UYARI! Rastgele karakter veya kelime dizisi gibi shitposting yapmak yasaktır. Lütfen başlık ve açıklamayı düzgün bir şekilde doldurun, böylece diğer kullanıcılar promptunuzun ne hakkında olduğunu anlayabilsin. Ayrıca arama algoritması başlık ve açıklamayı dizine ekler. Alışılmadık isimlere sahip tüm promptlar haber verilmeden yeniden adlandırılacak veya silinecektir. Anlayışınız için teşekkürler.\n\nSaygılar, Uygulama Geliştiricisi!</string>
+
 </resources>
