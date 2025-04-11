@@ -5,10 +5,6 @@
     <string name="avatar_gemini" translatable="false">Gemini</string>
     <string name="avatar_perplexity_ai" translatable="false">Perplexity AI</string>
 
-    <string name="ad_banner_unit_id" translatable="false">ca-app-pub-7410382345282120/1474294730</string>
-    <string name="ad_banner_unit_id_test" translatable="false">ca-app-pub-3940256099942544/9214589741</string>
-
-
     <string name="activation_prompt_set_message">Tap to set activation prompt</string>
     <string name="menu_chat">Chat</string>
     <string name="menu_prompts">Prompts</string>

@@ -255,7 +255,9 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
             } else if (chatMessage["message"].toString().contains("~file:")) {
                 processFile(chatMessage, position, "png", dalleImageStringList, true)
             } else {
-                applyMarkdown(chatMessage)
+                (debugContext as FragmentActivity).runOnUiThread {
+                    applyMarkdown(chatMessage)
+                }
 
                 Handler(Looper.getMainLooper()).postDelayed({
                     (debugContext as FragmentActivity).runOnUiThread {
@@ -437,13 +439,8 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
                     })
                     .build()
 
-                markwon.setMarkdown(message, parseLatex(trimLineByLine(src)))
-
-//                Handler(Looper.getMainLooper()).postDelayed({
-//                    (debugContext as FragmentActivity).runOnUiThread {
-//                        markwon.setMarkdown(message, parseLatex(trimLineByLine(src)))
-//                    }
-//                }, 100)
+                val pre = parseLatex(trimLineByLine(src))
+                markwon.setMarkdown(message, pre)
             } else {
                 message.text = chatMessage["message"].toString()
             }
@@ -481,6 +478,26 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
                 }
             }
             sb.append(markdown.substring(index))
+
+            val s = sb.toString()
+
+            val openMatrixPattern = "\\begin{bmatrix}"
+            val closeMatrixPattern = "\\end{bmatrix}"
+            val openedMatricesCount = s.split(openMatrixPattern).size - 1
+            val closedMatricesCount = s.split(closeMatrixPattern).size - 1
+
+            val openMathPattern = "\\["
+            val closeMathPattern = "\\]"
+            val openedMathCount = s.split(openMathPattern).size - 1
+            val closedMathCount = s.split(closeMathPattern).size - 1
+
+            if (openedMatricesCount > closedMatricesCount) {
+                sb.append("\\end{bmatrix}")
+            }
+
+            if (openedMathCount > closedMathCount) {
+                sb.append("\n\\]")
+            }
 
             return sb.toString()
         }
