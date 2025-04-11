@@ -197,7 +197,7 @@
     <string name="ds_conversation_contents">• Contenuti delle conversazioni</string>
     <string name="ds_audio_samples_of_your_voice">• Campioni audio della tua voce</string>
     <string name="ds_api_keys">• Chiavi API</string>
-    <string name="dsnote_nocollect_1">Queste informazioni sono salvate in sicurezza solo sul tuo dispositivo, ma potrebbero essere inviate a OpenAI per fornire funzionalità di base. Questi dati non sono utilizzati per addestrare i modelli.</string>
+    <string name="dsnote_nocollect_1">SpeakGPT non raccoglie queste informazioni, ma a seconda del fornitore di API utilizzato (come OpenAI, OpenRouter, ecc.) alcuni di questi dati potrebbero essere salvati da questi fornitori. Quando chatti con SpeakGPT, trasferiamo la tua conversazione direttamente al fornitore di API e non la salviamo sui nostri server. Si prega di consultare l\'Informativa sulla Privacy del fornitore di API che si sta utilizzando per saperne di più su come vengono elaborati i vostri dati.</string>
     <string name="ds_optional_collect">Dati facoltativi che potremmo raccogliere</string>
     <string name="ds_installation_id">• ID di installazione*</string>
     <string name="ds_crash_logs">• Log di crash</string>
@@ -486,5 +486,5 @@
     <string name="set_top_p">Imposta top_p</string>
     <string name="set_presence_penalty">Imposta penalità di presenza</string>
     <string name="text_warn_shitposting">ATTENZIONE! Non è consentito fare shitposting come sequenze casuali di caratteri o parole. Compila correttamente titolo e descrizione affinché gli altri possano capire di cosa tratta il tuo prompt. Inoltre, l\'algoritmo di ricerca indicizza titolo e descrizione. Tutti i prompt con nomi insoliti verranno rinominati o rimossi senza preavviso. Grazie per la comprensione.\n\nCordiali saluti, Sviluppatore dell\'app!</string>
-
+    <string name="ds_lite_dont_collect_explanation">SpeakGPT non raccoglie queste informazioni, ma a seconda del fornitore di API utilizzato (come OpenAI, OpenRouter, ecc.) alcuni di questi dati potrebbero essere salvati da questi fornitori. Quando chatti con SpeakGPT, trasferiamo la tua conversazione direttamente al fornitore di API e non la salviamo sui nostri server. Tutti i dati salvati localmente sono protetti con crittografia di livello militare (AES-256-GCM). Si prega di consultare l\'Informativa sulla Privacy del fornitore di API che si sta utilizzando per saperne di più su come vengono elaborati i vostri dati.</string>
 </resources>

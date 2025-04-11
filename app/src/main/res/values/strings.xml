@@ -206,7 +206,7 @@
     <string name="ds_conversation_contents">• Conversation contents</string>
     <string name="ds_audio_samples_of_your_voice">• Audio samples of your voice</string>
     <string name="ds_api_keys">• API keys</string>
-    <string name="dsnote_nocollect_1">This info is securely saved only on your device, but it might be sent to OpenAI to provide basic functionality. This data is not used to train models.</string>
+    <string name="dsnote_nocollect_1">SpeakGPT does not collect these info, but depending on API provider used (like OpenAI, OpenRouter, etc) some of these data may be saved by these providers. When you chat with SpeakGPT, we transfer your conversation directly to API provider and do not save it on our servers. Please review Privacy Policy of API provider you are using to learn more about how your data is processed.</string>
     <string name="ds_optional_collect">Optional data we may collect</string>
     <string name="ds_installation_id">• Installation ID*</string>
     <string name="ds_crash_logs">• Crash logs</string>
@@ -510,4 +510,5 @@
     <string name="set_top_p">Set top_p</string>
     <string name="set_presence_penalty">Set presence penalty</string>
     <string name="text_warn_shitposting">WARNING! Shitposting like random sequence of characters or words is not allowed. Please fill title and description properly so other people can understand what your prompt is about. Additionally, search algorithm indexes description and title. All prompts with unusual names will be either renamed or removed without notice. Thanks for understanding.\n\nFaithfully, App Developer!</string>
+    <string name="ds_lite_dont_collect_explanation">SpeakGPT does not collect these info, but depending on API provider used (like OpenAI, OpenRouter, etc) some of these data may be saved by these providers. When you chat with SpeakGPT, we transfer your conversation directly to API provider and do not save it on our servers. All data saved locally is secured with a military-grade encryption (AES-256-GCM). Please review Privacy Policy of API provider you are using to learn more about how your data is processed.</string>
 </resources>

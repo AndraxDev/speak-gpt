@@ -196,7 +196,7 @@
     <string name="ds_conversation_contents">• Zawartość rozmów</string>
     <string name="ds_audio_samples_of_your_voice">• Próbki audio twojego głosu</string>
     <string name="ds_api_keys">• Klucze API</string>
-    <string name="dsnote_nocollect_1">Te informacje są bezpiecznie przechowywane tylko na Twoim urządzeniu, ale mogą być wysyłane do OpenAI w celu zapewnienia podstawowej funkcjonalności. Te dane nie są wykorzystywane do trenowania modeli.</string>
+    <string name="dsnote_nocollect_1">SpeakGPT nie zbiera tych informacji, ale w zależności od używanego dostawcy API (takiego jak OpenAI, OpenRouter itp.) niektóre z tych danych mogą być zapisywane przez tych dostawców. Gdy rozmawiasz z SpeakGPT, przekazujemy Twoją rozmowę bezpośrednio do dostawcy API i nie zapisujemy jej na naszych serwerach. Proszę zapoznać się z Polityką Prywatności dostawcy API, którego używasz, aby dowiedzieć się więcej o tym, jak są przetwarzane Twoje dane.</string>
     <string name="ds_optional_collect">Opcjonalne dane, które możemy zbierać</string>
     <string name="ds_installation_id">• ID instalacji*</string>
     <string name="ds_crash_logs">• Logi błędów</string>
@@ -483,5 +483,5 @@
     <string name="set_top_p">Ustaw top_p</string>
     <string name="set_presence_penalty">Ustaw karę za obecność</string>
     <string name="text_warn_shitposting">OSTRZEŻENIE! Shitposting, czyli losowe ciągi znaków lub słów, jest zabroniony. Proszę poprawnie wypełnić tytuł i opis, aby inni mogli zrozumieć, o co chodzi w Twoim promptcie. Dodatkowo algorytm wyszukiwania indeksuje tytuł i opis. Wszystkie promptcy z nietypowymi nazwami będą zmieniane lub usuwane bez ostrzeżenia. Dziękujemy za zrozumienie.\n\nZ poważaniem, Twórca aplikacji!</string>
-
+    <string name="ds_lite_dont_collect_explanation">SpeakGPT nie zbiera tych informacji, ale w zależności od używanego dostawcy API (takiego jak OpenAI, OpenRouter itp.) niektóre z tych danych mogą być zapisywane przez tych dostawców. Gdy rozmawiasz z SpeakGPT, przekazujemy Twoją rozmowę bezpośrednio do dostawcy API i nie zapisujemy jej na naszych serwerach. Wszystkie dane zapisane lokalnie są zabezpieczone szyfrowaniem o stopniu wojskowym (AES-256-GCM). Proszę zapoznać się z Polityką Prywatności dostawcy API, którego używasz, aby dowiedzieć się więcej o tym, jak są przetwarzane Twoje dane.</string>
 </resources>

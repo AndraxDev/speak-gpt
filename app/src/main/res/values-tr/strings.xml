@@ -196,7 +196,7 @@
     <string name="ds_conversation_contents">• Sohbet içerikleri</string>
     <string name="ds_audio_samples_of_your_voice">• Sesinizin ses örnekleri</string>
     <string name="ds_api_keys">• API anahtarları</string>
-    <string name="dsnote_nocollect_1">Bu bilgi sadece cihazınızda güvenle saklanır, ancak temel işlevselliği sağlamak için OpenAI\'ye gönderilebilir. Bu veri modelleri eğitmek için kullanılmaz.</string>
+    <string name="dsnote_nocollect_1">SpeakGPT bu bilgileri toplamaz, ancak kullanılan API sağlayıcısına bağlı olarak (OpenAI, OpenRouter gibi) bu veriler bazı sağlayıcılar tarafından saklanabilir. SpeakGPT ile sohbet ettiğinizde, konuşmanızı doğrudan API sağlayıcısına aktarırız ve sunucularımızda saklamayız. Verilerinizin nasıl işlendiği hakkında daha fazla bilgi edinmek için kullandığınız API sağlayıcısının Gizlilik Politikasını inceleyiniz.</string>
     <string name="ds_optional_collect">İsteğe Bağlı Topladığımız Veriler</string>
     <string name="ds_installation_id">• Kurulum Kimliği*</string>
     <string name="ds_crash_logs">• Çökme kayıtları</string>
@@ -484,5 +484,5 @@
     <string name="set_top_p">Top_p ayarla</string>
     <string name="set_presence_penalty">Varsayılan ceza ayarla</string>
     <string name="text_warn_shitposting">UYARI! Rastgele karakter veya kelime dizisi gibi shitposting yapmak yasaktır. Lütfen başlık ve açıklamayı düzgün bir şekilde doldurun, böylece diğer kullanıcılar promptunuzun ne hakkında olduğunu anlayabilsin. Ayrıca arama algoritması başlık ve açıklamayı dizine ekler. Alışılmadık isimlere sahip tüm promptlar haber verilmeden yeniden adlandırılacak veya silinecektir. Anlayışınız için teşekkürler.\n\nSaygılar, Uygulama Geliştiricisi!</string>
-
+    <string name="ds_lite_dont_collect_explanation">SpeakGPT bu bilgileri toplamaz, ancak kullanılan API sağlayıcısına bağlı olarak (OpenAI, OpenRouter gibi) bu veriler bazı sağlayıcılar tarafından saklanabilir. SpeakGPT ile sohbet ettiğinizde, konuşmanızı doğrudan API sağlayıcısına aktarırız ve sunucularımızda saklamayız. Yerel olarak saklanan tüm veriler askeri düzeyde şifreleme (AES-256-GCM) ile korunur. Verilerinizin nasıl işlendiği hakkında daha fazla bilgi edinmek için kullandığınız API sağlayıcısının Gizlilik Politikasını inceleyiniz.</string>
 </resources>
