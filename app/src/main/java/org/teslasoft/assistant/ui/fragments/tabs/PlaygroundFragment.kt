@@ -63,6 +63,7 @@ import org.teslasoft.assistant.preferences.LogitBiasPreferences
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
 import org.teslasoft.assistant.ui.fragments.dialogs.QuickSettingsBottomSheetDialogFragment
+import org.teslasoft.assistant.ui.fragments.dialogs.ReportAIContentBottomSheet
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration.Companion.seconds
@@ -79,6 +80,7 @@ class PlaygroundFragment : Fragment() {
     private var runLoader: LoadingIndicator? = null
     private var editTextIn: EditText? = null
     private var editTextOut: EditText? = null
+    private var btnReport: ImageButton? = null
 
     private var apiEndpointPreferences: ApiEndpointPreferences? = null
     private var logitBiasPreferences: LogitBiasPreferences? = null
@@ -121,6 +123,7 @@ class PlaygroundFragment : Fragment() {
         editTextOut = view.findViewById(R.id.editTextOut)
         btnSettings = view.findViewById(R.id.btn_settings)
         layoutBottom = view.findViewById(R.id.layout_bottom)
+        btnReport = view.findViewById(R.id.btn_report_playground_abuse)
 
         runLoader?.visibility = View.GONE
 
@@ -191,6 +194,15 @@ class PlaygroundFragment : Fragment() {
             }
         }
 
+        btnReport?.setOnClickListener {
+            if (editTextOut?.text?.toString()?.trim() == "") {
+                Toast.makeText(context, "Nothing to report", Toast.LENGTH_SHORT).show()
+            } else {
+                val reportAIContentBottomSheet = ReportAIContentBottomSheet.newInstance(editTextOut?.text?.toString() ?: "", "", false, editTextIn?.text?.toString() ?: "")
+                reportAIContentBottomSheet.show(parentFragmentManager, "ReportAIContentBottomSheet")
+            }
+        }
+
         btnTokenize?.setOnClickListener {
             runLoader?.visibility = View.VISIBLE
             btnStop?.visibility = View.VISIBLE
@@ -231,10 +243,12 @@ class PlaygroundFragment : Fragment() {
 
         clearIn?.setOnClickListener {
             editTextIn?.setText("")
+            Toast.makeText(requireActivity(), "Input cleared", Toast.LENGTH_SHORT).show()
         }
 
         clearOut?.setOnClickListener {
             editTextOut?.setText("")
+            Toast.makeText(requireActivity(), "Output cleared", Toast.LENGTH_SHORT).show()
         }
 
         val config = OpenAIConfig(

@@ -109,6 +109,22 @@
                 app:layout_constraintTop_toBottomOf="@+id/image_frame">
 
                 <ImageButton
+                    android:id="@+id/btn_report"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_accent_tonal"
+                    android:contentDescription="Report abuse"
+                    android:descendantFocusability="blocksDescendants"
+                    android:src="@drawable/ic_report"
+                    android:tooltipText="Report abuse"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_retry"
+                    app:layout_constraintTop_toTopOf="@+id/username"
+                    app:srcCompat="@drawable/ic_report" />
+
+                <ImageButton
                     android:id="@+id/btn_retry"
                     android:layout_width="32dp"
                     android:layout_height="32dp"

@@ -178,6 +178,7 @@ import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration.Companion.seconds
 import androidx.core.graphics.scale
 import androidx.core.graphics.createBitmap
+import androidx.core.net.toUri
 
 
 class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
@@ -1352,7 +1353,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                 addCategory(Intent.CATEGORY_OPENABLE)
                 type = "application/json"
                 putExtra(Intent.EXTRA_TITLE, "$chatId.json")
-                putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.parse("/mnt/sdcard/SpeakGPT/$chatId.json"))
+                putExtra(DocumentsContract.EXTRA_INITIAL_URI, (Environment.getExternalStorageDirectory().path + "/SpeakGPT/$chatId.json").toUri())
             }
             fileSaveIntentLauncher.launch(intent)
         }
@@ -1375,8 +1376,8 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
     private fun writeToFile(uri: Uri) {
         try {
             contentResolver.openFileDescriptor(uri, "w")?.use {
-                FileOutputStream(it.fileDescriptor).use {
-                    it.write(
+                FileOutputStream(it.fileDescriptor).use { stream ->
+                    stream.write(
                         fileContents
                     )
                 }

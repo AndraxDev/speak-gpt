@@ -25,6 +25,20 @@
     android:clickable="true"
     android:paddingBottom="8dp">
 
+    <ImageButton
+        android:id="@+id/btn_report"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="2dp"
+        android:background="@color/transparent"
+        android:contentDescription="Report abuse"
+        android:descendantFocusability="blocksDescendants"
+        android:src="@drawable/ic_report"
+        android:tooltipText="Report abuse"
+        app:layout_constraintEnd_toStartOf="@+id/btn_retry"
+        app:layout_constraintTop_toTopOf="@+id/username"
+        app:srcCompat="@drawable/ic_report" />
+
     <TextView
         android:id="@+id/username"
         android:layout_width="0dp"

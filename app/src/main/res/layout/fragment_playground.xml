@@ -23,6 +23,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageButton
+        android:id="@+id/btn_report_playground_abuse"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/btn_accent_tonal"
+        android:contentDescription="Report abuse"
+        android:src="@drawable/ic_report"
+        android:tooltipText="Report abuse"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_report" />
+
     <TextView
         android:id="@+id/textView27"
         android:layout_width="wrap_content"

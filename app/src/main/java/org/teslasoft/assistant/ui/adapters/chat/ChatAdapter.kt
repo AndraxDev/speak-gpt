@@ -83,6 +83,7 @@ import androidx.core.graphics.createBitmap
 import androidx.core.net.toUri
 import androidx.core.content.edit
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import org.teslasoft.assistant.ui.fragments.dialogs.ReportAIContentBottomSheet
 
 
 class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, private val selectorProjection: ArrayList<HashMap<String, Any>>, private val context: FragmentActivity, private val preferences: Preferences, private val isAssistant: Boolean, private var chatId: String) : RecyclerView.Adapter<ChatAdapter.ViewHolder>(), EditMessageDialogFragment.StateChangesListener {
@@ -196,12 +197,14 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
         private val btnCopy: ImageButton = itemView.findViewById(R.id.btn_copy)
         private val btnEdit: ImageButton = itemView.findViewById(R.id.btn_edit)
         private val btnRetry: ImageButton = itemView.findViewById(R.id.btn_retry)
+        private val btnReport: ImageButton = itemView.findViewById(R.id.btn_report)
 
         @SuppressLint("SetTextI18n", "SetJavaScriptEnabled")
         open fun bind(chatMessage: HashMap<String, Any>, position: Int) {
 
             updateUI(chatMessage)
             updateRetryButton(chatMessage, position)
+            updateReportButton(chatMessage)
 
             if (selectorProjection[position]["selected"].toString() == "true") {
                 ui.setBackgroundColor(getSurface3Color(context))
@@ -218,6 +221,11 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
                 if (bulkActionMode) {
                     switchBulkActionState(position)
                 }
+            }
+
+            btnReport.setOnClickListener {
+                val reportBottomSheet = ReportAIContentBottomSheet.newInstance(chatMessage["message"].toString(), chatId, true)
+                reportBottomSheet.show(context.supportFragmentManager, "ReportAIContentBottomSheet")
             }
 
             message.setOnLongClickListener {
@@ -296,6 +304,14 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
                 updateBubbleLayout(chatMessage)
             } else {
                 updateClassicLayout(chatMessage)
+            }
+        }
+
+        private fun updateReportButton(chatMessage: HashMap<String, Any>) {
+            if (chatMessage["isBot"] == true) {
+                btnReport.visibility = View.VISIBLE
+            } else {
+                btnReport.visibility = View.GONE
             }
         }
 
