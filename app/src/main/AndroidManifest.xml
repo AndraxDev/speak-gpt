@@ -340,6 +340,14 @@
             android:launchMode="singleTask">
         </activity>
 
+        <activity
+            android:name="org.teslasoft.assistant.ui.activities.InstructionsForDegradedTeapotsWithZeroIQDesignedForGoogleReviewersActivity"
+            android:exported="false"
+            android:theme="@style/UI.Fade"
+            android:label="How to use SpeakGPT?"
+            android:launchMode="singleTask">
+        </activity>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="org.teslasoft.assistant.fileprovider"

@@ -147,6 +147,7 @@ class PlaygroundFragment : Fragment() {
         apiEndpoint = apiEndpointPreferences?.getApiEndpoint(context, preferences?.getApiEndpointId() ?: return)
 
         btnSettings?.background = getDisabledDrawable(ResourcesCompat.getDrawable(context.resources, R.drawable.btn_accent_tonal, context.theme)!!)
+        btnReport?.background = getDisabledDrawable(ResourcesCompat.getDrawable(context.resources, R.drawable.btn_accent_tonal, context.theme)!!)
 
         if (isDarkThemeEnabled() && preferences!!.getAmoledPitchBlack()) {
             layoutBottom?.background = ResourcesCompat.getDrawable(context.resources, R.drawable.playground_bottom_amoled, context.theme)

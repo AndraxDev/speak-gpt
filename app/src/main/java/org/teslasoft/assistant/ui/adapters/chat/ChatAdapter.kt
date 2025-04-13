@@ -17,6 +17,7 @@
 package org.teslasoft.assistant.ui.adapters.chat
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -48,6 +49,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
@@ -84,6 +86,10 @@ import androidx.core.net.toUri
 import androidx.core.content.edit
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.teslasoft.assistant.ui.fragments.dialogs.ReportAIContentBottomSheet
+import org.teslasoft.assistant.util.ShareUtil.Companion.shareBase64Image
+import org.teslasoft.assistant.util.ShareUtil.Companion.sharePlainText
+import java.io.FileOutputStream
+import java.io.OutputStream
 
 
 class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, private val selectorProjection: ArrayList<HashMap<String, Any>>, private val context: FragmentActivity, private val preferences: Preferences, private val isAssistant: Boolean, private var chatId: String) : RecyclerView.Adapter<ChatAdapter.ViewHolder>(), EditMessageDialogFragment.StateChangesListener {
@@ -198,6 +204,7 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
         private val btnEdit: ImageButton = itemView.findViewById(R.id.btn_edit)
         private val btnRetry: ImageButton = itemView.findViewById(R.id.btn_retry)
         private val btnReport: ImageButton = itemView.findViewById(R.id.btn_report)
+        private val btnShare: ImageButton = itemView.findViewById(R.id.btn_share)
 
         @SuppressLint("SetTextI18n", "SetJavaScriptEnabled")
         open fun bind(chatMessage: HashMap<String, Any>, position: Int) {
@@ -205,6 +212,7 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
             updateUI(chatMessage)
             updateRetryButton(chatMessage, position)
             updateReportButton(chatMessage)
+            updateShareButton(chatMessage)
 
             if (selectorProjection[position]["selected"].toString() == "true") {
                 ui.setBackgroundColor(getSurface3Color(context))
@@ -279,6 +287,10 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
                     processFile(chatMessage, position, chatMessage["imageType"].toString(), imageStringList, false)
                 } else {
                     dalleImage.visibility = View.GONE
+
+                    btnShare.setOnClickListener {
+                        sharePlainText(context, chatMessage["message"].toString())
+                    }
                 }
 
                 message.visibility = View.VISIBLE
@@ -312,6 +324,14 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
                 btnReport.visibility = View.VISIBLE
             } else {
                 btnReport.visibility = View.GONE
+            }
+        }
+
+        private fun updateShareButton(chatMessage: HashMap<String, Any>) {
+            if (chatMessage["isBot"] == true) {
+                btnShare.visibility = View.VISIBLE
+            } else {
+                btnShare.visibility = View.GONE
             }
         }
 
@@ -566,6 +586,10 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
         private fun loadImage(url: String) {
             val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(convertDpToPixel(context).toInt()))
             Glide.with(context).load(url.toUri()).apply(requestOptions).into(dalleImage)
+
+            btnShare.setOnClickListener {
+                shareBase64Image(context, url, "png")
+            }
         }
 
         private fun updateImageClickListener(url: String) {

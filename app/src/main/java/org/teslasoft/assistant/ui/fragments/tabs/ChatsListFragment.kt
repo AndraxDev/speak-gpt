@@ -66,6 +66,7 @@ import org.teslasoft.assistant.util.Hash
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import kotlin.math.abs
+import androidx.core.net.toUri
 
 
 class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, ChatListAdapter.OnInteractionListener {
@@ -377,7 +378,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
         }
 
         btnImport?.setOnClickListener {
-            openFile(Uri.parse("/storage/emulated/0/chat.json"))
+            openFile("/storage/emulated/0/chat.json".toUri())
         }
 
         btnBulkSelectAll?.setOnClickListener {
@@ -450,8 +451,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
 
     private fun isValidJson(jsonStr: String?): Boolean {
         return try {
-            val gson = Gson()
-            gson.fromJson(jsonStr, ArrayList::class.java)
+            Gson().fromJson(jsonStr, ArrayList::class.java)
             true
         } catch (ex: JsonSyntaxException) {
             false

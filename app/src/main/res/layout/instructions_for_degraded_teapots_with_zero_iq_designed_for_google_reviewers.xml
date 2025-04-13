@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textView52"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="How to use this app"
+            android:textColor="@color/text_title"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView53"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:text="Here you can find common features and tips how to use them."
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView52" />
+
+        <TextView
+            android:id="@+id/textView54"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:text="● Chat (chat history is saved locally and can be imported/exported is needed) - Click 'New Chat' button to start a chat. You can check 'Name this chat automatically' so AI will create chat name based on your first interaction with it.\n● Images generation (DALL-e) - To access this feature, you need to have OpenAI API endpoint set and enabled the following features: Slash commands or Function calling. We suggest to use slash commands. It is more stable. When using slash commands, type /imagine 'your prompt' to create an image. Image generation is available in chats and assistant mode, but not in playground.\n● GPT 4 Vision access (use your photos and images with GPT) - By clicking attach button in a chat or in assistant mode, you can either select an image from your gallery or open a camera. Then enter supporting prompt (optional) and click send.\n● Custom AI models (fine-tuned) are supported - Depending on AI services provider selected, you can use your fine-tuned models directly in SpeakGPT. To set a model, open Chat/Global settings > Text generation model > See all models, and select your model. If you couldn't find your model, you can select 'Custom' model and enter model name manually.\n● Activation prompt - This feature allows you to set a prompt that will be send as your first message to 'set up' AI model. Look for this features in app settings.\n● System prompt - This prompt is used to provide extra instructions to AI model. Look for this feature in app settings.\n● Assistant - You can set SpeakGPT as your default digital assistant and access it quickly using system gestures. Gestures may vary depending on your device. To set SpeakGPT as your default assistant, go to app settings > Default assistant.\n● SpeakGPT in context menu - You can access SpeakGPT from context menus of other apps. Please make note, that some apps (like web browsers) may override their context menus, so SpeakGPT may not be available in all apps.\n● SpeakGPT in Share sheet - You can share text and images with SpeakGPT. An assistant window will be opened asking you what you want to do with shared content.\n● A lot of different models (GPT 4 is supported!) - This app allows you to select all possible models for selected AI service provider.\n● No annoying captchas and paywalls - This app does not allow you to create an account and have no ads or paid memberships. Instead of creating an account, this app requires an API key that can be easily managed through your AI services provider account settings. By using API keys you are guarding your privacy and ensuring that your account remains private and safe.\n● Pay as you go system - Most of the AI service providers supports pay-as-you-go plan. It means that you are paying only for what you use. Some of AI service providers have free models.\n● Tips for newbies\n● Advanced support - If you found a problem, please contact use by openning an issues on GitHub repository page. We will respond shortly.\n● Different API providers - This app allows you to use different AI service providers like OpenAI, OpenRouter, Groq, etc. Please make sure that AI service provider is compatible with OpenAI API 1.0 format.\n● Set LLM params like temperature, top_p, frequencyPenalty, presencePenalty and logit_bias - Open chat and click chat name to open quick settings. Here you can set model parameters. Please note that some models does not support setting custom parameters.\n● Compatible with OpenRouter - You can use most of the models from OpenRouter in this app. OpenRouter grants you access to more than 100 different AI models.\n● Playground to test text generation models - This feature is mostly used to perform bulk actions like translations. Image generation is not supported here."
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView53" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

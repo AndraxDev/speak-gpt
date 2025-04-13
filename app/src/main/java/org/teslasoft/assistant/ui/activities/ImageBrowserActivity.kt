@@ -43,11 +43,14 @@ import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.Base64
+import androidx.core.net.toUri
+import org.teslasoft.assistant.util.ShareUtil.Companion.shareBase64Image
 
 class ImageBrowserActivity : FragmentActivity() {
 
     private var image: ImageView? = null
     private var btnDownload: FloatingActionButton? = null
+    private var btnShare: FloatingActionButton? = null
     private var fileContents: ByteArray? = null
     private var attacher: PhotoViewAttacher? = null
     private var layoutLoading: LinearLayout? = null
@@ -67,6 +70,7 @@ class ImageBrowserActivity : FragmentActivity() {
         image = findViewById(R.id.image)
         btnDownload = findViewById(R.id.btn_download)
         layoutLoading = findViewById(R.id.layout_loading)
+        btnShare = findViewById(R.id.btn_share)
 
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
@@ -95,7 +99,7 @@ class ImageBrowserActivity : FragmentActivity() {
         val url: String? = sharedPreferences.getString("tmp", null)
 
         if (url != null) {
-            Glide.with(this).load(Uri.parse(url)).into(image!!)
+            Glide.with(this).load(url.toUri()).into(image!!)
 
             Handler(Looper.getMainLooper()).postDelayed({
                 attacher?.update()
@@ -122,9 +126,14 @@ class ImageBrowserActivity : FragmentActivity() {
                     addCategory(Intent.CATEGORY_OPENABLE)
                     type = "image/$imageType"
                     putExtra(Intent.EXTRA_TITLE, if (imageType == "jpeg") "image.jpg" else "image.png")
-                    putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.parse("/storage/emulated/0/Pictures/SpeakGPT/exported.${if (imageType == "jpeg") "jpg" else "png"}"))
+                    putExtra(DocumentsContract.EXTRA_INITIAL_URI, "/storage/emulated/0/Pictures/SpeakGPT/exported.${if (imageType == "jpeg") "jpg" else "png"}".toUri())
                 }
                 fileSaveIntentLauncher.launch(intent)
+            }
+
+            btnShare?.setOnClickListener {
+                val imageType = url.substringAfter("data:image/").substringBefore(";")
+                shareBase64Image(this, url, imageType)
             }
         } else {
             finish()

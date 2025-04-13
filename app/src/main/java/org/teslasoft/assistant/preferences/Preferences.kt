@@ -80,6 +80,15 @@ class Preferences private constructor(private var preferences: SharedPreferences
     }
 
     /**
+     * Removes a key from the global shared preferences.
+     *
+     * @param param The key to be removed.
+     */
+    private fun removeKey(param: String) {
+        gp.edit()?.remove(param)?.apply()
+    }
+
+    /**
      * Puts a global String value in the shared preferences.
      *
      * @param param The key with which the value is to be associated.
@@ -204,10 +213,10 @@ class Preferences private constructor(private var preferences: SharedPreferences
     /**
      * Retrieves the model name from the shared preferences.
      *
-     * @return The model name or "gpt-3.5-turbo" if not found.
+     * @return The model name or "gpt-4o" if not found. GPT4-o is now much more capable than gpt 3.5 and 15x cheaper.
      */
     fun getModel() : String {
-        var model = getString("model", "gpt-3.5-turbo")
+        var model = getString("model", "gpt-4o")
 
         // Migrate from legacy dated model
         if (model == "gpt-4-1106-preview") model = "gpt-4-turbo-preview"
@@ -249,10 +258,10 @@ class Preferences private constructor(private var preferences: SharedPreferences
     /**
      * Retrieves the resolution from the shared preferences.
      *
-     * @return The resolution value or "512x512" if not found.
+     * @return The resolution value or "1024x1024" if not found.
      */
     fun getResolution() : String {
-        return getString("resolution", "512x512")
+        return getString("resolution", "1024x1024")
     }
 
     /**
@@ -356,7 +365,7 @@ class Preferences private constructor(private var preferences: SharedPreferences
      * @return The imagine command status, true if enabled or false otherwise.
      */
     fun getImagineCommand() : Boolean {
-        return getBoolean("imagine_command", false)
+        return getBoolean("imagine_command", true)
     }
 
     /**
@@ -414,7 +423,14 @@ class Preferences private constructor(private var preferences: SharedPreferences
      * @return The hide model names status, true if enabled or false otherwise.
      */
     fun getHideModelNames() : Boolean {
-        return getGlobalBoolean("hide_model_names", false)
+        try {
+            return getGlobalString("hide_model_names", "true") == "true"
+        } catch (e: Exception) {
+            val hideModelNames = getGlobalBoolean("hide_model_names", false)
+            removeKey("hide_model_names")
+            putGlobalString("hide_model_names", if (hideModelNames) "true" else "false")
+            return hideModelNames
+        }
     }
 
     /**
@@ -423,7 +439,12 @@ class Preferences private constructor(private var preferences: SharedPreferences
      * @param state mode.
      */
     fun setHideModelNames(state: Boolean) {
-        putGlobalBoolean("hide_model_names", state)
+        try {
+            putGlobalString("hide_model_names", if (state) "true" else "false")
+        } catch (e: Exception) {
+            removeKey("hide_model_names")
+            putGlobalString("hide_model_names", if (state) "true" else "false")
+        }
     }
 
     /**
@@ -740,12 +761,12 @@ class Preferences private constructor(private var preferences: SharedPreferences
     }
 
     /**
-     * Get dalle version (2 or 3, 2 is default)
+     * Get dalle version (2 or 3, 3 is default)
      *
      * @return dalle version
      * */
     fun getDalleVersion() : String {
-        return getString("dalle_version", "2")
+        return getString("dalle_version", "3")
     }
 
     /**

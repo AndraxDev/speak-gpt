@@ -145,12 +145,13 @@ class SettingsActivity : FragmentActivity() {
             preferences?.setEndSeparator(endSeparator)
             preferences?.setPrefix(prefix)
             tileTextModel?.updateSubtitle(model)
+            runOnUiThread {
+                Toast.makeText(this@SettingsActivity, "Settings saved", Toast.LENGTH_SHORT).show()
+            }
         }
 
         override fun onFormError(name: String, maxTokens: String, endSeparator: String, prefix: String) {
             if (name == "") Toast.makeText(this@SettingsActivity, getString(R.string.model_error_empty), Toast.LENGTH_SHORT).show()
-            else if (name.contains("gpt-4")) Toast.makeText(this@SettingsActivity, "Error, GPT4 support maximum of 8192 tokens", Toast.LENGTH_SHORT).show()
-            else Toast.makeText(this@SettingsActivity, "Error, more than 2048 tokens is not supported", Toast.LENGTH_SHORT).show()
             val advancedSettingsDialogFragment: AdvancedSettingsDialogFragment = AdvancedSettingsDialogFragment.newInstance(name, chatId)
             advancedSettingsDialogFragment.setStateChangedListener(this)
             advancedSettingsDialogFragment.show(supportFragmentManager.beginTransaction(), "ModelDialog")

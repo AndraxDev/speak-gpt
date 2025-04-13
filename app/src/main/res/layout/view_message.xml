@@ -39,6 +39,20 @@
         app:layout_constraintTop_toTopOf="@+id/username"
         app:srcCompat="@drawable/ic_report" />
 
+    <ImageButton
+        android:id="@+id/btn_share"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="2dp"
+        android:background="@color/transparent"
+        android:contentDescription="Share message"
+        android:descendantFocusability="blocksDescendants"
+        android:src="@drawable/ic_share"
+        android:tooltipText="Share message"
+        app:layout_constraintEnd_toStartOf="@+id/btn_report"
+        app:layout_constraintTop_toTopOf="@+id/username"
+        app:srcCompat="@drawable/ic_share" />
+
     <TextView
         android:id="@+id/username"
         android:layout_width="0dp"
