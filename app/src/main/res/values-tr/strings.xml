@@ -60,7 +60,7 @@
     <string name="title_terms">Şartlar</string>
     <string name="terms_desc1">Bu, OpenAI ChatGPT, Facebook LLama gibi farklı LLM\'lerin nasıl kullanılacağına dair bir örnektir. Biz (geliştirici) OpenAI veya diğer API sağlayıcıları ile bağlantılı değiliz. Tüm logolar ve materyaller ilgili şirketlerin mülkiyetindedir.</string>
     <string name="btn_next">İleri</string>
-    <string name="terms_desc2">Asistan çıktısından sorumlu değiliz. Bir AI dil modeli olan SpeakGPT,偶尔可能会提供不正确、不相关或冒犯性的信息。</string>
+    <string name="terms_desc2">Asistan çıktısından sorumlu değiliz. Bir AI dil modeli olan SpeakGPT, ara sıra yanlış, alakasız veya saldırgan bilgiler sağlayabilir.</string>
     <string name="terms_desc3">Sohbet geçmişiniz yerel olarak kaydedilir, ancak Teslasoft ID senkronizasyonunu açabilirsiniz. Bu durumda, sohbet geçmişiniz yedekleme amacıyla sunucularımızda saklanacaktır. Hiçbir veri üçüncü taraf şirketlere aktarılmaz.</string>
     <string name="prompt_tip">Profesyonel ipucu: Denemeden önce istemi düzenleyebilirsiniz.</string>
     <string name="btn_flag">Uygunsuz olarak işaretle</string>
