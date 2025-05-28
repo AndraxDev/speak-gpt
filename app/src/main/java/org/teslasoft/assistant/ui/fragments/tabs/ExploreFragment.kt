@@ -53,6 +53,8 @@ import org.teslasoft.assistant.ui.fragments.dialogs.EditApiEndpointDialogFragmen
 import org.teslasoft.assistant.util.Hash
 import org.teslasoft.core.api.network.RequestNetwork
 import androidx.core.net.toUri
+import org.teslasoft.assistant.util.WindowInsetsUtil
+import java.util.EnumSet
 
 class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetAdapterNew.OnInteractionListener {
 
@@ -120,6 +122,8 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
 
         mContext = context
 
+        if (rootView != null) WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.root, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
+
         if (requestFinished == 1) {
             loading?.visibility = View.GONE
             noInternet?.visibility = View.GONE
@@ -143,8 +147,12 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
         return inflater.inflate(R.layout.fragment_explore, container, false)
     }
 
+    private var rootView: View? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        rootView = view
+        WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.root, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
 
         btnTips = view.findViewById(R.id.btn_tips)
         setsList = view.findViewById(R.id.ai_sets_list)

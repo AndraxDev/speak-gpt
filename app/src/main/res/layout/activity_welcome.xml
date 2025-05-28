@@ -18,7 +18,62 @@
 -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/background_decoration"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/harmonized_blur_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="300dp"
+            android:layout_height="1000dp"
+            android:layout_marginTop="-200dp"
+            android:layout_marginEnd="-275dp"
+            android:background="@color/harmonized_blur_foreground1"
+            android:rotation="-22.5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="300dp"
+            android:layout_height="1000dp"
+            android:layout_marginStart="-275dp"
+            android:layout_marginBottom="-200dp"
+            android:background="@color/harmonized_blur_foreground2"
+            android:rotation="-22.5"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/foreground_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <eightbitlab.com.blurview.BlurView
+            android:id="@+id/foreground_blur"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:blurOverlayColor="@color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+<androidx.constraintlayout.widget.ConstraintLayout
     android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -48,12 +103,12 @@
 
             <TextView
                 android:id="@+id/textView"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="36dp"
                 android:gravity="center"
                 android:text="@string/welcome_to_speakgpt"
-                android:textColor="@color/accent_900"
+                android:textColor="@color/on_blur_monotone"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -69,7 +124,7 @@
                 android:layout_marginEnd="32dp"
                 android:gravity="center"
                 android:text="@string/app_desc"
-                android:textColor="@color/text"
+                android:textColor="@color/on_blur_monotone_secondary"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -77,19 +132,28 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_next"
-                style="@style/Widget.Material3.Button"
+                style="@style/Widget.Material3.Button.TonalButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="48dp"
                 android:layout_marginBottom="24dp"
-                android:background="@drawable/btn_accent_selector_v2"
-                android:paddingHorizontal="32dp"
-                android:paddingVertical="16dp"
+                android:background="@drawable/btn_accent_tonal"
+                android:paddingHorizontal="48dp"
+                android:paddingVertical="12dp"
                 android:text="@string/btn_get_started"
+                android:textColor="@color/on_blur_monotone"
+                android:textStyle="bold"
+                app:backgroundTint="@color/tint_on_blur_monotone"
+                app:icon="@drawable/ic_arrow_forward"
+                app:iconGravity="end"
+                app:iconTint="@color/on_blur_monotone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView2" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
+        </eightbitlab.com.blurview.BlurView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

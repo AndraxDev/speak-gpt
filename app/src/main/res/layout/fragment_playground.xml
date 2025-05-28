@@ -16,10 +16,10 @@
 * limitations under the License.
 **************************************************************************/
 -->
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -109,8 +109,8 @@
                 android:backgroundTint="@color/warn_bg"
                 android:contentDescription="Clear input"
                 android:src="@drawable/ic_close"
-                android:tooltipText="Clear"
                 android:tint="@color/error"
+                android:tooltipText="Clear"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_close"
@@ -149,8 +149,8 @@
                 android:gravity="start|top"
                 android:hint="AI model output will appear here..."
                 android:inputType="textMultiLine"
-                android:paddingHorizontal="16dp"
                 android:padding="24dp"
+                android:paddingHorizontal="16dp"
                 android:textColorHint="@color/text_hint"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -164,11 +164,11 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/mtrl_shape_clover"
-                android:contentDescription="Clear outputt"
                 android:backgroundTint="@color/warn_bg"
+                android:contentDescription="Clear outputt"
                 android:src="@drawable/ic_close"
-                android:tooltipText="Clear"
                 android:tint="@color/error"
+                android:tooltipText="Clear"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_close"

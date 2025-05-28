@@ -350,47 +350,82 @@
             android:orientation="vertical"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/keyboard_input"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="visible">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.google.android.material.card.MaterialCardView
+                app:cardBackgroundColor="@color/transparent"
+                app:strokeWidth="0dp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/btn_accent_tonal_16">
+                android:layout_height="match_parent">
 
-                <ImageButton
-                    android:id="@+id/action_camera"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="12dp"
-                    android:background="@drawable/btn_accent_center"
-                    android:contentDescription="@string/btn_camera"
-                    android:tooltipText="@string/btn_camera"
-                    android:src="@drawable/ic_camera"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_camera" />
-
-                <ImageButton
-                    android:id="@+id/action_gallery"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="12dp"
-                    android:layout_marginBottom="12dp"
-                    android:background="@drawable/btn_accent_center"
-                    android:contentDescription="@string/label_select_from_gallery"
-                    android:tooltipText="@string/label_select_from_gallery"
-                    android:src="@drawable/ic_photo"
+                <eightbitlab.com.blurview.BlurView
+                    android:id="@+id/attach_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:blurOverlayColor="@color/blur_background"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/action_camera"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_photo" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageButton
+                            android:id="@+id/action_camera"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginBottom="12dp"
+                            android:background="@drawable/btn_accent_center"
+                            android:contentDescription="@string/btn_camera"
+                            android:src="@drawable/ic_camera"
+                            android:tooltipText="@string/btn_camera"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/ic_camera" />
+
+                        <ImageButton
+                            android:id="@+id/action_gallery"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginBottom="12dp"
+                            android:background="@drawable/btn_accent_center"
+                            android:contentDescription="@string/label_select_from_gallery"
+                            android:src="@drawable/ic_photo"
+                            android:tooltipText="@string/label_select_from_gallery"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/action_camera"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/ic_photo" />
+
+                        <ImageButton
+                            android:id="@+id/action_sources"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginEnd="12dp"
+                            android:layout_marginBottom="12dp"
+                            android:background="@drawable/btn_accent_center"
+                            android:contentDescription="@string/label_select_from_gallery"
+                            android:src="@drawable/ic_book"
+                            android:tooltipText="Data Sources"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/action_gallery"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/ic_book" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </eightbitlab.com.blurview.BlurView>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
         <LinearLayout

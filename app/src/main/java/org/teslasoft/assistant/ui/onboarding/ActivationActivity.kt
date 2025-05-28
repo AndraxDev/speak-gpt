@@ -18,6 +18,7 @@ package org.teslasoft.assistant.ui.onboarding
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -31,6 +32,8 @@ import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
 import org.teslasoft.assistant.util.Hash
 import org.teslasoft.core.api.network.RequestNetwork
+import androidx.core.content.edit
+import eightbitlab.com.blurview.BlurView
 
 class ActivationActivity : FragmentActivity() {
 
@@ -38,6 +41,7 @@ class ActivationActivity : FragmentActivity() {
     private var keyInput: EditText? = null
     private var hostInput: EditText? = null
     private var debugFeatures: ConstraintLayout? = null
+    private var foregroundBlur: BlurView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +52,14 @@ class ActivationActivity : FragmentActivity() {
         hostInput = findViewById(R.id.username)
         debugFeatures = findViewById(R.id.debug_features)
         debugFeatures?.visibility = ConstraintLayout.INVISIBLE
+
+        foregroundBlur = findViewById(R.id.foreground_blur)
+
+        val decorView = window.decorView
+        val rootView: ViewGroup = decorView.findViewById(android.R.id.content)
+        val windowBackground = decorView.background
+
+        foregroundBlur?.setupWith(rootView)?.setFrameClearDrawable(windowBackground)?.setBlurRadius(250f)
 
         btnNext?.setOnClickListener {
             if (keyInput?.text.toString().trim() == "") {
@@ -77,6 +89,7 @@ class ActivationActivity : FragmentActivity() {
                                 apiEndpointPreferences.setApiEndpoint(this@ActivationActivity, apiEndpointObject)
                                 val gPreferences = Preferences.getPreferences(this@ActivationActivity, "")
                                 gPreferences.setApiEndpointId(Hash.hash("Default"))
+                                getSharedPreferences("setup", MODE_PRIVATE).edit { putBoolean("setup", true) }
                                 gPreferences.setApiKey(message, this@ActivationActivity)
                                 gPreferences.setCustomHost(hostname)
                                 startActivity(Intent(this@ActivationActivity, MainActivity::class.java).setAction(Intent.ACTION_VIEW))
@@ -103,6 +116,7 @@ class ActivationActivity : FragmentActivity() {
                     apiEndpointPreferences.setApiEndpoint(this, apiEndpointObject)
                     val gPreferences = Preferences.getPreferences(this, "")
                     gPreferences.setApiEndpointId(Hash.hash("Default"))
+                    getSharedPreferences("setup", MODE_PRIVATE).edit { putBoolean("setup", true) }
                     gPreferences.setApiKey(keyInput?.text.toString(), this)
                     gPreferences.setCustomHost(hostInput?.text.toString())
                     startActivity(Intent(this, MainActivity::class.java).setAction(Intent.ACTION_VIEW))

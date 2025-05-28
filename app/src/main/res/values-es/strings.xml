@@ -314,7 +314,7 @@
     <string name="model_error_empty">Error, no se ha proporcionado el nombre del modelo</string>
     <string name="language_error_empty">Por favor selecciona un idioma</string>
     <string name="image_resolution_error_empty">Por favor selecciona una resolución de imagen</string>
-    <string name="tile_account_title">Cuenta</string>
+    <string name="tile_account_title">Cuenta OpenAI</string>
     <string name="tile_account_subtitle">Gestionar cuenta OpenAI</string>
     <string name="tile_account_desc">Esta función te permite gestionar tu cuenta de OpenAI.</string>
     <string name="tile_assistant_title">Asistente predeterminado</string>

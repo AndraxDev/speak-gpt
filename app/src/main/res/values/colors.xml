@@ -197,4 +197,14 @@
 
     <color name="light_1">#05000000</color>
     <color name="light_2">#17000000</color>
+
+    <color name="blur_background">#32000000</color>
+
+    <!-- Special pages premium UI -->
+    <color name="tint_on_blur_monotone">#12000000</color>
+    <color name="on_blur_monotone">#000000</color>
+    <color name="on_blur_monotone_secondary">#CC000000</color>
+    <color name="harmonized_blur_background">#C9E5FF</color>
+    <color name="harmonized_blur_foreground1">#FF6B25</color>
+    <color name="harmonized_blur_foreground2">#EB023B</color>
 </resources>

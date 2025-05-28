@@ -222,25 +222,9 @@ class SettingsActivity : FragmentActivity() {
         override fun onCancel() { /* unused */ }
     }
 
-    private var settingsListener: SettingsListener = object : SettingsListener {
-        override fun onSuccess(settings: String) {
-            super.onSuccess(settings)
-        }
+    private var settingsListener: SettingsListener = object : SettingsListener { /* default */ }
 
-        override fun onError(state: String, message: String) {
-            super.onError(state, message)
-        }
-    }
-
-    private var syncListener: SyncListener = object : SyncListener {
-        override fun onSuccess() {
-            super.onSuccess()
-        }
-
-        override fun onError(state: String, message: String) {
-            super.onError(state, message)
-        }
-    }
+    private var syncListener: SyncListener = object : SyncListener { /* default */ }
 
     private var accountSyncListener: AccountSyncListener = object : AccountSyncListener {
         override fun onAuthFinished(name: String, email: String, isDev: Boolean, token: String) {

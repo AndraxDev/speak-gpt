@@ -67,6 +67,8 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import kotlin.math.abs
 import androidx.core.net.toUri
+import org.teslasoft.assistant.util.WindowInsetsUtil
+import java.util.EnumSet
 
 
 class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, ChatListAdapter.OnInteractionListener {
@@ -152,6 +154,8 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
     override fun onAttach(context: Context) {
         isAttached = true
         mContext = context
+
+        if (rootView != null) WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.root, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
         super.onAttach(context)
     }
 
@@ -185,8 +189,11 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
         }
     }
 
+    private var rootView: View? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        rootView = view
 
         fileIntentLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult(), activityResultCallback)
 
@@ -213,6 +220,8 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
         fieldSearch = view.findViewById(R.id.field_search)
         bgSearch = view.findViewById(R.id.bg_search)
         btnAdd = view.findViewById(R.id.btn_add)
+
+        WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.root, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
 
         bulkSelectContainer = view.findViewById(R.id.bulk_actions_container)
         btnBulkSelectAll = view.findViewById(R.id.btn_bulk_select_all)

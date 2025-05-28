@@ -63,6 +63,7 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewOutlineProvider
 import android.view.WindowInsets
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -84,7 +85,10 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.graphics.scale
+import androidx.core.net.toUri
 import androidx.core.util.Pair
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -130,6 +134,7 @@ import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.gson.Gson
 import com.google.mlkit.nl.languageid.LanguageIdentification
 import com.google.mlkit.nl.languageid.LanguageIdentifier
+import eightbitlab.com.blurview.BlurView
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -139,13 +144,13 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.add
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonArray
 import kotlinx.serialization.json.putJsonObject
-import kotlinx.io.files.SystemFileSystem
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ApiEndpointPreferences
 import org.teslasoft.assistant.preferences.ChatPreferences
@@ -176,9 +181,6 @@ import java.util.EnumSet
 import java.util.Locale
 import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration.Companion.seconds
-import androidx.core.graphics.scale
-import androidx.core.graphics.createBitmap
-import androidx.core.net.toUri
 
 
 class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
@@ -213,6 +215,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
     private var btnShareSelected: ImageButton? = null
     private var selectedCount: TextView? = null
     private var expandableWindowRoot: CoordinatorLayout? = null
+    private var blurSelectorView: BlurView? = null
 
     // Init chat
     private var messages: ArrayList<HashMap<String, Any>> = arrayListOf()
@@ -895,6 +898,18 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         btnShareSelected = findViewById(R.id.btn_share_selected)
         selectedCount = findViewById(R.id.text_selected_count)
         expandableWindowRoot = findViewById(R.id.expandable_window_root)
+        blurSelectorView = findViewById(R.id.attach_bg)
+
+        val radius = 16f
+        val decorView = window.decorView
+        val rootView = decorView.findViewById<ViewGroup>(android.R.id.content)
+        val windowBackground = decorView.background
+        blurSelectorView?.setupWith(rootView)
+            ?.setFrameClearDrawable(windowBackground)
+            ?.setBlurRadius(radius)
+
+        blurSelectorView?.outlineProvider = ViewOutlineProvider.BACKGROUND
+        blurSelectorView?.setClipToOutline(true)
 
         if (isDarkThemeEnabled() && GlobalPreferences.getPreferences(this).getAmoledPitchBlack()) {
             expandableWindowRoot?.backgroundTintList = ColorStateList.valueOf(getColor(R.color.amoled_window_background))

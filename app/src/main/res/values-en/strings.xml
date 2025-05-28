@@ -6,7 +6,7 @@
     <string name="about_developer">Developer: AndraxDev</string>
     <string name="about_version">"Version: "</string>
     <string name="about_view_other_projects">View other projects</string>
-    <string name="about_send_feedback">Send feedback</string>
+    <string name="about_send_feedback">Feedback</string>
     <string name="about_terms">Terms</string>
     <string name="activation_begin">Let\'s begin</string>
     <string name="activation_desc2">API usage is significantly cheaper than fixed subscription. API-key authentication is safer than username/password authentication and API access allow you to use different API providers. App can access only API but not account info. You can revoke API key anytime without losing your account. API key is encrypted and stored only on your device.</string>
@@ -57,7 +57,7 @@
     <string name="setting_about">About app</string>
     <string name="setting_clear_chat">Clear chat history</string>
     <string name="title_terms">Terms</string>
-    <string name="terms_desc1">This is the example how to use different LLMs including OpenAI ChatGPT, Facebook LLama. We (developer) are not affiliated with OpenAI or other API providers. All logos and materials are property of respective companies.</string>
+    <string name="terms_desc1">SpeakGPT is an open-source client that allow you to use different LLMs including OpenAI ChatGPT, Facebook LLama. We (developer) are not affiliated with OpenAI or other API providers. All logos and materials are property of respective companies.</string>
     <string name="btn_next">Next</string>
     <string name="terms_desc2">We are not responsible for assistant output. As an AI language model SpeakGPT may occasionally provide incorrect, irrelevant or offensive information.</string>
     <string name="terms_desc3">Your chat history is saved locally but you can turn on Teslasoft ID sync. In this case your chat history will be saved on our servers for backup purposes. No data is transferred to third-party companies.</string>
@@ -310,7 +310,7 @@
     <string name="model_error_empty">Error, no model name is provided</string>
     <string name="language_error_empty">Please select language</string>
     <string name="image_resolution_error_empty">Please select image resolution</string>
-    <string name="tile_account_title">Account</string>
+    <string name="tile_account_title">OpenAI Account</string>
     <string name="tile_account_subtitle">Manage OpenAI account</string>
     <string name="tile_account_desc">This feature allows you to manage your OpenAI account.</string>
     <string name="tile_assistant_title">Default assistant</string>

@@ -18,7 +18,62 @@
 -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/background_decoration"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/harmonized_blur_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="300dp"
+            android:layout_height="1000dp"
+            android:layout_marginTop="-200dp"
+            android:layout_marginEnd="-275dp"
+            android:background="@color/harmonized_blur_foreground1"
+            android:rotation="-22.5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="300dp"
+            android:layout_height="1000dp"
+            android:layout_marginStart="-275dp"
+            android:layout_marginBottom="-200dp"
+            android:background="@color/harmonized_blur_foreground2"
+            android:rotation="-22.5"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/foreground_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <eightbitlab.com.blurview.BlurView
+            android:id="@+id/foreground_blur"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:blurOverlayColor="@color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+<androidx.constraintlayout.widget.ConstraintLayout
     android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -33,15 +88,18 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="24dp">
 
-            <LinearLayout
+            <ImageView
                 android:id="@+id/logo"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginTop="36dp"
-                android:background="@drawable/ic_file"
+                android:src="@drawable/ic_file"
                 android:orientation="vertical"
+                android:tint="@color/on_blur_monotone"
+                app:srcCompat="@drawable/ic_file"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -52,7 +110,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="36dp"
                 android:text="@string/title_terms"
-                android:textColor="@color/accent_900"
+                android:textColor="@color/on_blur_monotone"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -67,38 +125,57 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="24dp"
                 android:text="@string/terms_desc1"
-                android:textColor="@color/text"
-                android:textSize="16sp"
+                android:textColor="@color/on_blur_monotone_secondary"
+                android:textSize="15sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_next"
-                style="@style/Widget.Material3.Button"
+                style="@style/Widget.Material3.Button.TonalButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/btn_accent_selector_v2"
+                android:layout_marginTop="36dp"
+                android:background="@drawable/btn_accent_tonal"
                 android:paddingHorizontal="48dp"
-                android:paddingVertical="16dp"
+                android:paddingVertical="12dp"
                 android:text="@string/btn_next"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:textColor="@color/on_blur_monotone"
+                android:textStyle="bold"
+                app:backgroundTint="@color/tint_on_blur_monotone"
+                app:icon="@drawable/ic_arrow_forward"
+                app:iconGravity="textEnd"
+                app:iconTint="@color/on_blur_monotone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView3" />
+                app:layout_constraintTop_toBottomOf="@+id/textView79" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_view_privacy"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:paddingHorizontal="48dp"
+                android:paddingVertical="10dp"
+                android:text="Privacy Policy"
+                android:textColor="@color/on_blur_monotone"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_next" />
 
             <TextView
                 android:id="@+id/textView3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
                 android:text="@string/terms_desc2"
-                android:textColor="@color/text"
-                android:textSize="16sp"
+                android:textColor="@color/on_blur_monotone_secondary"
+                android:textSize="15sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView2" />
@@ -117,6 +194,23 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
+            <TextView
+                android:id="@+id/textView79"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="24dp"
+                android:text="Your chats are saved locally. We do not have access to your chats. Based on your preferences for API provider, it may use your conversations to train AI models. By default, OpenAI does not use user chats for training AI models. For additional privacy features see our Privacy Policy."
+                android:textColor="@color/on_blur_monotone_secondary"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
+        </eightbitlab.com.blurview.BlurView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

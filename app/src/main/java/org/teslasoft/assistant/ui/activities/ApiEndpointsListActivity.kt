@@ -70,6 +70,7 @@ class ApiEndpointsListActivity : FragmentActivity() {
         override fun onLongClick(position: Int) {
             val dialog: EditApiEndpointDialogFragment = EditApiEndpointDialogFragment.newInstance(list[position]["label"] ?: return, list[position]["host"] ?: return, list[position]["apiKey"] ?: return, position)
             dialog.setListener(editDialogListener)
+            dialog.setCancelable(false)
             dialog.show(supportFragmentManager, "EditApiEndpointDialogFragment")
         }
     }
@@ -105,10 +106,12 @@ class ApiEndpointsListActivity : FragmentActivity() {
             if (position == -1) {
                 val dialog: EditApiEndpointDialogFragment = EditApiEndpointDialogFragment.newInstance("", "", "", position)
                 dialog.setListener(this)
+                dialog.setCancelable(false)
                 dialog.show(supportFragmentManager, "EditApiEndpointDialogFragment")
             } else {
                 val dialog: EditApiEndpointDialogFragment = EditApiEndpointDialogFragment.newInstance(list[position]["label"] ?: return, list[position]["host"] ?: return, list[position]["apiKey"] ?: return, position)
                 dialog.setListener(this)
+                dialog.setCancelable(false)
                 dialog.show(supportFragmentManager, "EditApiEndpointDialogFragment")
             }
         }
@@ -205,6 +208,7 @@ class ApiEndpointsListActivity : FragmentActivity() {
         btnAdd!!.setOnClickListener {
             val dialog: EditApiEndpointDialogFragment = EditApiEndpointDialogFragment.newInstance("", "", "", -1)
             dialog.setListener(editDialogListener)
+            dialog.setCancelable(false)
             dialog.show(supportFragmentManager, "EditApiEndpointDialogFragment")
         }
     }

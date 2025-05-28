@@ -232,7 +232,7 @@
 
         <activity
             android:name=".ui.activities.AboutActivity"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/title_about_app"
             android:launchMode="singleTask">
         </activity>

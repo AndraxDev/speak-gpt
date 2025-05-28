@@ -308,7 +308,7 @@
     <string name="model_error_empty">Błąd, brak podanej nazwy modelu</string>
     <string name="language_error_empty">Proszę wybrać język</string>
     <string name="image_resolution_error_empty">Proszę wybrać rozdzielczość obrazu</string>
-    <string name="tile_account_title">Konto</string>
+    <string name="tile_account_title">Konto OpenAI</string>
     <string name="tile_account_subtitle">Zarządzaj kontem OpenAI</string>
     <string name="tile_account_desc">Ta funkcja pozwala zarządzać Twoim kontem OpenAI.</string>
     <string name="tile_assistant_title">Domyślny asystent</string>

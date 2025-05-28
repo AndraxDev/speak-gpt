@@ -21,32 +21,27 @@ import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.graphics.Color
-import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.Config
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.util.WindowInsetsUtil
 import org.teslasoft.core.auth.SystemInfo
 import java.util.EnumSet
+import androidx.core.net.toUri
+import eightbitlab.com.blurview.BlurView
 
 class AboutActivity : FragmentActivity() {
 
@@ -57,20 +52,16 @@ class AboutActivity : FragmentActivity() {
     private var btnFeedback: MaterialButton? = null
     private var appVer: TextView? = null
     private var tidVer: TextView? = null
-    private var btnDonate: LinearLayout? = null
-    private var btnGithub: LinearLayout? = null
-
-    private var actions: ConstraintLayout? = null
-    private var system: ConstraintLayout? = null
-    private var links: LinearLayout? = null
-
-    private var root: ConstraintLayout? = null
+    private var btnDonate: MaterialButton? = null
+    private var btnGithub: MaterialButton? = null
 
     private var btnBack: ImageButton? = null
 
     private var activateEasterEggCounter: Int = 0
 
     private var preferences: Preferences? = null
+
+    private var foregroundBlur: BlurView? = null
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,7 +72,7 @@ class AboutActivity : FragmentActivity() {
 
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_about)
+        setContentView(R.layout.activity_about_new)
 
         appIcon = findViewById(R.id.app_icon)
         btnProjects = findViewById(R.id.btn_projects)
@@ -89,18 +80,18 @@ class AboutActivity : FragmentActivity() {
         btnPrivacy = findViewById(R.id.btn_privacy)
         btnFeedback = findViewById(R.id.btn_feedback)
         appVer = findViewById(R.id.app_ver)
-        tidVer = findViewById(R.id.tid_ver)
         btnDonate = findViewById(R.id.btn_donate)
         btnGithub = findViewById(R.id.btn_github)
         btnBack = findViewById(R.id.btn_back)
-
-        actions = findViewById(R.id.common_actions)
-        system = findViewById(R.id.system_info)
-        links = findViewById(R.id.links)
-
-        root = findViewById(R.id.root)
+        foregroundBlur = findViewById(R.id.foreground_blur)
 
         appIcon?.setImageResource(R.drawable.assistant)
+
+        val decorView = window.decorView
+        val rootView: ViewGroup = decorView.findViewById(android.R.id.content)
+        val windowBackground = decorView.background
+
+        foregroundBlur?.setupWith(rootView)?.setFrameClearDrawable(windowBackground)?.setBlurRadius(250f)
 
         val extras = intent.extras
         var chatId = ""
@@ -110,8 +101,6 @@ class AboutActivity : FragmentActivity() {
         }
 
         preferences = Preferences.getPreferences(this, chatId)
-
-        reloadAmoled()
 
         appVer?.setOnClickListener {
             if (activateEasterEggCounter == 0) {
@@ -154,117 +143,48 @@ class AboutActivity : FragmentActivity() {
 
         btnProjects?.setOnClickListener {
             val i = Intent()
-            i.data = Uri.parse("https://andrax.dev/")
+            i.data = "https://andrax.dev/".toUri()
             i.action = Intent.ACTION_VIEW
             startActivity(i)
         }
 
         btnTerms?.setOnClickListener {
             val i = Intent()
-            i.data = Uri.parse("https://${Config.API_SERVER_NAME}/terms")
+            i.data = "https://${Config.API_SERVER_NAME}/terms".toUri()
             i.action = Intent.ACTION_VIEW
             startActivity(i)
         }
 
         btnPrivacy?.setOnClickListener {
             val i = Intent()
-            i.data = Uri.parse("https://${Config.API_SERVER_NAME}/privacy")
+            i.data = "https://${Config.API_SERVER_NAME}/privacy".toUri()
             i.action = Intent.ACTION_VIEW
             startActivity(i)
         }
 
         btnFeedback?.setOnClickListener {
             val i = Intent()
-            i.data = Uri.parse("mailto:dostapenko82@gmail.com")
+            i.data = "mailto:dostapenko82@gmail.com".toUri()
             i.action = Intent.ACTION_VIEW
             startActivity(i)
         }
 
         btnDonate?.setOnClickListener {
             val i = Intent()
-            i.data = Uri.parse("https://buymeacoffee.com/andrax_dev")
+            i.data = "https://ko-fi.com/andrax_dev".toUri()
             i.action = Intent.ACTION_VIEW
             startActivity(i)
         }
 
         btnGithub?.setOnClickListener {
             val i = Intent()
-            i.data = Uri.parse("https://github.com/AndraxDev/speak-gpt")
+            i.data = "https://github.com/AndraxDev/speak-gpt".toUri()
             i.action = Intent.ACTION_VIEW
             startActivity(i)
         }
 
         btnBack?.setOnClickListener {
             finish()
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        reloadAmoled()
-    }
-
-    @Suppress("deprecation")
-    private fun reloadAmoled() {
-        if (isDarkThemeEnabled() && Preferences.getPreferences(this, "").getAmoledPitchBlack()) {
-            if (android.os.Build.VERSION.SDK_INT <= 30) {
-                window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
-                window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
-            }
-
-            window.setBackgroundDrawableResource(R.color.amoled_window_background)
-
-            appIcon?.setBackgroundResource(R.drawable.btn_accent_50_amoled)
-
-            actions?.setBackgroundResource(R.drawable.btn_accent_24_amoled)
-            system?.setBackgroundResource(R.drawable.btn_accent_24_amoled)
-            links?.setBackgroundResource(R.drawable.btn_accent_24_amoled)
-
-            root?.setBackgroundResource(R.color.amoled_window_background)
-            btnBack?.setBackgroundResource(R.drawable.btn_accent_icon_large_amoled)
-        } else {
-            if (android.os.Build.VERSION.SDK_INT <= 30) {
-                window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
-                window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
-            }
-            window.setBackgroundDrawableResource(R.color.window_background)
-
-            appIcon?.setBackgroundResource(R.drawable.btn_accent_50)
-
-            actions?.background = getDarkDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_24, theme)!!)
-            system?.background = getDarkDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_24, theme)!!)
-            links?.background = getDarkDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_24, theme)!!)
-
-            root?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
-            btnBack?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_icon_large, theme)!!)
-        }
-    }
-
-    private fun getDarkDrawable(drawable: Drawable) : Drawable {
-        DrawableCompat.setTint(DrawableCompat.wrap(drawable), SurfaceColors.SURFACE_1.getColor(this))
-        return drawable
-    }
-
-    private fun isDarkThemeEnabled(): Boolean {
-        return when (resources.configuration.uiMode and
-                Configuration.UI_MODE_NIGHT_MASK) {
-            Configuration.UI_MODE_NIGHT_YES -> true
-            Configuration.UI_MODE_NIGHT_NO -> false
-            Configuration.UI_MODE_NIGHT_UNDEFINED -> false
-            else -> false
-        }
-    }
-
-    private fun getDisabledDrawable(drawable: Drawable) : Drawable {
-        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getDisabledColor())
-        return drawable
-    }
-
-    private fun getDisabledColor() : Int {
-        return if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack() == true) {
-            ResourcesCompat.getColor(resources, R.color.accent_50, theme)
-        } else {
-            SurfaceColors.SURFACE_1.getColor(this)
         }
     }
 

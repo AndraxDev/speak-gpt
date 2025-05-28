@@ -18,24 +18,43 @@ package org.teslasoft.assistant.ui.onboarding
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.button.MaterialButton
+import eightbitlab.com.blurview.BlurView
 import org.teslasoft.assistant.R
+import androidx.core.net.toUri
 
 class TermsActivity : FragmentActivity() {
 
     private var btnNext: MaterialButton? = null
+    private var foregroundBlur: BlurView? = null
+    private var btnViewPrivacy: MaterialButton? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_terms)
 
         btnNext = findViewById(R.id.btn_next)
+        foregroundBlur = findViewById(R.id.foreground_blur)
+        btnViewPrivacy = findViewById(R.id.btn_view_privacy)
 
+        val decorView = window.decorView
+        val rootView: ViewGroup = decorView.findViewById(android.R.id.content)
+        val windowBackground = decorView.background
+
+        foregroundBlur?.setupWith(rootView)?.setFrameClearDrawable(windowBackground)?.setBlurRadius(250f)
 
         btnNext?.setOnClickListener {
             startActivity(Intent(this, ActivationActivity::class.java).setAction(Intent.ACTION_VIEW))
             finish()
+        }
+
+        btnViewPrivacy?.setOnClickListener {
+            val intent = Intent()
+            intent.action = Intent.ACTION_VIEW
+            intent.data = "https://assistant.teslasoft.org/privacy".toUri()
+            startActivity(intent)
         }
     }
 }

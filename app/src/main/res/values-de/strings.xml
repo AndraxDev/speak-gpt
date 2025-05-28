@@ -6,7 +6,7 @@
     <string name="about_developer">Entwickler: AndraxDev</string>
     <string name="about_version">"Version: "</string>
     <string name="about_view_other_projects">Andere Projekte ansehen</string>
-    <string name="about_send_feedback">Feedback senden</string>
+    <string name="about_send_feedback">Feedback</string>
     <string name="about_terms">Bedingungen</string>
     <string name="activation_begin">Lass uns beginnen</string>
     <string name="activation_desc2">Die Nutzung der API ist deutlich günstiger als ein festes Abonnement. Authentifizierung über API-Schlüssel ist sicherer als Benutzername/Passwort-Authentifizierung und der Zugriff auf die API ermöglicht die Nutzung unterschiedlicher API-Anbieter. Die App kann nur auf die API zugreifen, nicht auf Kontoinformationen. Der API-Schlüssel kann jederzeit widerrufen werden, ohne dass Sie Ihr Konto verlieren. Der API-Schlüssel wird verschlüsselt und nur auf Ihrem Gerät gespeichert.</string>
@@ -310,7 +310,7 @@
     <string name="model_error_empty">Fehler, kein Modellname angegeben</string>
     <string name="language_error_empty">Bitte Sprache auswählen</string>
     <string name="image_resolution_error_empty">Bitte Bildauflösung auswählen</string>
-    <string name="tile_account_title">Konto</string>
+    <string name="tile_account_title">Konto OpenAI</string>
     <string name="tile_account_subtitle">OpenAI-Konto verwalten</string>
     <string name="tile_account_desc">Diese Funktion ermöglicht es Ihnen, Ihr OpenAI-Konto zu verwalten.</string>
     <string name="tile_assistant_title">Standardassistent</string>

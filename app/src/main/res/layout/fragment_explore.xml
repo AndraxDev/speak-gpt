@@ -18,18 +18,19 @@
 -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
     <com.google.android.material.loadingindicator.LoadingIndicator
         android:id="@+id/loading"
-        android:indeterminate="true"
         style="@style/Widget.Material3.LoadingIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:indicatorSize="72dp"
+        android:indeterminate="true"
         app:indeterminateAnimationTypeCircular="advance"
+        app:indicatorSize="72dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -310,7 +310,7 @@
     <string name="model_error_empty">Помилка, назва моделі не зазначена</string>
     <string name="language_error_empty">Будь ласка, виберіть мову</string>
     <string name="image_resolution_error_empty">Будь ласка, виберіть роздільну здатність зображення</string>
-    <string name="tile_account_title">Акаунт</string>
+    <string name="tile_account_title">Акаунт OpenAI</string>
     <string name="tile_account_subtitle">Керування акаунтом OpenAI</string>
     <string name="tile_account_desc">Ця функція дозволяє вам керувати вашим акаунтом OpenAI.</string>
     <string name="tile_assistant_title">Стандартний помічник</string>

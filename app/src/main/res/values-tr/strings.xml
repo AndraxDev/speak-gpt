@@ -311,7 +311,7 @@
     <string name="model_error_empty">Hata, model adı sağlanmadı</string>
     <string name="language_error_empty">Lütfen dil seçin</string>
     <string name="image_resolution_error_empty">Lütfen görüntü çözünürlüğünü seçin</string>
-    <string name="tile_account_title">Hesap</string>
+    <string name="tile_account_title">Hesap OpenAI</string>
     <string name="tile_account_subtitle">OpenAI hesabını yönet</string>
     <string name="tile_account_desc">Bu özellik, OpenAI hesabınızı yönetmenize olanak tanır.</string>
     <string name="tile_assistant_title">Varsayılan asistan</string>

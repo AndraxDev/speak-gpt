@@ -32,6 +32,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageButton
@@ -73,6 +74,7 @@ import org.teslasoft.core.auth.SystemInfo
 import org.teslasoft.core.auth.internal.ApplicationSignature
 import java.util.EnumSet
 import androidx.core.graphics.drawable.toDrawable
+import eightbitlab.com.blurview.BlurView
 
 class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener {
 
@@ -98,6 +100,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     private var selectedTab: Int = 1
     private var isInitialized: Boolean = false
     private var splashScreen: SplashScreen? = null
+    private var debugBlurView: BlurView? = null
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -113,10 +116,10 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         splashScreen = installSplashScreen()
         splashScreen?.setKeepOnScreenCondition { true }
 
-        val consent: SharedPreferences = getSharedPreferences("consent", MODE_PRIVATE)
+        val consent: SharedPreferences = getSharedPreferences("setup", MODE_PRIVATE)
 
-        if (!consent.getBoolean("consent", false)) {
-            startActivity(Intent(this, DataSafety::class.java))
+        if (!consent.getBoolean("setup", false)) {
+            startActivity(Intent(this, WelcomeActivity::class.java))
             finish()
             return
         }
@@ -138,6 +141,15 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
         btnTogglePWA = findViewById(R.id.btn_toggle_pwa)
         devIds = findViewById(R.id.dev_ids)
         threadLoader = findViewById(R.id.thread_loader)
+        debugBlurView = findViewById(R.id.debug_blur)
+
+        val decorView = window.decorView
+        val rootView: ViewGroup = decorView.findViewById(android.R.id.content)
+        val windowBackground = decorView.background
+
+        debugBlurView?.setupWith(rootView)
+            ?.setFrameClearDrawable(windowBackground)
+            ?.setBlurRadius(24f)
 
         threadLoader?.visibility = View.VISIBLE
 
@@ -405,13 +417,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
             navigationBar!!.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme))
 
-            val drawable = GradientDrawable()
-            drawable.shape = GradientDrawable.RECTANGLE
-            drawable.setColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
-            drawable.alpha = 160
-
-            debuggerWindow?.background = drawable
-
             btnDebugger?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, theme)
             btnCloseDebugger?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, theme)
         } else {
@@ -422,13 +427,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
             val colorDrawable = SurfaceColors.SURFACE_0.getColor(this).toDrawable()
             window.setBackgroundDrawable(colorDrawable)
             navigationBar!!.setBackgroundColor(SurfaceColors.SURFACE_3.getColor(this))
-
-            val drawable = GradientDrawable()
-            drawable.shape = GradientDrawable.RECTANGLE
-            drawable.setColor(SurfaceColors.SURFACE_0.getColor(this))
-            drawable.alpha = 235
-
-            debuggerWindow?.background = drawable
 
             btnDebugger?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal, theme)!!)
             btnCloseDebugger?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal, theme)!!)
@@ -575,7 +573,8 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     }
 
     private fun adjustPaddings() {
-        WindowInsetsUtil.adjustPaddings(this, R.id.root, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
         WindowInsetsUtil.adjustPaddings(this, R.id.navigation_bar, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
+        WindowInsetsUtil.adjustPaddings(this, R.id.debug_btn_keeper, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
+        WindowInsetsUtil.adjustPaddings(this, R.id.d, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
     }
 }

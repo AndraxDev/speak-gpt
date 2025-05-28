@@ -6,7 +6,7 @@
     <string name="about_developer">Sviluppatore: AndraxDev</string>
     <string name="about_version">"Versione: "</string>
     <string name="about_view_other_projects">Visualizza altri progetti</string>
-    <string name="about_send_feedback">Invia feedback</string>
+    <string name="about_send_feedback">Feedback</string>
     <string name="about_terms">Termini</string>
     <string name="activation_begin">Cominciamo</string>
     <string name="activation_desc2">L\'utilizzo delle API è notevolmente più economico rispetto all\'abbonamento fisso. L\'autenticazione con chiave API è più sicura dell\'autenticazione con username/password e l\'accesso all\'API ti permette di utilizzare diversi fornitori di API. L\'app può accedere solo all\'API e non alle informazioni dell\'account. Puoi revocare la chiave API in qualsiasi momento senza perdere il tuo account. La chiave API è criptata e memorizzata solo sul tuo dispositivo.</string>
@@ -311,7 +311,7 @@
     <string name="model_error_empty">Errore, nessun nome del modello fornito</string>
     <string name="language_error_empty">Seleziona la lingua</string>
     <string name="image_resolution_error_empty">Seleziona la risoluzione dell\'immagine</string>
-    <string name="tile_account_title">Account</string>
+    <string name="tile_account_title">OpenAI Account</string>
     <string name="tile_account_subtitle">Gestisci account OpenAI</string>
     <string name="tile_account_desc">Questa funzione ti permette di gestire il tuo account OpenAI.</string>
     <string name="tile_assistant_title">Assistente predefinito</string>

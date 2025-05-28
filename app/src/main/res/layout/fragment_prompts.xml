@@ -22,6 +22,493 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/header_grad"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:elevation=".1dp"
+        app:layout_constraintBottom_toBottomOf="@+id/header_blur"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout18"
+            android:layout_width="match_parent"
+            android:layout_height="116dp"
+            android:background="@color/window_background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout15"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/gradient_top"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout18">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/header_blur"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:elevation=".2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <eightbitlab.com.blurview.BlurView
+            android:id="@+id/prompts_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:blurOverlayColor="@color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="24dp">
+
+                <TextView
+                    android:id="@+id/activity_prompts_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_prompts_store"
+                    android:textColor="@color/text_title"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:id="@+id/linearLayout23"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal"
+                    android:weightSum="3"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/prompt_categories">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_all_models"
+                        style="@style/Widget.Material3.Button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="6dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/btn_accent_8"
+                        android:text="@string/cat_all" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_text_model"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="6dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/btn_accent_8"
+                        android:text="GPT" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_image_model"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/btn_accent_8"
+                        android:text="DALL-e" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/prompt_categories"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/search_bar">
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:id="@+id/cat_all"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:background="@drawable/cat_all_active"
+                                android:clickable="true"
+                                android:contentDescription="@string/cat_all_new"
+                                android:orientation="vertical"
+                                android:padding="12dp"
+                                android:tooltipText="@string/cat_all">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/ic_all"
+                                    android:orientation="vertical" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/cat_development"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:layout_marginStart="12dp"
+                                android:background="@drawable/cat_development"
+                                android:clickable="true"
+                                android:contentDescription="@string/cat_development"
+                                android:orientation="vertical"
+                                android:padding="12dp"
+                                android:tooltipText="@string/cat_development">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/ic_development"
+                                    android:orientation="vertical" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/cat_music"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:layout_marginStart="12dp"
+                                android:background="@drawable/cat_music"
+                                android:clickable="true"
+                                android:contentDescription="@string/cat_music"
+                                android:orientation="vertical"
+                                android:padding="12dp"
+                                android:tooltipText="@string/cat_music">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/ic_music"
+                                    android:orientation="vertical" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/cat_art"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:layout_marginStart="12dp"
+                                android:background="@drawable/cat_art"
+                                android:clickable="true"
+                                android:contentDescription="@string/cat_art"
+                                android:orientation="vertical"
+                                android:padding="12dp"
+                                android:tooltipText="@string/cat_art">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/ic_art"
+                                    android:orientation="vertical" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/cat_culture"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:layout_marginStart="12dp"
+                                android:background="@drawable/cat_culture"
+                                android:clickable="true"
+                                android:contentDescription="@string/cat_culture"
+                                android:orientation="vertical"
+                                android:padding="12dp"
+                                android:tooltipText="@string/cat_culture">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/ic_culture"
+                                    android:orientation="vertical" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/cat_business"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:layout_marginStart="12dp"
+                                android:background="@drawable/cat_business"
+                                android:clickable="true"
+                                android:contentDescription="@string/cat_business"
+                                android:orientation="vertical"
+                                android:padding="12dp"
+                                android:tooltipText="@string/cat_business">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/ic_business"
+                                    android:orientation="vertical" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/cat_gaming"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:layout_marginStart="12dp"
+                                android:background="@drawable/cat_gaming"
+                                android:clickable="true"
+                                android:contentDescription="@string/cat_gaming"
+                                android:orientation="vertical"
+                                android:padding="12dp"
+                                android:tooltipText="@string/cat_gaming">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/ic_gaming"
+                                    android:orientation="vertical" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/cat_education"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:layout_marginStart="12dp"
+                                android:background="@drawable/cat_education"
+                                android:clickable="true"
+                                android:contentDescription="@string/cat_education"
+                                android:orientation="vertical"
+                                android:padding="12dp"
+                                android:tooltipText="@string/cat_education">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/ic_education"
+                                    android:orientation="vertical" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/cat_history"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:layout_marginStart="12dp"
+                                android:background="@drawable/cat_history"
+                                android:clickable="true"
+                                android:contentDescription="@string/cat_history"
+                                android:orientation="vertical"
+                                android:padding="12dp"
+                                android:tooltipText="@string/cat_history">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/ic_history"
+                                    android:orientation="vertical" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/cat_food"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:layout_marginStart="12dp"
+                                android:background="@drawable/cat_food"
+                                android:clickable="true"
+                                android:contentDescription="@string/cat_food"
+                                android:orientation="vertical"
+                                android:padding="12dp"
+                                android:tooltipText="@string/cat_food">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/ic_food"
+                                    android:orientation="vertical" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/cat_tourism"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:layout_marginStart="12dp"
+                                android:background="@drawable/cat_tourism"
+                                android:clickable="true"
+                                android:contentDescription="@string/cat_tourism"
+                                android:orientation="vertical"
+                                android:padding="12dp"
+                                android:tooltipText="@string/cat_tourism">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/ic_tourism"
+                                    android:orientation="vertical" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/cat_productivity"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:layout_marginStart="12dp"
+                                android:background="@drawable/cat_productivity"
+                                android:clickable="true"
+                                android:contentDescription="@string/cat_productivity"
+                                android:orientation="vertical"
+                                android:padding="12dp"
+                                android:tooltipText="@string/cat_productivity">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/ic_productivity"
+                                    android:orientation="vertical" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/cat_tools"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:layout_marginStart="12dp"
+                                android:background="@drawable/cat_tools"
+                                android:clickable="true"
+                                android:contentDescription="@string/cat_tools"
+                                android:orientation="vertical"
+                                android:padding="12dp"
+                                android:tooltipText="@string/cat_tools">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/ic_tools"
+                                    android:orientation="vertical" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/cat_entertainment"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:layout_marginStart="12dp"
+                                android:background="@drawable/cat_entertainment"
+                                android:clickable="true"
+                                android:contentDescription="@string/cat_entertainment"
+                                android:orientation="vertical"
+                                android:padding="12dp"
+                                android:tooltipText="@string/cat_entertainment">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/ic_entertainment"
+                                    android:orientation="vertical" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/cat_sport"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:layout_marginStart="12dp"
+                                android:background="@drawable/cat_sport"
+                                android:clickable="true"
+                                android:contentDescription="@string/cat_sport"
+                                android:orientation="vertical"
+                                android:padding="12dp"
+                                android:tooltipText="@string/cat_sport">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/ic_sport"
+                                    android:orientation="vertical" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/cat_health"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:layout_marginStart="12dp"
+                                android:background="@drawable/cat_health"
+                                android:clickable="true"
+                                android:contentDescription="@string/cat_health"
+                                android:orientation="vertical"
+                                android:padding="12dp"
+                                android:tooltipText="@string/cat_health">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@drawable/ic_health"
+                                    android:orientation="vertical" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </HorizontalScrollView>
+                </LinearLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/search_bar"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="24dp"
+                    android:background="@drawable/btn_accent_tonal"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/activity_prompts_title">
+
+                    <EditText
+                        android:id="@+id/field_search"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginEnd="4dp"
+                        android:autofillHints="Search"
+                        android:background="@color/transparent"
+                        android:ems="10"
+                        android:hint="@string/label_search_prompts"
+                        android:inputType="text"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:textColor="@color/text_field"
+                        android:textColorHint="@color/text_hint"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/btn_search"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageButton
+                        android:id="@+id/btn_search"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="4dp"
+                        android:background="@color/transparent"
+                        android:contentDescription="@string/waffle_play_2"
+                        android:src="@drawable/ic_search"
+                        android:tooltipText="@string/hint_search"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_search" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </eightbitlab.com.blurview.BlurView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         style="?attr/extendedFloatingActionButtonPrimaryStyle"
         android:id="@+id/btn_add_prompt"
@@ -42,487 +529,57 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_add" />
 
-    <TextView
-        android:id="@+id/activity_prompts_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:text="@string/title_prompts_store"
-        android:textColor="@color/text_title"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/search_bar"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="24dp"
-        android:background="@drawable/btn_accent_tonal"
-        android:clickable="true"
-        android:focusable="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_prompts_title">
-
-        <EditText
-            android:id="@+id/field_search"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="4dp"
-            android:autofillHints="Search"
-            android:background="@color/transparent"
-            android:ems="10"
-            android:hint="@string/label_search_prompts"
-            android:inputType="text"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textColor="@color/text_field"
-            android:textColorHint="@color/text_hint"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_search"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageButton
-            android:id="@+id/btn_search"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginEnd="4dp"
-            android:background="@color/transparent"
-            android:contentDescription="@string/waffle_play_2"
-            android:src="@drawable/ic_search"
-            android:tooltipText="@string/hint_search"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_search" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
     <com.google.android.material.loadingindicator.LoadingIndicator
         android:id="@+id/loading"
-        android:indeterminate="true"
         style="@style/Widget.Material3.LoadingIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:indeterminate="true"
         app:indicatorSize="72dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout23" />
+        app:layout_constraintTop_toBottomOf="@+id/header_blur" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/refresh_search"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout23">
+        app:layout_constraintTop_toTopOf="@+id/header_blur">
 
-        <LinearLayout
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/prompts_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:id="@+id/no_internet"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <include
-                    layout="@layout/fragment_network_error"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </LinearLayout>
+            android:clipToPadding="false"
+            android:paddingTop="300dp"
+            android:paddingBottom="84dp">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/prompts"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingBottom="16dp"
                 android:clipToPadding="false"
+                android:paddingBottom="16dp"
                 tools:listitem="@layout/view_prompt" />
+        </androidx.core.widget.NestedScrollView>
 
-        </LinearLayout>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-    <LinearLayout
-        android:id="@+id/prompt_categories"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_bar">
-
-        <HorizontalScrollView
+        <LinearLayout
+            android:id="@+id/no_internet"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+            <include
+                layout="@layout/fragment_network_error"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/cat_all"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:background="@drawable/cat_all_active"
-                    android:clickable="true"
-                    android:contentDescription="@string/cat_all_new"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:tooltipText="@string/cat_all">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/ic_all"
-                        android:orientation="vertical" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/cat_development"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="12dp"
-                    android:background="@drawable/cat_development"
-                    android:clickable="true"
-                    android:contentDescription="@string/cat_development"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:tooltipText="@string/cat_development">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/ic_development"
-                        android:orientation="vertical" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/cat_music"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="12dp"
-                    android:background="@drawable/cat_music"
-                    android:clickable="true"
-                    android:contentDescription="@string/cat_music"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:tooltipText="@string/cat_music">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/ic_music"
-                        android:orientation="vertical" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/cat_art"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="12dp"
-                    android:background="@drawable/cat_art"
-                    android:clickable="true"
-                    android:contentDescription="@string/cat_art"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:tooltipText="@string/cat_art">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/ic_art"
-                        android:orientation="vertical" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/cat_culture"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="12dp"
-                    android:background="@drawable/cat_culture"
-                    android:clickable="true"
-                    android:contentDescription="@string/cat_culture"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:tooltipText="@string/cat_culture">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/ic_culture"
-                        android:orientation="vertical" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/cat_business"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="12dp"
-                    android:background="@drawable/cat_business"
-                    android:clickable="true"
-                    android:contentDescription="@string/cat_business"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:tooltipText="@string/cat_business">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/ic_business"
-                        android:orientation="vertical" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/cat_gaming"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="12dp"
-                    android:background="@drawable/cat_gaming"
-                    android:clickable="true"
-                    android:contentDescription="@string/cat_gaming"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:tooltipText="@string/cat_gaming">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/ic_gaming"
-                        android:orientation="vertical" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/cat_education"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="12dp"
-                    android:background="@drawable/cat_education"
-                    android:clickable="true"
-                    android:contentDescription="@string/cat_education"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:tooltipText="@string/cat_education">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/ic_education"
-                        android:orientation="vertical" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/cat_history"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="12dp"
-                    android:background="@drawable/cat_history"
-                    android:clickable="true"
-                    android:contentDescription="@string/cat_history"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:tooltipText="@string/cat_history">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/ic_history"
-                        android:orientation="vertical" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/cat_food"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="12dp"
-                    android:background="@drawable/cat_food"
-                    android:clickable="true"
-                    android:contentDescription="@string/cat_food"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:tooltipText="@string/cat_food">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/ic_food"
-                        android:orientation="vertical" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/cat_tourism"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="12dp"
-                    android:background="@drawable/cat_tourism"
-                    android:clickable="true"
-                    android:contentDescription="@string/cat_tourism"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:tooltipText="@string/cat_tourism">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/ic_tourism"
-                        android:orientation="vertical" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/cat_productivity"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="12dp"
-                    android:background="@drawable/cat_productivity"
-                    android:clickable="true"
-                    android:contentDescription="@string/cat_productivity"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:tooltipText="@string/cat_productivity">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/ic_productivity"
-                        android:orientation="vertical" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/cat_tools"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="12dp"
-                    android:background="@drawable/cat_tools"
-                    android:clickable="true"
-                    android:contentDescription="@string/cat_tools"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:tooltipText="@string/cat_tools">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/ic_tools"
-                        android:orientation="vertical" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/cat_entertainment"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="12dp"
-                    android:background="@drawable/cat_entertainment"
-                    android:clickable="true"
-                    android:contentDescription="@string/cat_entertainment"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:tooltipText="@string/cat_entertainment">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/ic_entertainment"
-                        android:orientation="vertical" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/cat_sport"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="12dp"
-                    android:background="@drawable/cat_sport"
-                    android:clickable="true"
-                    android:contentDescription="@string/cat_sport"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:tooltipText="@string/cat_sport">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/ic_sport"
-                        android:orientation="vertical" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/cat_health"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="12dp"
-                    android:background="@drawable/cat_health"
-                    android:clickable="true"
-                    android:contentDescription="@string/cat_health"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:tooltipText="@string/cat_health">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/ic_health"
-                        android:orientation="vertical" />
-                </LinearLayout>
-            </LinearLayout>
-        </HorizontalScrollView>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout23"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        android:orientation="horizontal"
-        android:weightSum="3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/prompt_categories">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_all_models"
-            style="@style/Widget.Material3.Button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="6dp"
-            android:layout_weight="1"
-            android:background="@drawable/btn_accent_8"
-            android:text="@string/cat_all" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_text_model"
-            style="@style/Widget.Material3.Button.TonalButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="6dp"
-            android:layout_weight="1"
-            android:background="@drawable/btn_accent_8"
-            android:text="GPT" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_image_model"
-            style="@style/Widget.Material3.Button.TonalButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_weight="1"
-            android:background="@drawable/btn_accent_8"
-            android:text="DALL-e" />
-    </LinearLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

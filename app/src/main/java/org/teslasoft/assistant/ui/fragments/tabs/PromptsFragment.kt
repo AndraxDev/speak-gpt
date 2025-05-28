@@ -34,6 +34,7 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -45,14 +46,17 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.google.android.material.loadingindicator.LoadingIndicator
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import eightbitlab.com.blurview.BlurView
 import org.teslasoft.assistant.Api
 import org.teslasoft.assistant.Config.Companion.API_ENDPOINT
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.PromptAdapterNew
 import org.teslasoft.assistant.ui.fragments.dialogs.PostPromptDialogFragment
+import org.teslasoft.assistant.util.WindowInsetsUtil
 import org.teslasoft.core.api.network.RequestNetwork
 import java.net.URLEncoder
+import java.util.EnumSet
 
 class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
@@ -86,6 +90,8 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private var btnTextModel: MaterialButton? = null
     private var btnImageModel: MaterialButton? = null
     private var btnSearch: ImageButton? = null
+    private var headerBackground: BlurView? = null
+    private var promptsContainer: NestedScrollView? = null
 
     private var query = ""
     private var selectedCategory = "all"
@@ -164,7 +170,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 networkError = e.stackTraceToString()
 
                 noInternetLayout?.visibility = View.VISIBLE
-                promptsList?.visibility = View.GONE
+                promptsContainer?.visibility = View.GONE
                 progressbar?.visibility = View.GONE
                 Toast.makeText(mContext?: return, getString(R.string.label_server_error), Toast.LENGTH_SHORT).show()
             }
@@ -174,7 +180,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             networkError = message
 
             noInternetLayout?.visibility = View.VISIBLE
-            promptsList?.visibility = View.GONE
+            promptsContainer?.visibility = View.GONE
             progressbar?.visibility = View.GONE
         }
     }
@@ -193,6 +199,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun filter(plist: ArrayList<HashMap<String, String>>) {
         if (selectedCategory == "all") {
             promptsAdapter = PromptAdapterNew(plist, this)
@@ -215,13 +222,19 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }
 
         noInternetLayout?.visibility = View.GONE
-        promptsList?.visibility = View.VISIBLE
+        promptsContainer?.visibility = View.VISIBLE
         progressbar?.visibility = View.GONE
     }
 
+    private var rootView: View? = null
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        rootView = view
+
+        WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.prompts_header, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
+        WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.refresh_search, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
 
         btnSearch = view.findViewById(R.id.btn_search)
         fieldSearch = view.findViewById(R.id.field_search)
@@ -254,6 +267,15 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         btnTextModel = view.findViewById(R.id.btn_text_model)
         btnImageModel = view.findViewById(R.id.btn_image_model)
 
+        headerBackground = view.findViewById(R.id.prompts_header)
+        promptsContainer = view.findViewById(R.id.prompts_container)
+
+        val decorView: View = activity?.window?.decorView?: return
+        val rootView = decorView.findViewById<View>(android.R.id.content)
+        val windowBackground: Drawable = decorView.background
+
+        headerBackground?.setupWith(rootView as ViewGroup)?.setFrameClearDrawable(windowBackground)?.setBlurRadius(16f)
+
         promptsList?.layoutManager = LinearLayoutManager(mContext)
 
         Thread {
@@ -267,6 +289,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }.start()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun initLogic() {
         updateModelsPanel(R.color.accent_900, R.color.accent_100, R.color.accent_100, R.color.window_background, R.color.accent_900, R.color.accent_900)
 
@@ -290,7 +313,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         reloadAmoled(mContext?: return)
 
         noInternetLayout?.visibility = View.GONE
-        promptsList?.visibility = View.GONE
+        promptsContainer?.visibility = View.GONE
         progressbar?.visibility = View.VISIBLE
 
         refreshButton?.setOnClickListener {
@@ -376,7 +399,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             loadData()
             isInitialized = true
         } else {
-            promptsList?.visibility = View.VISIBLE
+            promptsContainer?.visibility = View.VISIBLE
             progressbar?.visibility = View.GONE
         }
     }
@@ -528,7 +551,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private fun loadData() {
         requestNetwork?.startRequestNetwork("GET", "${API_ENDPOINT}/search.php?api_key=${Api.TESLASOFT_API_KEY}&query=$query", "A", searchDataListener)
         noInternetLayout?.visibility = View.GONE
-        promptsList?.visibility = View.GONE
+        promptsContainer?.visibility = View.GONE
         progressbar?.visibility = View.VISIBLE
     }
 
@@ -549,6 +572,10 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     override fun onAttach(context: Context) {
         mContext = context
         onAttach = true
+
+        if (rootView != null) WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.prompts_header, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
+        if (rootView != null) WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.refresh_search, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
+
         super.onAttach(context)
     }
 

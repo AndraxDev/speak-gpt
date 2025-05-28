@@ -64,6 +64,8 @@ import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
 import org.teslasoft.assistant.ui.fragments.dialogs.QuickSettingsBottomSheetDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.ReportAIContentBottomSheet
+import org.teslasoft.assistant.util.WindowInsetsUtil
+import java.util.EnumSet
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration.Companion.seconds
@@ -98,6 +100,8 @@ class PlaygroundFragment : Fragment() {
         super.onAttach(context)
 
         mContext = context
+
+        if (rootView != null) WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.root, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
     }
 
     override fun onDetach() {
@@ -110,8 +114,12 @@ class PlaygroundFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_playground, container, false)
     }
 
+    private var rootView: View? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        rootView = view
+        WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.root, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
 
         btnRun = view.findViewById(R.id.btn_run)
         btnStop = view.findViewById(R.id.btn_stop)

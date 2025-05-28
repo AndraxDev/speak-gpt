@@ -311,7 +311,7 @@
     <string name="model_error_empty">Ошибка, название модели не указано</string>
     <string name="language_error_empty">Пожалуйста, выберите язык</string>
     <string name="image_resolution_error_empty">Пожалуйста, выберите разрешение изображения</string>
-    <string name="tile_account_title">Аккаунт</string>
+    <string name="tile_account_title">Аккаунт OpenAI</string>
     <string name="tile_account_subtitle">Управление аккаунтом OpenAI</string>
     <string name="tile_account_desc">Эта функция позволяет управлять вашим аккаунтом OpenAI.</string>
     <string name="tile_assistant_title">Основной помощник</string>

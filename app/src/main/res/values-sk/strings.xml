@@ -7,7 +7,7 @@
     <string name="about_developer">Vývojár: AndraxDev</string>
     <string name="about_version">"Verzia: "</string>
     <string name="about_view_other_projects">Zobraziť ďalšie projekty</string>
-    <string name="about_send_feedback">Poslať spätnú väzbu</string>
+    <string name="about_send_feedback">Spätná väzba</string>
     <string name="about_terms">Podmienky</string>
     <string name="activation_begin">Začnime</string>
     <string name="activation_desc2">Používanie API je výrazne lacnejšie ako pevné predplatné. Autentifikácia kľúčom API je bezpečnejšia než autentifikácia pomocou mena a hesla a prístup k API umožňuje používať rôznych poskytovateľov API. Aplikácia má prístup iba k API, nie k údajom o účte. Kľúč API môžete kedykoľvek zneplatniť bez stráty vášho účtu. Kľúč API je šifrovaný a uložený len vo vašom zariadení.</string>
@@ -307,7 +307,7 @@
     <string name="model_error_empty">Chyba, nie je zadaný názov modelu</string>
     <string name="language_error_empty">Prosím, vyberte jazyk</string>
     <string name="image_resolution_error_empty">Prosím, vyberte rozlíšenie obrázku</string>
-    <string name="tile_account_title">Účet</string>
+    <string name="tile_account_title">Účet OpenAI</string>
     <string name="tile_account_subtitle">Správa účtu OpenAI</string>
     <string name="tile_account_desc">Táto funkcia umožňuje spravovať váš účet OpenAI.</string>
     <string name="tile_assistant_title">Predvolený asistent</string>

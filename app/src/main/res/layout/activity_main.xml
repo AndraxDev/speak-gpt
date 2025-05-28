@@ -44,205 +44,236 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clickable="true"
-        android:elevation="9dp"
+        android:elevation="9999dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+        <eightbitlab.com.blurview.BlurView
+            android:id="@+id/debug_blur"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:blurOverlayColor="@color/transparent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/d"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clickable="true"
-                android:elevation="9dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:layout_height="match_parent">
 
-                <com.google.android.material.progressindicator.CircularProgressIndicator
-                    android:id="@+id/progressBar6"
-                    style="@style/Widget.Material3.CircularProgressIndicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:indeterminate="true"
-                    android:visibility="gone"
-                    app:indeterminateAnimationTypeCircular="advance"
-                    app:indicatorSize="72dp"
-                    app:layout_constraintStart_toStartOf="@+id/scrollView2"
-                    app:layout_constraintTop_toBottomOf="@+id/scrollView2"
-                    app:trackCornerRadius="8dp"
-                    app:trackThickness="8dp" />
-
-                <com.google.android.material.progressindicator.CircularProgressIndicator
-                    android:id="@+id/progressBar7"
-                    style="@style/Widget.Material3.CircularProgressIndicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:indeterminate="true"
-                    app:indicatorSize="64dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/progressBar8"
-                    app:layout_constraintStart_toEndOf="@+id/progressBar8"
-                    app:trackCornerRadius="12dp"
-                    app:trackThickness="8dp"
-                    app:waveAmplitude="8dp"
-                    app:wavelength="64dp" />
-
-                <com.google.android.material.loadingindicator.LoadingIndicator
-                    android:id="@+id/progressBar8"
-                    style="@style/Widget.Material3.LoadingIndicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
-                    android:indeterminate="true"
-                    app:indicatorSize="72dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/progressBar6" />
-
-                <ImageButton
-                    android:id="@+id/btn_close_debugger"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/btn_accent_tonal"
-                    android:contentDescription="Close"
-                    android:src="@drawable/ic_cancel"
-                    android:tooltipText="Close"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_cancel" />
-
-                <TextView
-                    android:id="@+id/textView59"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="28dp"
-                    android:text="Debug"
-                    android:textColor="@color/text_title"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_initiate_crash"
-                    style="@style/Widget.Material3.Button"
+                <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="24dp"
-                    android:background="@drawable/btn_accent_top"
-                    android:text="Initiate crash"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btn_close_debugger" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_debug_activity"
-                    style="@style/Widget.Material3.Button"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginEnd="24dp"
-                    android:background="@drawable/btn_accent_center"
-                    android:text="Material components"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btn_initiate_crash" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_launch_pwa"
-                    style="@style/Widget.Material3.Button"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginEnd="24dp"
-                    android:background="@drawable/btn_accent_center"
-                    android:text="Launch SpeakGPT Lite (PWA)"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btn_debug_activity" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_toggle_pwa"
-                    style="@style/Widget.Material3.Button"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginEnd="24dp"
-                    android:background="@drawable/btn_accent_bottom"
-                    android:text="Enable PWA"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btn_launch_pwa" />
-
-                <ScrollView
-                    android:id="@+id/scrollView2"
-                    android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="24dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="@drawable/btn_accent_tonal_selector_v2"
-                    app:layout_constraintBottom_toTopOf="@+id/progressBar8"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btn_toggle_pwa">
+                    app:layout_constraintTop_toTopOf="parent">
 
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/d"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:layout_height="match_parent"
+                        android:clickable="true"
+                        android:elevation="9dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.google.android.material.progressindicator.CircularProgressIndicator
+                            android:id="@+id/progressBar6"
+                            style="@style/Widget.Material3.CircularProgressIndicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:indeterminate="true"
+                            android:visibility="gone"
+                            app:indeterminateAnimationTypeCircular="advance"
+                            app:indicatorSize="72dp"
+                            app:layout_constraintStart_toStartOf="@+id/scrollView2"
+                            app:layout_constraintTop_toBottomOf="@+id/scrollView2"
+                            app:trackCornerRadius="8dp"
+                            app:trackThickness="8dp" />
+
+                        <com.google.android.material.progressindicator.CircularProgressIndicator
+                            android:id="@+id/progressBar7"
+                            style="@style/Widget.Material3.CircularProgressIndicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:indeterminate="true"
+                            app:indicatorSize="64dp"
+                            app:layout_constraintBottom_toBottomOf="@+id/progressBar8"
+                            app:layout_constraintStart_toEndOf="@+id/progressBar8"
+                            app:trackCornerRadius="12dp"
+                            app:trackThickness="8dp"
+                            app:waveAmplitude="8dp"
+                            app:wavelength="64dp" />
+
+                        <com.google.android.material.loadingindicator.LoadingIndicator
+                            android:id="@+id/progressBar8"
+                            style="@style/Widget.Material3.LoadingIndicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="24dp"
+                            android:indeterminate="true"
+                            app:indicatorSize="72dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/progressBar6" />
+
+                        <ImageButton
+                            android:id="@+id/btn_close_debugger"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="16dp"
+                            android:background="@drawable/btn_accent_tonal"
+                            android:contentDescription="Close"
+                            android:src="@drawable/ic_cancel"
+                            android:tooltipText="Close"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/ic_cancel" />
 
                         <TextView
-                            android:id="@+id/dev_ids"
-                            android:layout_width="match_parent"
+                            android:id="@+id/textView59"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="16dp"
-                            android:text="Debug info:"
-                            android:textColor="@color/accent_900"
-                            android:textIsSelectable="true"
-                            android:textSize="12sp" />
-                    </LinearLayout>
-                </ScrollView>
+                            android:layout_marginTop="28dp"
+                            android:text="Debug"
+                            android:textColor="@color/text_title"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_initiate_crash"
+                            style="@style/Widget.Material3.Button.TonalButton"
+                            android:layout_width="0dp"
+                            android:layout_height="56dp"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="24dp"
+                            android:background="@drawable/btn_accent_top"
+                            android:text="Initiate crash"
+                            app:backgroundTint="@color/blur_background"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/btn_close_debugger" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_debug_activity"
+                            style="@style/Widget.Material3.Button.TonalButton"
+                            android:layout_width="0dp"
+                            android:layout_height="56dp"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_marginEnd="24dp"
+                            android:background="@drawable/btn_accent_center"
+                            android:text="Material components"
+                            app:backgroundTint="@color/blur_background"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/btn_initiate_crash" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_launch_pwa"
+                            style="@style/Widget.Material3.Button.TonalButton"
+                            android:layout_width="0dp"
+                            android:layout_height="56dp"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_marginEnd="24dp"
+                            android:background="@drawable/btn_accent_center"
+                            android:text="Launch SpeakGPT Lite (PWA)"
+                            app:backgroundTint="@color/blur_background"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/btn_debug_activity" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_toggle_pwa"
+                            style="@style/Widget.Material3.Button.TonalButton"
+                            android:layout_width="0dp"
+                            android:layout_height="56dp"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_marginEnd="24dp"
+                            android:background="@drawable/btn_accent_bottom"
+                            android:text="Enable PWA"
+                            app:backgroundTint="@color/blur_background"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/btn_launch_pwa" />
+
+                        <ScrollView
+                            android:id="@+id/scrollView2"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="24dp"
+                            android:layout_marginBottom="16dp"
+                            android:background="@drawable/btn_accent_tonal_selector_v2"
+                            android:backgroundTint="@color/blur_background"
+                            app:layout_constraintBottom_toTopOf="@+id/progressBar8"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/btn_toggle_pwa">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/dev_ids"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:padding="16dp"
+                                    android:text="Debug info:"
+                                    android:textColor="@color/accent_900"
+                                    android:textIsSelectable="true"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+                        </ScrollView>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </LinearLayout>
+        </eightbitlab.com.blurview.BlurView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ImageButton
-        android:id="@+id/btn_open_debugger"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/btn_accent_tonal"
-        android:contentDescription="Debugger"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:src="@drawable/ic_bug"
-        android:tooltipText="Debug mode enabled"
-        android:visibility="gone"
-        app:elevation="6dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/debug_btn_keeper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_bug" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btn_open_debugger"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/btn_accent_tonal"
+            android:contentDescription="Debugger"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:src="@drawable/ic_bug"
+            android:tooltipText="Debug mode enabled"
+            android:visibility="gone"
+            app:elevation="999dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_bug"
+            tools:visibility="visible" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/fragment"
