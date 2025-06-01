@@ -37,7 +37,7 @@ GitHub Repo: [Click here](https://github.com/AndraxDev/speak-gpt-web)
 
 SpeakGPT does not support Google API keys itself, but you cen still use Google Gemini using OpenRouter API. More info at [OpenRouter Models](https://openrouter.ai/docs#models).
 
-## For those not-far people who want to use something for free making low or no effort
+## For those not-far people who want to use something for free making low or no effort.
 
 > [!WARNING]
 > 
