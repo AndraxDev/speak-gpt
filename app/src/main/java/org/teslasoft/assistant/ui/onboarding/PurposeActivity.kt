@@ -24,14 +24,13 @@ import com.google.android.material.button.MaterialButton
 import eightbitlab.com.blurview.BlurView
 import org.teslasoft.assistant.R
 
-class WelcomeActivity : FragmentActivity() {
-
+class PurposeActivity : FragmentActivity() {
     private var btnNext: MaterialButton? = null
     private var foregroundBlur: BlurView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_welcome)
+        setContentView(R.layout.activity_purpose)
 
         btnNext = findViewById(R.id.btn_next)
         foregroundBlur = findViewById(R.id.foreground_blur)
@@ -43,7 +42,7 @@ class WelcomeActivity : FragmentActivity() {
         foregroundBlur?.setupWith(rootView)?.setFrameClearDrawable(windowBackground)?.setBlurRadius(250f)
 
         btnNext?.setOnClickListener {
-            startActivity(Intent(this, PurposeActivity::class.java).setAction(Intent.ACTION_VIEW))
+            startActivity(Intent(this, TermsActivity::class.java).setAction(Intent.ACTION_VIEW))
             finish()
         }
     }

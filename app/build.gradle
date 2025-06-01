@@ -77,7 +77,7 @@ dependencies {
     implementation 'io.noties.markwon:ext-tables:4.6.2'
     implementation 'io.noties.markwon:ext-tasklist:4.6.2'
     implementation 'io.noties.markwon:ext-latex:4.6.2'
-    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.14'
+    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.16'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'androidx.security:security-crypto-ktx:1.1.0-alpha07'
     implementation 'com.google.mlkit:language-id:17.0.6'

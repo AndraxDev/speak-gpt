@@ -137,6 +137,13 @@
 
         <activity
             android:name="org.teslasoft.assistant.ui.onboarding.WelcomeActivity"
+            android:exported="true"
+            android:label="@string/title_welcome_to_speakgpt"
+            android:launchMode="singleTask">
+        </activity>
+
+        <activity
+            android:name="org.teslasoft.assistant.ui.onboarding.PurposeActivity"
             android:exported="false"
             android:label="@string/title_welcome_to_speakgpt"
             android:launchMode="singleTask">
