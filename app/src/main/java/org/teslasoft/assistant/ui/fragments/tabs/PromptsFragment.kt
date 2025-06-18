@@ -19,6 +19,7 @@ package org.teslasoft.assistant.ui.fragments.tabs
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -50,13 +51,18 @@ import eightbitlab.com.blurview.BlurView
 import org.teslasoft.assistant.Api
 import org.teslasoft.assistant.Config.Companion.API_ENDPOINT
 import org.teslasoft.assistant.R
+import org.teslasoft.assistant.model.SimpleResponseModel
+import org.teslasoft.assistant.preferences.DeviceInfoProvider
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.PromptAdapterNew
 import org.teslasoft.assistant.ui.fragments.dialogs.PostPromptDialogFragment
+import org.teslasoft.assistant.util.Hash
 import org.teslasoft.assistant.util.WindowInsetsUtil
 import org.teslasoft.core.api.network.RequestNetwork
 import java.net.URLEncoder
 import java.util.EnumSet
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
@@ -113,6 +119,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         return inflater.inflate(R.layout.fragment_prompts, container, false)
     }
 
+    @OptIn(ExperimentalEncodingApi::class)
     private val postPromptListener: PostPromptDialogFragment.StateChangesListener = object : PostPromptDialogFragment.StateChangesListener {
         override fun onFormFilled(
             name: String,
@@ -127,9 +134,25 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             val mDesc: String = URLEncoder.encode(desc, Charsets.UTF_8.name())
             val mPrompt: String = URLEncoder.encode(prompt, Charsets.UTF_8.name())
 
+            val androidId = DeviceInfoProvider.getAndroidId(mContext ?: return)
+            val deviceIdHash = Hash.hash(androidId) // Add a layer of privacy by hashing the Android ID
+            val appVersionCode: String = (mContext?.packageManager?.getPackageInfo(mContext?.packageName ?: "", 0)?.longVersionCode ?: 0L).toString()
+
+            // Device version and app version are used to ensure compatibility and track changes and prevent abuse.
+            // Android ID is unique for each app installed on the device and does not disclose any information about the device.
+            // Android ID is persistent and used to track abuse and ban devices from posting since no personal information about user (like name or email) is collected.
+            // The system can detect abuse by reading the other values like information about prompt send by the user.
+            // App version will be used to prevent posting from the old app versions and gracefully notify users about update requirements.
+            // Android ID does not used for analytical purposes nor shared with AI models or third-party services.
+            // Using Android ID instead of installation ID will prevent users from abusing the system by reinstalling the app.
+            // Additionally, if user connects from the another device sharing the same IP address, a ban will be immediately issued to the new device.
+
+            // These changes will be implemented gradually so users will not receive sudden errors when posting prompts.
+            // Another layer of security and abuse prevention will be achieved by running the moderation API.
+
             requestNetwork?.startRequestNetwork(
                 "GET",
-                "${API_ENDPOINT}/post.php?api_key=${Api.TESLASOFT_API_KEY}&name=$mName&title=$mTitle&desc=$mDesc&prompt=$mPrompt&type=$type&category=$category",
+                "${API_ENDPOINT}/post.php?api_key=${Api.TESLASOFT_API_KEY}&name=${Base64.encode(mName.toByteArray())}&title=${Base64.encode(mTitle.toByteArray())}&desc=${Base64.encode(mDesc.toByteArray())}&prompt=${Base64.encode(mPrompt.toByteArray())}&type=$type&category=$category&deviceId=$deviceIdHash&appVersion=$appVersionCode&mode=base64",
                 "A",
                 promptPostListener
             )
@@ -187,7 +210,55 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private val promptPostListener: RequestNetwork.RequestListener = object : RequestNetwork.RequestListener {
         override fun onResponse(tag: String, message: String) {
-            loadData()
+            try {
+                val response = Gson().fromJson(message, SimpleResponseModel::class.java)
+
+                if (response.getCode() == 200) {
+                    loadData()
+                } else if (response.getCode() == 104) {
+                    MaterialAlertDialogBuilder(mContext?: return, R.style.App_MaterialAlertDialog)
+                        .setTitle(R.string.label_error)
+                        .setMessage(getString(R.string.msg_post_prompt_spam))
+                        .setPositiveButton(R.string.btn_close) { _, _ -> }
+                        .show()
+                } else if (response.getCode() == 103) {
+                    MaterialAlertDialogBuilder(mContext?: return, R.style.App_MaterialAlertDialog)
+                        .setTitle(R.string.label_error)
+                        .setMessage(getString(R.string.msg_post_prompt_inappropriate))
+                        .setPositiveButton(R.string.btn_close) { _, _ -> }
+                        .show()
+                } else if (response.getCode() == 102) {
+                    MaterialAlertDialogBuilder(mContext?: return, R.style.App_MaterialAlertDialog)
+                        .setTitle(R.string.label_error)
+                        .setMessage(getString(R.string.msg_post_prompt_ban))
+                        .setPositiveButton(R.string.btn_close) { _, _ -> }
+                        .show()
+                } else if (response.getCode() == 101) {
+                    MaterialAlertDialogBuilder(mContext?: return, R.style.App_MaterialAlertDialog)
+                        .setTitle(R.string.label_error)
+                        .setMessage(getString(R.string.msg_post_prompt_outdated))
+                        .setPositiveButton(R.string.btn_close) { _, _ -> }
+                        .show()
+                } else if (response.getCode() == 400) {
+                    MaterialAlertDialogBuilder(mContext?: return, R.style.App_MaterialAlertDialog)
+                        .setTitle(R.string.label_error)
+                        .setMessage(getString(R.string.msg_post_prompt_weirdest_error))
+                        .setPositiveButton(R.string.btn_close) { _, _ -> }
+                        .show()
+                } else if (response.getCode() == 401) {
+                    MaterialAlertDialogBuilder(mContext?: return, R.style.App_MaterialAlertDialog)
+                        .setTitle(R.string.label_error)
+                        .setMessage(getString(R.string.msg_post_prompt_api_key_invalid))
+                        .setPositiveButton(R.string.btn_close) { _, _ -> }
+                        .show()
+                }
+            } catch (e: Exception) {
+                MaterialAlertDialogBuilder(mContext?: return, R.style.App_MaterialAlertDialog)
+                    .setTitle(R.string.label_error)
+                    .setMessage(getString(R.string.msg_failed_to_post_prompt) + getString(R.string.msg_post_prompt_report_error) + e.stackTraceToString())
+                    .setPositiveButton(R.string.btn_close) { _, _ -> }
+                    .show()
+            }
         }
 
         override fun onErrorResponse(tag: String, message: String) {

@@ -32,432 +32,472 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone" />
-<androidx.core.widget.NestedScrollView
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="24dp">
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_discard"
-            style="@style/Widget.Material3.Button.TonalButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="6dp"
-            android:layout_marginEnd="24dp"
-            android:background="@drawable/t_menu_bottom_item_background"
-            android:paddingHorizontal="24dp"
-            android:paddingVertical="20dp"
-            android:text="@string/cancel"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_post" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_post"
-            style="@style/Widget.Material3.Button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="24dp"
-            android:background="@drawable/t_menu_top_item_background"
-            android:paddingHorizontal="24dp"
-            android:paddingVertical="20dp"
-            android:text="@string/btn_post"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView28" />
-
-        <TextView
-            android:id="@+id/dialog_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="24dp"
-            android:text="@string/title_post_a_prompt"
-            android:textColor="@color/text_title"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="24dp"
-            android:layout_weight="1"
-            android:ems="10"
-            android:hint="@string/hint_name"
-            android:textColor="@color/accent_900"
-            android:textColorHint="@color/text_hint"
-            app:boxCornerRadiusBottomEnd="16dp"
-            app:boxCornerRadiusBottomStart="16dp"
-            app:boxCornerRadiusTopEnd="16dp"
-            app:boxCornerRadiusTopStart="16dp"
-            app:boxStrokeColor="@drawable/box_stroke_color"
-            app:boxStrokeErrorColor="@color/error"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dialog_title">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/field_author_name"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/button"
-                android:inputType="text|textCapSentences"
-                android:textColor="@color/accent_900"
-                android:textColorHighlight="@color/accent_100"
-                android:textColorHint="@color/text_hint"
-                app:backgroundTint="@color/button" />
+                android:paddingBottom="24dp">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_discard"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginEnd="24dp"
+                    android:background="@drawable/t_menu_bottom_item_background"
+                    android:paddingHorizontal="24dp"
+                    android:paddingVertical="20dp"
+                    android:text="@string/cancel"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_post" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="24dp"
-            android:layout_weight="1"
-            android:ems="10"
-            android:hint="@string/hint_prompt_title"
-            android:textColor="@color/accent_900"
-            android:textColorHint="@color/text_hint"
-            app:boxCornerRadiusBottomEnd="16dp"
-            app:boxCornerRadiusBottomStart="16dp"
-            app:boxCornerRadiusTopEnd="16dp"
-            app:boxCornerRadiusTopStart="16dp"
-            app:boxStrokeColor="@drawable/box_stroke_color"
-            app:boxStrokeErrorColor="@color/error"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_post"
+                    style="@style/Widget.Material3.Button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="24dp"
+                    android:background="@drawable/t_menu_top_item_background"
+                    android:paddingHorizontal="24dp"
+                    android:paddingVertical="20dp"
+                    android:text="@string/btn_post"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView82" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/field_prompt_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/button"
-                android:inputType="text|textCapSentences"
-                android:textColor="@color/accent_900"
-                android:textColorHighlight="@color/accent_100"
-                android:textColorHint="@color/text_hint"
-                app:backgroundTint="@color/button" />
+                <TextView
+                    android:id="@+id/dialog_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:text="@string/title_post_a_prompt"
+                    android:textColor="@color/text_title"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout4"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="24dp"
-            android:layout_weight="1"
-            android:ems="10"
-            android:hint="@string/hint_prompt_desc"
-            android:textColor="@color/accent_900"
-            android:textColorHint="@color/text_hint"
-            app:boxCornerRadiusBottomEnd="16dp"
-            app:boxCornerRadiusBottomStart="16dp"
-            app:boxCornerRadiusTopEnd="16dp"
-            app:boxCornerRadiusTopStart="16dp"
-            app:boxStrokeColor="@drawable/box_stroke_color"
-            app:boxStrokeErrorColor="@color/error"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout3">
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputLayout2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="@string/hint_name"
+                    android:textColor="@color/accent_900"
+                    android:textColorHint="@color/text_hint"
+                    app:boxCornerRadiusBottomEnd="16dp"
+                    app:boxCornerRadiusBottomStart="16dp"
+                    app:boxCornerRadiusTopEnd="16dp"
+                    app:boxCornerRadiusTopStart="16dp"
+                    app:boxStrokeColor="@drawable/box_stroke_color"
+                    app:boxStrokeErrorColor="@color/error"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/dialog_title">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/field_prompt_desc"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:backgroundTint="@color/button"
-                android:gravity="top|start"
-                android:inputType="text|textMultiLine"
-                android:textColor="@color/accent_900"
-                android:textColorHighlight="@color/accent_100"
-                android:textColorHint="@color/text_hint"
-                app:backgroundTint="@color/button" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/field_author_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/button"
+                        android:inputType="text|textCapSentences"
+                        android:textColor="@color/accent_900"
+                        android:textColorHighlight="@color/accent_100"
+                        android:textColorHint="@color/text_hint"
+                        app:backgroundTint="@color/button" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout6"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="24dp"
-            android:layout_weight="1"
-            android:ems="10"
-            android:hint="@string/hint_prompt"
-            android:textColor="@color/accent_900"
-            android:textColorHint="@color/text_hint"
-            app:boxCornerRadiusBottomEnd="16dp"
-            app:boxCornerRadiusBottomStart="16dp"
-            app:boxCornerRadiusTopEnd="16dp"
-            app:boxCornerRadiusTopStart="16dp"
-            app:boxStrokeColor="@drawable/box_stroke_color"
-            app:boxStrokeErrorColor="@color/error"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout4">
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputLayout3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="@string/hint_prompt_title"
+                    android:textColor="@color/accent_900"
+                    android:textColorHint="@color/text_hint"
+                    app:boxCornerRadiusBottomEnd="16dp"
+                    app:boxCornerRadiusBottomStart="16dp"
+                    app:boxCornerRadiusTopEnd="16dp"
+                    app:boxCornerRadiusTopStart="16dp"
+                    app:boxStrokeColor="@drawable/box_stroke_color"
+                    app:boxStrokeErrorColor="@color/error"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/field_prompt"
-                android:layout_width="match_parent"
-                android:layout_height="160dp"
-                android:backgroundTint="@color/button"
-                android:gravity="top|start"
-                android:inputType="text|textMultiLine"
-                android:textColor="@color/accent_900"
-                android:textColorHighlight="@color/accent_100"
-                android:textColorHint="@color/text_hint"
-                app:backgroundTint="@color/button" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/field_prompt_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/button"
+                        android:inputType="text|textCapSentences"
+                        android:textColor="@color/accent_900"
+                        android:textColorHighlight="@color/accent_100"
+                        android:textColorHint="@color/text_hint"
+                        app:backgroundTint="@color/button" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.button.MaterialButtonToggleGroup
-            android:id="@+id/model_for"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="24dp"
-            android:weightSum="2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView13"
-            app:selectionRequired="true"
-            app:singleSelection="true">
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputLayout4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="@string/hint_prompt_desc"
+                    android:textColor="@color/accent_900"
+                    android:textColorHint="@color/text_hint"
+                    app:boxCornerRadiusBottomEnd="16dp"
+                    app:boxCornerRadiusBottomStart="16dp"
+                    app:boxCornerRadiusTopEnd="16dp"
+                    app:boxCornerRadiusTopStart="16dp"
+                    app:boxStrokeColor="@drawable/box_stroke_color"
+                    app:boxStrokeErrorColor="@color/error"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textInputLayout3">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_gpt"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="GPT" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/field_prompt_desc"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:backgroundTint="@color/button"
+                        android:gravity="top|start"
+                        android:inputType="text|textMultiLine"
+                        android:textColor="@color/accent_900"
+                        android:textColorHighlight="@color/accent_100"
+                        android:textColorHint="@color/text_hint"
+                        app:backgroundTint="@color/button" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_dalle"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="DALL-e" />
-        </com.google.android.material.button.MaterialButtonToggleGroup>
+                </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/textView13"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:gravity="center"
-            android:text="@string/prompt_for"
-            android:textColor="@color/accent_900"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout6" />
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputLayout6"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="@string/hint_prompt"
+                    android:textColor="@color/accent_900"
+                    android:textColorHint="@color/text_hint"
+                    app:boxCornerRadiusBottomEnd="16dp"
+                    app:boxCornerRadiusBottomStart="16dp"
+                    app:boxCornerRadiusTopEnd="16dp"
+                    app:boxCornerRadiusTopStart="16dp"
+                    app:boxStrokeColor="@drawable/box_stroke_color"
+                    app:boxStrokeErrorColor="@color/error"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView80">
 
-        <TextView
-            android:id="@+id/textView16"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:gravity="center"
-            android:text="@string/category"
-            android:textColor="@color/accent_900"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/model_for" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/field_prompt"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:backgroundTint="@color/button"
+                        android:gravity="top|start"
+                        android:inputType="text|textMultiLine"
+                        android:textColor="@color/accent_900"
+                        android:textColorHighlight="@color/accent_100"
+                        android:textColorHint="@color/text_hint"
+                        app:backgroundTint="@color/button" />
 
-        <RadioGroup
-            android:id="@+id/radioGroup3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView16">
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <RadioButton
-                android:id="@+id/cat_development"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="16dp"
-                android:text="@string/cat_development" />
+                <com.google.android.material.button.MaterialButtonToggleGroup
+                    android:id="@+id/model_for"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:weightSum="2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView13"
+                    app:selectionRequired="true"
+                    app:singleSelection="true">
 
-            <RadioButton
-                android:id="@+id/cat_music"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="16dp"
-                android:text="@string/cat_music" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_gpt"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="GPT" />
 
-            <RadioButton
-                android:id="@+id/cat_art"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="16dp"
-                android:text="@string/cat_art" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_dalle"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="DALL-e" />
+                </com.google.android.material.button.MaterialButtonToggleGroup>
 
-            <RadioButton
-                android:id="@+id/cat_culture"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="16dp"
-                android:text="@string/cat_culture" />
+                <TextView
+                    android:id="@+id/textView13"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center"
+                    android:text="@string/prompt_for"
+                    android:textColor="@color/accent_900"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView81" />
 
-            <RadioButton
-                android:id="@+id/cat_business"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="16dp"
-                android:text="@string/cat_business" />
+                <TextView
+                    android:id="@+id/textView16"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:gravity="center"
+                    android:text="@string/category"
+                    android:textColor="@color/accent_900"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/model_for" />
 
-            <RadioButton
-                android:id="@+id/cat_gaming"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="16dp"
-                android:text="@string/cat_gaming" />
+                <RadioGroup
+                    android:id="@+id/radioGroup3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView16">
 
-            <RadioButton
-                android:id="@+id/cat_education"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="16dp"
-                android:text="@string/cat_education" />
+                    <RadioButton
+                        android:id="@+id/cat_development"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
+                        android:text="@string/cat_development" />
 
-            <RadioButton
-                android:id="@+id/cat_history"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="16dp"
-                android:text="@string/cat_history" />
+                    <RadioButton
+                        android:id="@+id/cat_music"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
+                        android:text="@string/cat_music" />
 
-            <RadioButton
-                android:id="@+id/cat_health"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="16dp"
-                android:text="@string/cat_health" />
+                    <RadioButton
+                        android:id="@+id/cat_art"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
+                        android:text="@string/cat_art" />
 
-            <RadioButton
-                android:id="@+id/cat_food"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="16dp"
-                android:text="@string/cat_food" />
+                    <RadioButton
+                        android:id="@+id/cat_culture"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
+                        android:text="@string/cat_culture" />
 
-            <RadioButton
-                android:id="@+id/cat_tourism"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="16dp"
-                android:text="@string/cat_tourism" />
+                    <RadioButton
+                        android:id="@+id/cat_business"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
+                        android:text="@string/cat_business" />
 
-            <RadioButton
-                android:id="@+id/cat_productivity"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="16dp"
-                android:text="@string/cat_productivity" />
+                    <RadioButton
+                        android:id="@+id/cat_gaming"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
+                        android:text="@string/cat_gaming" />
 
-            <RadioButton
-                android:id="@+id/cat_tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="16dp"
-                android:text="@string/cat_tools" />
+                    <RadioButton
+                        android:id="@+id/cat_education"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
+                        android:text="@string/cat_education" />
 
-            <RadioButton
-                android:id="@+id/cat_entertainment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="16dp"
-                android:text="@string/cat_entertainment" />
+                    <RadioButton
+                        android:id="@+id/cat_history"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
+                        android:text="@string/cat_history" />
 
-            <RadioButton
-                android:id="@+id/cat_sport"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="16dp"
-                android:text="@string/cat_sport" />
-        </RadioGroup>
+                    <RadioButton
+                        android:id="@+id/cat_health"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
+                        android:text="@string/cat_health" />
 
-        <TextView
-            android:id="@+id/textView17"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="24dp"
-            android:background="@drawable/btn_tip2"
-            android:padding="16dp"
-            android:text="@string/safety_warning"
-            android:textColor="@color/error"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/radioGroup3" />
+                    <RadioButton
+                        android:id="@+id/cat_food"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
+                        android:text="@string/cat_food" />
 
-        <TextView
-            android:id="@+id/textView28"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="24dp"
-            android:background="@drawable/btn_tip2"
-            android:padding="16dp"
-            android:text="@string/text_warn_shitposting"
-            android:textColor="@color/error"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView17" />
+                    <RadioButton
+                        android:id="@+id/cat_tourism"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
+                        android:text="@string/cat_tourism" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.core.widget.NestedScrollView>
+                    <RadioButton
+                        android:id="@+id/cat_productivity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
+                        android:text="@string/cat_productivity" />
+
+                    <RadioButton
+                        android:id="@+id/cat_tools"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
+                        android:text="@string/cat_tools" />
+
+                    <RadioButton
+                        android:id="@+id/cat_entertainment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
+                        android:text="@string/cat_entertainment" />
+
+                    <RadioButton
+                        android:id="@+id/cat_sport"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
+                        android:text="@string/cat_sport" />
+                </RadioGroup>
+
+                <TextView
+                    android:id="@+id/textView17"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="24dp"
+                    android:background="@drawable/btn_tip2"
+                    android:padding="16dp"
+                    android:text="@string/safety_warning"
+                    android:textColor="@color/error"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/radioGroup3" />
+
+                <TextView
+                    android:id="@+id/textView28"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="24dp"
+                    android:background="@drawable/btn_tip2"
+                    android:padding="16dp"
+                    android:text="@string/text_warn_shitposting"
+                    android:textColor="@color/error"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView17" />
+
+                <TextView
+                    android:id="@+id/textView80"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="24dp"
+                    android:text="@string/prompt_desc_conf1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textInputLayout4" />
+
+                <TextView
+                    android:id="@+id/textView81"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="24dp"
+                    android:text="@string/prompt_desc_conf2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textInputLayout6" />
+
+                <TextView
+                    android:id="@+id/textView82"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="24dp"
+                    android:background="@drawable/btn_tip2"
+                    android:padding="16dp"
+                    android:text="@string/abuse_last_warning"
+                    android:textColor="@color/error"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView28" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
     </FrameLayout>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

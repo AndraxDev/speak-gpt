@@ -123,7 +123,7 @@
                 android:layout_marginTop="36dp"
                 android:layout_marginEnd="32dp"
                 android:gravity="center"
-                android:text="@string/app_desc"
+                android:text="@string/app_description_new"
                 android:textColor="@color/on_blur_monotone_secondary"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
