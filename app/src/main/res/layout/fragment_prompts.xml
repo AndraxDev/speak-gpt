@@ -122,7 +122,7 @@
                         android:layout_marginHorizontal="6dp"
                         android:layout_weight="1"
                         android:background="@drawable/btn_accent_8"
-                        android:text="GPT" />
+                        android:text="Text" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_image_model"
@@ -132,7 +132,7 @@
                         android:layout_marginStart="6dp"
                         android:layout_weight="1"
                         android:background="@drawable/btn_accent_8"
-                        android:text="DALL-e" />
+                        android:text="Images" />
                 </LinearLayout>
 
                 <LinearLayout

@@ -269,6 +269,9 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
                 loadImage(chatMessage["message"].toString())
                 updateImageClickListener(chatMessage["message"].toString())
             } else if (chatMessage["message"].toString().contains("~file:")) {
+                if (chatMessage["isBot"] == true) {
+                    message.visibility = View.GONE
+                }
                 processFile(chatMessage, position, "png", dalleImageStringList, true)
             } else {
                 (debugContext as FragmentActivity).runOnUiThread {

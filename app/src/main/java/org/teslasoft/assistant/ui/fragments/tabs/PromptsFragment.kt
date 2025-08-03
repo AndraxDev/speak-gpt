@@ -129,11 +129,6 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             type: String,
             category: String
         ) {
-            val mName: String = URLEncoder.encode(name, Charsets.UTF_8.name())
-            val mTitle: String = URLEncoder.encode(title, Charsets.UTF_8.name())
-            val mDesc: String = URLEncoder.encode(desc, Charsets.UTF_8.name())
-            val mPrompt: String = URLEncoder.encode(prompt, Charsets.UTF_8.name())
-
             val androidId = DeviceInfoProvider.getAndroidId(mContext ?: return)
             val deviceIdHash = Hash.hash(androidId) // Add a layer of privacy by hashing the Android ID
             val appVersionCode: String = (mContext?.packageManager?.getPackageInfo(mContext?.packageName ?: "", 0)?.longVersionCode ?: 0L).toString()
@@ -152,7 +147,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
             requestNetwork?.startRequestNetwork(
                 "GET",
-                "${API_ENDPOINT}/post.php?api_key=${Api.TESLASOFT_API_KEY}&name=${Base64.encode(mName.toByteArray())}&title=${Base64.encode(mTitle.toByteArray())}&desc=${Base64.encode(mDesc.toByteArray())}&prompt=${Base64.encode(mPrompt.toByteArray())}&type=$type&category=$category&deviceId=$deviceIdHash&appVersion=$appVersionCode&mode=base64",
+                "${API_ENDPOINT}/post.php?api_key=${Api.TESLASOFT_API_KEY}&name=${Base64.encode(name.toByteArray())}&title=${Base64.encode(title.toByteArray())}&desc=${Base64.encode(desc.toByteArray())}&prompt=${Base64.encode(prompt.toByteArray())}&type=$type&category=$category&deviceId=$deviceIdHash&appVersion=$appVersionCode&mode=base64",
                 "A",
                 promptPostListener
             )

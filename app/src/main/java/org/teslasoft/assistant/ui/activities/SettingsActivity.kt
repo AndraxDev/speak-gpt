@@ -24,7 +24,6 @@ import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -61,6 +60,7 @@ import org.teslasoft.assistant.ui.fragments.dialogs.ActivationPromptDialogFragme
 import org.teslasoft.assistant.ui.fragments.dialogs.AdvancedSettingsDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.CustomizeAssistantDialog
 import org.teslasoft.assistant.ui.fragments.dialogs.LanguageSelectorDialogFragment
+import org.teslasoft.assistant.ui.fragments.dialogs.SelectImageModelFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.SelectResolutionFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.SystemMessageDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.VoiceSelectorDialogFragment
@@ -73,6 +73,7 @@ import org.teslasoft.core.auth.widget.TeslasoftIDCircledButton
 import java.util.EnumSet
 import java.util.Locale
 import kotlin.math.roundToInt
+import androidx.core.net.toUri
 
 class SettingsActivity : FragmentActivity() {
 
@@ -129,6 +130,7 @@ class SettingsActivity : FragmentActivity() {
     private var systemMessage = ""
     private var language = "en"
     private var resolution = ""
+    private var imageModel = ""
     private var voice = ""
     private var host = ""
     private var ttsEngine = "google"
@@ -185,6 +187,21 @@ class SettingsActivity : FragmentActivity() {
             val resolutionSelectorDialogFragment: SelectResolutionFragment = SelectResolutionFragment.newInstance(name, chatId)
             resolutionSelectorDialogFragment.setStateChangedListener(this)
             resolutionSelectorDialogFragment.show(supportFragmentManager.beginTransaction(), "ResolutionSelectorDialog")
+        }
+    }
+
+    private var imageModelChangedListener: SelectImageModelFragment.StateChangesListener = object : SelectImageModelFragment.StateChangesListener {
+        override fun onSelected(name: String) {
+            preferences?.setImageModel(name)
+            imageModel = name
+            tileImageModel?.updateSubtitle(name)
+        }
+
+        override fun onFormError(name: String) {
+            Toast.makeText(this@SettingsActivity, "Please select an image generating model", Toast.LENGTH_SHORT).show()
+            val imageModelSelectorDialogFragment: SelectImageModelFragment = SelectImageModelFragment.newInstance(name, chatId)
+            imageModelSelectorDialogFragment.setStateChangedListener(this)
+            imageModelSelectorDialogFragment.show(supportFragmentManager.beginTransaction(), "SelectImageModelFragment")
         }
     }
 
@@ -447,6 +464,7 @@ class SettingsActivity : FragmentActivity() {
         systemMessage = preferences?.getSystemMessage() ?: ""
         language = preferences?.getLanguage() ?: "en"
         resolution = preferences?.getResolution() ?: "256x256"
+        imageModel = preferences?.getImageModel() ?: "dall-e-3"
         voice = if (preferences?.getTtsEngine() == "google") preferences?.getVoice() ?: "" else preferences?.getOpenAIVoice() ?: ""
 
         host = apiEndpoint?.host ?: ""
@@ -601,12 +619,12 @@ class SettingsActivity : FragmentActivity() {
             )
 
             tileImageModel = TileFragment.newInstance(
-                preferences?.getDalleVersion() == "3",
-                true,
-                getString(R.string.tile_dalle_3),
+                false,
+                false,
+                "Image model",
                 null,
-                getString(R.string.on),
-                getString(R.string.tile_dalle_2),
+                preferences?.getImageModel() ?: "dall-e-3",
+                null,
                 R.drawable.ic_image,
                 false,
                 chatId,
@@ -618,7 +636,7 @@ class SettingsActivity : FragmentActivity() {
                 false,
                 getString(R.string.tile_image_resolution_title),
                 null,
-                preferences?.getResolution()!!,
+                preferences?.getResolution() ?: "1024x1024",
                 null,
                 R.drawable.ic_image,
                 false,
@@ -1108,7 +1126,7 @@ class SettingsActivity : FragmentActivity() {
         tileAccountFragment?.setOnTileClickListener {
             val intent = Intent()
             intent.action = Intent.ACTION_VIEW
-            intent.data = Uri.parse("https://platform.openai.com/account")
+            intent.data = "https://platform.openai.com/account".toUri()
             startActivity(intent)
         }
 
@@ -1142,13 +1160,11 @@ class SettingsActivity : FragmentActivity() {
             languageSelectorDialogFragment.show(supportFragmentManager.beginTransaction(), "LanguageSelectorDialog")
         }
 
-        tileImageModel?.setOnCheckedChangeListener { ischecked -> run {
-            if (ischecked) {
-                preferences?.setDalleVersion("3")
-            } else {
-                preferences?.setDalleVersion("2")
-            }
-        }}
+        tileImageModel?.setOnTileClickListener {
+            val imageModelSelectorDialogFragment: SelectImageModelFragment = SelectImageModelFragment.newInstance(imageModel, chatId)
+            imageModelSelectorDialogFragment.setStateChangedListener(imageModelChangedListener)
+            imageModelSelectorDialogFragment.show(supportFragmentManager.beginTransaction(), "SelectImageModelFragment")
+        }
 
         tileImageResolution?.setOnTileClickListener {
             val resolutionSelectorDialogFragment: SelectResolutionFragment = SelectResolutionFragment.newInstance(resolution, chatId)

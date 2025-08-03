@@ -116,6 +116,7 @@ import com.aallam.openai.api.chat.chatCompletionRequest
 import com.aallam.openai.api.completion.CompletionRequest
 import com.aallam.openai.api.completion.TextCompletion
 import com.aallam.openai.api.core.Role
+import com.aallam.openai.api.exception.OpenAIError
 import com.aallam.openai.api.file.FileSource
 import com.aallam.openai.api.http.Timeout
 import com.aallam.openai.api.image.ImageCreation
@@ -134,11 +135,19 @@ import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.gson.Gson
 import com.google.mlkit.nl.languageid.LanguageIdentification
 import com.google.mlkit.nl.languageid.LanguageIdentifier
+import com.openai.client.OpenAIClient
+import com.openai.client.okhttp.OpenAIOkHttpClient
+import com.openai.models.images.Image
+import com.openai.models.images.ImageGenerateParams
+import com.openai.models.images.ImagesResponse
 import eightbitlab.com.blurview.BlurView
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -179,6 +188,7 @@ import java.io.InputStreamReader
 import java.net.URL
 import java.util.EnumSet
 import java.util.Locale
+import java.util.Optional
 import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration.Companion.seconds
 
@@ -280,6 +290,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
     private var setupScope: CoroutineScope? = null
     private var imageRequestScope: CoroutineScope? = null
     private var speakScope: CoroutineScope? = null
+    private var generateGptImageJob: Job? = null
 
     private fun killAllProcesses() {
         onSpeechResultsScope?.coroutineContext?.cancel(CancellationException("Killed"))
@@ -288,6 +299,8 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         setupScope?.coroutineContext?.cancel(CancellationException("Killed"))
         imageRequestScope?.coroutineContext?.cancel(CancellationException("Killed"))
         speakScope?.coroutineContext?.cancel(CancellationException("Killed"))
+        generateGptImageJob?.cancel(CancellationException("Killed"))
+        generateGptImageJob = null
     }
 
     private fun restoreUIState() {
@@ -2605,6 +2618,46 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         }
     }
 
+    fun generateImageAsync(
+        client: OpenAIClient,
+        params: ImageGenerateParams,
+        onSuccess: (String) -> Unit,
+        onError: (Throwable) -> Unit
+    ) : Job {
+        return CoroutineScope(Dispatchers.IO).launch {
+            progress?.setOnClickListener {
+                cancel()
+                restoreUIState()
+            }
+
+            try {
+                var imageId = ""
+                val response = client.images().generate(params)
+                val data: Optional<List<Image>> = response.data()
+                val images = data.orElse(emptyList())
+
+                val b64 = images.firstOrNull()?.b64Json()?.get()
+                    ?: throw NullPointerException("Base64 string is null or empty, stopping...")
+
+                val byteArray = Base64.decode(b64, Base64.DEFAULT)
+                writeImageToCache(byteArray)
+                imageId = Hash.hash(b64)
+
+                withContext(Dispatchers.Main) {
+                    onSuccess(imageId)
+                }
+            } catch (_: CancellationException) {
+                withContext(Dispatchers.Main) {
+                    onSuccess("cancelled")
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    onError(e)
+                }
+            }
+        }
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     private suspend fun generateImageR(p: String) {
         runOnUiThread {
@@ -2617,59 +2670,136 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         disableAutoScroll = false
         // chat?.transcriptMode = ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL
         try {
-            val images = openAIAI?.imageURL(
-                creation = ImageCreation(
-                    prompt = p,
-                    model = ModelId("dall-e-${preferences!!.getDalleVersion()}"),
-                    n = 1,
-                    size = ImageSize(resolution)
-                )
-            )
+            if (preferences!!.getImageModel() == "gpt-image-1") {
+                val client: OpenAIClient = OpenAIOkHttpClient
+                    .builder()
+                    .baseUrl(apiEndpointPreferences!!.getApiEndpoint(this, preferences!!.getApiEndpointId()).host)
+                    .apiKey(apiEndpointPreferences!!.getApiEndpoint(this, preferences!!.getApiEndpointId()).apiKey)
+                    .build()
 
-            val url = URL(images?.get(0)?.url!!)
+                val params = ImageGenerateParams.builder()
+                    .prompt(p)
+                    .model(preferences!!.getImageModel())
+                    .n(1L)
+                    .quality(ImageGenerateParams.Quality.AUTO) // Settings param "quality" does not exists yet.
+                    .size(ImageGenerateParams.Size._1024X1024) // Settings param "resolution" is ignored as this model supports only 1024x1024 resolution
+                    .build()
 
-            val `is` = withContext(Dispatchers.IO) {
-                url.openStream()
-            }
-            var file = ""
-            val th = Thread {
-                val bytes: ByteArray = org.apache.commons.io.IOUtils.toByteArray(`is`)
-
-                writeImageToCache(bytes)
-
-                val encoded = java.util.Base64.getEncoder().encodeToString(bytes)
-
-                file = Hash.hash(encoded)
-            }
-
-            th.start()
-            withContext(Dispatchers.IO) {
-                th.join()
-                runOnUiThread {
-                    putMessage("~file:$file", true)
-
-                    chat?.setOnTouchListener { _, event -> run {
-                        if (event.action == MotionEvent.ACTION_SCROLL || event.action == MotionEvent.ACTION_UP) {
-                            // chat?.transcriptMode = ListView.TRANSCRIPT_MODE_DISABLED
-                            disableAutoScroll = true
+                generateGptImageJob = generateImageAsync(
+                    client,
+                    params,
+                    onSuccess = { file ->
+                        if (file == "cancelled") {
+                            runOnUiThread {
+                                restoreUIState()
+                            }
+                            return@generateImageAsync
                         }
-                        return@setOnTouchListener false
-                    }}
 
-                    scroll(true)
-                    scroll(false)
+                        runOnUiThread {
+                            putMessage("~file:$file", true)
 
-                    saveSettings()
+                            chat?.setOnTouchListener { _, event ->
+                                run {
+                                    if (event.action == MotionEvent.ACTION_SCROLL || event.action == MotionEvent.ACTION_UP) {
+                                        // chat?.transcriptMode = ListView.TRANSCRIPT_MODE_DISABLED
+                                        disableAutoScroll = true
+                                    }
+                                    return@setOnTouchListener false
+                                }
+                            }
 
-                    btnMicro?.isEnabled = true
-                    btnSend?.isEnabled = true
-                    progress?.visibility = View.GONE
+                            scroll(true)
+                            scroll(false)
 
-                    messageInput?.requestFocus()
+                            saveSettings()
 
-                    // Put timestamp to chat to sort chats by last message
-                    ChatPreferences.getChatPreferences().putTimestampToChatById(this@ChatActivity, chatId)
-                    initSettings()
+                            btnMicro?.isEnabled = true
+                            btnSend?.isEnabled = true
+                            progress?.visibility = View.GONE
+
+                            messageInput?.requestFocus()
+
+                            // Put timestamp to chat to sort chats by last message
+                            ChatPreferences.getChatPreferences().putTimestampToChatById(this@ChatActivity, chatId)
+                            initSettings()
+                        }
+                    },
+                    onError = { error ->
+                        runOnUiThread {
+                            if (preferences?.showChatErrors() == true) {
+                                putMessage(
+                                    when (error) {
+                                        else -> error.stackTraceToString()
+                                    }, true
+                                )
+                            }
+                            btnMicro?.isEnabled = true
+                            btnSend?.isEnabled = true
+                            progress?.visibility = View.GONE
+                            messageInput?.requestFocus()
+                        }
+                    }
+                )
+            } else {
+                val images = openAIAI?.imageURL(
+                    creation = ImageCreation(
+                        prompt = p,
+                        model = ModelId(preferences!!.getImageModel()),
+                        n = 1,
+                        size = ImageSize(resolution)
+                    )
+                )
+
+                val imageUrl = images?.get(0)?.url!!
+
+                val url = URL(imageUrl)
+
+                val `is` = withContext(Dispatchers.IO) {
+                    url.openStream()
+                }
+                var file = ""
+                val th = Thread {
+                    val bytes: ByteArray = org.apache.commons.io.IOUtils.toByteArray(`is`)
+
+                    writeImageToCache(bytes)
+
+                    val encoded = java.util.Base64.getEncoder().encodeToString(bytes)
+
+                    file = Hash.hash(encoded)
+                }
+
+                th.start()
+                withContext(Dispatchers.IO) {
+                    th.join()
+                    runOnUiThread {
+                        putMessage("~file:$file", true)
+
+                        chat?.setOnTouchListener { _, event ->
+                            run {
+                                if (event.action == MotionEvent.ACTION_SCROLL || event.action == MotionEvent.ACTION_UP) {
+                                    // chat?.transcriptMode = ListView.TRANSCRIPT_MODE_DISABLED
+                                    disableAutoScroll = true
+                                }
+                                return@setOnTouchListener false
+                            }
+                        }
+
+                        scroll(true)
+                        scroll(false)
+
+                        saveSettings()
+
+                        btnMicro?.isEnabled = true
+                        btnSend?.isEnabled = true
+                        progress?.visibility = View.GONE
+
+                        messageInput?.requestFocus()
+
+                        // Put timestamp to chat to sort chats by last message
+                        ChatPreferences.getChatPreferences().putTimestampToChatById(this@ChatActivity, chatId)
+                        initSettings()
+                    }
                 }
             }
         } catch (_: CancellationException) {
@@ -2718,8 +2848,10 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
             messageInput?.requestFocus()
         } finally {
-            runOnUiThread {
-                restoreUIState()
+            if (preferences!!.getImageModel() != "gpt-image-1") {
+                runOnUiThread {
+                    restoreUIState()
+                }
             }
         }
     }
@@ -2862,7 +2994,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         restoreUIState()
 
         val message = when(feature) {
-            "dalle" -> "DALL-E image generation"
+            "dalle" -> "Image generation"
             "tts" -> "OpenAI text-to-speech"
             "whisper" -> "Whisper speech recognition"
             else -> "this OpenAI"

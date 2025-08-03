@@ -228,7 +228,9 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
             th.start()
             th.join()
 
-            btnTips?.background = getDisabledDrawable(ResourcesCompat.getDrawable(mContext?.resources?: return@Thread, R.drawable.btn_accent_tonal, mContext?.theme)!!)
+            try {
+                btnTips?.background = getDisabledDrawable(ResourcesCompat.getDrawable(mContext?.resources ?: return@Thread, R.drawable.btn_accent_tonal, mContext?.theme) ?: return@Thread)
+            } catch (_: NullPointerException) { /* ignored */ }
         }.start()
     }
 

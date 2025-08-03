@@ -166,6 +166,12 @@ import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.seconds
 import androidx.core.graphics.createBitmap
 import androidx.core.net.toUri
+import com.openai.client.OpenAIClient
+import com.openai.client.okhttp.OpenAIOkHttpClient
+import com.openai.models.images.Image
+import com.openai.models.images.ImageGenerateParams
+import kotlinx.coroutines.Job
+import java.util.Optional
 
 class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListener {
 
@@ -1936,6 +1942,45 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         }
     }
 
+    fun generateImageAsync(
+        client: OpenAIClient,
+        params: ImageGenerateParams,
+        onSuccess: (String) -> Unit,
+        onError: (Throwable) -> Unit
+    ) : Job {
+        return CoroutineScope(Dispatchers.IO).launch {
+            assistantLoading?.setOnClickListener {
+                cancel()
+                restoreUIState()
+            }
+
+            try {
+                var imageId = ""
+                val response = client.images().generate(params)
+                val data: Optional<List<Image>> = response.data()
+                val images = data.orElse(emptyList())
+
+                val b64 = images.firstOrNull()?.b64Json()?.get()
+                    ?: throw NullPointerException("Base64 string is null or empty, stopping...")
+
+                val byteArray = android.util.Base64.decode(b64, android.util.Base64.DEFAULT)
+                writeImageToCache(byteArray)
+
+                withContext(Dispatchers.Main) {
+                    onSuccess(b64)
+                }
+            } catch (_: CancellationException) {
+                withContext(Dispatchers.Main) {
+                    onSuccess("cancelled")
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    onError(e)
+                }
+            }
+        }
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     private suspend fun generateImageR(p: String) {
         isProcessing = true
@@ -1950,47 +1995,102 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         disableAutoScroll = false
 
         try {
-            val images = openAIAI?.imageURL(
-                creation = ImageCreation(
-                    prompt = p,
-                    n = 1,
-                    model = ModelId("dall-e-${preferences!!.getDalleVersion()}"),
-                    size = ImageSize(resolution)
+            if (preferences!!.getImageModel() == "gpt-image-1") {
+                val client: OpenAIClient = OpenAIOkHttpClient
+                    .builder()
+                    .baseUrl(apiEndpointPreferences!!.getApiEndpoint(mContext ?: return, preferences!!.getApiEndpointId()).host)
+                    .apiKey(apiEndpointPreferences!!.getApiEndpoint(mContext ?: return, preferences!!.getApiEndpointId()).apiKey)
+                    .build()
+
+                val params = ImageGenerateParams.builder()
+                    .prompt(p)
+                    .model(preferences!!.getImageModel())
+                    .n(1L)
+                    .quality(ImageGenerateParams.Quality.AUTO) // Settings param "quality" does not exists yet.
+                    .size(ImageGenerateParams.Size._1024X1024) // Settings param "resolution" is ignored as this model supports only 1024x1024 resolution
+                    .build()
+
+                generateImageAsync(
+                    client,
+                    params,
+                    onSuccess = { file ->
+                        if (file == "cancelled") {
+                            (mContext as Activity?)?.runOnUiThread {
+                                restoreUIState()
+                            }
+                            return@generateImageAsync
+                        }
+
+                        (mContext as Activity?)?.runOnUiThread {
+                            putMessage("data:image/png;base64,$file", true)
+                            scroll(true)
+                            saveSettings()
+
+                            btnAssistantVoiceClickable?.isEnabled = true
+                            btnAssistantSend?.isEnabled = true
+                            assistantLoading?.visibility = View.GONE
+                            isProcessing = false
+                        }
+                    },
+                    onError = { error ->
+                        (mContext as Activity?)?.runOnUiThread {
+                            if (preferences?.showChatErrors() == true) {
+                                putMessage(
+                                    when (error) {
+                                        else -> error.stackTraceToString()
+                                    }, true
+                                )
+                            }
+                            btnAssistantVoiceClickable?.isEnabled = true
+                            btnAssistantSend?.isEnabled = true
+                            assistantLoading?.visibility = View.GONE
+                            isProcessing = false
+                        }
+                    }
                 )
-            )
+            } else {
+                val images = openAIAI?.imageURL(
+                    creation = ImageCreation(
+                        prompt = p,
+                        n = 1,
+                        model = ModelId(preferences!!.getImageModel()),
+                        size = ImageSize(resolution)
+                    )
+                )
 
-            val url = URL(images?.get(0)?.url!!)
+                val url = URL(images?.get(0)?.url!!)
 
-            val `is` = withContext(Dispatchers.IO) {
-                url.openStream()
-            }
+                val `is` = withContext(Dispatchers.IO) {
+                    url.openStream()
+                }
 
-            var path = ""
+                var path = ""
 
-            val th = Thread {
-                val bytes: ByteArray = org.apache.commons.io.IOUtils.toByteArray(`is`)
+                val th = Thread {
+                    val bytes: ByteArray = org.apache.commons.io.IOUtils.toByteArray(`is`)
 
-                writeImageToCache(bytes)
+                    writeImageToCache(bytes)
 
-                val encoded = Base64.getEncoder().encodeToString(bytes)
+                    val encoded = Base64.getEncoder().encodeToString(bytes)
 
-                path = "data:image/png;base64,$encoded"
-            }
+                    path = "data:image/png;base64,$encoded"
+                }
 
-            th.start()
+                th.start()
 
-            withContext(Dispatchers.IO) {
-                th.join()
+                withContext(Dispatchers.IO) {
+                    th.join()
 
-                (mContext as Activity?)?.runOnUiThread {
-                    putMessage(path, true)
-                    scroll(true)
-                    saveSettings()
+                    (mContext as Activity?)?.runOnUiThread {
+                        putMessage(path, true)
+                        scroll(true)
+                        saveSettings()
 
-                    btnAssistantVoiceClickable?.isEnabled = true
-                    btnAssistantSend?.isEnabled = true
-                    assistantLoading?.visibility = View.GONE
-                    isProcessing = false
+                        btnAssistantVoiceClickable?.isEnabled = true
+                        btnAssistantSend?.isEnabled = true
+                        assistantLoading?.visibility = View.GONE
+                        isProcessing = false
+                    }
                 }
             }
         } catch (e: CancellationException) {
@@ -2039,8 +2139,10 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
             assistantLoading?.visibility = View.GONE
             isProcessing = false
         } finally {
-            (mContext as Activity?)?.runOnUiThread {
-                restoreUIState()
+            if (preferences!!.getImageModel() != "gpt-image-1") {
+                (mContext as Activity?)?.runOnUiThread {
+                    restoreUIState()
+                }
             }
         }
     }
@@ -2861,7 +2963,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         restoreUIState()
 
         val message = when(feature) {
-            "dalle" -> "DALL-E image generation"
+            "dalle" -> "Image generation"
             "tts" -> "OpenAI text-to-speech"
             "whisper" -> "Whisper speech recognition"
             else -> "this OpenAI"

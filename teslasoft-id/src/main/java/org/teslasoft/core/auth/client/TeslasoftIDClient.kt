@@ -17,6 +17,7 @@
 package org.teslasoft.core.auth.client
 
 import android.app.Activity
+import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import org.teslasoft.core.auth.RequestNetwork
 import org.teslasoft.core.auth.internal.Config.Companion.AUTH_SERVER

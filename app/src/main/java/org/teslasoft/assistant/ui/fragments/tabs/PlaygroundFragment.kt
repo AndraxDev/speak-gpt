@@ -143,7 +143,9 @@ class PlaygroundFragment : Fragment() {
             th.start()
             th.join()
 
-            initialize(mContext!!)
+            try {
+                initialize(mContext ?: return@Thread)
+            } catch (_: NullPointerException) { /* ignored */ }
         }.start()
     }
 

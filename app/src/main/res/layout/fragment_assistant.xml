@@ -131,18 +131,20 @@
             android:id="@+id/vision_action_selector"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="16dp"
             android:layout_marginBottom="16dp"
             android:elevation="12dp"
             android:orientation="vertical"
-            android:visibility="gone"
+            android:paddingTop="16dp"
+            android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/constraintLayout7"
             app:layout_constraintStart_toStartOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/btn_accent_tonal_16">
+                android:background="@drawable/btn_accent_50"
+                android:backgroundTint="@color/accent_100">
 
                 <ImageButton
                     android:id="@+id/action_camera"
@@ -151,7 +153,7 @@
                     android:layout_marginStart="12dp"
                     android:layout_marginTop="12dp"
                     android:layout_marginBottom="12dp"
-                    android:background="@drawable/btn_accent_center"
+                    android:background="@drawable/btn_accent_50_v2"
                     android:contentDescription="@string/btn_camera"
                     android:src="@drawable/ic_camera"
                     android:tooltipText="@string/btn_camera"
@@ -168,7 +170,7 @@
                     android:layout_marginTop="12dp"
                     android:layout_marginEnd="12dp"
                     android:layout_marginBottom="12dp"
-                    android:background="@drawable/btn_accent_center"
+                    android:background="@drawable/btn_accent_50_v2"
                     android:contentDescription="@string/label_select_from_gallery"
                     android:src="@drawable/ic_photo"
                     android:tooltipText="@string/label_select_from_gallery"
@@ -394,7 +396,7 @@
             android:id="@+id/constraintLayout7"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">

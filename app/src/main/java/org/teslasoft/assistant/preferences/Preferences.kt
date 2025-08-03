@@ -256,6 +256,24 @@ class Preferences private constructor(private var preferences: SharedPreferences
     }
 
     /**
+     * Retrieves the image model name from the shared preferences.
+     *
+     * @return The imageModel value or "dall-e-3" if not found.
+     */
+    fun getImageModel() : String {
+        return getString("imageModel", "dall-e-3")
+    }
+
+    /**
+     * Sets the image model name in the shared preferences.
+     *
+     * @param imageModel The resolution value to be stored.
+     */
+    fun setImageModel(imageModel: String) {
+        putString("imageModel", imageModel)
+    }
+
+    /**
      * Retrieves the resolution from the shared preferences.
      *
      * @return The resolution value or "1024x1024" if not found.

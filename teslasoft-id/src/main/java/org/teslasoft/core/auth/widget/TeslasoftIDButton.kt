@@ -241,7 +241,7 @@ class TeslasoftIDButton : Fragment() {
     /**
      * Set a callback listener to the Teslasoft ID button.
      *
-     * @param listener An implemented interface AccountSyncListener.
+     * @param listener An implemented interface org.teslasoft.core.auth.AccountSyncListener.
      * */
     fun setAccountSyncListener(listener: AccountSyncListener) {
         this.listener = listener

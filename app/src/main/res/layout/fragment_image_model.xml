@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**************************************************************************
+* Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*  http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+**************************************************************************/
+-->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:transitionName="expand_resolution" >
+
+    <TextView
+        android:id="@+id/dialog_resolution_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Image Generation Model"
+        android:textColor="@color/text_title"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dialog_resolution_title">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                tools:ignore="UselessParent">
+
+                <RadioButton
+                    android:id="@+id/dalle2"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:button="@null"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:text="dall-e-2"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/dalle3"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:button="@null"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:text="dall-e-3"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/gpt_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:button="@null"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:text="gpt-image-1"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/textView46"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/btn_tip2"
+                    android:padding="16dp"
+                    android:text="GPT Image flagship model may not be available for all users. You may need to have a higher tier and verify your identity. This model is very time consuming. Image generation model may take up to 2 minutes to complete."
+                    android:textColor="@color/error"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </RadioGroup>
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
