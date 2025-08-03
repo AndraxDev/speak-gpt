@@ -6,7 +6,7 @@ SpeakGPT is an advanced and highly intuitive open-source AI assistant that utili
 
 > [!NOTE]
 > 
-> This project is a part of my Bachelor Thesis. Attribution is required to use this work. Copyright (c) 2023-2024 Dmytro Ostapenko. All rights reserved.
+> This project is a part of my Bachelor Thesis. Attribution is required to use this work. Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
 >
 > Cite as: Dmytro Ostapenko (2024), "Review Program Automation Using Copilot Services" Bachelor Thesis, Technical University of Košice, 2024.
 
@@ -41,7 +41,7 @@ SpeakGPT does not support Google API keys itself, but you cen still use Google G
 
 > [!WARNING]
 > 
-> Remember that free cheese could be only in a mousetrap. THIS APP IS OPEN-SOURCE CLIENT PROVIDED AS IS. ITSELF IT DOES NOT PROVIDE FULLY FREE ACCESS TO THE PREMIUM FEATURES OF API PROVIDERS (LIKE FLAGSHIP AI MODELS AND SPECIAL FEATURES). IF YOU COME HERE TO USE OTHER'S WORK FOR FREE AND WITHOUT A CREDIT, IT'S BETTER YOU SKIP THIS APP AND LOOK FOR SOMETHING ELSE. I WILL NOT RESPOND TO YOUR "INCORRECT API KEY, WHY THIS APP REDIRECTS ME TO THE EXTERNAL SITE FOR API KEY?" QUESTIONS. THANK YOU FOR UNDERSTANDING.
+> Remember that free cheese could be only in a mousetrap. THIS APP IS OPEN-SOURCE CLIENT PROVIDED AS IS. ITSELF IT DOES NOT PROVIDE COMPLETELY FREE ACCESS TO THE PREMIUM FEATURES OF API PROVIDERS (LIKE FLAGSHIP AI MODELS AND SPECIAL FEATURES). IF YOU COME HERE TO USE OTHER'S WORK FOR FREE AND WITHOUT A CREDIT, IT'S BETTER YOU SKIP THIS APP AND LOOK FOR SOMETHING ELSE. I WILL NOT RESPOND TO YOUR "INCORRECT API KEY, WHY THIS APP REDIRECTS ME TO THE EXTERNAL SITE FOR API KEY?" QUESTIONS. THANK YOU FOR UNDERSTANDING.
 > All other adequate people are welcome.
 
 ## API providers supported
@@ -59,8 +59,8 @@ SpeakGPT does not support Google API keys itself, but you cen still use Google G
 ## Basic features
 
 - [x] Chat (saved locally but can be imported/exported if needed)
-- [x] Images generation (DALL-e)
-- [x] GPT 4 Vision (use your images and photos with ChatGPT)
+- [x] Images generation
+- [x] Image recognition (use your images and photos with ChatGPT)
 - [x] Activation prompt
 - [x] System message
 - [x] Voice input (Whisper and Google)
@@ -68,7 +68,7 @@ SpeakGPT does not support Google API keys itself, but you cen still use Google G
 - [x] SpeakGPT in context menu
 - [x] SpeakGPT in Share sheet
 - [x] Function calling features
-- [x] Prompts store
+- [x] Prompts Library
 - [x] Different chat layout
 - [x] Adaptive design
 - [x] A lot of different models
@@ -80,13 +80,14 @@ SpeakGPT does not support Google API keys itself, but you cen still use Google G
 - [x] Custom API provider support
 - [x] Customize models params like temperature, topP, frequencyPenalty, presencePenalty and logit_bias
 - [x] Playground
-- [x] GPT 4o
+- [x] Access to the latest flagship models like o1, o3, o4, gpt-4.1, gpt-4.5 and gpt-image-1 (Some of these models may require you to verify your identity with OpenAI)
 
 ## ❌ Planned to add (Share your ideas in Issues)
 
 - [ ] Device routines (like set alarm or open app)
 - [ ] Sync chat history
 - [ ] Add models exchange portal like prompts store
+- [ ] Official browsing capabilities (make GPT AI models access the internet)
 
 ## API key safety:
 
