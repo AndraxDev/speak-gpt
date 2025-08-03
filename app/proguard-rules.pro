@@ -57,7 +57,27 @@
 -keep class com.google.android.material.bottomnavigation.BottomNavigationView
 -keep class org.scilab.forge.jlatexmath.** { *; }
 -keep class org.commonmark.node.** { *; }
+-keep class com.openai.client.** { *; }
+-keep class com.openai.models.** { *; }
+-keep class com.openai.core.** { *; }
+-keep class java.lang.reflect.** { *; }
+-keep class org.apache.hc.client5.** { *; }
+-keep class org.apache.hc.core5.** { *; }
 -keep class io.noties.markwon.ext.latex.** { *; }
+-keep class java.lang.reflect.AnnotatedParameterizedType { *; }
+-keep class java.lang.reflect.AnnotatedType { *; }
+-keep class org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder { *; }
+-keep class org.apache.hc.core5.http.ContentType { *; }
+-keep class org.apache.hc.core5.http.HttpEntity { *; }
+-keep class org.apache.hc.** { *; }
+-dontwarn org.apache.hc.**
+
+# Keep types used via reflection
+-keepattributes Signature, RuntimeVisibleAnnotations, RuntimeInvisibleAnnotations, *Annotation*
+
+# Keep JSON Schema Generator internals (if used directly or via reflection)
+-keep class com.github.victools.jsonschema.generator.** { *; }
+-dontwarn com.github.victools.jsonschema.generator.**
 
 -keepattributes InnerClasses
 
@@ -69,7 +89,13 @@
 -if @kotlinx.serialization.Serializable class
 com.aallam.openai.api.**,
 com.aallam.openai.client.internal.data.**,
-com.bumptech.glide.**
+com.bumptech.glide.**,
+com.openai.client.**,
+com.openai.core.**,
+com.openai.models.**,
+java.lang.reflect.**,
+org.apache.hc.client5.**,
+org.apache.hc.core5.**
 
 {
     static **$* *;

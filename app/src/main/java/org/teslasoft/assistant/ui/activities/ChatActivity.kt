@@ -116,7 +116,6 @@ import com.aallam.openai.api.chat.chatCompletionRequest
 import com.aallam.openai.api.completion.CompletionRequest
 import com.aallam.openai.api.completion.TextCompletion
 import com.aallam.openai.api.core.Role
-import com.aallam.openai.api.exception.OpenAIError
 import com.aallam.openai.api.file.FileSource
 import com.aallam.openai.api.http.Timeout
 import com.aallam.openai.api.image.ImageCreation
@@ -139,15 +138,12 @@ import com.openai.client.OpenAIClient
 import com.openai.client.okhttp.OpenAIOkHttpClient
 import com.openai.models.images.Image
 import com.openai.models.images.ImageGenerateParams
-import com.openai.models.images.ImagesResponse
 import eightbitlab.com.blurview.BlurView
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
