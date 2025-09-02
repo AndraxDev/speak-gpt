@@ -10,6 +10,12 @@ SpeakGPT is an advanced and highly intuitive open-source AI assistant that utili
 >
 > Cite as: Dmytro Ostapenko (2024), "Review Program Automation Using Copilot Services" Bachelor Thesis, Technical University of Košice, 2024.
 
+
+> [!CAUTION]
+>
+> We are dropping support of the following Android versions soon: 9, 10, 11. It's related with recent changes in SDK and security. Older Android versions uses deprecated and unstable features like RenderScript.
+
+
 ## Download
 
 <a href = "https://play.google.com/store/apps/details?id=org.teslasoft.assistant"><img src="play.webp" alt="Get it on Play" width="200"/></a>

@@ -34,6 +34,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/tl"
             android:layout_width="300dp"
             android:layout_height="1000dp"
             android:layout_marginTop="-200dp"
@@ -46,6 +47,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/tr"
             android:layout_width="300dp"
             android:layout_height="1000dp"
             android:layout_marginStart="-275dp"
@@ -202,7 +204,7 @@
                 android:padding="16dp"
                 android:text="@string/activation_warning"
                 android:textColor="@color/error"
-                android:textSize="15dp"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

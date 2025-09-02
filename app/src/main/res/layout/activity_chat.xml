@@ -16,15 +16,14 @@
 * limitations under the License.
 **************************************************************************/
 -->
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/expandable_window_background_16"
     android:id="@+id/expandable_window_root"
-    android:transitionName="chat_expand"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/expandable_window_background_24"
+    android:transitionName="chat_expand">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/root"
@@ -146,11 +145,11 @@
 
             <com.google.android.material.loadingindicator.LoadingIndicator
                 android:id="@+id/progressBar5"
-                android:indeterminate="true"
                 style="@style/Widget.Material3.LoadingIndicator"
-                app:indicatorSize="72dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                app:indicatorSize="72dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -268,13 +267,13 @@
 
             <ImageButton
                 android:id="@+id/btn_settings"
-                android:transitionName="settings"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/btn_accent_tonal_v4"
                 android:contentDescription="@string/btn_settings"
                 android:tooltipText="@string/btn_settings"
+                android:transitionName="settings"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -311,6 +310,7 @@
                 android:layout_height="64dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
+                android:clickable="true"
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:singleLine="true"
@@ -318,7 +318,6 @@
                 android:textColor="@color/text_title"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:clickable="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/btn_export"
                 app:layout_constraintStart_toEndOf="@+id/btn_back"
@@ -330,11 +329,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="64dp"
+            android:contentDescription="@string/menu_chat"
             android:listSelector="@android:color/transparent"
             android:paddingBottom="80dp"
             android:scrollbars="none"
             android:stackFromBottom="true"
-            android:contentDescription="@string/menu_chat"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/action_bar"
@@ -354,11 +353,11 @@
             tools:visibility="visible">
 
             <com.google.android.material.card.MaterialCardView
-                app:cardBackgroundColor="@color/transparent"
-                app:strokeWidth="0dp"
-                app:cardCornerRadius="48dp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                app:cardBackgroundColor="@color/transparent"
+                app:cardCornerRadius="48dp"
+                app:strokeWidth="0dp">
 
                 <eightbitlab.com.blurview.BlurView
                     android:id="@+id/attach_bg"

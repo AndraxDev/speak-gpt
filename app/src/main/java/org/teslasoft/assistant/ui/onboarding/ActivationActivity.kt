@@ -55,11 +55,19 @@ class ActivationActivity : FragmentActivity() {
 
         foregroundBlur = findViewById(R.id.foreground_blur)
 
-        val decorView = window.decorView
-        val rootView: ViewGroup = decorView.findViewById(android.R.id.content)
-        val windowBackground = decorView.background
+        // Deprecated renderscript seems does not work properly on the older android versions
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.S) {
+            val tl = findViewById<ConstraintLayout>(R.id.tl)
+            val tr = findViewById<ConstraintLayout>(R.id.tr)
+            tl?.visibility = ConstraintLayout.GONE
+            tr?.visibility = ConstraintLayout.GONE
+        } else {
+            val decorView = window.decorView
+            val rootView: ViewGroup = decorView.findViewById(android.R.id.content)
+            val windowBackground = decorView.background
 
-        foregroundBlur?.setupWith(rootView)?.setFrameClearDrawable(windowBackground)?.setBlurRadius(250f)
+            foregroundBlur?.setupWith(rootView)?.setFrameClearDrawable(windowBackground)?.setBlurRadius(250f)
+        }
 
         btnNext?.setOnClickListener {
             if (keyInput?.text.toString().trim() == "") {

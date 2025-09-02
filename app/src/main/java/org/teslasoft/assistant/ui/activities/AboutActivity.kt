@@ -32,6 +32,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.button.MaterialButton
 import org.teslasoft.assistant.Config
@@ -87,11 +88,19 @@ class AboutActivity : FragmentActivity() {
 
         appIcon?.setImageResource(R.drawable.assistant)
 
-        val decorView = window.decorView
-        val rootView: ViewGroup = decorView.findViewById(android.R.id.content)
-        val windowBackground = decorView.background
+        // Deprecated renderscript seems does not work properly on the older android versions
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.S) {
+            val tl = findViewById<ConstraintLayout>(R.id.tl)
+            val tr = findViewById<ConstraintLayout>(R.id.tr)
+            tl?.visibility = ConstraintLayout.GONE
+            tr?.visibility = ConstraintLayout.GONE
+        } else {
+            val decorView = window.decorView
+            val rootView: ViewGroup = decorView.findViewById(android.R.id.content)
+            val windowBackground = decorView.background
 
-        foregroundBlur?.setupWith(rootView)?.setFrameClearDrawable(windowBackground)?.setBlurRadius(250f)
+            foregroundBlur?.setupWith(rootView)?.setFrameClearDrawable(windowBackground)?.setBlurRadius(250f)
+        }
 
         val extras = intent.extras
         var chatId = ""

@@ -60,6 +60,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.google.android.material.textfield.TextInputLayout
+                    style="?attr/textInputOutlinedDenseStyle"
                     android:id="@+id/textInputLayout9"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -67,14 +68,14 @@
                     android:layout_marginTop="12dp"
                     android:layout_marginEnd="24dp"
                     android:textColorHint="@color/text_hint"
-                    app:boxCornerRadiusBottomEnd="16dp"
-                    app:boxCornerRadiusBottomStart="16dp"
-                    app:boxCornerRadiusTopEnd="16dp"
-                    app:boxCornerRadiusTopStart="16dp"
+                    app:boxCornerRadiusBottomEnd="24dp"
+                    app:boxCornerRadiusBottomStart="24dp"
+                    app:boxCornerRadiusTopEnd="24dp"
+                    app:boxCornerRadiusTopStart="24dp"
                     app:boxStrokeColor="@drawable/box_stroke_color"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout5">
+                    app:layout_constraintTop_toBottomOf="@+id/bg_presence_penalty">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/field_seed"
@@ -106,13 +107,13 @@
                     app:layout_constraintTop_toBottomOf="@+id/textInputLayout9" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraintLayout2"
+                    android:id="@+id/bg_temperature"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="2dp"
                     android:layout_marginEnd="24dp"
-                    android:background="@drawable/btn_accent_tonal_selector_v7"
+                    android:background="@drawable/btn_accent_center"
                     android:backgroundTint="@color/accent_250"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -146,12 +147,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="2dp"
                         android:layout_marginEnd="2dp"
+                        android:contentDescription="@string/set_temperature"
                         android:scrollbarStyle="outsideInset"
                         android:stepSize="1"
                         android:value="7"
                         android:valueFrom="0"
                         android:valueTo="20"
-                        android:contentDescription="@string/set_temperature"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView66" />
@@ -171,18 +172,18 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraintLayout3"
+                    android:id="@+id/bg_top_p"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="2dp"
                     android:layout_marginEnd="24dp"
-                    android:background="@drawable/btn_accent_tonal_selector_v7"
+                    android:background="@drawable/btn_accent_center"
                     android:backgroundTint="@color/accent_250"
                     android:paddingBottom="4dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+                    app:layout_constraintTop_toBottomOf="@+id/bg_temperature">
 
                     <com.google.android.material.slider.Slider
                         android:id="@+id/top_p_slider"
@@ -217,13 +218,13 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraintLayout4"
+                    android:id="@+id/bg_frequency_penalty"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="2dp"
                     android:layout_marginEnd="24dp"
-                    android:background="@drawable/btn_accent_tonal_selector_v7"
+                    android:background="@drawable/btn_accent_center"
                     android:backgroundTint="@color/accent_250"
                     android:paddingBottom="4dp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -264,18 +265,18 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraintLayout5"
+                    android:id="@+id/bg_presence_penalty"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="2dp"
                     android:layout_marginEnd="24dp"
-                    android:background="@drawable/btn_accent_tonal_selector_v7"
+                    android:background="@drawable/btn_accent_bottom"
                     android:backgroundTint="@color/accent_250"
                     android:paddingBottom="4dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout4">
+                    app:layout_constraintTop_toBottomOf="@+id/bg_frequency_penalty">
 
                     <com.google.android.material.slider.Slider
                         android:id="@+id/presence_penalty_slider"
@@ -318,7 +319,7 @@
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout3">
+                    app:layout_constraintTop_toBottomOf="@+id/bg_top_p">
 
                     <com.google.android.material.slider.Slider
                         android:id="@+id/logit_bias_slider"
@@ -370,9 +371,9 @@
                         android:id="@+id/btn_select_model"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginEnd="1dp"
                         android:layout_weight="1"
-                        android:background="@drawable/btn_accent_tonal_selector_v7"
+                        android:background="@drawable/btn_accent_top_left"
                         android:backgroundTint="@color/accent_250"
                         android:paddingBottom="8dp">
 
@@ -414,9 +415,9 @@
                         android:id="@+id/btn_select_system"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="1dp"
                         android:layout_weight="1"
-                        android:background="@drawable/btn_accent_tonal_selector_v7"
+                        android:background="@drawable/btn_accent_top_right"
                         android:backgroundTint="@color/accent_250"
                         android:paddingBottom="8dp">
 
@@ -451,7 +452,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="2dp"
                     android:layout_marginEnd="24dp"
                     android:baselineAligned="false"
                     android:orientation="horizontal"
@@ -464,9 +465,9 @@
                         android:id="@+id/btn_set_logit_biases"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginEnd="1dp"
                         android:layout_weight="1"
-                        android:background="@drawable/btn_accent_tonal_selector_v7"
+                        android:background="@drawable/btn_accent_center"
                         android:backgroundTint="@color/accent_250"
                         android:paddingBottom="8dp">
 
@@ -498,9 +499,9 @@
                         android:id="@+id/btn_select_api_endpoint"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="1dp"
                         android:layout_weight="1"
-                        android:background="@drawable/btn_accent_tonal_selector_v7"
+                        android:background="@drawable/btn_accent_center"
                         android:backgroundTint="@color/accent_250"
                         android:paddingBottom="8dp">
 
@@ -545,7 +546,7 @@
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="24dp"
-                    android:background="@drawable/btn_accent_tonal_selector_v7"
+                    android:background="@drawable/btn_accent"
                     android:backgroundTint="@color/accent_250"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

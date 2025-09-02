@@ -22,6 +22,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -33,6 +34,7 @@ import androidx.core.widget.addTextChangedListener
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.textfield.TextInputEditText
 import org.teslasoft.assistant.Config
 import org.teslasoft.assistant.R
@@ -66,6 +68,10 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
     private var btnSelectSystemMessage: ConstraintLayout? = null
     private var btnSelectLogitBias: ConstraintLayout? = null
     private var btnSelectApiEndpoint: ConstraintLayout? = null
+    private var bgTemperature: ConstraintLayout? = null
+    private var bgTopP: ConstraintLayout? = null
+    private var bgFrequencyPenalty: ConstraintLayout? = null
+    private var bgPresencePenalty: ConstraintLayout? = null
     private var apiEndpointPreferences: ApiEndpointPreferences? = null
     private var apiEndpoint: ApiEndpointObject? = null
 
@@ -287,6 +293,11 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         btnSelectSystemMessage = view.findViewById(R.id.btn_select_system)
         btnSelectLogitBias = view.findViewById(R.id.btn_set_logit_biases)
         btnSelectApiEndpoint = view.findViewById(R.id.btn_select_api_endpoint)
+        bgTemperature = view.findViewById(R.id.bg_temperature)
+        bgTopP = view.findViewById(R.id.bg_top_p)
+        bgFrequencyPenalty = view.findViewById(R.id.bg_frequency_penalty)
+        bgPresencePenalty = view.findViewById(R.id.bg_presence_penalty)
+
         temperatureSeekbar = view.findViewById(R.id.temperature_slider)
         frequencyPenaltySeekbar = view.findViewById(R.id.frequency_penalty_slider)
         presencePenaltySeekbar = view.findViewById(R.id.presence_penalty_slider)
@@ -296,6 +307,17 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         textHost = view.findViewById(R.id.text_host)
         textLogitBiasesConfig = view.findViewById(R.id.text_logit_biases_config)
         usageCost = view.findViewById(R.id.usage_cost)
+
+        usageCost?.backgroundTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_4.getColor(activity ?: return))
+        btnSelectModel?.backgroundTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_4.getColor(activity ?: return))
+        btnSelectSystemMessage?.backgroundTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_4.getColor(activity ?: return))
+        btnSelectLogitBias?.backgroundTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_4.getColor(activity ?: return))
+        btnSelectApiEndpoint?.backgroundTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_4.getColor(activity ?: return))
+        bgTemperature?.backgroundTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_4.getColor(activity ?: return))
+        bgTopP?.backgroundTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_4.getColor(activity ?: return))
+        bgFrequencyPenalty?.backgroundTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_4.getColor(activity ?: return))
+        bgPresencePenalty?.backgroundTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_4.getColor(activity ?: return))
+
 
         textUsage = view.findViewById(R.id.text_usage)
         textCost = view.findViewById(R.id.text_cost)
