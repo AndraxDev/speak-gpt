@@ -114,7 +114,7 @@ To secure your API key perform the following steps:
 
 > [!CAUTION]
 >
-> BE AWARE OF MALWARE. You are allowed to compile SpealGPT and modify it but be very careful when someone other offers you to install their build. Such build may contain malware. Official builds does not contain nay malware and are checked by more than 60 different antiviruses using VirusTotal. You can find VirusTotal report on each release page and compare the hash of the binary files.
+> BE AWARE OF MALWARE! You are allowed to compile SpealGPT and modify it but be very careful when someone other offers you to install their build. Such build may contain malware. Official builds does not contain nay malware and are checked by more than 60 different antiviruses using VirusTotal. You can find VirusTotal report on each release page and compare the hash of the binary files.
 
 
 > Developer identity
@@ -122,7 +122,10 @@ To secure your API key perform the following steps:
 > Developer name: Dmytro Ostapenko (AndraxDev)\
 > Contact: dostapenko82@gmail.com, +421951829517\
 > Legal address: Južná trieda 4B, 04001 Košice, Slovakia 04001\
-> Legal entity ID: 55545386
+> Legal entity ID: 55545386 (D-U-N-S: 933739642)\
+> License allowing performing commercial activity in Slovakia and EU: OU-KE-OZP1-2023/031005-2 (Issued on 14 June 2023 according to the § 10 section 1 letter a) of the Act No. 455/1991 Coll. on Trade Licensing (Trade Licensing Act) as amended)\
+> VAT ID: SK3121636045\
+> (So you know where you are sending your money if you decide to support the project financially or if project will have paid features in future)
 
 ## You are appreciated to:
 
