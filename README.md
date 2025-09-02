@@ -109,7 +109,12 @@ To secure your API key perform the following steps:
 
 > Why we obfuscate our code in production releases?
 > 
-> Obfuscation and resources shrinking allows us to optimize app size, it performance and secure it against reverse engineering or tamper and make sure your credentials like API keys in a safe place.. You can request an unobfuscated build or compile it by self to make sure our app is safe.
+> Obfuscation and resources shrinking allows us to optimize app size, it performance and secure it against reverse engineering or tamper and make sure your credentials like API keys in a safe place. You can request an unobfuscated build or compile it by self to make sure our app is safe.
+
+
+> [!CAUTION]
+>
+> BE AWARE OF MALWARE. You are allowed to compile SpealGPT and modify it but be very careful when someone other offers you to install their build. Such build may contain malware. Official builds does not contain nay malware and are checked by more than 60 different antiviruses using VirusTotal. You can find VirusTotal report on each release page and compare the hash of the binary files.
 
 
 > Developer identity
