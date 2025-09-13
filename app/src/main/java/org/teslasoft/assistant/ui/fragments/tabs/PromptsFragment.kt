@@ -206,41 +206,41 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private val promptPostListener: RequestNetwork.RequestListener = object : RequestNetwork.RequestListener {
         override fun onResponse(tag: String, message: String) {
             try {
-                val response = Gson().fromJson(message, SimpleResponseModel::class.java)
+                val response = Gson().fromJson(message, TypeToken.getParameterized(SimpleResponseModel::class.java).type) as SimpleResponseModel
 
-                if (response.getCode() == 200) {
+                if (response.code == 200) {
                     loadData()
-                } else if (response.getCode() == 104) {
+                } else if (response.code == 104) {
                     MaterialAlertDialogBuilder(mContext?: return, R.style.App_MaterialAlertDialog)
                         .setTitle(R.string.label_error)
                         .setMessage(getString(R.string.msg_post_prompt_spam))
                         .setPositiveButton(R.string.btn_close) { _, _ -> }
                         .show()
-                } else if (response.getCode() == 103) {
+                } else if (response.code == 103) {
                     MaterialAlertDialogBuilder(mContext?: return, R.style.App_MaterialAlertDialog)
                         .setTitle(R.string.label_error)
                         .setMessage(getString(R.string.msg_post_prompt_inappropriate))
                         .setPositiveButton(R.string.btn_close) { _, _ -> }
                         .show()
-                } else if (response.getCode() == 102) {
+                } else if (response.code == 102) {
                     MaterialAlertDialogBuilder(mContext?: return, R.style.App_MaterialAlertDialog)
                         .setTitle(R.string.label_error)
                         .setMessage(getString(R.string.msg_post_prompt_ban))
                         .setPositiveButton(R.string.btn_close) { _, _ -> }
                         .show()
-                } else if (response.getCode() == 101) {
+                } else if (response.code == 101) {
                     MaterialAlertDialogBuilder(mContext?: return, R.style.App_MaterialAlertDialog)
                         .setTitle(R.string.label_error)
                         .setMessage(getString(R.string.msg_post_prompt_outdated))
                         .setPositiveButton(R.string.btn_close) { _, _ -> }
                         .show()
-                } else if (response.getCode() == 400) {
+                } else if (response.code == 400) {
                     MaterialAlertDialogBuilder(mContext?: return, R.style.App_MaterialAlertDialog)
                         .setTitle(R.string.label_error)
                         .setMessage(getString(R.string.msg_post_prompt_weirdest_error))
                         .setPositiveButton(R.string.btn_close) { _, _ -> }
                         .show()
-                } else if (response.getCode() == 401) {
+                } else if (response.code == 401) {
                     MaterialAlertDialogBuilder(mContext?: return, R.style.App_MaterialAlertDialog)
                         .setTitle(R.string.label_error)
                         .setMessage(getString(R.string.msg_post_prompt_api_key_invalid))
@@ -250,7 +250,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             } catch (e: Exception) {
                 MaterialAlertDialogBuilder(mContext?: return, R.style.App_MaterialAlertDialog)
                     .setTitle(R.string.label_error)
-                    .setMessage(getString(R.string.msg_failed_to_post_prompt) + getString(R.string.msg_post_prompt_report_error) + e.stackTraceToString())
+                    .setMessage(getString(R.string.msg_failed_to_post_prompt) + getString(R.string.msg_post_prompt_report_error) + e.toString() + e.stackTraceToString())
                     .setPositiveButton(R.string.btn_close) { _, _ -> }
                     .show()
             }

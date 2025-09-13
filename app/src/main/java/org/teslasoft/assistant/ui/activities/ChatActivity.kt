@@ -1319,7 +1319,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
         btnVisionActionGallery?.setOnClickListener {
             visionActions?.visibility = View.GONE
-            openFile(Uri.parse("/storage/emulated/0/image.png"))
+            openFile("/storage/emulated/0/image.png".toUri())
         }
 
         btnVisionActionCamera?.setOnClickListener {
@@ -1565,7 +1565,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
                         try {
                             generateResponse(prefix + transcription + endSeparator, true)
-                        } catch (cancelledException: CancellationException) {
+                        } catch (_: CancellationException) {
                             restoreUIState()
                         }
                     }
@@ -1741,7 +1741,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
                     try {
                         generateResponse(prompt, false)
-                    } catch (cancelledException: CancellationException) {
+                    } catch (_: CancellationException) {
                         restoreUIState()
                     }
                 }
@@ -1855,7 +1855,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
                     try {
                         generateResponse(m, false)
-                    } catch (cancelledException: CancellationException) {
+                    } catch (_: CancellationException) {
                         restoreUIState()
                     }
                 }
@@ -1964,7 +1964,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
         val intent = Intent()
         intent.action = Intent.ACTION_VIEW
-        intent.data = Uri.parse("https://www.google.com/search?q=$q")
+        intent.data = "https://www.google.com/search?q=$q".toUri()
         startActivity(intent)
     }
 
@@ -2072,18 +2072,18 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                 val completionRequest = if (preferences?.getLogitBiasesConfigId() == null || preferences?.getLogitBiasesConfigId() == "null" || preferences?.getLogitBiasesConfigId() == "") {
                     CompletionRequest(
                         model = ModelId(model),
-                        temperature = if (model.contains("o1") || model.contains("o3")) 1.0 else if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
+                        temperature = if (model.contains("gpt-5") || model.contains("o1") || model.contains("o3")) 1.0 else if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
                         topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble(),
                         frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
                         presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble(),
                         prompt = request,
-                        logitBias = if (model.contains("o1") || model.contains("o3")) null else logitBiasPreferences?.getLogitBiasesMap(),
+                        logitBias = if (model.contains("gpt-5") || model.contains("o1") || model.contains("o3")) null else logitBiasPreferences?.getLogitBiasesMap(),
                         echo = false
                     )
                 } else {
                     CompletionRequest(
                         model = ModelId(model),
-                        temperature = if (model.contains("o1") || model.contains("o3")) 1.0 else if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
+                        temperature = if (model.contains("gpt-5") || model.contains("o1") || model.contains("o3")) 1.0 else if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
                         topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble(),
                         frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
                         presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble(),
@@ -2346,18 +2346,18 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         val chatCompletionRequest = if (preferences?.getLogitBiasesConfigId() == null || preferences?.getLogitBiasesConfigId() == "null" || preferences?.getLogitBiasesConfigId() == "") {
             ChatCompletionRequest(
                 model = ModelId(model),
-                temperature = if (model.contains("o1") || model.contains("o3")) 1.0 else if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
+                temperature = if (model.contains("gpt-5") || model.contains("o1") || model.contains("o3")) 1.0 else if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
                 topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble(),
                 frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
                 presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble(),
                 seed = if (preferences!!.getSeed() != "") preferences!!.getSeed().toInt() else null,
-                logitBias = if (model.contains("o1") || model.contains("o3")) null else logitBiasPreferences?.getLogitBiasesMap(),
+                logitBias = if (model.contains("gpt-5") || model.contains("o1") || model.contains("o3")) null else logitBiasPreferences?.getLogitBiasesMap(),
                 messages = msgs
             )
         } else {
             ChatCompletionRequest(
                 model = ModelId(model),
-                temperature = if (model.contains("o1") || model.contains("o3")) 1.0 else if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
+                temperature = if (model.contains("gpt-5") || model.contains("o1") || model.contains("o3")) 1.0 else if (preferences!!.getTemperature().toDouble() == 0.7) null else preferences!!.getTemperature().toDouble(),
                 topP = if (preferences!!.getTopP().toDouble() == 1.0) null else preferences!!.getTopP().toDouble(),
                 frequencyPenalty = if (preferences!!.getFrequencyPenalty().toDouble() == 0.0) null else preferences!!.getFrequencyPenalty().toDouble(),
                 presencePenalty = if (preferences!!.getPresencePenalty().toDouble() == 0.0) null else preferences!!.getPresencePenalty().toDouble(),
@@ -2429,7 +2429,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                 )
 
                 val chatCompletionRequest2 = ChatCompletionRequest(
-                    model = ModelId("gpt-3.5-turbo-0125"),
+                    model = ModelId("gpt-4o"),
                     maxTokens = 10,
                     messages = m
                 )

@@ -27,6 +27,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.R
 
 class SelectResolutionFragment : DialogFragment() {
@@ -71,50 +72,21 @@ class SelectResolutionFragment : DialogFragment() {
 
         when (resolution) {
             "256x256" -> {
-                clearSelection()
-                r256?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-                r256?.background = getDarkAccentDrawableV2(
-                    ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!, requireActivity())
+                setSelection(r256, null)
             }
 
             "512x512" -> {
-                clearSelection()
-                r512?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-                r512?.background = getDarkAccentDrawableV2(
-                    ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!, requireActivity())
+                setSelection(r512, null)
             }
 
             "1024x1024" -> {
-                clearSelection()
-                r1024?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-                r1024?.background = getDarkAccentDrawableV2(
-                    ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!, requireActivity())
+                setSelection(r1024, null)
             }
         }
 
-        r256?.setOnClickListener {
-            clearSelection()
-            r256?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-            r256?.background = getDarkAccentDrawableV2(
-                ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!, requireActivity())
-            resolution = "256x256"
-        }
-
-        r512?.setOnClickListener {
-            clearSelection()
-            r512?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-            r512?.background = getDarkAccentDrawableV2(
-                ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!, requireActivity())
-            resolution = "512x512"
-        }
-
-        r1024?.setOnClickListener {
-            clearSelection()
-            r1024?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-            r1024?.background = getDarkAccentDrawableV2(
-                ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!, requireActivity())
-            resolution = "1024x1024"
-        }
+        bindOnClickListener(r256, "256x256")
+        bindOnClickListener(r512, "512x512")
+        bindOnClickListener(r1024, "1024x1024")
 
         builder!!.setView(view)
             .setCancelable(false)
@@ -124,16 +96,33 @@ class SelectResolutionFragment : DialogFragment() {
         return builder!!.create()
     }
 
+    private fun bindOnClickListener(view: RadioButton?, value: String) {
+        view?.setOnClickListener {
+            setSelection(view, value)
+        }
+    }
+
+    private fun setSelection(view: RadioButton?, value: String?) {
+        clearSelection()
+        view?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+        view?.background = getDarkAccentDrawableV2(
+            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent)!!, requireActivity())
+        if (value != null) resolution = value
+    }
+
+    private fun clearSingleSelection(view: RadioButton?, isTop: Boolean = false, isBottom: Boolean = false) {
+        var background = R.drawable.btn_accent_center
+        if (isTop) background = R.drawable.btn_accent_top
+        if (isBottom) background = R.drawable.btn_accent_bottom
+        view?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(requireActivity(), background)!!, requireActivity())
+        view?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
+    }
+
     private fun clearSelection() {
-        r256?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.accent_900))
-        r256?.background = getDarkAccentDrawable(
-            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!, requireActivity())
-        r512?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.accent_900))
-        r512?.background = getDarkAccentDrawable(
-            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!, requireActivity())
-        r1024?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.accent_900))
-        r1024?.background = getDarkAccentDrawable(
-            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!, requireActivity())
+        clearSingleSelection(r256, isTop = true)
+        clearSingleSelection(r512)
+        clearSingleSelection(r1024, isBottom = true)
     }
 
     private fun getDarkAccentDrawable(drawable: Drawable, context: Context) : Drawable {
@@ -147,7 +136,7 @@ class SelectResolutionFragment : DialogFragment() {
     }
 
     private fun getSurfaceColor(context: Context) : Int {
-        return context.getColor(android.R.color.transparent)
+        return SurfaceColors.SURFACE_5.getColor(context)
     }
 
     private fun getSurfaceColorV2(context: Context) : Int {

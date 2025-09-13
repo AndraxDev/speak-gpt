@@ -27,6 +27,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.R
 
 class SelectImageModelFragment : DialogFragment() {
@@ -71,50 +72,21 @@ class SelectImageModelFragment : DialogFragment() {
 
         when (imageModel) {
             "dall-e-2" -> {
-                clearSelection()
-                dalle2?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-                dalle2?.background = getDarkAccentDrawableV2(
-                    ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!, requireActivity())
+                setSelection(dalle2, null)
             }
 
             "dall-e-3" -> {
-                clearSelection()
-                dalle3?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-                dalle3?.background = getDarkAccentDrawableV2(
-                    ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!, requireActivity())
+                setSelection(dalle3, null)
             }
 
             "gpt-image-1" -> {
-                clearSelection()
-                gptImage?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-                gptImage?.background = getDarkAccentDrawableV2(
-                    ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!, requireActivity())
+                setSelection(gptImage, null)
             }
         }
 
-        dalle2?.setOnClickListener {
-            clearSelection()
-            dalle2?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-            dalle2?.background = getDarkAccentDrawableV2(
-                ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!, requireActivity())
-            imageModel = "dall-e-2"
-        }
-
-        dalle3?.setOnClickListener {
-            clearSelection()
-            dalle3?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-            dalle3?.background = getDarkAccentDrawableV2(
-                ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!, requireActivity())
-            imageModel = "dall-e-3"
-        }
-
-        gptImage?.setOnClickListener {
-            clearSelection()
-            gptImage?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
-            gptImage?.background = getDarkAccentDrawableV2(
-                ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!, requireActivity())
-            imageModel = "gpt-image-1"
-        }
+        bindOnClickListener(dalle2, "dall-e-2")
+        bindOnClickListener(dalle3, "dall-e-3")
+        bindOnClickListener(gptImage, "gpt-image-1")
 
         builder!!.setView(view)
             .setCancelable(false)
@@ -124,16 +96,33 @@ class SelectImageModelFragment : DialogFragment() {
         return builder!!.create()
     }
 
+    private fun bindOnClickListener(view: RadioButton?, value: String) {
+        view?.setOnClickListener {
+            setSelection(view, value)
+        }
+    }
+
+    private fun setSelection(view: RadioButton?, value: String?) {
+        clearSelection()
+        view?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.window_background))
+        view?.background = getDarkAccentDrawableV2(
+            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent)!!, requireActivity())
+        if (value != null) imageModel = value
+    }
+
+    private fun clearSingleSelection(view: RadioButton?, isTop: Boolean = false, isBottom: Boolean = false) {
+        var background = R.drawable.btn_accent_center
+        if (isTop) background = R.drawable.btn_accent_top
+        if (isBottom) background = R.drawable.btn_accent_bottom
+        view?.background = getDarkAccentDrawable(
+            ContextCompat.getDrawable(requireActivity(), background)!!, requireActivity())
+        view?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.neutral_200))
+    }
+
     private fun clearSelection() {
-        dalle2?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.accent_900))
-        dalle2?.background = getDarkAccentDrawable(
-            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!, requireActivity())
-        dalle3?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.accent_900))
-        dalle3?.background = getDarkAccentDrawable(
-            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!, requireActivity())
-        gptImage?.setTextColor(ContextCompat.getColor(requireActivity(), R.color.accent_900))
-        gptImage?.background = getDarkAccentDrawable(
-            ContextCompat.getDrawable(requireActivity(), R.drawable.btn_accent_tonal_selector_v4)!!, requireActivity())
+        clearSingleSelection(dalle2, isTop = true)
+        clearSingleSelection(dalle3)
+        clearSingleSelection(gptImage, isBottom = true)
     }
 
     private fun getDarkAccentDrawable(drawable: Drawable, context: Context) : Drawable {
@@ -147,7 +136,7 @@ class SelectImageModelFragment : DialogFragment() {
     }
 
     private fun getSurfaceColor(context: Context) : Int {
-        return context.getColor(android.R.color.transparent)
+        return SurfaceColors.SURFACE_5.getColor(context)
     }
 
     private fun getSurfaceColorV2(context: Context) : Int {

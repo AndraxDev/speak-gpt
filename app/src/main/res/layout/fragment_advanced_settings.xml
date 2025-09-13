@@ -98,11 +98,53 @@
                     android:textStyle="bold" />
 
                 <RadioButton
+                    android:id="@+id/gpt_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:button="@null"
+                    android:minHeight="56dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:text="GPT 5"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/gpt_5_mini"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="24dp"
+                    android:button="@null"
+                    android:minHeight="56dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:text="GPT 5 Mini"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/gpt_5_nano"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="24dp"
+                    android:button="@null"
+                    android:minHeight="56dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:text="GPT 5 Nano"
+                    android:textSize="16sp" />
+
+                <RadioButton
                     android:id="@+id/gpt_o3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="2dp"
                     android:layout_marginEnd="24dp"
                     android:button="@null"
                     android:minHeight="56dp"
@@ -116,6 +158,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
+                    android:layout_marginTop="2dp"
                     android:layout_marginEnd="24dp"
                     android:button="@null"
                     android:minHeight="56dp"
@@ -130,6 +173,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
                     android:layout_marginEnd="24dp"
+                    android:layout_marginTop="2dp"
                     android:button="@null"
                     android:minHeight="56dp"
                     android:paddingStart="16dp"
@@ -143,6 +187,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
                     android:layout_marginEnd="24dp"
+                    android:layout_marginTop="2dp"
                     android:button="@null"
                     android:minHeight="56dp"
                     android:paddingStart="16dp"
@@ -156,6 +201,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
                     android:layout_marginEnd="24dp"
+                    android:layout_marginTop="2dp"
                     android:button="@null"
                     android:minHeight="56dp"
                     android:paddingStart="16dp"
@@ -168,6 +214,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
+                    android:layout_marginTop="2dp"
                     android:layout_marginEnd="24dp"
                     android:button="@null"
                     android:minHeight="56dp"
@@ -181,6 +228,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
+                    android:layout_marginTop="2dp"
                     android:layout_marginEnd="24dp"
                     android:button="@null"
                     android:minHeight="56dp"
@@ -195,11 +243,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
                     android:layout_marginEnd="24dp"
+                    android:layout_marginTop="2dp"
                     android:button="@null"
                     android:minHeight="56dp"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:text="GPT 3.5"
+                    android:text="GPT 3.5 Turbo"
                     android:textSize="16sp" />
 
                 <RadioButton
@@ -207,6 +256,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
                     android:layout_marginEnd="24dp"
                     android:button="@null"
                     android:minHeight="56dp"
@@ -220,6 +270,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
+                    android:layout_marginTop="2dp"
                     android:layout_marginEnd="24dp"
                     android:button="@null"
                     android:minHeight="56dp"
@@ -234,6 +285,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
                     android:layout_marginEnd="24dp"
+                    android:layout_marginTop="2dp"
                     android:layout_marginBottom="8dp"
                     android:button="@null"
                     android:minHeight="56dp"
@@ -243,6 +295,7 @@
                     android:textSize="16sp" />
 
                 <com.google.android.material.textfield.TextInputLayout
+                    style="?attr/textInputOutlinedDenseStyle"
                     android:id="@+id/ft_frame"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -251,10 +304,10 @@
                     android:layout_marginEnd="24dp"
                     android:layout_marginBottom="8dp"
                     android:textColorHint="@color/text_hint"
-                    app:boxCornerRadiusBottomEnd="16dp"
-                    app:boxCornerRadiusBottomStart="16dp"
-                    app:boxCornerRadiusTopEnd="16dp"
-                    app:boxCornerRadiusTopStart="16dp"
+                    app:boxCornerRadiusBottomEnd="24dp"
+                    app:boxCornerRadiusBottomStart="24dp"
+                    app:boxCornerRadiusTopEnd="24dp"
+                    app:boxCornerRadiusTopStart="24dp"
                     app:boxStrokeColor="@drawable/box_stroke_color">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -285,7 +338,8 @@
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="24dp"
-                    android:background="@drawable/btn_accent_tonal_selector"
+                    android:background="@drawable/btn_accent_top"
+                    android:backgroundTint="@color/accent_250"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/linearLayout26">
@@ -347,9 +401,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="24dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="2dp"
                     android:layout_marginEnd="24dp"
-                    android:background="@drawable/btn_accent_tonal_selector"
+                    android:background="@drawable/btn_accent_center"
+                    android:backgroundTint="@color/accent_250"
                     android:paddingBottom="4dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -392,9 +447,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="24dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="2dp"
                     android:layout_marginEnd="24dp"
-                    android:background="@drawable/btn_accent_tonal_selector"
+                    android:background="@drawable/btn_accent_center"
+                    android:backgroundTint="@color/accent_250"
                     android:paddingBottom="4dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -438,9 +494,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="24dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="2dp"
                     android:layout_marginEnd="24dp"
-                    android:background="@drawable/btn_accent_tonal_selector"
+                    android:background="@drawable/btn_accent_bottom"
+                    android:backgroundTint="@color/accent_250"
                     android:paddingBottom="4dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -511,16 +568,17 @@
                     android:visibility="gone" />
 
                 <com.google.android.material.textfield.TextInputLayout
+                    style="?attr/textInputOutlinedDenseStyle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="12dp"
                     android:layout_marginEnd="24dp"
                     android:textColorHint="@color/text_hint"
-                    app:boxCornerRadiusBottomEnd="16dp"
-                    app:boxCornerRadiusBottomStart="16dp"
-                    app:boxCornerRadiusTopEnd="16dp"
-                    app:boxCornerRadiusTopStart="16dp"
+                    app:boxCornerRadiusBottomEnd="24dp"
+                    app:boxCornerRadiusBottomStart="24dp"
+                    app:boxCornerRadiusTopEnd="24dp"
+                    app:boxCornerRadiusTopStart="24dp"
                     app:boxStrokeColor="@drawable/box_stroke_color">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -532,16 +590,17 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    style="?attr/textInputOutlinedDenseStyle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="12dp"
                     android:layout_marginEnd="24dp"
                     android:textColorHint="@color/text_hint"
-                    app:boxCornerRadiusBottomEnd="16dp"
-                    app:boxCornerRadiusBottomStart="16dp"
-                    app:boxCornerRadiusTopEnd="16dp"
-                    app:boxCornerRadiusTopStart="16dp"
+                    app:boxCornerRadiusBottomEnd="24dp"
+                    app:boxCornerRadiusBottomStart="24dp"
+                    app:boxCornerRadiusTopEnd="24dp"
+                    app:boxCornerRadiusTopStart="24dp"
                     app:boxStrokeColor="@drawable/box_stroke_color">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -581,9 +640,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="2dp"
                 android:layout_marginEnd="24dp"
-                android:background="@drawable/t_menu_bottom_item_background"
+                android:background="@drawable/btn_accent_bottom"
                 android:paddingHorizontal="24dp"
                 android:paddingVertical="20dp"
                 android:text="@string/cancel"
@@ -599,7 +658,7 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
-                android:background="@drawable/t_menu_top_item_background"
+                android:background="@drawable/btn_accent_top"
                 android:paddingHorizontal="24dp"
                 android:paddingVertical="20dp"
                 android:text="@string/btn_save"

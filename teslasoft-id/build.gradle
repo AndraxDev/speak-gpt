@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace 'org.teslasoft.core.auth'
-    compileSdk 36
+    compileSdk = 36
 
     defaultConfig {
         minSdk 28
@@ -15,12 +15,14 @@ android {
 
     buildTypes {
         release {
+            debuggable false
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             multiDexEnabled true
         }
 
         debug {
+            debuggable false
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             multiDexEnabled true
@@ -31,10 +33,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_21
         targetCompatibility JavaVersion.VERSION_21
     }
-
-    kotlinOptions {
-        jvmTarget = '21'
-    }
 }
 
 dependencies {
@@ -43,6 +41,6 @@ dependencies {
     implementation 'com.google.android.material:material:1.14.0-alpha04'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'com.squareup.okhttp3:okhttp:5.1.0'
-    implementation 'com.github.bumptech.glide:glide:5.0.3'
-    implementation 'com.google.code.gson:gson:2.13.1'
+    implementation 'com.github.bumptech.glide:glide:5.0.5'
+    implementation 'com.google.code.gson:gson:2.13.2'
 }
