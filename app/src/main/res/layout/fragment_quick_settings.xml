@@ -363,6 +363,7 @@
                     android:baselineAligned="false"
                     android:orientation="horizontal"
                     android:weightSum="2"
+                    android:layoutDirection="ltr"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/usage_cost">
@@ -370,7 +371,7 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/btn_select_model"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginEnd="1dp"
                         android:layout_weight="1"
                         android:background="@drawable/btn_accent_top_left"
@@ -379,14 +380,16 @@
 
                         <TextView
                             android:id="@+id/textView71"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="12dp"
+                            android:layout_marginEnd="16dp"
                             android:text="@string/label_ai_model"
                             android:textColor="@color/accent_900"
                             android:textSize="16sp"
                             android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -423,24 +426,28 @@
 
                         <TextView
                             android:id="@+id/textView73"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="12dp"
+                            android:layout_marginEnd="16dp"
                             android:text="@string/label_system_message"
                             android:textColor="@color/accent_900"
                             android:textSize="16sp"
                             android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
                             android:id="@+id/textView74"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
+                            android:layout_marginEnd="16dp"
                             android:text="@string/label_tap_to_edit"
                             android:textColor="@color/text"
+                            app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/textView73" />
 
@@ -473,24 +480,28 @@
 
                         <TextView
                             android:id="@+id/text_logit_biases_config"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
+                            android:layout_marginEnd="16dp"
                             android:text="@string/label_tap_to_set"
                             android:textColor="@color/text"
+                            app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/textView94" />
 
                         <TextView
                             android:id="@+id/textView94"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="12dp"
+                            android:layout_marginEnd="16dp"
                             android:text="@string/label_logit_bias"
                             android:textColor="@color/accent_900"
                             android:textSize="16sp"
                             android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -498,7 +509,7 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/btn_select_api_endpoint"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginStart="1dp"
                         android:layout_weight="1"
                         android:background="@drawable/btn_accent_center"
@@ -526,14 +537,16 @@
 
                         <TextView
                             android:id="@+id/textView95"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="12dp"
+                            android:layout_marginEnd="16dp"
                             android:text="@string/label_api_endpoint"
                             android:textColor="@color/accent_900"
                             android:textSize="16sp"
                             android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -582,9 +595,9 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_cost_info"
                         style="@style/Widget.Material3.Button.TextButton"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="4dp"
+                        android:gravity="start"
                         android:paddingHorizontal="16dp"
                         android:text="@string/btn_learn_more"
                         android:textColor="@color/text_title"
@@ -593,7 +606,8 @@
                         app:boxCornerRadiusTopEnd="16dp"
                         app:boxCornerRadiusTopStart="16dp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent" />
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
 
                     <TextView
                         android:id="@+id/textView76"

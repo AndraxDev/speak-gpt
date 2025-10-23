@@ -38,9 +38,9 @@ android {
 dependencies {
     implementation 'androidx.core:core-ktx:1.17.0'
     implementation 'androidx.appcompat:appcompat:1.7.1'
-    implementation 'com.google.android.material:material:1.14.0-alpha04'
+    implementation 'com.google.android.material:material:1.14.0-alpha05'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
-    implementation 'com.squareup.okhttp3:okhttp:5.1.0'
+    implementation 'com.squareup.okhttp3:okhttp:5.2.1'
     implementation 'com.github.bumptech.glide:glide:5.0.5'
     implementation 'com.google.code.gson:gson:2.13.2'
 }
