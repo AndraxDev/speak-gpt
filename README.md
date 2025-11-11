@@ -6,14 +6,14 @@ SpeakGPT is an advanced and highly intuitive open-source AI assistant that utili
 
 > [!NOTE]
 > 
-> This project is a part of my Bachelor Thesis. Attribution is required to use this work. Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+> This project was a part of my Bachelor Thesis. Attribution is required to use this work. Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
 >
 > Cite as: Dmytro Ostapenko (2024), "Review Program Automation Using Copilot Services" Bachelor Thesis, Technical University of Košice, 2024.
 
 
 > [!CAUTION]
 >
-> We are dropping support of the following Android versions soon: 9, 10, 11. It's related with recent changes in SDK and security. Older Android versions uses deprecated and unstable features like RenderScript.
+> We are dropping support of the following Android versions soon: 9, 10, 11. It's related with recent changes in SDK and security. Older Android versions use deprecated and unstable features like RenderScript.
 
 
 ## Download
@@ -41,7 +41,7 @@ GitHub Repo: [Click here](https://github.com/AndraxDev/speak-gpt-web)
 
 ## Information for users who want to use Google Gemini models with this app.
 
-SpeakGPT does not support Google API keys itself, but you cen still use Google Gemini using OpenRouter API. More info at [OpenRouter Models](https://openrouter.ai/docs#models).
+SpeakGPT does not support Google API keys directly, but you cen still use Google Gemini using OpenRouter API. More info at [OpenRouter Models](https://openrouter.ai/docs#models).
 
 ## For those not-far people who want to use something for free making low or no effort.
 
@@ -60,7 +60,7 @@ SpeakGPT does not support Google API keys itself, but you cen still use Google G
 
 > [!NOTE]
 > 
-> To change your API provider, go to settings and select the API endpoint. You can also add your custom API provider.
+> To change your API provider, go to Settings and select the API endpoint. You can also add your custom API provider.
 
 ## Basic features
 
@@ -97,8 +97,8 @@ SpeakGPT does not support Google API keys itself, but you cen still use Google G
 
 ## API key safety:
 
-SpeakGPT uses OpenAI API to provide you with the best experience. Using API-keys is more secure than using your username/password. Your personal info can't be obtained using API key. OpenAI provides cheap API access to their services. Your API key is stored locally on your device and is not shared with anyone. SpeakGPT does not collect any personal data. SpeakGPT is open-source and you can check the code yourself. Each release of SpeakGPT is checked on VirusTotal.
-If you have any concerns you can secure either [revoke your API key](https://platform.openai.com/account/api-keys) or use a separate API key for SpeakGPT.
+SpeakGPT uses OpenAI API to provide you with the best experience. Using API-keys is more secure than using your username/password. Your personal info can't be obtained using API key. OpenAI provides cheap API access to their services. Your API key is stored locally on your device and is not shared with anyone. SpeakGPT does not collect any personal data. SpeakGPT is open-source and you can check the code yourself. Each release of SpeakGPT is checked using VirusTotal.
+If you have any privacy or security concerns you can either [revoke your API key](https://platform.openai.com/account/api-keys) or use a separate API key for SpeakGPT.
 
 To secure your API key perform the following steps:
 
@@ -107,14 +107,14 @@ To secure your API key perform the following steps:
 3. Enable usage monitoring, so you can see how much resources SpeakGPT uses and how much it costs
 4. If you have any concerns you can revoke your API key
 
-> Why we obfuscate our code in production releases?
+> Why do we obfuscate our code in production releases?
 > 
-> Obfuscation and resources shrinking allows us to optimize app size, it performance and secure it against reverse engineering or tamper and make sure your credentials like API keys in a safe place. You can request an unobfuscated build or compile it by self to make sure our app is safe.
+> Obfuscation and resources shrinking allows us to optimize app size, its performance, and secure it against reverse engineering or tamper and make sure your credentials like API keys in a safe place. You can request an unobfuscated build or compile it by self to make sure our app is safe.
 
 
 > [!CAUTION]
 >
-> BE AWARE OF MALWARE! You are allowed to compile SpealGPT and modify it but be very careful when someone other offers you to install their build. Such build may contain malware. Official builds does not contain nay malware and are checked by more than 60 different antiviruses using VirusTotal. You can find VirusTotal report on each release page and compare the hash of the binary files.
+> BE AWARE OF MALWARE! You are allowed to compile SpealGPT and modify it but be very careful when someone offers you to install their build. Such build may contain malware. Official builds do not contain malware and are checked by more than 60 different antivirus engines using VirusTotal. You can find VirusTotal report for each release and compare the hash of the binary files.
 
 
 > Developer identity
@@ -125,7 +125,7 @@ To secure your API key perform the following steps:
 > Legal entity ID: 55545386 (D-U-N-S: 933739642)\
 > License allowing performing commercial activity in Slovakia and EU: OU-KE-OZP1-2023/031005-2 (Issued on 14 June 2023 according to the § 10 section 1 letter a) of the Act No. 455/1991 Coll. on Trade Licensing (Trade Licensing Act) as amended)\
 > VAT ID: SK3121636045\
-> (So you know where you are sending your money if you decide to support the project financially or if project will have paid features in future)
+> (So you know where you are sending your money if you decide to support the project financially or if project will have paid features in the future)
 
 ## You are appreciated to:
 
@@ -135,8 +135,6 @@ To secure your API key perform the following steps:
 
 
 ## Buy me a coffee:
-
-<a href="https://buymeacoffee.com/andrax_dev"><img src="https://andrax.dev/bmc_qr.png" width="200"/></a>
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/S6S6X3NCE)
 
