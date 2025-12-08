@@ -6,7 +6,7 @@ SpeakGPT is an advanced and highly intuitive open-source AI assistant that utili
 
 > [!NOTE]
 > 
-> This project was a part of my Bachelor Thesis. Attribution is required to use this work. Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+> This project was a part of my Bachelor Thesis. Attribution is required to use this work. Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
 >
 > Cite as: Dmytro Ostapenko (2024), "Review Program Automation Using Copilot Services" Bachelor Thesis, Technical University of Košice, 2024.
 
@@ -121,11 +121,7 @@ To secure your API key perform the following steps:
 >
 > Developer name: Dmytro Ostapenko (AndraxDev)\
 > Contact: dostapenko82@gmail.com, +421951829517\
-> Legal address: Južná trieda 4B, 04001 Košice, Slovakia 04001\
-> Legal entity ID: 55545386 (D-U-N-S: 933739642)\
-> License allowing performing commercial activity in Slovakia and EU: OU-KE-OZP1-2023/031005-2 (Issued on 14 June 2023 according to the § 10 section 1 letter a) of the Act No. 455/1991 Coll. on Trade Licensing (Trade Licensing Act) as amended)\
-> VAT ID: SK3121636045\
-> (So you know where you are sending your money if you decide to support the project financially or if project will have paid features in the future)
+> Legal address: Dunajska 7, 04001 Košice, Slovakia 04001
 
 ## You are appreciated to:
 
@@ -141,7 +137,7 @@ To secure your API key perform the following steps:
 ## License
 
 ```
-Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
