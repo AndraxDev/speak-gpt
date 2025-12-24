@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.teslasoft.assistant.ui.activities
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Configuration
-import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowInsets
@@ -43,7 +42,6 @@ import org.teslasoft.assistant.ui.adapters.ApiEndpointListItemAdapter
 import org.teslasoft.assistant.ui.fragments.dialogs.EditApiEndpointDialogFragment
 import org.teslasoft.assistant.util.Hash
 import androidx.core.graphics.drawable.toDrawable
-
 
 class ApiEndpointsListActivity : FragmentActivity() {
 

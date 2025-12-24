@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,17 @@
 package org.teslasoft.assistant.ui.fragments.dialogs
 
 import android.app.Dialog
-import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.TypedValue
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.transition.MaterialContainerTransform
 import org.teslasoft.assistant.R
+import androidx.core.graphics.drawable.toDrawable
 
 class SimpleDialogFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        // Create the standard Material Alert Dialog
         return MaterialAlertDialogBuilder(requireContext())
             .setTitle("Dialog Title")
             .setMessage("Dialog Message")
@@ -55,18 +52,11 @@ class SimpleDialogFragment : DialogFragment() {
         }
     }
 
-    // Extension function to get color from theme
-    private fun Context.themeColor(attrResId: Int): Int {
-        val typedValue = TypedValue()
-        theme.resolveAttribute(attrResId, typedValue, true)
-        return typedValue.data
-    }
-
     override fun onStart() {
         super.onStart()
         // Adjust the dialog window to match the material container transform expectations
         dialog?.window?.apply {
-            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
             // Set the shared element transition name on the dialog's decor view
             decorView.transitionName = "function_tile"
         }

@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,7 +74,6 @@ class WebViewDialog : DialogFragment() {
         webView?.settings?.javaScriptEnabled = true
         webView?.settings?.domStorageEnabled = true
         webView?.settings?.setSupportZoom(true)
-        webView?.settings?.databaseEnabled = true
         webView?.settings?.builtInZoomControls = true
         webView?.settings?.displayZoomControls = false
 

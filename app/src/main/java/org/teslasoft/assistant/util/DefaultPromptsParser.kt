@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package org.teslasoft.assistant.util
 
-import android.content.Context
 import com.google.mlkit.nl.languageid.LanguageIdentification
 import com.google.mlkit.nl.languageid.LanguageIdentifier
 
@@ -52,7 +51,7 @@ class DefaultPromptsParser {
 
     private var listener: OnCompletedListener? = null
 
-    fun parse(type: String, text: String, context: Context) {
+    fun parse(type: String, text: String) {
         if (type == "explanationPrompt") {
             languageIdentifier = LanguageIdentification.getClient()
             languageIdentifier?.identifyLanguage(text)

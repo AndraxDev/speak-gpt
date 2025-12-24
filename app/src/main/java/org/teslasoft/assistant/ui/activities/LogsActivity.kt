@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,7 +88,7 @@ class LogsActivity : FragmentActivity() {
 
                         else -> finish()
                     }
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     finish()
                 }
 
@@ -130,27 +130,15 @@ class LogsActivity : FragmentActivity() {
     private fun reloadAmoled() {
         try {
             if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack()!!) {
-                if (android.os.Build.VERSION.SDK_INT <= 34) {
-                    window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
-                    window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
-                }
                 window.setBackgroundDrawableResource(R.color.amoled_window_background)
                 root?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme))
                 btnBack?.setBackgroundResource(R.drawable.btn_accent_icon_large_amoled)
             } else {
-                if (android.os.Build.VERSION.SDK_INT <= 34) {
-                    window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
-                    window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
-                }
                 window.setBackgroundDrawableResource(R.color.window_background)
                 root?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
                 btnBack?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_icon_large, theme)!!)
             }
         } catch (_: Exception) {
-            if (android.os.Build.VERSION.SDK_INT <= 34) {
-                window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
-                window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
-            }
             window.setBackgroundDrawableResource(R.color.window_background)
             root?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
             btnBack?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_icon_large, theme)!!)

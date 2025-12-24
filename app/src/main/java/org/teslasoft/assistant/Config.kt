@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,7 @@ package org.teslasoft.assistant
 
 class Config {
     companion object {
-        const val DOMAIN = "teslasoft.org"
         const val API_SERVER_NAME = "assistant.teslasoft.org"
-        const val AUTH_SERVER_NAME = "id.teslasoft.org"
         const val API_ENDPOINT = "https://$API_SERVER_NAME/api/v1"
     }
 }

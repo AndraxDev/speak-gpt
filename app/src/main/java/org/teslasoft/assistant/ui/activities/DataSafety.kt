@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,8 @@ import androidx.fragment.app.FragmentActivity
 import com.google.android.material.button.MaterialButton
 import org.teslasoft.assistant.Config
 import org.teslasoft.assistant.R
+import androidx.core.content.edit
+import androidx.core.net.toUri
 
 class DataSafety : FragmentActivity() {
 
@@ -41,17 +43,17 @@ class DataSafety : FragmentActivity() {
 
         btnDecline?.setOnClickListener {
             val sharedPref: SharedPreferences = getSharedPreferences("consent", MODE_PRIVATE)
-            val editor: SharedPreferences.Editor = sharedPref.edit()
-            editor.putBoolean("consent", false)
-            editor.apply()
+            sharedPref.edit {
+                putBoolean("consent", false)
+            }
             finish()
         }
 
         btnAccept?.setOnClickListener {
             val sharedPref: SharedPreferences = getSharedPreferences("consent", MODE_PRIVATE)
-            val editor: SharedPreferences.Editor = sharedPref.edit()
-            editor.putBoolean("consent", true)
-            editor.apply()
+            sharedPref.edit {
+                putBoolean("consent", true)
+            }
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
@@ -59,7 +61,7 @@ class DataSafety : FragmentActivity() {
         btnPrivacyPolicy?.setOnClickListener {
             val intent = Intent()
             intent.action = Intent.ACTION_VIEW
-            intent.data = android.net.Uri.parse("https://${Config.API_SERVER_NAME}/privacy")
+            intent.data = "https://${Config.API_SERVER_NAME}/privacy".toUri()
             startActivity(intent)
         }
     }

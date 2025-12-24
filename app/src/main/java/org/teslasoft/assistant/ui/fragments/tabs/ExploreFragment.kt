@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -272,7 +272,7 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
 
     override fun onUseGloballyClick(model: String, endpointUrl: String, endpointName: String, avatarType: String, avatarId: String, assistantName: String) {
         performAction(model, endpointUrl, endpointName, "", avatarType, avatarId, assistantName) { en, _, m, at, ai, an ->
-            setGlobally(en, "", m, at, ai, an)
+            setGlobally(en, m, at, ai, an)
         }
     }
 
@@ -288,7 +288,7 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
         startActivity(i)
     }
 
-    private fun setGlobally(endpointName: String, suggestedChatName: String, model: String, avatarType: String, avatarId: String, assistantName: String) {
+    private fun setGlobally(endpointName: String, model: String, avatarType: String, avatarId: String, assistantName: String) {
         preferences?.setApiEndpointId(Hash.hash(endpointName))
         preferences?.setModel(model)
         preferences?.setAvatarType(avatarType)
@@ -298,7 +298,17 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
     }
 
     private fun createChat(endpointName: String, suggestedChatName: String, model: String, avatarType: String, avatarId: String, assistantName: String) {
-        val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, suggestedChatName, false, true, true, Hash.hash(endpointName), model, avatarType, avatarId, assistantName, -1)
+        val chatDialogFragment: AddChatDialogFragment = AddChatDialogFragment.newInstance(false, suggestedChatName,
+            fromFile = false,
+            disableAutoName = true,
+            saveChat = true,
+            endpointId = Hash.hash(endpointName),
+            model = model,
+            avatarType = avatarType,
+            avatarId = avatarId,
+            assistantName = assistantName,
+            position = -1
+        )
         chatDialogFragment.setStateChangedListener(object : AddChatDialogFragment.StateChangesListener {
             override fun onAdd(name: String, id: String, fromFile: Boolean) {
                 val i = Intent(

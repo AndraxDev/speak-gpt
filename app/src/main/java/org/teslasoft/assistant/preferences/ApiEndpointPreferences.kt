@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
 import org.teslasoft.assistant.util.Hash
+import androidx.core.content.edit
 
 class ApiEndpointPreferences private constructor(private var preferences: SharedPreferences) {
     companion object {
@@ -36,16 +37,12 @@ class ApiEndpointPreferences private constructor(private var preferences: Shared
 
     private var listeners: ArrayList<OnApiEndpointChangeListener> = ArrayList()
 
-    fun addOnApiEndpointChangeListener(listener: OnApiEndpointChangeListener) {
-        listeners.add(listener)
-    }
-
     fun getString(key: String, defValue: String): String {
         return preferences.getString(key, defValue)!!
     }
 
     fun putString(key: String, value: String) {
-        preferences.edit().putString(key, value).apply()
+        preferences.edit { putString(key, value) }
     }
 
     fun getApiEndpoint(context: Context, id: String): ApiEndpointObject {
@@ -57,8 +54,8 @@ class ApiEndpointPreferences private constructor(private var preferences: Shared
     }
 
     fun deleteApiEndpoint(context: Context, id: String) {
-        preferences.edit().remove(id + "_label").apply()
-        preferences.edit().remove(id + "_host").apply()
+        preferences.edit { remove(id + "_label") }
+        preferences.edit { remove(id + "_host") }
         EncryptedPreferences.setEncryptedPreference(context, "api_endpoint", id + "_api_key", "null")
 
         for (listener in listeners) {
@@ -107,7 +104,7 @@ class ApiEndpointPreferences private constructor(private var preferences: Shared
 
         // R8 bug fix
         if (list == null) {
-            return ArrayList<ApiEndpointObject>()
+            return ArrayList()
         }
 
         return list

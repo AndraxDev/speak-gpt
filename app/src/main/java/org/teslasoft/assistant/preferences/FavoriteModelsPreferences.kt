@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import org.teslasoft.assistant.preferences.dto.FavoriteModelObject
+import androidx.core.content.edit
 
 class FavoriteModelsPreferences private constructor(private val sharedPreferences: SharedPreferences) {
     companion object {
@@ -41,7 +42,7 @@ class FavoriteModelsPreferences private constructor(private val sharedPreference
     }
 
     fun setFavoriteModels(models: ArrayList<Map<String, String>>) {
-        sharedPreferences.edit().putString(KEY_FAVORITE_MODELS, Gson().toJson(models)).apply()
+        sharedPreferences.edit { putString(KEY_FAVORITE_MODELS, Gson().toJson(models)) }
     }
 
     fun getFavoriteModels(): ArrayList<Map<String, String>> {
@@ -49,7 +50,7 @@ class FavoriteModelsPreferences private constructor(private val sharedPreference
 
         var list = try {
             Gson().fromJson(models, ArrayList<Map<String, String>>()::class.java)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             arrayListOf()
         }
 
@@ -68,19 +69,5 @@ class FavoriteModelsPreferences private constructor(private val sharedPreference
             models.add(hashMapOf("modelId" to model.modelId, "endpointId" to model.endpointId))
             setFavoriteModels(models)
         }
-    }
-
-    fun removeFavoriteModel(list: ArrayList<Map<String, String>>, model: FavoriteModelObject) {
-        var models = list
-
-        if (models == null) models = arrayListOf()
-
-        var newModels = models.filter {
-            m -> m["modelId"] != model.modelId && m["endpointId"] != model.endpointId
-        }
-
-        if (newModels == null) newModels = arrayListOf()
-
-        setFavoriteModels(newModels as ArrayList<Map<String, String>>)
     }
 }

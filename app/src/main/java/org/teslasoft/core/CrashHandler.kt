@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ class CrashHandlerActivity : FragmentActivity() {
             val version = pInfo.versionName
 
             version
-        } catch (e: PackageManager.NameNotFoundException) {
+        } catch (_: PackageManager.NameNotFoundException) {
             "unknown"
         }
 
@@ -83,7 +83,7 @@ class CrashHandlerActivity : FragmentActivity() {
             val version = pInfo.longVersionCode
 
             version
-        } catch (e: PackageManager.NameNotFoundException) {
+        } catch (_: PackageManager.NameNotFoundException) {
             "unknown"
         }
 
@@ -98,7 +98,7 @@ class CrashHandlerActivity : FragmentActivity() {
                 }
             })
 
-            val IID = when (val installationId = DeviceInfoProvider.getInstallationId(this)) {
+            val iID = when (val installationId = DeviceInfoProvider.getInstallationId(this)) {
                 "00000000-0000-0000-0000-000000000000" -> "<Authorization revoked>"
                 "" -> "<Not assigned>"
                 else -> installationId
@@ -109,7 +109,7 @@ class CrashHandlerActivity : FragmentActivity() {
             btnCopy = findViewById(R.id.btn_copy)
 
             textError!!.setTextIsSelectable(true)
-            textError!!.text = "\nApp has been crashed and needs to be restarted.\n\n===== BEGIN SYSTEM INFO =====\nAndroid version: ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT} ${Build.VERSION.CODENAME})\nROM version: ${Build.VERSION.INCREMENTAL}\nApp version: $appVersion ($versionCode)\nDevice model: ${Build.MODEL}\nAndroid device ID: ${Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)}\nInstallation ID: ${IID}\nTeslasoft ID version: ${SystemInfo.VERSION} (${SystemInfo.VERSION_CODE})\nEffective time: ${
+            textError!!.text = "\nApp has been crashed and needs to be restarted.\n\n===== BEGIN SYSTEM INFO =====\nAndroid version: ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT} ${Build.VERSION.CODENAME})\nROM version: ${Build.VERSION.INCREMENTAL}\nApp version: $appVersion ($versionCode)\nDevice model: ${Build.MODEL}\nAndroid device ID: ${Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)}\nInstallation ID: ${iID}\nTeslasoft ID version: ${SystemInfo.VERSION} (${SystemInfo.VERSION_CODE})\nEffective time: ${
                 DateTimeFormatter.ISO_INSTANT.format(
                     Instant.now())}\n===== END SYSTEM INFO =====\n\n===== BEGIN OF CRASH =====\n$error\n===== END OF CRASH =====\n"
 

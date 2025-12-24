@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Configuration
-import android.graphics.drawable.Drawable
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
@@ -29,8 +28,6 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -119,11 +116,6 @@ class AISetAdapterNew(private val mContext: Context, private val dataArray: Arra
                 Configuration.UI_MODE_NIGHT_UNDEFINED -> false
                 else -> false
             }
-        }
-
-        private fun getAccentAmoledDrawable(drawable: Drawable) : Drawable {
-            DrawableCompat.setTint(DrawableCompat.wrap(drawable), mContext.getColor(R.color.amoled_accent_200))
-            return drawable
         }
     }
 

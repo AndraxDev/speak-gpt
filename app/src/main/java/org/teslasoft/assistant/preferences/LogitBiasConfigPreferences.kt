@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import com.google.gson.reflect.TypeToken
 import org.teslasoft.assistant.util.Hash
 import java.lang.Exception
 import java.lang.reflect.Type
+import androidx.core.content.edit
 
 class LogitBiasConfigPreferences private constructor(private var preferences: SharedPreferences) {
     companion object {
@@ -39,16 +40,12 @@ class LogitBiasConfigPreferences private constructor(private var preferences: Sh
 
     private var listeners: ArrayList<OnLogitBiasConfigChangeListener> = ArrayList()
 
-    fun addOnLogitBiasConfigChangeListener(listener: OnLogitBiasConfigChangeListener) {
-        listeners.add(listener)
-    }
-
     fun getString(key: String, defValue: String): String {
         return preferences.getString(key, defValue)!!
     }
 
     fun putString(key: String, value: String) {
-        preferences.edit().putString(key, value).apply()
+        preferences.edit { putString(key, value) }
     }
 
     fun addConfig(label: String) {

@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.teslasoft.assistant.ui.activities
 
 import android.content.Context
 import android.content.res.Configuration
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
@@ -42,6 +41,7 @@ import org.teslasoft.assistant.Config.Companion.API_ENDPOINT
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.core.api.network.RequestNetwork
+import androidx.core.graphics.drawable.toDrawable
 
 class ReportAbuseActivity : FragmentActivity() {
 
@@ -235,10 +235,6 @@ class ReportAbuseActivity : FragmentActivity() {
     @Suppress("DEPRECATION")
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() &&  Preferences.getPreferences(this, "").getAmoledPitchBlack()) {
-            if (android.os.Build.VERSION.SDK_INT <= 34) {
-                window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
-                window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme)
-            }
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
 
             reportActivityTitle?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme))
@@ -250,12 +246,7 @@ class ReportAbuseActivity : FragmentActivity() {
                 )!!, this
             )
         } else {
-            if (android.os.Build.VERSION.SDK_INT <= 34) {
-                window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.window_background, theme)
-                window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
-            }
-
-            val colorDrawable = ColorDrawable(SurfaceColors.SURFACE_0.getColor(this))
+            val colorDrawable = SurfaceColors.SURFACE_0.getColor(this).toDrawable()
             window.setBackgroundDrawable(colorDrawable)
 
             reportActivityTitle?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))

@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,10 +37,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
-import org.teslasoft.assistant.ui.fragments.dialogs.SimpleDialogFragment
 
 class TileFragment : Fragment() {
-
     companion object {
         fun newInstance(checked: Boolean, checkable: Boolean, enabledText: String, disabledText: String?, enabledDesc: String, disabledDesc: String?, icon: Int, disabled: Boolean, chatId: String, functionDesc: String, transitionName: String? = null): TileFragment {
 
@@ -85,10 +83,6 @@ class TileFragment : Fragment() {
     enum class TileVisibility {
         VISIBLE,
         GONE
-    }
-
-    fun setFunctionDesc(desc: String) {
-        this.desc = desc
     }
 
     fun setOnTileClickListener(onTileClickListener: OnTileClickListener) {
@@ -144,10 +138,6 @@ class TileFragment : Fragment() {
                 tileIcon?.imageTintList = ContextCompat.getColorStateList(requireActivity(), R.color.disabled_icon)
             }
         }
-    }
-
-    fun updateTitle(title: String) {
-        if (onAttachedToActivity) tileTitle?.text = title
     }
 
     fun updateSubtitle(subtitle: String) {

@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.teslasoft.assistant.ui.activities
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -144,6 +143,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -185,9 +185,8 @@ import java.net.URL
 import java.util.EnumSet
 import java.util.Locale
 import java.util.Optional
-import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration.Companion.seconds
-
+import androidx.core.content.edit
 
 class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
@@ -262,8 +261,6 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
     private var logitBiasPreferences: LogitBiasPreferences? = null
     private var apiEndpointObject: ApiEndpointObject? = null
 
-    private var stopper = false
-
     // Init DALL-e
     private var resolution = "512x152"
 
@@ -278,7 +275,6 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
     // Init preferences
     private var preferences: Preferences? = null
-    private var preferencesChangedListener: Preferences.PreferencesChangedListener? = null
 
     private var onSpeechResultsScope: CoroutineScope? = null
     private var whisperScope: CoroutineScope? = null
@@ -424,7 +420,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
                             try {
                                 generateResponse(prefix + recognizedText + endSeparator, true)
-                            } catch (e: CancellationException) {
+                            } catch (_: CancellationException) {
                                 restoreUIState()
                             }
                         }
@@ -481,11 +477,10 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
         // Calculate the new dimensions while keeping the aspect ratio
         val aspectRatio = originalWidth.toFloat() / originalHeight.toFloat()
-        val newHeight = maxHeight
-        val newWidth = (newHeight * aspectRatio).toInt()
+        val newWidth = (maxHeight * aspectRatio).toInt()
 
         // Create the scaled bitmap
-        return bitmap.scale(newWidth, newHeight)
+        return bitmap.scale(newWidth, maxHeight)
     }
 
 
@@ -1063,7 +1058,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
         @SuppressLint("NotifyDataSetChanged")
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
-            val position = viewHolder.adapterPosition
+            val position = viewHolder.bindingAdapterPosition
 
             viewHolder.itemView.post {
                 adapter?.notifyItemChanged(position)
@@ -1197,7 +1192,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
     private val fileIntentLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         run {
-            if (result.resultCode == Activity.RESULT_OK) {
+            if (result.resultCode == RESULT_OK) {
                 result.data?.data?.also { uri ->
                     bitmap = readFile(uri)
 
@@ -1335,16 +1330,16 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         }
 
         messageInput?.setOnKeyListener { v, keyCode, event -> run {
-            when {
-                event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER && event.isShiftPressed && isHardKB() && preferences!!.getDesktopMode() -> {
+            when (event.action) {
+                KeyEvent.ACTION_DOWN if keyCode == KeyEvent.KEYCODE_ENTER && event.isShiftPressed && isHardKB() && preferences!!.getDesktopMode() -> {
                     (v as EditText).append("\n")
                     return@run true
                 }
-                event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER && isHardKB() && preferences!!.getDesktopMode() -> {
+                KeyEvent.ACTION_DOWN if keyCode == KeyEvent.KEYCODE_ENTER && isHardKB() && preferences!!.getDesktopMode() -> {
                     parseMessage((v as EditText).text.toString())
                     return@run true
                 }
-                event.action == KeyEvent.ACTION_DOWN && ((keyCode == KeyEvent.KEYCODE_ESCAPE && event.isShiftPressed) || keyCode == KeyEvent.KEYCODE_BACK) && preferences!!.getDesktopMode() -> {
+                KeyEvent.ACTION_DOWN if ((keyCode == KeyEvent.KEYCODE_ESCAPE && event.isShiftPressed) || keyCode == KeyEvent.KEYCODE_BACK) && preferences!!.getDesktopMode() -> {
                     finishActivity()
                     return@run true
                 }
@@ -1384,7 +1379,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
     }
 
     private fun isHardKB(): Boolean {
-        return resources.configuration.keyboard == KEYBOARD_QWERTY;
+        return resources.configuration.keyboard == KEYBOARD_QWERTY
     }
 
     private val fileSaveIntentLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -1432,7 +1427,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                 if (!cancelState) {
                     try {
                         prepare()
-                    } catch (e: IOException) {
+                    } catch (_: IOException) {
                         btnMicro?.setImageResource(R.drawable.ic_microphone)
                         isRecording = false
                         MaterialAlertDialogBuilder(
@@ -1465,7 +1460,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                 if (!cancelState) {
                     try {
                         prepare()
-                    } catch (e: IOException) {
+                    } catch (_: IOException) {
                         btnMicro?.setImageResource(R.drawable.ic_microphone)
                         isRecording = false
                         MaterialAlertDialogBuilder(
@@ -1510,7 +1505,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
                 try {
                     processRecording()
-                } catch (e: CancellationException) {
+                } catch (_: CancellationException) {
                     restoreUIState()
                 }
             }
@@ -1574,7 +1569,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                     messageInput?.setText(transcription)
                 }
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             Toast.makeText(this, "Failed to record audio", Toast.LENGTH_SHORT).show()
             btnMicro?.isEnabled = true
             btnSend?.isEnabled = true
@@ -1764,14 +1759,12 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
     private fun saveSettings() {
         val chat = getSharedPreferences("chat_$chatId", MODE_PRIVATE)
-        val editor = chat.edit()
-        val gson = Gson()
-        val json: String = gson.toJson(messages)
+        chat.edit {
+            val gson = Gson()
+            val json: String = gson.toJson(messages)
 
-        editor.putString("chat", json)
-        editor.apply()
-
-        // calculateCost()
+            putString("chat", json)
+        }
     }
 
     private fun parseMessage(message: String, shouldAdd: Boolean = true) {
@@ -1883,7 +1876,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
             try {
                 generateImageR(str)
-            } catch (cancelledException: CancellationException) {
+            } catch (_: CancellationException) {
                 restoreUIState()
             }
         }
@@ -1975,13 +1968,13 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
             var response = ""
 
             if (imageIsSelected) {
-                imageIsSelected = false;
+                imageIsSelected = false
 
                 attachedImage?.visibility = View.GONE
 
                 putMessage("", true)
 
-                val reqList: ArrayList<ContentPart> = ArrayList<ContentPart>()
+                val reqList: ArrayList<ContentPart> = arrayListOf()
                 reqList.add(TextPart(request))
                 reqList.add(ImagePart(baseImageString!!))
                 val chatCompletionRequest = if (preferences?.getLogitBiasesConfigId() == null || preferences?.getLogitBiasesConfigId() == "null" || preferences?.getLogitBiasesConfigId() == "") {
@@ -2031,7 +2024,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
                 completions.collect { v ->
                     run {
-                        if (!coroutineContext.isActive) throw CancellationException()
+                        if (!currentCoroutineContext().isActive) throw CancellationException()
                         else if (v.choices[0].delta != null && v.choices[0].delta?.content != null && v.choices[0].delta?.content.toString() != "null") {
                             response += v.choices[0].delta?.content
                             if (response != "null") {
@@ -2096,7 +2089,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
                 completions.collect { v ->
                     run {
-                        if (!coroutineContext.isActive) throw CancellationException()
+                        if (!currentCoroutineContext().isActive) throw CancellationException()
                         else if (v.choices[0] != null && v.choices[0].text != null && v.choices[0].text.toString() != "null") {
                             response += v.choices[0].text
                             messages[messages.size - 1]["message"] = response
@@ -2129,7 +2122,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                 progress?.visibility = View.GONE
                 messageInput?.requestFocus()
             } else {
-                var functionCallingEnabled: Boolean = preferences!!.getFunctionCalling()
+                val functionCallingEnabled: Boolean = preferences!!.getFunctionCalling()
 
                 if (functionCallingEnabled && openAIKey != null) {
                     val cm = mutableListOf(
@@ -2210,7 +2203,6 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                         .setMessage("Function calling feature is unavailable because it requires OpenAI endpoint. Would you like to disable this feature?")
                         .setPositiveButton("Disable") { _, _ -> run {
                             preferences?.setFunctionCalling(false)
-                            functionCallingEnabled = false
                         }}
                         .setNegativeButton("Cancel") { _, _ -> }
                         .show()
@@ -2218,7 +2210,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                     regularGPTResponse(shouldPronounce)
                 }
             }
-        } catch (e: CancellationException) {
+        } catch (_: CancellationException) {
             calculateCost()
             runOnUiThread {
                 restoreUIState()
@@ -2325,7 +2317,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
     private suspend fun regularGPTResponse(shouldPronounce: Boolean) {
         disableAutoScroll = false
-        // chat?.transcriptMode = ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL
+
         var response = ""
         putMessage("", true)
 
@@ -2373,7 +2365,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
         completions.collect { v ->
             run {
-                if (!coroutineContext.isActive) throw CancellationException()
+                if (!currentCoroutineContext().isActive) throw CancellationException()
                 else if (v.choices[0].delta != null && v.choices[0].delta?.content != null && v.choices[0].delta?.content.toString() != "null") {
                     response += v.choices[0].delta?.content
                     messages[messages.size - 1]["message"] = response
@@ -2499,7 +2491,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                     val i = Intent(this, ChatActivity::class.java).setAction(Intent.ACTION_VIEW).putExtra("chatId", Hash.hash(newChatName.toString())).putExtra("name", newChatName.toString())
                     startActivity(i)
                     finishActivity()
-                } catch (e: Exception) { /* model might not be available */ }
+                } catch (_: Exception) { /* model might not be available */ }
             }
         }
 
@@ -2530,7 +2522,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
                             speak(message)
                         }
-                } catch (e: NullPointerException) {
+                } catch (_: NullPointerException) {
                     autoLangDetect = false
                     ttsPostInit()
 
@@ -2590,7 +2582,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                                     .show()
                             }
                         }
-                    } catch (e: CancellationException) {
+                    } catch (_: CancellationException) {
                         restoreUIState()
                     }
                 }
@@ -2600,8 +2592,8 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
     private fun writeImageToCache(bytes: ByteArray, imageType: String = "png") {
         try {
-            contentResolver.openFileDescriptor(Uri.fromFile(File(getExternalFilesDir("images")?.absolutePath + "/" + Hash.hash(java.util.Base64.getEncoder().encodeToString(bytes)) + "." + imageType)), "w")?.use {
-                FileOutputStream(it.fileDescriptor).use {
+            contentResolver.openFileDescriptor(Uri.fromFile(File(getExternalFilesDir("images")?.absolutePath + "/" + Hash.hash(java.util.Base64.getEncoder().encodeToString(bytes)) + "." + imageType)), "w")?.use { fileDescriptor ->
+                FileOutputStream(fileDescriptor.fileDescriptor).use {
                     it.write(
                         bytes
                     )
@@ -2627,7 +2619,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
             }
 
             try {
-                var imageId = ""
+                var imageId: String
                 val response = client.images().generate(params)
                 val data: Optional<List<Image>> = response.data()
                 val images = data.orElse(emptyList())
@@ -2666,7 +2658,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         disableAutoScroll = false
         // chat?.transcriptMode = ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL
         try {
-            if (preferences!!.getImageModel() == "gpt-image-1") {
+            if (preferences!!.getImageModel().contains("gpt-image-")) {
                 val client: OpenAIClient = OpenAIOkHttpClient
                     .builder()
                     .baseUrl(apiEndpointPreferences!!.getApiEndpoint(this, preferences!!.getApiEndpointId()).host)
@@ -2844,7 +2836,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
             messageInput?.requestFocus()
         } finally {
-            if (preferences!!.getImageModel() != "gpt-image-1") {
+            if (!preferences!!.getImageModel().contains("gpt-image-")) {
                 runOnUiThread {
                     restoreUIState()
                 }
@@ -3021,7 +3013,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
             val decodedBytes = Base64.decode(base64Str, Base64.DEFAULT)
             // Decode byte array to Bitmap
             BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
-        } catch (e: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             // Handle the case where the Base64 string was not correctly formatted
             null
         }
@@ -3184,7 +3176,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
     }
 
     private fun copySelectedMessages() {
-        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("Copied messages", conversationToString())
         clipboard.setPrimaryClip(clip)
         Toast.makeText(this, "Messages copied to clipboard", Toast.LENGTH_SHORT).show()

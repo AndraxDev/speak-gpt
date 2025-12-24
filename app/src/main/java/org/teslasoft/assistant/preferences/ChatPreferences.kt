@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,12 @@ package org.teslasoft.assistant.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.widget.Toast
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.teslasoft.assistant.util.Hash
 import java.lang.Exception
 import java.lang.reflect.Type
+import androidx.core.content.edit
 
 class ChatPreferences private constructor() {
     companion object {
@@ -42,7 +42,7 @@ class ChatPreferences private constructor() {
      * @param chatId The ID of the chat to clear.
      */
     fun clearChat(context: Context, chatId: String) {
-        context.getSharedPreferences("chat_$chatId", Context.MODE_PRIVATE).edit().putString("chat", "[]").apply()
+        context.getSharedPreferences("chat_$chatId", Context.MODE_PRIVATE).edit { putString("chat", "[]") }
     }
 
     /**
@@ -64,10 +64,10 @@ class ChatPreferences private constructor() {
         val json: String = Gson().toJson(list)
 
         val settings: SharedPreferences = context.getSharedPreferences("chat_list", Context.MODE_PRIVATE)
-        settings.edit().putString("data", json).apply()
+        settings.edit { putString("data", json) }
 
         val settings2: SharedPreferences = context.getSharedPreferences("chat_${Hash.hash(chatName)}", Context.MODE_PRIVATE)
-        settings2.edit().clear().apply()
+        settings2.edit { clear() }
     }
 
     /**
@@ -129,15 +129,7 @@ class ChatPreferences private constructor() {
         val json: String = Gson().toJson(list)
 
         val settings: SharedPreferences = context.getSharedPreferences("chat_list", Context.MODE_PRIVATE)
-        settings.edit().putString("data", json).apply()
-    }
-
-    fun pinChatById(context: Context, chatId: String) {
-        putMetadataToChatById(context, chatId, "pinned", "true")
-    }
-
-    fun unpinChatById(context: Context, chatId: String) {
-        putMetadataToChatById(context, chatId, "pinned", "false")
+        settings.edit { putString("data", json) }
     }
 
     fun putTimestampToChatById(context: Context, chatId: String) {
@@ -159,7 +151,7 @@ class ChatPreferences private constructor() {
         val json: String = Gson().toJson(list)
 
         val settings: SharedPreferences = context.getSharedPreferences("chat_list", Context.MODE_PRIVATE)
-        settings.edit().putString("data", json).apply()
+        settings.edit { putString("data", json) }
     }
 
     /**
@@ -190,20 +182,12 @@ class ChatPreferences private constructor() {
         return list
     }
 
-    fun getChatByIdAsString(context: Context, chatId: String) : String {
-        val chat: SharedPreferences = context.getSharedPreferences("chat_$chatId",
-            Context.MODE_PRIVATE
-        )
-
-        return chat.getString("chat", "[]").toString()
-    }
-
     fun clearChatById(context: Context, chatId: String) {
         val chat: SharedPreferences = context.getSharedPreferences("chat_$chatId",
             Context.MODE_PRIVATE
         )
 
-        chat.edit().putString("chat", "[]").apply()
+        chat.edit { putString("chat", "[]") }
     }
 
     /**
@@ -271,7 +255,7 @@ class ChatPreferences private constructor() {
         val json: String = Gson().toJson(list)
 
         val settings: SharedPreferences = context.getSharedPreferences("chat_$chatId", Context.MODE_PRIVATE)
-        settings.edit().putString("chat", json).apply()
+        settings.edit { putString("chat", json) }
     }
 
     fun deleteMessage(context: Context, chatId: String, position: Int) {
@@ -282,11 +266,11 @@ class ChatPreferences private constructor() {
         val json: String = Gson().toJson(list)
 
         val settings: SharedPreferences = context.getSharedPreferences("chat_$chatId", Context.MODE_PRIVATE)
-        settings.edit().putString("chat", json).apply()
+        settings.edit { putString("chat", json) }
     }
 
     /**
-     * Generates a unique chat ID for a new chat (autoname).
+     * Generates a unique chat ID for a new chat (auto-name).
      *
      * @param context The context of the application.
      * @return A unique chat ID as a String.
@@ -339,10 +323,10 @@ class ChatPreferences private constructor() {
         val json: String = Gson().toJson(list)
 
         val settings: SharedPreferences = context.getSharedPreferences("chat_list", Context.MODE_PRIVATE)
-        settings.edit().putString("data", json).apply()
+        settings.edit { putString("data", json) }
 
         val settings2: SharedPreferences = context.getSharedPreferences("chat_${Hash.hash(chatName)}", Context.MODE_PRIVATE)
-        settings2.edit().putString("chat", "[]").apply()
+        settings2.edit { putString("chat", "[]") }
     }
 
     /**
@@ -399,15 +383,15 @@ class ChatPreferences private constructor() {
 
                 val json: String = Gson().toJson(list)
 
-                settings.edit().putString("data", json).apply()
+                settings.edit { putString("data", json) }
 
                 val settings1: SharedPreferences = context.getSharedPreferences("chat_${Hash.hash(previousName)}", Context.MODE_PRIVATE)
 
                 val str = settings1.getString("chat", "")
-                settings1.edit().clear().apply()
+                settings1.edit { clear() }
 
                 val settings2: SharedPreferences = context.getSharedPreferences("chat_${Hash.hash(chatName)}", Context.MODE_PRIVATE)
-                settings2.edit().putString("chat", str).apply()
+                settings2.edit { putString("chat", str) }
 
                 break
             }
@@ -427,9 +411,9 @@ class ChatPreferences private constructor() {
         val json: String = Gson().toJson(list)
 
         val settings: SharedPreferences = context.getSharedPreferences("chat_list", Context.MODE_PRIVATE)
-        settings.edit().putString("data", json).apply()
+        settings.edit { putString("data", json) }
 
         val settings2: SharedPreferences = context.getSharedPreferences("chat_$chatId", Context.MODE_PRIVATE)
-        settings2.edit().clear().apply()
+        settings2.edit { clear() }
     }
 }

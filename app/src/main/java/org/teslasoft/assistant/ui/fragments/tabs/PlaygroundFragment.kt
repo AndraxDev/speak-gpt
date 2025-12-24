@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,6 +54,7 @@ import com.google.android.material.loadingindicator.LoadingIndicator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -67,7 +68,6 @@ import org.teslasoft.assistant.ui.fragments.dialogs.ReportAIContentBottomSheet
 import org.teslasoft.assistant.util.WindowInsetsUtil
 import java.util.EnumSet
 import kotlin.coroutines.cancellation.CancellationException
-import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration.Companion.seconds
 
 class PlaygroundFragment : Fragment() {
@@ -325,7 +325,7 @@ class PlaygroundFragment : Fragment() {
 
             completions.collect { v ->
                 run {
-                    if (!coroutineContext.isActive) throw CancellationException()
+                    if (!currentCoroutineContext().isActive) throw CancellationException()
                     else if (v.choices[0].delta?.content != null) {
                         output += v.choices[0].delta?.content
                         editTextOut?.setText(output)
@@ -338,7 +338,7 @@ class PlaygroundFragment : Fragment() {
             runLoader?.visibility = View.GONE
             btnStop?.visibility = View.GONE
             btnRun?.visibility = View.VISIBLE
-        } catch (e: CancellationException) {
+        } catch (_: CancellationException) {
             (mContext as Activity?)?.runOnUiThread {
                 runLoader?.visibility = View.GONE
                 btnStop?.visibility = View.GONE

@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.teslasoft.assistant.ui.activities
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.ListView
@@ -38,6 +37,7 @@ import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.LogitBiasConfigItemAdapter
 import org.teslasoft.assistant.ui.fragments.dialogs.EditLogitBiasConfigDialogFragment
 import org.teslasoft.assistant.util.Hash
+import androidx.core.graphics.drawable.toDrawable
 
 class LogitBiasConfigListActivity : FragmentActivity() {
 
@@ -144,7 +144,7 @@ class LogitBiasConfigListActivity : FragmentActivity() {
 
             actionBar?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme))
         } else {
-            val colorDrawable = ColorDrawable(SurfaceColors.SURFACE_0.getColor(this))
+            val colorDrawable = SurfaceColors.SURFACE_0.getColor(this).toDrawable()
             window.setBackgroundDrawable(colorDrawable)
 
             if (android.os.Build.VERSION.SDK_INT <= 34) {

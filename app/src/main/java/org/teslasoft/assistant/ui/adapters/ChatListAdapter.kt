@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ import java.io.File
 import java.io.InputStreamReader
 import androidx.core.graphics.createBitmap
 
-class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>, private val selectorProjection: ArrayList<HashMap<String, String>>, private val mContext: Fragment, private var size: Int = dataArray.size) : RecyclerView.Adapter<ChatListAdapter.ViewHolder>() {
+class ChatListAdapter(private val dataArray: ArrayList<HashMap<String, String>>, private val selectorProjection: ArrayList<HashMap<String, String>>, private val mContext: Fragment) : RecyclerView.Adapter<ChatListAdapter.ViewHolder>() {
 
     private var preferences: Preferences? = null
     private var bulkActionMode = false

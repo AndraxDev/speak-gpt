@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,6 @@ import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.util.Hash
 
 class AddChatDialogFragment : DialogFragment() {
-
     companion object {
         fun newInstance(isEdit: Boolean, name: String, fromFile: Boolean, disableAutoName: Boolean, saveChat: Boolean, endpointId: String, model: String, avatarType: String, avatarId: String, assistantName: String, position: Int) : AddChatDialogFragment {
             val addChatDialogFragment = AddChatDialogFragment()
@@ -119,7 +118,7 @@ class AddChatDialogFragment : DialogFragment() {
 
             if (requireArguments().getString("name") != "") {
                 var n = chatPreferences?.getAvailableChatIdByPrefix(requireActivity(), requireArguments().getString("name").toString()).toString()
-                if (n == "1") n = "" else n = " $n"
+                n = if (n == "1") "" else " $n"
                 nameInput?.setText("${requireArguments().getString("name")}$n")
             } else {
                 nameInput?.setText("New chat ${chatPreferences?.getAvailableChatId(requireActivity())}")
@@ -143,7 +142,7 @@ class AddChatDialogFragment : DialogFragment() {
 
         nameInput?.requestFocus()
 
-        nameInput?.setOnKeyListener { v, keyCode, event -> run {
+        nameInput?.setOnKeyListener { _, keyCode, event -> run {
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                 validateForm()
                 dismiss()

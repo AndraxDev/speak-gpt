@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,7 @@ class SelectImageModelFragment : DialogFragment() {
     private var dalle2: RadioButton? = null
     private var dalle3: RadioButton? = null
     private var gptImage: RadioButton? = null
+    private var gptImage15: RadioButton? = null
 
     private var imageModel = ""
 
@@ -63,12 +64,14 @@ class SelectImageModelFragment : DialogFragment() {
         dalle2 = view.findViewById(R.id.dalle2)
         dalle3 = view.findViewById(R.id.dalle3)
         gptImage = view.findViewById(R.id.gpt_image)
+        gptImage15 = view.findViewById(R.id.gpt_image1_5)
 
         imageModel = requireArguments().getString("imageModel").toString()
 
         dalle2?.isChecked = imageModel == "dall-e-2"
         dalle3?.isChecked = imageModel == "dall-e-3"
         gptImage?.isChecked = imageModel == "gpt-image-1"
+        gptImage15?.isChecked = imageModel == "gpt-image-1.5"
 
         when (imageModel) {
             "dall-e-2" -> {
@@ -82,11 +85,16 @@ class SelectImageModelFragment : DialogFragment() {
             "gpt-image-1" -> {
                 setSelection(gptImage, null)
             }
+
+            "gpt-image-1.5" -> {
+                setSelection(gptImage15, null)
+            }
         }
 
         bindOnClickListener(dalle2, "dall-e-2")
         bindOnClickListener(dalle3, "dall-e-3")
         bindOnClickListener(gptImage, "gpt-image-1")
+        bindOnClickListener(gptImage15, "gpt-image-1.5")
 
         builder!!.setView(view)
             .setCancelable(false)
@@ -122,7 +130,8 @@ class SelectImageModelFragment : DialogFragment() {
     private fun clearSelection() {
         clearSingleSelection(dalle2, isTop = true)
         clearSingleSelection(dalle3)
-        clearSingleSelection(gptImage, isBottom = true)
+        clearSingleSelection(gptImage)
+        clearSingleSelection(gptImage15, isBottom = true)
     }
 
     private fun getDarkAccentDrawable(drawable: Drawable, context: Context) : Drawable {

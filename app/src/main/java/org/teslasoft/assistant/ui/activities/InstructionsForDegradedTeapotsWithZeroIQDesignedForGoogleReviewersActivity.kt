@@ -1,11 +1,25 @@
+/**************************************************************************
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ **************************************************************************/
+
 package org.teslasoft.assistant.ui.activities
 
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentActivity
-import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.util.WindowInsetsUtil
@@ -21,17 +35,8 @@ class InstructionsForDegradedTeapotsWithZeroIQDesignedForGoogleReviewersActivity
 
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() && Preferences.getPreferences(this, "").getAmoledPitchBlack()) {
-            if (android.os.Build.VERSION.SDK_INT <= 30) {
-                window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
-                window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
-            }
-
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
         } else {
-            if (android.os.Build.VERSION.SDK_INT <= 30) {
-                window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
-                window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
-            }
             window.setBackgroundDrawableResource(R.color.window_background)
         }
     }
@@ -48,10 +53,6 @@ class InstructionsForDegradedTeapotsWithZeroIQDesignedForGoogleReviewersActivity
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        WindowInsetsUtil.adjustPaddings(this, R.id.ui, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR), dpToPx(16))
-    }
-
-    private fun dpToPx(dp: Int): Int {
-        return (dp * resources.displayMetrics.density).toInt()
+        WindowInsetsUtil.adjustPaddings(this, R.id.ui, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR), (16 * resources.displayMetrics.density).toInt())
     }
 }

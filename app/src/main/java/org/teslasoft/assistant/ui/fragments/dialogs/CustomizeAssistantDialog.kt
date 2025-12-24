@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,6 +58,8 @@ import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStreamReader
+import androidx.core.net.toUri
+import androidx.core.graphics.createBitmap
 
 class CustomizeAssistantDialog : DialogFragment() {
     companion object {
@@ -202,7 +204,7 @@ class CustomizeAssistantDialog : DialogFragment() {
         }
 
         btnSelectFile?.setOnClickListener {
-            openFile(Uri.parse("/storage/emulated/0/image.png"))
+            openFile("/storage/emulated/0/image.png".toUri())
         }
 
         builder!!.setView(view)
@@ -246,7 +248,7 @@ class CustomizeAssistantDialog : DialogFragment() {
         bitmap = readFile(uri)
 
         if (bitmap != null) {
-            previewFile?.setImageBitmap(roundCorners(bitmap!!, 80f))
+            previewFile?.setImageBitmap(roundCorners(bitmap ?: return))
 
             val mimeType = requireActivity().contentResolver.getType(uri)
             val format = when {
@@ -287,8 +289,8 @@ class CustomizeAssistantDialog : DialogFragment() {
         selectedAvatarId = avid
         selectedAvatarType = "file"
         try {
-            requireActivity().contentResolver.openFileDescriptor(Uri.fromFile(File(requireActivity().getExternalFilesDir("images")?.absolutePath + "/avatar_" + avid + "." + imageType)), "w")?.use {
-                FileOutputStream(it.fileDescriptor).use {
+            requireActivity().contentResolver.openFileDescriptor(Uri.fromFile(File(requireActivity().getExternalFilesDir("images")?.absolutePath + "/avatar_" + avid + "." + imageType)), "w")?.use { fileDescriptor ->
+                FileOutputStream(fileDescriptor.fileDescriptor).use {
                     it.write(
                         bytes
                     )
@@ -301,9 +303,9 @@ class CustomizeAssistantDialog : DialogFragment() {
         }
     }
 
-    private fun roundCorners(bitmap: Bitmap, cornerRadius: Float): Bitmap {
+    private fun roundCorners(bitmap: Bitmap): Bitmap {
         // Create a bitmap with the same size as the original.
-        val output = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
+        val output = createBitmap(bitmap.width, bitmap.height)
 
         // Prepare a canvas with the new bitmap.
         val canvas = Canvas(output)
@@ -319,7 +321,7 @@ class CustomizeAssistantDialog : DialogFragment() {
         val rectF = RectF(rect)
 
         // Draw rounded rectangle as background.
-        canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, paint)
+        canvas.drawRoundRect(rectF, 80f, 80f, paint)
 
         // Change the paint mode to draw the original bitmap on top.
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)

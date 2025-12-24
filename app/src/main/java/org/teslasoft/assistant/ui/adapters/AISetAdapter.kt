@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,6 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.elevation.SurfaceColors
 import org.teslasoft.assistant.Config
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.GlobalPreferences
@@ -58,10 +57,6 @@ class AISetAdapter(private val mContext: Context, private val dataArray: ArrayLi
     private var btnGetApiKey: MaterialButton? = null
 
     private var listener: OnInteractionListener? = null
-
-    fun setOnInteractionListener(listener: OnInteractionListener) {
-        this.listener = listener
-    }
 
     override fun getCount(): Int {
         return dataArray.size
@@ -115,7 +110,7 @@ class AISetAdapter(private val mContext: Context, private val dataArray: ArrayLi
         setOwner?.text = mContext.getString(R.string.label_provided_by) + " " + dataArray[position]["owner"]
         setModel?.text = "AI Model: ${dataArray[position]["model"]}"
 
-        val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners(dpToPx(28f).toInt()))
+        val requestOptions = RequestOptions().transform(CenterCrop(), RoundedCorners((28 * mContext.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT).toInt()))
         Glide.with(mContext)
             .load("https://" + Config.API_SERVER_NAME + "/api/v1/exp/" + dataArray[position]["icon"])
             .apply(requestOptions)
@@ -155,19 +150,6 @@ class AISetAdapter(private val mContext: Context, private val dataArray: ArrayLi
         fun onUseGloballyClick(model: String, endpointUrl: String, endpointName: String, avatarType: String, avatarId: String, assistantName: String)
         fun onCreateChatClick(model: String, endpointUrl: String, endpointName: String, suggestedChatName: String, avatarType: String, avatarId: String, assistantName: String)
         fun onGetApiKeyClicked(apiKeyUrl: String)
-    }
-
-    private fun dpToPx(dp: Float): Float {
-        return dp * mContext.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT
-    }
-
-    private fun getSurfaceColor() : Int {
-        return SurfaceColors.SURFACE_5.getColor(mContext)
-    }
-
-    private fun getAccentDrawable(drawable: Drawable) : Drawable {
-        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getSurfaceColor())
-        return drawable
     }
 
     private fun getAccentAmoledDrawable(drawable: Drawable) : Drawable {

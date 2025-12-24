@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 
 package org.teslasoft.assistant.ui.activities
 
-import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -62,20 +62,22 @@ class ImageBrowserActivity : FragmentActivity() {
 
         setContentView(R.layout.activity_imageview)
 
-        if (android.os.Build.VERSION.SDK_INT <= 34) {
-            window.navigationBarColor = 0xFF000000.toInt()
-            window.statusBarColor = 0xFF000000.toInt()
-        }
-
         image = findViewById(R.id.image)
         btnDownload = findViewById(R.id.btn_download)
         layoutLoading = findViewById(R.id.layout_loading)
         btnShare = findViewById(R.id.btn_share)
 
         val displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-        height = displayMetrics.heightPixels
-        width = displayMetrics.widthPixels
+
+        if (Build.VERSION.SDK_INT >= 30) {
+            val displayBounds = windowManager.currentWindowMetrics.bounds
+            height = displayBounds.height()
+            width = displayBounds.width()
+        } else {
+            windowManager.defaultDisplay.getMetrics(displayMetrics)
+            height = displayMetrics.heightPixels
+            width = displayMetrics.widthPixels
+        }
 
         attacher = PhotoViewAttacher(image!!)
         attacher?.scaleType = ImageView.ScaleType.FIT_CENTER
@@ -142,7 +144,7 @@ class ImageBrowserActivity : FragmentActivity() {
 
     private val fileSaveIntentLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         run {
-            if (result.resultCode == Activity.RESULT_OK) {
+            if (result.resultCode == RESULT_OK) {
                 result.data?.data?.also { uri ->
                     writeToFile(uri)
                 }
@@ -152,8 +154,8 @@ class ImageBrowserActivity : FragmentActivity() {
 
     private fun writeToFile(uri: Uri) {
         try {
-            contentResolver.openFileDescriptor(uri, "w")?.use {
-                FileOutputStream(it.fileDescriptor).use {
+            contentResolver.openFileDescriptor(uri, "w")?.use { fileDescriptor ->
+                FileOutputStream(fileDescriptor.fileDescriptor).use {
                     it.write(
                         fileContents
                     )

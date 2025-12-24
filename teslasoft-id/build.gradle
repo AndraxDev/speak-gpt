@@ -15,12 +15,14 @@ android {
 
     buildTypes {
         release {
+            debuggable false
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             multiDexEnabled true
         }
 
         debug {
+            debuggable false
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             multiDexEnabled true
@@ -36,9 +38,9 @@ android {
 dependencies {
     implementation 'androidx.core:core-ktx:1.17.0'
     implementation 'androidx.appcompat:appcompat:1.7.1'
-    implementation 'com.google.android.material:material:1.14.0-alpha06'
+    implementation 'com.google.android.material:material:1.14.0-alpha08'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
-    implementation 'com.squareup.okhttp3:okhttp:5.3.0'
+    implementation 'com.squareup.okhttp3:okhttp:5.3.2'
     implementation 'com.github.bumptech.glide:glide:5.0.5'
     implementation 'com.google.code.gson:gson:2.13.2'
 }

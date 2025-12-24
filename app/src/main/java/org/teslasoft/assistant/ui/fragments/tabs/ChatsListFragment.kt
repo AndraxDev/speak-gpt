@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -246,7 +246,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
-            val position = viewHolder.adapterPosition
+            val position = viewHolder.bindingAdapterPosition
 
             viewHolder.itemView.post {
                 adapter?.notifyItemChanged(position)
@@ -272,7 +272,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
         override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
                                  dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
 
-            val position = viewHolder.adapterPosition
+            val position = viewHolder.bindingAdapterPosition
 
             val iconDLeft = if(chats[position]["pinned"] == "false") {
                 if (maxX(dX.toInt() / 5) == dpToPx(16)) {
@@ -462,7 +462,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
         return try {
             Gson().fromJson(jsonStr, ArrayList::class.java)
             true
-        } catch (ex: JsonSyntaxException) {
+        } catch (_: JsonSyntaxException) {
             false
         }
     }
@@ -639,7 +639,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
             if (chatList.size != chats.size) {
                 initSettings()
             } else {
-                var i = 0;
+                var i = 0
 
                 while (i < chatList.size) {
                     if (chatList[i]["name"] != chats[i]["name"] || chatList[i]["first_message"] != chats[i]["first_message"] || chatList[i]["timestamp"] != chats[i]["timestamp"]) {

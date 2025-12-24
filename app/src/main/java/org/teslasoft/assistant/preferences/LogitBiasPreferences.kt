@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,22 +30,12 @@ class LogitBiasPreferences(context: Context, id: String) {
         preferences = context.getSharedPreferences("logit_bias_config_$id", Context.MODE_PRIVATE)
     }
 
-    fun addOnLogitBiasChangeListener(listener: OnLogitBiasChangeListener) {
-        listeners.add(listener)
-    }
-
     fun getString(key: String, defValue: String): String {
         return preferences?.getString(key, defValue)!!
     }
 
     fun putString(key: String, value: String) {
         preferences?.edit()?.putString(key, value)?.apply()
-    }
-
-    fun getLogitBias(id: String): LogitBiasObject {
-        val tokenId = getString(id + "_tokenId", "")
-        val logitBias = getString(id + "_logitBias", "")
-        return LogitBiasObject(tokenId, logitBias)
     }
 
     fun setLogitBias(logitBias: LogitBiasObject) {
@@ -82,7 +72,7 @@ class LogitBiasPreferences(context: Context, id: String) {
 
         // R8 bug fix
         if (logitBiases == null) {
-            return ArrayList<LogitBiasObject>()
+            return ArrayList()
         }
 
         return logitBiases

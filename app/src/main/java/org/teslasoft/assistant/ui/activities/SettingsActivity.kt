@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package org.teslasoft.assistant.ui.activities
 
-import android.app.Activity
 import android.app.role.RoleManager
 import android.content.Context
 import android.content.Intent
@@ -74,6 +73,7 @@ import java.util.EnumSet
 import java.util.Locale
 import kotlin.math.roundToInt
 import androidx.core.net.toUri
+import androidx.core.content.edit
 
 class SettingsActivity : FragmentActivity() {
 
@@ -533,16 +533,16 @@ class SettingsActivity : FragmentActivity() {
     private fun createFragments1() {
         val t1 = Thread {
             tileAccountFragment = TileFragment.newInstance(
-                false,
-                false,
-                getString(R.string.tile_account_title),
-                null,
-                getString(R.string.tile_account_subtitle),
-                null,
-                R.drawable.ic_user,
-                false,
-                chatId,
-                getString(R.string.tile_account_desc)
+                checked = false,
+                checkable = false,
+                enabledText = getString(R.string.tile_account_title),
+                disabledText = null,
+                enabledDesc = getString(R.string.tile_account_subtitle),
+                disabledDesc = null,
+                icon = R.drawable.ic_user,
+                disabled = false,
+                chatId = chatId,
+                functionDesc = getString(R.string.tile_account_desc)
             )
 
             tileAssistant = TileFragment.newInstance(
@@ -559,17 +559,17 @@ class SettingsActivity : FragmentActivity() {
             )
 
             tileApiKey = TileFragment.newInstance(
-                false,
-                false,
-                getString(R.string.tile_api_endpoint_title),
-                null,
-                host,
-                null,
-                R.drawable.ic_key,
-                false,
-                chatId,
-                getString(R.string.tile_api_endpoint_desc),
-                "expand_api_list"
+                checked = false,
+                checkable = false,
+                enabledText = getString(R.string.tile_api_endpoint_title),
+                disabledText = null,
+                enabledDesc = host,
+                disabledDesc = null,
+                icon = R.drawable.ic_key,
+                disabled = false,
+                chatId = chatId,
+                functionDesc = getString(R.string.tile_api_endpoint_desc),
+                transitionName = "expand_api_list"
             )
 
             tileAutoSend = TileFragment.newInstance(
@@ -586,16 +586,16 @@ class SettingsActivity : FragmentActivity() {
             )
 
             tileVoice = TileFragment.newInstance(
-                false,
-                false,
-                getString(R.string.tile_tts_voice_title),
-                null,
-                voice,
-                null,
-                R.drawable.ic_voice,
-                false,
-                chatId,
-                getString(R.string.tile_tts_voice_desc)
+                checked = false,
+                checkable = false,
+                enabledText = getString(R.string.tile_tts_voice_title),
+                disabledText = null,
+                enabledDesc = voice,
+                disabledDesc = null,
+                icon = R.drawable.ic_voice,
+                disabled = false,
+                chatId = chatId,
+                functionDesc = getString(R.string.tile_tts_voice_desc)
             )
         }
 
@@ -606,43 +606,43 @@ class SettingsActivity : FragmentActivity() {
     private fun createFragments2() {
         val t2 = Thread {
             tileVoiceLanguage = TileFragment.newInstance(
-                false,
-                false,
-                getString(R.string.tile_voice_lang_title),
-                null,
-                Locale.forLanguageTag(preferences?.getLanguage()!!).displayLanguage,
-                null,
-                R.drawable.ic_language,
-                false,
-                chatId,
-                getString(R.string.tile_voice_lang_desc)
+                checked = false,
+                checkable = false,
+                enabledText = getString(R.string.tile_voice_lang_title),
+                disabledText = null,
+                enabledDesc = Locale.forLanguageTag(preferences?.getLanguage()!!).displayLanguage,
+                disabledDesc = null,
+                icon = R.drawable.ic_language,
+                disabled = false,
+                chatId = chatId,
+                functionDesc = getString(R.string.tile_voice_lang_desc)
             )
 
             tileImageModel = TileFragment.newInstance(
-                false,
-                false,
-                "Image model",
-                null,
-                preferences?.getImageModel() ?: "dall-e-3",
-                null,
-                R.drawable.ic_image,
-                false,
-                chatId,
-                getString(R.string.tile_dalle_desc)
+                checked = false,
+                checkable = false,
+                enabledText = "Image model",
+                disabledText = null,
+                enabledDesc = preferences?.getImageModel() ?: "dall-e-3",
+                disabledDesc = null,
+                icon = R.drawable.ic_image,
+                disabled = false,
+                chatId = chatId,
+                functionDesc = getString(R.string.tile_dalle_desc)
             )
 
             tileImageResolution = TileFragment.newInstance(
-                false,
-                false,
-                getString(R.string.tile_image_resolution_title),
-                null,
-                preferences?.getResolution() ?: "1024x1024",
-                null,
-                R.drawable.ic_image,
-                false,
-                chatId,
-                getString(R.string.tile_image_resolution_desc),
-                "expand_resolution"
+                checked = false,
+                checkable = false,
+                enabledText = getString(R.string.tile_image_resolution_title),
+                disabledText = null,
+                enabledDesc = preferences?.getResolution() ?: "1024x1024",
+                disabledDesc = null,
+                icon = R.drawable.ic_image,
+                disabled = false,
+                chatId = chatId,
+                functionDesc = getString(R.string.tile_image_resolution_desc),
+                transitionName = "expand_resolution"
             )
 
             tileTTS = TileFragment.newInstance(
@@ -704,44 +704,44 @@ class SettingsActivity : FragmentActivity() {
             )
 
             tileTextModel = TileFragment.newInstance(
-                false,
-                false,
-                getString(R.string.tile_text_model_title),
-                null,
-                model,
-                null,
-                R.drawable.chatgpt_icon,
-                false,
-                chatId,
-                getString(R.string.tile_text_generation_model_desc)
+                checked = false,
+                checkable = false,
+                enabledText = getString(R.string.tile_text_model_title),
+                disabledText = null,
+                enabledDesc = model,
+                disabledDesc = null,
+                icon = R.drawable.chatgpt_icon,
+                disabled = false,
+                chatId = chatId,
+                functionDesc = getString(R.string.tile_text_generation_model_desc)
             )
 
             tileActivationMessage = TileFragment.newInstance(
-                false,
-                false,
-                getString(R.string.tile_activation_prompt_title),
-                null,
-                getString(R.string.label_tap_to_set),
-                null,
-                R.drawable.ic_play,
-                false,
-                chatId,
-                getString(R.string.tile_activation_prompt_desc),
-                "expand_activation_prompt"
+                checked = false,
+                checkable = false,
+                enabledText = getString(R.string.tile_activation_prompt_title),
+                disabledText = null,
+                enabledDesc = getString(R.string.label_tap_to_set),
+                disabledDesc = null,
+                icon = R.drawable.ic_play,
+                disabled = false,
+                chatId = chatId,
+                functionDesc = getString(R.string.tile_activation_prompt_desc),
+                transitionName = "expand_activation_prompt"
             )
 
             tileSystemMessage = TileFragment.newInstance(
-                false,
-                false,
-                getString(R.string.tile_system_message_title),
-                null,
-                getString(R.string.label_tap_to_set),
-                null,
-                R.drawable.ic_play,
-                false,
-                chatId,
-                getString(R.string.tile_system_message_desc),
-                "expand_system_prompt"
+                checked = false,
+                checkable = false,
+                enabledText = getString(R.string.tile_system_message_title),
+                disabledText = null,
+                enabledDesc = getString(R.string.label_tap_to_set),
+                disabledDesc = null,
+                icon = R.drawable.ic_play,
+                disabled = false,
+                chatId = chatId,
+                functionDesc = getString(R.string.tile_system_message_desc),
+                transitionName = "expand_system_prompt"
             )
         }
 
@@ -837,43 +837,43 @@ class SettingsActivity : FragmentActivity() {
     private fun createFragments5() {
         val t5 = Thread {
             tileAboutApp = TileFragment.newInstance(
-                false,
-                false,
-                getString(R.string.tile_about_app_title),
-                null,
-                getString(R.string.tile_about_app_subtitle),
-                null,
-                R.drawable.ic_info,
-                false,
-                chatId,
-                getString(R.string.tile_about_app_desc),
-                "expand_about"
+                checked = false,
+                checkable = false,
+                enabledText = getString(R.string.tile_about_app_title),
+                disabledText = null,
+                enabledDesc = getString(R.string.tile_about_app_subtitle),
+                disabledDesc = null,
+                icon = R.drawable.ic_info,
+                disabled = false,
+                chatId = chatId,
+                functionDesc = getString(R.string.tile_about_app_desc),
+                transitionName = "expand_about"
             )
 
             tileClearChat = TileFragment.newInstance(
-                false,
-                false,
-                getString(R.string.tile_clear_chat_title),
-                null,
-                getString(R.string.tile_clear_chat_subtitle),
-                null,
-                R.drawable.ic_close,
-                chatId == "",
-                chatId,
-                getString(R.string.tile_clear_chat_desc)
+                checked = false,
+                checkable = false,
+                enabledText = getString(R.string.tile_clear_chat_title),
+                disabledText = null,
+                enabledDesc = getString(R.string.tile_clear_chat_subtitle),
+                disabledDesc = null,
+                icon = R.drawable.ic_close,
+                disabled = chatId == "",
+                chatId = chatId,
+                functionDesc = getString(R.string.tile_clear_chat_desc)
             )
 
             tileDocumentation = TileFragment.newInstance(
-                false,
-                false,
-                getString(R.string.tile_documentation_title),
-                null,
-                getString(R.string.tile_documentation_subtitle),
-                null,
-                R.drawable.ic_book,
-                false,
-                chatId,
-                getString(R.string.tile_documentation_desc)
+                checked = false,
+                checkable = false,
+                enabledText = getString(R.string.tile_documentation_title),
+                disabledText = null,
+                enabledDesc = getString(R.string.tile_documentation_subtitle),
+                disabledDesc = null,
+                icon = R.drawable.ic_book,
+                disabled = false,
+                chatId = chatId,
+                functionDesc = getString(R.string.tile_documentation_desc)
             )
 
             tileAmoledMode = TileFragment.newInstance(
@@ -923,33 +923,33 @@ class SettingsActivity : FragmentActivity() {
             )
 
             tileCustomize = TileFragment.newInstance(
-                false,
-                false,
-                getString(R.string.tile_assistant_customize_title),
-                null,
-                getString(R.string.tile_assistant_customize_title),
-                null,
-                R.drawable.ic_experiment,
-                false,
-                chatId,
-                getString(R.string.tile_assistant_customize_desc),
-                "expand_customize"
+                checked = false,
+                checkable = false,
+                enabledText = getString(R.string.tile_assistant_customize_title),
+                disabledText = null,
+                enabledDesc = getString(R.string.tile_assistant_customize_title),
+                disabledDesc = null,
+                icon = R.drawable.ic_experiment,
+                disabled = false,
+                chatId = chatId,
+                functionDesc = getString(R.string.tile_assistant_customize_desc),
+                transitionName = "expand_customize"
             )
 
             tileDeleteData = TileFragment.newInstance(
-                false,
-                false,
-                getString(R.string.tile_delete_data_title),
-                null,
-                getString(R.string.tile_delete_data_subtitle),
-                null,
-                R.drawable.ic_delete,
-                false,
-                chatId,
-                getString(R.string.tile_delete_data_desc)
+                checked = false,
+                checkable = false,
+                enabledText = getString(R.string.tile_delete_data_title),
+                disabledText = null,
+                enabledDesc = getString(R.string.tile_delete_data_subtitle),
+                disabledDesc = null,
+                icon = R.drawable.ic_delete,
+                disabled = false,
+                chatId = chatId,
+                functionDesc = getString(R.string.tile_delete_data_desc)
             )
 
-            val IID = if (installationId == "00000000-0000-0000-0000-000000000000" || installationId == "") "<Not assigned>" else installationId
+            val iID = if (installationId == "00000000-0000-0000-0000-000000000000" || installationId == "") "<Not assigned>" else installationId
 
             val usageEnabled: Boolean = getSharedPreferences("consent", MODE_PRIVATE).getBoolean("usage", false)
 
@@ -963,33 +963,33 @@ class SettingsActivity : FragmentActivity() {
                 R.drawable.ic_send,
                 false,
                 chatId,
-                "This feature allows you to manage diagnostics data.\nInstallation ID: $IID\nAndroid ID: $androidId"
+                "This feature allows you to manage diagnostics data.\nInstallation ID: $iID\nAndroid ID: $androidId"
             )
 
             tileGetNewInstallationId = TileFragment.newInstance(
-                false,
-                false,
-                getString(R.string.tile_assign_iid_title),
-                null,
-                getString(R.string.tile_assign_iid_title),
-                null,
-                R.drawable.ic_privacy,
-                false,
-                chatId,
-                getString(R.string.tile_assign_iid_desc)
+                checked = false,
+                checkable = false,
+                enabledText = getString(R.string.tile_assign_iid_title),
+                disabledText = null,
+                enabledDesc = getString(R.string.tile_assign_iid_title),
+                disabledDesc = null,
+                icon = R.drawable.ic_privacy,
+                disabled = false,
+                chatId = chatId,
+                functionDesc = getString(R.string.tile_assign_iid_desc)
             )
 
             tileRevokeAuthorization = TileFragment.newInstance(
-                false,
-                false,
-                getString(R.string.tile_revoke_authorization_title),
-                null,
-                if (installationId == "00000000-0000-0000-0000-000000000000" || installationId == "") "Authorization revoked" else "Revoke authorization",
-                null,
-                R.drawable.ic_close,
-                installationId == "00000000-0000-0000-0000-000000000000" || installationId == "",
-                chatId,
-                getString(R.string.tile_revoke_authorization_desc)
+                checked = false,
+                checkable = false,
+                enabledText = getString(R.string.tile_revoke_authorization_title),
+                disabledText = null,
+                enabledDesc = if (installationId == "00000000-0000-0000-0000-000000000000" || installationId == "") "Authorization revoked" else "Revoke authorization",
+                disabledDesc = null,
+                icon = R.drawable.ic_close,
+                disabled = installationId == "00000000-0000-0000-0000-000000000000" || installationId == "",
+                chatId = chatId,
+                functionDesc = getString(R.string.tile_revoke_authorization_desc)
             )
         }
 
@@ -1002,29 +1002,29 @@ class SettingsActivity : FragmentActivity() {
             val logView = if (installationId == "00000000-0000-0000-0000-000000000000" || installationId == "") "Authorization revoked" else "Tap to view"
 
             tileCrashLog = TileFragment.newInstance(
-                false,
-                false,
-                getString(R.string.tile_crash_log_title),
-                null,
-                logView,
-                null,
-                R.drawable.ic_bug,
-                installationId == "00000000-0000-0000-0000-000000000000" || installationId == "",
-                chatId,
-                getString(R.string.tile_crash_log_desc)
+                checked = false,
+                checkable = false,
+                enabledText = getString(R.string.tile_crash_log_title),
+                disabledText = null,
+                enabledDesc = logView,
+                disabledDesc = null,
+                icon = R.drawable.ic_bug,
+                disabled = installationId == "00000000-0000-0000-0000-000000000000" || installationId == "",
+                chatId = chatId,
+                functionDesc = getString(R.string.tile_crash_log_desc)
             )
 
             tileEventLog = TileFragment.newInstance(
-                false,
-                false,
-                getString(R.string.tile_events_log_title),
-                null,
-                logView,
-                null,
-                R.drawable.ic_bug,
-                installationId == "00000000-0000-0000-0000-000000000000" || installationId == "",
-                chatId,
-                getString(R.string.tile_events_log_desc)
+                checked = false,
+                checkable = false,
+                enabledText = getString(R.string.tile_events_log_title),
+                disabledText = null,
+                enabledDesc = logView,
+                disabledDesc = null,
+                icon = R.drawable.ic_bug,
+                disabled = installationId == "00000000-0000-0000-0000-000000000000" || installationId == "",
+                chatId = chatId,
+                functionDesc = getString(R.string.tile_events_log_desc)
             )
 
             tileChatsAutoSave = TileFragment.newInstance(
@@ -1105,7 +1105,7 @@ class SettingsActivity : FragmentActivity() {
     }
 
     private var apiEndpointActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
+        if (result.resultCode == RESULT_OK) {
             val data: Intent? = result.data
             val apiEndpointId = data?.getStringExtra("apiEndpointId")
 
@@ -1134,8 +1134,8 @@ class SettingsActivity : FragmentActivity() {
             apiEndpointActivityResultLauncher.launch(Intent(this, ApiEndpointsListActivity::class.java))
         }
 
-        tileAutoSend?.setOnCheckedChangeListener { ischecked -> run {
-            if (ischecked) {
+        tileAutoSend?.setOnCheckedChangeListener { isChecked -> run {
+            if (isChecked) {
                 preferences?.setAutoSend(true)
             } else {
                 preferences?.setAutoSend(false)
@@ -1172,8 +1172,8 @@ class SettingsActivity : FragmentActivity() {
             resolutionSelectorDialogFragment.show(supportFragmentManager.beginTransaction(), "ResolutionSelectorDialog")
         }
 
-        tileTTS?.setOnCheckedChangeListener { ischecked -> run {
-            if (ischecked) {
+        tileTTS?.setOnCheckedChangeListener { isChecked -> run {
+            if (isChecked) {
                 preferences?.setTtsEngine("openai")
                 ttsEngine = "openai"
             } else {
@@ -1181,20 +1181,20 @@ class SettingsActivity : FragmentActivity() {
                 ttsEngine = "google"
             }
 
-            voice = if (!ischecked) preferences?.getVoice() ?: "" else preferences?.getOpenAIVoice() ?: ""
+            voice = if (!isChecked) preferences?.getVoice() ?: "" else preferences?.getOpenAIVoice() ?: ""
             tileVoice?.updateSubtitle(voice)
         }}
 
-        tileSTT?.setOnCheckedChangeListener { ischecked -> run {
-            if (ischecked) {
+        tileSTT?.setOnCheckedChangeListener { isChecked -> run {
+            if (isChecked) {
                 preferences?.setAudioModel("whisper")
             } else {
                 preferences?.setAudioModel("google")
             }
         }}
 
-        tileSilentMode?.setOnCheckedChangeListener { ischecked -> run {
-            if (ischecked) {
+        tileSilentMode?.setOnCheckedChangeListener { isChecked -> run {
+            if (isChecked) {
                 preferences?.setSilence(true)
                 preferences?.setNotSilence(false)
                 tileAlwaysSpeak?.setChecked(false)
@@ -1205,8 +1205,8 @@ class SettingsActivity : FragmentActivity() {
             }
         }}
 
-        tileAlwaysSpeak?.setOnCheckedChangeListener { ischecked -> run {
-            if (ischecked) {
+        tileAlwaysSpeak?.setOnCheckedChangeListener { isChecked -> run {
+            if (isChecked) {
                 preferences?.setNotSilence(true)
                 preferences?.setSilence(false)
                 tileSilentMode?.setChecked(false)
@@ -1362,7 +1362,7 @@ class SettingsActivity : FragmentActivity() {
                     .setMessage(R.string.msg_uad)
                     .setPositiveButton(R.string.yes) { _, _ ->
                         run {
-                            getSharedPreferences("consent", MODE_PRIVATE).edit().putBoolean("usage", false).apply()
+                            getSharedPreferences("consent", MODE_PRIVATE).edit { putBoolean("usage", false) }
                             tileSendDiagnosticData?.setChecked(false)
                             restartActivity()
                         }
@@ -1375,7 +1375,7 @@ class SettingsActivity : FragmentActivity() {
                     .setMessage(R.string.mgs_uad_optin)
                     .setPositiveButton(R.string.btn_agree_and_enable) { _, _ ->
                         run {
-                            getSharedPreferences("consent", MODE_PRIVATE).edit().putBoolean("usage", true).apply()
+                            getSharedPreferences("consent", MODE_PRIVATE).edit {putBoolean("usage", true)}
                             DeviceInfoProvider.assignInstallationId(this)
                             tileSendDiagnosticData?.setChecked(true)
                             restartActivity()
@@ -1422,15 +1422,15 @@ class SettingsActivity : FragmentActivity() {
             startActivity(Intent(this, LogsActivity::class.java).putExtra("type", "event").putExtra("chatId", chatId))
         }
 
-        tileShowChatErrors?.setOnCheckedChangeListener { ischecked ->
-            if (ischecked) {
+        tileShowChatErrors?.setOnCheckedChangeListener { isChecked ->
+            if (isChecked) {
                 preferences?.setShowChatErrors(true)
             } else {
                 preferences?.setShowChatErrors(false)
             }
         }
 
-        tileCustomize?.setOnTileClickListener { view ->
+        tileCustomize?.setOnTileClickListener { _ ->
             val customizeAssistantDialogFragment: CustomizeAssistantDialog = CustomizeAssistantDialog.newInstance(chatId, preferences?.getAssistantName() ?: "SpeakGPT", preferences?.getAvatarType() ?: "builtin", preferences?.getAvatarId() ?: "gpt")
             customizeAssistantDialogFragment.setCustomizeAssistantDialogListener(customizeAssistantDialogListener)
             customizeAssistantDialogFragment.show(supportFragmentManager.beginTransaction(), "CustomizeAssistantDialog")
@@ -1488,7 +1488,7 @@ class SettingsActivity : FragmentActivity() {
 
     private fun isDefaultAssistantApp(context: Context): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val roleManager = context.getSystemService(Context.ROLE_SERVICE) as RoleManager
+            val roleManager = context.getSystemService(ROLE_SERVICE) as RoleManager
             roleManager.isRoleHeld(RoleManager.ROLE_ASSISTANT)
         } else {
             // For older versions, use the Settings API to check
@@ -1532,12 +1532,7 @@ class SettingsActivity : FragmentActivity() {
     }
 
     private fun adjustPaddings() {
-        WindowInsetsUtil.adjustPaddings(this, R.id.scrollable, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS), customPaddingBottom = dpToPx(48))
-    }
-
-    private fun dpToPx(dp: Int): Int {
-        val density = resources.displayMetrics.density
-        return (dp.toFloat() * density).roundToInt()
+        WindowInsetsUtil.adjustPaddings(this, R.id.scrollable, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS), customPaddingBottom = (48 * resources.displayMetrics.density).roundToInt())
     }
 
     private fun finishActivity() {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /**************************************************************************
-* Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+* Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -91,6 +91,18 @@
                     android:text="gpt-image-1"
                     android:textSize="16sp" />
 
+                <RadioButton
+                    android:id="@+id/gpt_image1_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:button="@null"
+                    android:paddingVertical="16dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:text="gpt-image-1.5"
+                    android:textSize="16sp" />
+
                 <TextView
                     android:id="@+id/textView46"
                     android:layout_width="match_parent"
@@ -98,12 +110,11 @@
                     android:layout_marginTop="16dp"
                     android:background="@drawable/btn_tip2"
                     android:padding="16dp"
-                    android:text="GPT Image flagship model may not be available for all users. You may need to have a higher tier and verify your identity. This model is very time consuming. Image generation model may take up to 2 minutes to complete."
+                    android:text="GPT Image flagship models may not be available for all users. You may need to have a higher tier and verify your identity. This model is very time consuming. Image generation may take up to 2 minutes to complete."
                     android:textColor="@color/error"
                     android:textSize="14sp"
                     android:textStyle="bold" />
             </RadioGroup>
         </LinearLayout>
     </ScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

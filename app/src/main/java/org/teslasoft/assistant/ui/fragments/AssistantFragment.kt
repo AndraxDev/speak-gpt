@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -162,7 +162,6 @@ import java.io.InputStreamReader
 import java.net.URL
 import java.util.Base64
 import java.util.Locale
-import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.seconds
 import androidx.core.graphics.createBitmap
 import androidx.core.net.toUri
@@ -215,7 +214,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
     private var adapter: ChatAdapter? = null
     private var chatMessages: ArrayList<ChatMessage> = arrayListOf()
     private var languageIdentifier: LanguageIdentifier? = null
-    private var FORCE_SLASH_COMMANDS_ENABLED: Boolean = false
+    private var forceSlashCommandsEnabled: Boolean = false
 
     // Init states
     private var isRecording = false
@@ -314,11 +313,10 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
         // Calculate the new dimensions while keeping the aspect ratio
         val aspectRatio = originalWidth.toFloat() / originalHeight.toFloat()
-        val newHeight = maxHeight
-        val newWidth = (newHeight * aspectRatio).toInt()
+        val newWidth = (maxHeight * aspectRatio).toInt()
 
         // Create the scaled bitmap
-        return bitmap.scale(newWidth, newHeight)
+        return bitmap.scale(newWidth, maxHeight)
     }
 
     private val fileIntentLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -461,13 +459,13 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                     val parser = DefaultPromptsParser()
                     parser.init()
                     parser.addOnCompletedListener { t -> run(t) }
-                    parser.parse("explanationPrompt", text, mContext ?: return@StateChangesListener)
+                    parser.parse("explanationPrompt", text)
                 }
                 "summarize" -> {
                     val parser = DefaultPromptsParser()
                     parser.init()
                     parser.addOnCompletedListener { t -> run(t) }
-                    parser.parse("summarizationPrompt", text, mContext ?: return@StateChangesListener)
+                    parser.parse("summarizationPrompt", text)
                 }
                 "image" -> run("/imagine $text")
                 "cancel" -> this@AssistantFragment.dismiss()
@@ -543,7 +541,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
                             try {
                                 generateResponse(prefix + recognizedText + endSeparator, true)
-                            } catch (e: CancellationException) { /* ignore */ }
+                            } catch (_: CancellationException) { /* ignore */ }
                         }
                     } else {
                         restoreUIState()
@@ -753,7 +751,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                 if (!cancelState) {
                     try {
                         prepare()
-                    } catch (e: IOException) {
+                    } catch (_: IOException) {
                         btnAssistantVoiceClickable?.setImageResource(R.drawable.ic_microphone)
                         isRecording = false
                         animation?.stop()
@@ -790,7 +788,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                 if (!cancelState) {
                     try {
                         prepare()
-                    } catch (e: IOException) {
+                    } catch (_: IOException) {
                         btnAssistantVoiceClickable?.setImageResource(R.drawable.ic_microphone)
                         isRecording = false
                         animation?.stop()
@@ -834,7 +832,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
                 try {
                     processRecording()
-                } catch (e: CancellationException) { /* ignore */ }
+                } catch (_: CancellationException) { /* ignore */ }
             }
         } else {
             cancelState = false
@@ -889,7 +887,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
                         try {
                             generateResponse(prefix + transcription + endSeparator, true)
-                        } catch (e: CancellationException) { /* ignore */
+                        } catch (_: CancellationException) { /* ignore */
                         }
                     }
                 } else {
@@ -898,7 +896,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                     showKeyboard(true)
                 }
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             Toast.makeText(mContext, getString(R.string.label_record_error), Toast.LENGTH_SHORT).show()
             btnAssistantVoiceClickable?.isEnabled = true
             btnAssistantSend?.isEnabled = true
@@ -1031,7 +1029,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
             val tryPrompt: String = extras.getString("prompt", "")
             val runWithParams: String = extras.getString("runWithParams", "false")
 
-            FORCE_SLASH_COMMANDS_ENABLED = extras.getBoolean("FORCE_SLASH_COMMANDS_ENABLED", false)
+            forceSlashCommandsEnabled = extras.getBoolean("FORCE_SLASH_COMMANDS_ENABLED", false)
 
             if (tryPrompt != "") {
                 if (runWithParams == "true") {
@@ -1047,9 +1045,9 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                             actionSelectorDialog.setStateChangedListener(stateListener)
                             actionSelectorDialog.show(
                                 parentFragmentManager.beginTransaction(),
-                                "ActionSelectorDialog\$setup()"
+                                "ActionSelectorDialog@setup()"
                             )
-                        } catch (e: CancellationException) { /* ignore */ }
+                        } catch (_: CancellationException) { /* ignore */ }
                     }
                 } else {
                     run(prefix + tryPrompt + endSeparator)
@@ -1079,9 +1077,9 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                         actionSelectorDialog.setStateChangedListener(stateListener)
                         actionSelectorDialog.show(
                             parentFragmentManager.beginTransaction(),
-                            "ActionSelectorDialog\$runFromShareIntent()"
+                            "ActionSelectorDialog@runFromShareIntent()"
                         )
-                    } catch (e: CancellationException) { /* ignore */ }
+                    } catch (_: CancellationException) { /* ignore */ }
                 }
             } else {
                 runFromContextMenu()
@@ -1172,9 +1170,9 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                     actionSelectorDialog.setStateChangedListener(stateListener)
                     actionSelectorDialog.show(
                         parentFragmentManager.beginTransaction(),
-                        "ActionSelectorDialog\$runFromContextMenu()"
+                        "ActionSelectorDialog@runFromContextMenu()"
                     )
-                } catch (e: CancellationException) { /* ignore */ }
+                } catch (_: CancellationException) { /* ignore */ }
             }
         } else {
             runActivationPrompt()
@@ -1208,7 +1206,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
                     try {
                         generateResponse(prompt, false)
-                    } catch (e: CancellationException) { /* ignore */ }
+                    } catch (_: CancellationException) { /* ignore */ }
                 }
             }
         }
@@ -1220,7 +1218,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
             val decodedBytes = android.util.Base64.decode(base64Str, android.util.Base64.DEFAULT)
             // Decode byte array to Bitmap
             BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
-        } catch (e: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             // Handle the case where the Base64 string was not correctly formatted
             null
         }
@@ -1250,7 +1248,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
                 writeImageToCache(bytes, selectedImageType ?: return)
 
-                val encoded = java.util.Base64.getEncoder().encodeToString(bytes)
+                val encoded = Base64.getEncoder().encodeToString(bytes)
 
                 val file = Hash.hash(encoded)
 
@@ -1275,7 +1273,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
             val imagineCommandEnabled: Boolean = preferences!!.getImagineCommand()
 
-            if (m.lowercase().contains("/imagine") && m.length > 9 && (imagineCommandEnabled || FORCE_SLASH_COMMANDS_ENABLED)) {
+            if (m.lowercase().contains("/imagine") && m.length > 9 && (imagineCommandEnabled || forceSlashCommandsEnabled)) {
                 val x: String = m.substring(9)
 
                 if (openAIKey == null) {
@@ -1309,7 +1307,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
                     try {
                         generateResponse(m, false)
-                    } catch (e: CancellationException) { /* ignore */ }
+                    } catch (_: CancellationException) { /* ignore */ }
                 }
             }
         }
@@ -1334,7 +1332,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
             try {
                 generateImageR(str)
-            } catch (e: CancellationException) { /* ignore */ }
+            } catch (_: CancellationException) { /* ignore */ }
         }
     }
 
@@ -1561,7 +1559,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                 assistantLoading?.visibility = View.GONE
                 isProcessing = false
             } else {
-                var functionCallingEnabled: Boolean = preferences!!.getFunctionCalling()
+                val functionCallingEnabled: Boolean = preferences!!.getFunctionCalling()
 
                 if (functionCallingEnabled && openAIKey != null) {
                     val cm = mutableListOf(
@@ -1639,7 +1637,6 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                         .setMessage("Function calling feature is unavailable because it requires OpenAI endpoint. Would you like to disable this feature?")
                         .setPositiveButton("Disable") { _, _ -> run {
                             preferences?.setFunctionCalling(false)
-                            functionCallingEnabled = false
                         }}
                         .setNegativeButton("Cancel") { _, _ -> }
                         .show()
@@ -1647,7 +1644,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                     regularGPTResponse(shouldPronounce)
                 }
             }
-        } catch (e: CancellationException) {
+        } catch (_: CancellationException) {
             (mContext as Activity?)?.runOnUiThread {
                 restoreUIState()
             }
@@ -1861,7 +1858,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
                             speak(message)
                         }
-                } catch (e: NullPointerException) {
+                } catch (_: NullPointerException) {
                     autoLangDetect = false
                     ttsPostInit()
 
@@ -1919,8 +1916,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                                     .show()
                             }
                         }
-                    } catch (e: CancellationException) { /* ignore */
-                    }
+                    } catch (_: CancellationException) { /* ignore */ }
                 }
             }
         }
@@ -1955,7 +1951,6 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
             }
 
             try {
-                var imageId = ""
                 val response = client.images().generate(params)
                 val data: Optional<List<Image>> = response.data()
                 val images = data.orElse(emptyList())
@@ -1995,7 +1990,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         disableAutoScroll = false
 
         try {
-            if (preferences!!.getImageModel() == "gpt-image-1") {
+            if (preferences!!.getImageModel().contains("gpt-image-")) {
                 val client: OpenAIClient = OpenAIOkHttpClient
                     .builder()
                     .baseUrl(apiEndpointPreferences!!.getApiEndpoint(mContext ?: return, preferences!!.getApiEndpointId()).host)
@@ -2093,7 +2088,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                     }
                 }
             }
-        } catch (e: CancellationException) {
+        } catch (_: CancellationException) {
             (mContext as Activity?)?.runOnUiThread {
                 restoreUIState()
             }
@@ -2115,7 +2110,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                         putMessage(
                             getString(R.string.prompt_key_invalid),
                             true
-                        );
+                        )
                     }
 
                     e.stackTraceToString().contains("Software caused connection abort") -> {
@@ -2139,7 +2134,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
             assistantLoading?.visibility = View.GONE
             isProcessing = false
         } finally {
-            if (preferences!!.getImageModel() != "gpt-image-1") {
+            if (!preferences!!.getImageModel().contains("gpt-image-")) {
                 (mContext as Activity?)?.runOnUiThread {
                     restoreUIState()
                 }
@@ -2328,14 +2323,6 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
     @SuppressLint("ClickableViewAccessibility", "NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        dialog!!.setOnShowListener { dialogInterface: DialogInterface ->
-//            val bottomSheetDialog = dialogInterface as BottomSheetDialog
-//            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
-//            if (bottomSheet != null) {
-//                val behavior = BottomSheetBehavior.from(bottomSheet)
-//                behavior.state = BottomSheetBehavior.STATE_EXPANDED
-//            }
-//        }
 
         val bottomSheet: FrameLayout? = dialog?.findViewById(com.google.android.material.R.id.design_bottom_sheet)
         bottomSheet?.let {
@@ -2350,8 +2337,6 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         apiEndpointObject = apiEndpointPreferences?.getApiEndpoint(mContext ?: return, preferences?.getApiEndpointId()!!)
 
         mediaPlayer = MediaPlayer()
-
-        // languageIdentifier = LanguageIdentification.getClient()
 
         btnAssistantVoice = view.findViewById(R.id.btn_assistant_voice)
         btnAssistantVoiceClickable = view.findViewById(R.id.assistant_voice_clickable)
@@ -2605,7 +2590,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
             isRecording = false
             isProcessing = false
             assistantLoading?.visibility = View.GONE
-        } catch (e: Exception) { /* ignored */ }
+        } catch (_: Exception) { /* ignored */ }
 
         Handler(Looper.getMainLooper()).postDelayed({
             assistantMessage?.requestFocus()
@@ -2687,11 +2672,6 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                 findViewById<View>(com.google.android.material.R.id.coordinator)?.fitsSystemWindows = false
             }
         }
-
-    private fun dpToPx(activity: Activity, dp: Int): Int {
-        val density = activity.resources.displayMetrics.density
-        return (dp.toFloat() * density).roundToInt()
-    }
 
     fun setMargins(v: View, l: Int, t: Int, r: Int, b: Int) {
         val params = v.layoutParams

@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.view.WindowInsets
 import android.widget.ImageButton
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
@@ -34,6 +33,7 @@ import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.util.WindowInsetsUtil
 import java.util.EnumSet
+import androidx.core.graphics.drawable.toDrawable
 
 class TipsActivity : FragmentActivity() {
 
@@ -67,7 +67,7 @@ class TipsActivity : FragmentActivity() {
                 window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
             }
         } else {
-            val colorDrawable = ColorDrawable(SurfaceColors.SURFACE_0.getColor(this))
+            val colorDrawable = SurfaceColors.SURFACE_0.getColor(this).toDrawable()
             window.setBackgroundDrawable(colorDrawable)
             btnBack?.backgroundTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_1.getColor(this))
 

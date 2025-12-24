@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,6 @@ import org.teslasoft.core.api.network.RequestNetwork
 import kotlin.time.Duration.Companion.seconds
 
 class AdvancedModelSelectorDialogFragment : DialogFragment() {
-
     companion object {
         fun newInstance(name: String, chatId: String) : AdvancedModelSelectorDialogFragment {
             val advancedModelSelectorDialogFragment = AdvancedModelSelectorDialogFragment()
@@ -228,7 +227,7 @@ class AdvancedModelSelectorDialogFragment : DialogFragment() {
                 modelList?.adapter = modelListAdapter
                 modelListAdapter?.notifyDataSetChanged()
                 progressBar?.visibility = View.GONE
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 requestNetwork = RequestNetwork((mContext as Activity?) ?: return@launch)
                 requestNetwork?.setHeaders(hashMapOf("Authorization" to "Bearer " + apiEndpointObject?.apiKey))
                 requestNetwork?.startRequestNetwork("GET", apiEndpointObject?.host + "models", "A", requestListener)

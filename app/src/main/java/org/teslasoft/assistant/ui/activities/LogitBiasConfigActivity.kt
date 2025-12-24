@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,11 +79,6 @@ class LogitBiasConfigActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_logit_bias_list)
-
-        if (android.os.Build.VERSION.SDK_INT <= 34) {
-            window.statusBarColor = getColor(R.color.accent_100)
-            window.navigationBarColor = getColor(R.color.window_background)
-        }
 
         listView = findViewById(R.id.list_view)
         btnBack = findViewById(R.id.btn_back)

@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ class LogitBiasConfigItemAdapter(private val dataArray: ArrayList<HashMap<String
         var mView: View? = convertView
 
         if (mView == null) {
-            mView = inflater.inflate(R.layout.view_logit_bias_config_item, null)
+            mView = inflater.inflate(R.layout.view_logit_bias_config_item, parent, false)
         }
 
         ui = mView?.findViewById(R.id.ui)

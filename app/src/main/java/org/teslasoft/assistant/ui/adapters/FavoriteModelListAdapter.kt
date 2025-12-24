@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 
 /** ListView adapter to display list of voices */
-class FavoriteModelListAdapter(private val context: Context, private val items: ArrayList<Map<String, String>>, private var chatId: String, private var apiEndpointId: String) : BaseAdapter() {
+class FavoriteModelListAdapter(private val context: Context, private val items: ArrayList<Map<String, String>>, private var chatId: String) : BaseAdapter() {
 
     private var listener: OnItemClickListener? = null
 
@@ -61,11 +61,11 @@ class FavoriteModelListAdapter(private val context: Context, private val items: 
         }
 
         val item = getItem(position) as Map<String, String>
-        viewHolder.textView.text = item.get("modelId")
+        viewHolder.textView.text = item["modelId"]
 
         val preferences: Preferences = Preferences.getPreferences(context, chatId)
 
-        if (preferences.getModel() == item.get("modelId")) {
+        if (preferences.getModel() == item["modelId"]) {
             viewHolder.voiceBg.background = getDarkAccentDrawableV2(
                 ContextCompat.getDrawable(context, R.drawable.btn_accent_tonal_selector_v4)!!, context)
 
@@ -85,11 +85,11 @@ class FavoriteModelListAdapter(private val context: Context, private val items: 
         viewHolder.modelAction.contentDescription = context.getString(R.string.label_remove_from_favorites)
 
         viewHolder.voiceBg.setOnClickListener {
-            listener?.onItemClick(item.get("modelId")!!, item.get("endpointId")!!)
+            listener?.onItemClick(item["modelId"]!!, item["endpointId"]!!)
         }
 
         viewHolder.modelAction.setOnClickListener {
-            listener?.onActionClick(item.get("modelId")!!, item.get("endpointId")!!, position)
+            listener?.onActionClick(item["modelId"]!!, item["endpointId"]!!, position)
         }
 
         return view

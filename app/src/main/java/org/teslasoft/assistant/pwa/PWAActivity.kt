@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,9 +41,6 @@ class PWAActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.pwa_background, null)
-        window.statusBarColor = ResourcesCompat.getColor(resources, R.color.pwa_background, null)
-
         setContentView(R.layout.activity_pwa)
 
         webView = findViewById(R.id.web_view)
@@ -56,7 +53,6 @@ class PWAActivity : FragmentActivity() {
 
         webView?.settings?.javaScriptEnabled = true
         webView?.settings?.domStorageEnabled = true
-        webView?.settings?.databaseEnabled = true
         webView?.settings?.cacheMode = android.webkit.WebSettings.LOAD_CACHE_ELSE_NETWORK
         webView?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.pwa_background, null))
 

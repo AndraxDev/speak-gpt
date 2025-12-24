@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,11 +25,6 @@ import android.widget.BaseAdapter
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.aallam.ktoken.Encoding
-import com.aallam.ktoken.Tokenizer
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.teslasoft.assistant.R
 
 class LogitBiasItemAdapter(private val dataArray: ArrayList<HashMap<String, String>>, private var mContext: Context) : BaseAdapter() {
@@ -63,7 +58,7 @@ class LogitBiasItemAdapter(private val dataArray: ArrayList<HashMap<String, Stri
         var mView: View? = convertView
 
         if (mView == null) {
-            mView = inflater.inflate(R.layout.view_logit_bias_item, null)
+            mView = inflater.inflate(R.layout.view_logit_bias_item, parent, false)
         }
 
         ui = mView?.findViewById(R.id.ui)

@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.teslasoft.assistant.preferences
 import android.content.Context
 import android.content.SharedPreferences
 import org.teslasoft.assistant.util.Hash
+import androidx.core.content.edit
 
 class Preferences private constructor(private var preferences: SharedPreferences, private var gp: SharedPreferences, private var chatId: String) {
     companion object {
@@ -34,10 +35,6 @@ class Preferences private constructor(private var preferences: SharedPreferences
 
             return preferences!!
         }
-    }
-
-    fun getChatId() : String {
-        return chatId
     }
 
     fun interface PreferencesChangedListener {
@@ -77,15 +74,6 @@ class Preferences private constructor(private var preferences: SharedPreferences
      */
     private fun getGlobalString(param: String?, default: String?) : String {
         return gp.getString(param, default).toString()
-    }
-
-    /**
-     * Removes a key from the global shared preferences.
-     *
-     * @param param The key to be removed.
-     */
-    private fun removeKey(param: String) {
-        gp.edit()?.remove(param)?.apply()
     }
 
     /**
@@ -155,7 +143,7 @@ class Preferences private constructor(private var preferences: SharedPreferences
         val oldValue = getString(param, default)
 
         if (oldValue != value) {
-            preferences.edit().putString(param, value).apply()
+            preferences.edit { putString(param, value) }
 
             for (listener in listeners) {
                 listener.onPreferencesChanged(param, value)
@@ -184,7 +172,7 @@ class Preferences private constructor(private var preferences: SharedPreferences
         val oldValue = getBoolean(param, default)
 
         if (oldValue != value) {
-            preferences.edit().putBoolean(param, value).apply()
+            preferences.edit { putBoolean(param, value) }
 
             for (listener in listeners) {
                 listener.onPreferencesChanged(param, value.toString())
@@ -443,9 +431,9 @@ class Preferences private constructor(private var preferences: SharedPreferences
     fun getHideModelNames() : Boolean {
         try {
             return getGlobalString("hide_model_names", "true") == "true"
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             val hideModelNames = getGlobalBoolean("hide_model_names", false)
-            removeKey("hide_model_names")
+            gp.edit()?.remove("hide_model_names")?.apply()
             putGlobalString("hide_model_names", if (hideModelNames) "true" else "false")
             return hideModelNames
         }
@@ -459,8 +447,8 @@ class Preferences private constructor(private var preferences: SharedPreferences
     fun setHideModelNames(state: Boolean) {
         try {
             putGlobalString("hide_model_names", if (state) "true" else "false")
-        } catch (e: Exception) {
-            removeKey("hide_model_names")
+        } catch (_: Exception) {
+            gp.edit()?.remove("hide_model_names")?.apply()
             putGlobalString("hide_model_names", if (state) "true" else "false")
         }
     }
@@ -905,20 +893,6 @@ class Preferences private constructor(private var preferences: SharedPreferences
     }
 
     /**
-     * Get Premium license key
-     * */
-    fun getPremiumKey(context: Context) : String {
-        return EncryptedPreferences.getEncryptedPreference(context, "premium", "license_key")
-    }
-
-    /**
-     * Set Premium license key
-     * */
-    fun setPremiumKey(key: String, context: Context) {
-        EncryptedPreferences.setEncryptedPreference(context, "premium", "license_key", key)
-    }
-
-    /**
      * Retrieves the encrypted API key from the shared preferences.
      *
      * @param context The context to access the encrypted shared preferences.
@@ -997,7 +971,7 @@ class Preferences private constructor(private var preferences: SharedPreferences
     fun secureApiKey(context: Context) {
         if (getOldApiKey() != "") {
             setApiKey(getOldApiKey(), context)
-            preferences.edit().remove("api_key").apply()
+            preferences.edit { remove("api_key") }
         }
     }
 }

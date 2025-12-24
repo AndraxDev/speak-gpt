@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import androidx.core.content.edit
 
 class EncryptedPreferences {
     companion object {
@@ -57,7 +58,7 @@ class EncryptedPreferences {
             return try {
                 val sharedPreferences = getEncryptedSharedPreferences(context, file)
                 sharedPreferences.getString(key, "") ?: ""
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 ""
             }
         }
@@ -66,9 +67,8 @@ class EncryptedPreferences {
          * Set encrypted preference
          * */
         fun setEncryptedPreference(context: Context, file: String, key: String, value: String) {
-            with (getEncryptedSharedPreferences(context, file).edit()) {
+            getEncryptedSharedPreferences(context, file).edit {
                 putString(key, value)
-                apply()
             }
         }
     }

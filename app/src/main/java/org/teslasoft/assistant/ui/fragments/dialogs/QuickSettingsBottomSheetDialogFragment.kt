@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -130,7 +130,7 @@ class QuickSettingsBottomSheetDialogFragment : BottomSheetDialogFragment() {
                         break
                     }
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 performStaticCostParse(preferences?.getModel()!!)
             }
         }

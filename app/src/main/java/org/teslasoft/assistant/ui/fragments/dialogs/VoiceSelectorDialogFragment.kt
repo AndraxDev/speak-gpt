@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.VoiceListAdapter
 
 class VoiceSelectorDialogFragment : DialogFragment() {
-
     companion object {
         fun newInstance(name: String, chatId: String, ttsEngine: String) : VoiceSelectorDialogFragment {
             val voiceSelectorDialogFragment = VoiceSelectorDialogFragment()

@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package org.teslasoft.assistant.ui.adapters.chat
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -42,14 +41,12 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.FragmentActivity
@@ -67,8 +64,6 @@ import io.noties.markwon.ext.tables.TablePlugin
 import io.noties.markwon.ext.tasklist.TaskListPlugin
 import io.noties.markwon.html.HtmlPlugin
 import io.noties.markwon.inlineparser.MarkwonInlineParserPlugin
-import org.commonmark.node.Node
-import org.commonmark.renderer.html.HtmlRenderer
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ChatPreferences
 import org.teslasoft.assistant.preferences.Preferences
@@ -84,13 +79,9 @@ import java.util.Collections
 import androidx.core.graphics.createBitmap
 import androidx.core.net.toUri
 import androidx.core.content.edit
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.teslasoft.assistant.ui.fragments.dialogs.ReportAIContentBottomSheet
 import org.teslasoft.assistant.util.ShareUtil.Companion.shareBase64Image
 import org.teslasoft.assistant.util.ShareUtil.Companion.sharePlainText
-import java.io.FileOutputStream
-import java.io.OutputStream
-
 
 class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, private val selectorProjection: ArrayList<HashMap<String, Any>>, private val context: FragmentActivity, private val preferences: Preferences, private val isAssistant: Boolean, private var chatId: String) : RecyclerView.Adapter<ChatAdapter.ViewHolder>(), EditMessageDialogFragment.StateChangesListener {
 
@@ -598,7 +589,7 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
         private fun updateImageClickListener(url: String) {
             dalleImage.setOnClickListener {
                 if (bulkActionMode) {
-                    switchBulkActionState(adapterPosition)
+                    switchBulkActionState(bindingAdapterPosition)
                 } else {
                     val sharedPreferences: SharedPreferences = context.getSharedPreferences("tmp", Context.MODE_PRIVATE)
                     sharedPreferences.edit {
@@ -611,7 +602,7 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
             }
 
             dalleImage.setOnLongClickListener {
-                switchBulkActionState(adapterPosition)
+                switchBulkActionState(bindingAdapterPosition)
                 return@setOnLongClickListener true
             }
         }

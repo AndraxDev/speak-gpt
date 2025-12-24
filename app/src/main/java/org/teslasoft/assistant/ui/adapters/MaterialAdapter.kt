@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@
 
 package org.teslasoft.assistant.ui.adapters
 
-import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import org.teslasoft.assistant.R
+import androidx.core.graphics.drawable.toDrawable
 
 class MaterialAdapter(private val items: List<Int>) : RecyclerView.Adapter<MaterialAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -41,7 +41,7 @@ class MaterialAdapter(private val items: List<Int>) : RecyclerView.Adapter<Mater
         private val background = itemView.findViewById<LinearLayout>(R.id.carousel_item_background)
 
         fun bind(item: Int) {
-            val colorDrawable = ColorDrawable(item)
+            val colorDrawable = item.toDrawable()
             colorDrawable.alpha = 150
             background.background = colorDrawable
         }

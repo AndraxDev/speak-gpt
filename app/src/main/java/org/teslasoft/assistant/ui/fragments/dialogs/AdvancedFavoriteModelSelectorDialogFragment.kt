@@ -1,5 +1,5 @@
 /**************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,10 +36,8 @@ import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
 import org.teslasoft.assistant.preferences.dto.FavoriteModelObject
 import org.teslasoft.assistant.ui.adapters.FavoriteModelListAdapter
-import org.teslasoft.assistant.util.Hash
 
 class AdvancedFavoriteModelSelectorDialogFragment : DialogFragment() {
-
     companion object {
         fun newInstance(name: String, chatId: String) : AdvancedFavoriteModelSelectorDialogFragment {
             val advancedModelSelectorDialogFragment = AdvancedFavoriteModelSelectorDialogFragment()
@@ -152,7 +150,7 @@ class AdvancedFavoriteModelSelectorDialogFragment : DialogFragment() {
 
         updateProjection("")
 
-        modelListAdapter = FavoriteModelListAdapter(requireContext(), availableModelsProjection, requireArguments().getString("chatId").toString(), preferences?.getApiEndpointId()!!)
+        modelListAdapter = FavoriteModelListAdapter(requireContext(), availableModelsProjection, requireArguments().getString("chatId").toString())
         modelListAdapter?.setOnItemClickListener(modelClickListener)
         modelList?.adapter = modelListAdapter
         modelListAdapter?.notifyDataSetChanged()
@@ -174,10 +172,10 @@ class AdvancedFavoriteModelSelectorDialogFragment : DialogFragment() {
         if (query == "") {
             availableModelsProjection.addAll(availableModels)
         } else {
-            availableModelsProjection = availableModels.filter { item -> item.get("modelId").toString() == query || item.get("modelId").toString().contains(query) || query.contains(item.get("modelId").toString())} as ArrayList<Map<String, String>>
+            availableModelsProjection = availableModels.filter { item -> item["modelId"].toString() == query || item["modelId"].toString().contains(query) || query.contains(item["modelId"].toString())} as ArrayList<Map<String, String>>
         }
 
-        modelListAdapter = FavoriteModelListAdapter(requireContext(), availableModelsProjection, requireArguments().getString("chatId").toString(), Hash.hash(apiEndpointObject?.label!!))
+        modelListAdapter = FavoriteModelListAdapter(requireContext(), availableModelsProjection, requireArguments().getString("chatId").toString())
         modelListAdapter?.setOnItemClickListener(modelClickListener)
         modelList?.adapter = modelListAdapter
         modelListAdapter?.notifyDataSetChanged()
