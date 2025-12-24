@@ -77,6 +77,8 @@ class AISetAdapterNew(private val mContext: Context, private val dataArray: Arra
                 setIconBg.imageTintList = ColorStateList.valueOf(mContext.getColor(R.color.amoled_accent_200))
             } else {
                 setIconBg.imageTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_4.getColor(mContext))
+                btnUseGlobally.backgroundTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_5.getColor(mContext))
+                btnGetApiKey.backgroundTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_5.getColor(mContext))
             }
 
             setName.text = data["name"]

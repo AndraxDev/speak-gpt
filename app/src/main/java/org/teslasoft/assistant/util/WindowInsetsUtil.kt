@@ -21,6 +21,8 @@ import android.content.Context
 import android.os.Build
 import android.view.View
 import android.view.WindowInsets
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import java.util.EnumSet
 
 class WindowInsetsUtil {
@@ -32,29 +34,108 @@ class WindowInsetsUtil {
         }
 
         fun adjustPaddings(activity: Activity, parentView: View?, res: Int, flags: EnumSet<Flags>, customPaddingTop: Int = 0, customPaddingBottom: Int = 0) {
-            if (Build.VERSION.SDK_INT < 30) return
-            try {
-                val view = parentView?.findViewById<View>(res)
-                view?.setPadding(
-                    0,
-                    activity.window.decorView.rootWindowInsets.getInsets(WindowInsets.Type.statusBars()).top * (if (flags.contains(Flags.STATUS_BAR)) 1 else 0) + view.paddingTop * (if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else 1) + pxToDp(activity, customPaddingTop),
-                    0,
-                    activity.window.decorView.rootWindowInsets.getInsets(WindowInsets.Type.navigationBars()).bottom * (if (flags.contains(Flags.NAVIGATION_BAR)) 1 else 0) + view.paddingBottom * (if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else 1) + pxToDp(activity, customPaddingBottom)
-                )
-            } catch (_: Exception) { /* unused */ }
+            if (Build.VERSION.SDK_INT >= 30) {
+                try {
+                    val view = parentView?.findViewById<View>(res)
+                    view?.setPadding(
+                        0,
+                        activity.window.decorView.rootWindowInsets.getInsets(WindowInsets.Type.statusBars()).top * (if (flags.contains(Flags.STATUS_BAR)) 1 else 0) + view.paddingTop * (if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else 1) + pxToDp(
+                            activity,
+                            customPaddingTop
+                        ),
+                        0,
+                        activity.window.decorView.rootWindowInsets.getInsets(WindowInsets.Type.navigationBars()).bottom * (if (flags.contains(Flags.NAVIGATION_BAR)) 1 else 0) + view.paddingBottom * (if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else 1) + pxToDp(
+                            activity,
+                            customPaddingBottom
+                        )
+                    )
+                } catch (_: Exception) { /* unused */ }
+            } else {
+                try {
+                    val view = parentView?.findViewById<View>(res) ?: return
+
+                    // Cache original paddings so we don't "stack" padding if this is called multiple times
+                    val cached = view.getTag(res) as? Pair<*, *>
+                    val originalTop = cached?.first as? Int ?: view.paddingTop
+                    val originalBottom = cached?.second as? Int ?: view.paddingBottom
+                    if (cached == null) view.setTag(res, originalTop to originalBottom)
+
+                    ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
+                        val statusTop = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+                        val navBottom = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+
+                        val baseTop = if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else originalTop
+                        val baseBottom = if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else originalBottom
+
+                        val topInsetPart = if (flags.contains(Flags.STATUS_BAR)) statusTop else 0
+                        val bottomInsetPart = if (flags.contains(Flags.NAVIGATION_BAR)) navBottom else 0
+
+                        v.setPadding(
+                            0,
+                            topInsetPart + baseTop + pxToDp(activity, customPaddingTop),
+                            0,
+                            bottomInsetPart + baseBottom + pxToDp(activity, customPaddingBottom)
+                        )
+
+                        insets
+                    }
+
+                    // Trigger first insets dispatch
+                    ViewCompat.requestApplyInsets(view)
+                } catch (_: Exception) { /* unused */ }
+            }
         }
 
         fun adjustPaddings(activity: Activity, res: Int, flags: EnumSet<Flags>, customPaddingTop: Int = 0, customPaddingBottom: Int = 0) {
-            if (Build.VERSION.SDK_INT < 30) return
-            try {
-                val view = activity.findViewById<View>(res)
-                view.setPadding(
-                    0,
-                    activity.window.decorView.rootWindowInsets.getInsets(WindowInsets.Type.statusBars()).top * (if (flags.contains(Flags.STATUS_BAR)) 1 else 0) + view.paddingTop * (if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else 1) + pxToDp(activity, customPaddingTop),
-                    0,
-                    activity.window.decorView.rootWindowInsets.getInsets(WindowInsets.Type.navigationBars()).bottom * (if (flags.contains(Flags.NAVIGATION_BAR)) 1 else 0) + view.paddingBottom * (if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else 1) + pxToDp(activity, customPaddingBottom)
-                )
-            } catch (_: Exception) { /* unused */ }
+            if (Build.VERSION.SDK_INT >= 30) {
+                try {
+                    val view = activity.findViewById<View>(res)
+                    view.setPadding(
+                        0,
+                        activity.window.decorView.rootWindowInsets.getInsets(WindowInsets.Type.statusBars()).top * (if (flags.contains(Flags.STATUS_BAR)) 1 else 0) + view.paddingTop * (if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else 1) + pxToDp(
+                            activity,
+                            customPaddingTop
+                        ),
+                        0,
+                        activity.window.decorView.rootWindowInsets.getInsets(WindowInsets.Type.navigationBars()).bottom * (if (flags.contains(Flags.NAVIGATION_BAR)) 1 else 0) + view.paddingBottom * (if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else 1) + pxToDp(
+                            activity,
+                            customPaddingBottom
+                        )
+                    )
+                } catch (_: Exception) { /* unused */ }
+            } else {
+                try {
+                    val view = activity.findViewById<View>(res) ?: return
+
+                    // cache original paddings to avoid stacking
+                    val cached = view.getTag(res) as? Pair<*, *>
+                    val originalTop = cached?.first as? Int ?: view.paddingTop
+                    val originalBottom = cached?.second as? Int ?: view.paddingBottom
+                    if (cached == null) view.setTag(res, originalTop to originalBottom)
+
+                    ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
+                        val statusTop = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+                        val navBottom = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+
+                        val baseTop = if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else originalTop
+                        val baseBottom = if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else originalBottom
+
+                        val topInsetPart = if (flags.contains(Flags.STATUS_BAR)) statusTop else 0
+                        val bottomInsetPart = if (flags.contains(Flags.NAVIGATION_BAR)) navBottom else 0
+
+                        v.setPadding(
+                            0,
+                            topInsetPart + baseTop + pxToDp(activity, customPaddingTop),
+                            0,
+                            bottomInsetPart + baseBottom + pxToDp(activity, customPaddingBottom)
+                        )
+
+                        insets
+                    }
+
+                    ViewCompat.requestApplyInsets(view)
+                } catch (_: Exception) { /* unused */ }
+            }
         }
 
         private fun pxToDp(context: Context, px: Int): Int {

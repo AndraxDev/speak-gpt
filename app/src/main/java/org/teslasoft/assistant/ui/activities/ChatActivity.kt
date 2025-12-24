@@ -187,6 +187,7 @@ import java.util.Locale
 import java.util.Optional
 import kotlin.time.Duration.Companion.seconds
 import androidx.core.content.edit
+import androidx.core.view.WindowInsetsCompat
 
 class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
@@ -724,7 +725,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         if (Build.VERSION.SDK_INT >= 30) {
             enableEdgeToEdge(
                 statusBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT),
-                navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+                navigationBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT)
             )
         }
 
@@ -3224,7 +3225,11 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         if (Build.VERSION.SDK_INT >= 30) {
             layoutParams.topMargin = dpToPx(64) + window.decorView.rootWindowInsets.getInsets(WindowInsets.Type.statusBars()).top
         } else {
-            layoutParams.topMargin = dpToPx(64)
+            val view = findViewById<View>(android.R.id.content) ?: return
+            ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->
+                layoutParams.topMargin = dpToPx(64) + insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+                insets
+            }
         }
 
         messages.layoutParams = layoutParams

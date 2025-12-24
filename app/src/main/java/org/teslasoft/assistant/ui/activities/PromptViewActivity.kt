@@ -41,6 +41,9 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
@@ -336,9 +339,11 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
         if (Build.VERSION.SDK_INT >= 30) {
             enableEdgeToEdge(
                 statusBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT),
-                navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+                navigationBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT)
             )
         }
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         window.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
 
@@ -414,12 +419,7 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
         }
     }
 
-    @Suppress("DEPRECATION")
     private fun allowLaunch() {
-        if (Build.VERSION.SDK_INT < 30) {
-            window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
-        }
-
         initUI()
 
         Thread {
@@ -571,16 +571,40 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     private fun adjustPaddings() {
-        if (Build.VERSION.SDK_INT < 30) return
-        try {
-            val actionBar = findViewById<TextView>(R.id.activity_view_title)
-            actionBar?.setPadding(
-                actionBar.paddingLeft,
-                window.decorView.rootWindowInsets.getInsets(WindowInsets.Type.statusBars()).top + actionBar.paddingTop,
-                actionBar.paddingRight,
-                actionBar.paddingBottom
-            )
-        } catch (_: Exception) { /* unused */ }
+        if (Build.VERSION.SDK_INT >= 30) {
+            try {
+                val actionBar = findViewById<TextView>(R.id.activity_view_title)
+                actionBar?.setPadding(
+                    actionBar.paddingLeft,
+                    window.decorView.rootWindowInsets.getInsets(WindowInsets.Type.statusBars()).top + actionBar.paddingTop,
+                    actionBar.paddingRight,
+                    actionBar.paddingBottom
+                )
+            } catch (_: Exception) { /* unused */ }
+        } else {
+            try {
+                val view = findViewById<TextView>(R.id.activity_view_title)
+                val cached = view.getTag(R.id.activity_view_title) as? Pair<*, *>
+                val originalTop = cached?.first as? Int ?: view.paddingTop
+                val originalBottom = cached?.second as? Int ?: view.paddingBottom
+                if (cached == null) view.setTag(R.id.activity_view_title, originalTop to originalBottom)
+
+                ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
+                    val statusTop = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+
+                    v.setPadding(
+                        view.paddingLeft,
+                        statusTop + ((originalTop + view.paddingTop) / resources.displayMetrics.density).toInt(),
+                        view.paddingRight,
+                        view.paddingBottom,
+                    )
+
+                    insets
+                }
+
+                ViewCompat.requestApplyInsets(view)
+            } catch (_: Exception) { /* unused */ }
+        }
     }
 
     private fun finishActivity() {

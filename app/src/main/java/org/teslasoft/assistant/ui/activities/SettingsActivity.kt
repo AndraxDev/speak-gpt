@@ -74,6 +74,7 @@ import java.util.Locale
 import kotlin.math.roundToInt
 import androidx.core.net.toUri
 import androidx.core.content.edit
+import androidx.core.view.WindowCompat
 
 class SettingsActivity : FragmentActivity() {
 
@@ -275,9 +276,11 @@ class SettingsActivity : FragmentActivity() {
         if (Build.VERSION.SDK_INT >= 30) {
             enableEdgeToEdge(
                 statusBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT),
-                navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+                navigationBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT)
             )
         }
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         val transition = TransitionInflater.from(this).inflateTransition(android.R.transition.move).apply {
             interpolator = LinearOutSlowInInterpolator()
@@ -1470,18 +1473,8 @@ class SettingsActivity : FragmentActivity() {
     @Suppress("DEPRECATION")
     private fun reloadAmoled() {
         if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack() == true) {
-            if (Build.VERSION.SDK_INT < 30) {
-                window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
-                window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
-            }
-
             btnBack?.setBackgroundResource(R.drawable.btn_accent_icon_large_amoled)
         } else {
-            if (Build.VERSION.SDK_INT < 30) {
-                window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
-                window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
-            }
-
             btnBack?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_icon_large, theme)!!)
         }
     }
