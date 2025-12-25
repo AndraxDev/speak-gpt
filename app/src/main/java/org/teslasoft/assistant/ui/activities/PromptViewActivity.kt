@@ -231,7 +231,7 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
             else -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.grey, theme))
         }
 
-        if (Build.VERSION.SDK_INT < 30) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             window.statusBarColor = bgColor
             window.navigationBarColor = bgColor
         }
@@ -575,14 +575,14 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
     }
 
     private fun adjustPaddings() {
-        if (Build.VERSION.SDK_INT >= 30) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             try {
-                val actionBar = findViewById<TextView>(R.id.activity_view_title)
-                actionBar?.setPadding(
-                    actionBar.paddingLeft,
-                    window.decorView.rootWindowInsets.getInsets(WindowInsets.Type.statusBars()).top + actionBar.paddingTop,
-                    actionBar.paddingRight,
-                    actionBar.paddingBottom
+                val view = findViewById<View>(R.id.hideable)
+                view?.setPadding(
+                    view.paddingLeft,
+                    view.paddingTop + window.decorView.rootWindowInsets.getInsets(WindowInsets.Type.statusBars()).top,
+                    view.paddingRight,
+                    view.paddingBottom + window.decorView.rootWindowInsets.getInsets(WindowInsets.Type.navigationBars()).bottom
                 )
             } catch (_: Exception) { /* unused */ }
         } else {

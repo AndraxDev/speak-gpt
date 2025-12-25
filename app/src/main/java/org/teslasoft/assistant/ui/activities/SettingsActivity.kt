@@ -1472,7 +1472,7 @@ class SettingsActivity : FragmentActivity() {
 
     @Suppress("DEPRECATION")
     private fun reloadAmoled() {
-        if (Build.VERSION.SDK_INT < 30) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             window.statusBarColor = 0x00000000
             window.navigationBarColor = 0x00000000
         }

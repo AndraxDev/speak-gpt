@@ -33,8 +33,8 @@ class WindowInsetsUtil {
             IGNORE_PADDINGS
         }
 
-        fun adjustPaddings(activity: Activity, parentView: View?, res: Int, flags: EnumSet<Flags>, customPaddingTop: Int = 0, customPaddingBottom: Int = 0) {
-            if (Build.VERSION.SDK_INT >= 30) {
+        fun adjustPaddings(activity: Activity, parentView: View?, res: Int, flags: EnumSet<Flags>, customPaddingTop: Int = 0, customPaddingBottom: Int = 0, forceFromAndroidR: Boolean = false) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S || (forceFromAndroidR && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)) {
                 try {
                     val view = parentView?.findViewById<View>(res)
                     view?.setPadding(
@@ -86,8 +86,8 @@ class WindowInsetsUtil {
             }
         }
 
-        fun adjustPaddings(activity: Activity, res: Int, flags: EnumSet<Flags>, customPaddingTop: Int = 0, customPaddingBottom: Int = 0) {
-            if (Build.VERSION.SDK_INT >= 30) {
+        fun adjustPaddings(activity: Activity, res: Int, flags: EnumSet<Flags>, customPaddingTop: Int = 0, customPaddingBottom: Int = 0, forceFromAndroidR: Boolean = false) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S || (forceFromAndroidR && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)) {
                 try {
                     val view = activity.findViewById<View>(res)
                     view.setPadding(

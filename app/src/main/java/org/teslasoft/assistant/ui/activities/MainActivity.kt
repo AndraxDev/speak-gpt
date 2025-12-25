@@ -573,7 +573,7 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     }
 
     private fun adjustPaddings() {
-        WindowInsetsUtil.adjustPaddings(this, R.id.navigation_bar, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
+        WindowInsetsUtil.adjustPaddings(this, R.id.navigation_bar, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS), forceFromAndroidR = true)
         WindowInsetsUtil.adjustPaddings(this, R.id.debug_btn_keeper, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
         WindowInsetsUtil.adjustPaddings(this, R.id.d, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
     }

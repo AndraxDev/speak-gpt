@@ -548,7 +548,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         ThemeManager.getThemeManager().applyTheme(this, isDarkThemeEnabled() && GlobalPreferences.getPreferences(this).getAmoledPitchBlack())
         window.statusBarColor = 0x00000000
         if (isDarkThemeEnabled() && GlobalPreferences.getPreferences(this).getAmoledPitchBlack()) {
-            if (Build.VERSION.SDK_INT < 30) {
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S) {
                 window.navigationBarColor = getColor(R.color.amoled_accent_100)
             }
             progress?.setBackgroundResource(R.drawable.assistant_clear_amoled)
@@ -604,7 +604,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                 )!!, this
             )
         } else {
-            if (Build.VERSION.SDK_INT < 30) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
                 window.navigationBarColor = getColor(R.color.accent_100)
             }
             progress?.setBackgroundResource(R.drawable.assistant_clear_v2)
@@ -800,7 +800,9 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                 initSettings()
 
                 if (savedInstanceState != null) {
-                    adjustPaddings()
+                    if (Build.VERSION.SDK_INT != Build.VERSION_CODES.R) {
+                        adjustPaddings()
+                    }
                     onRestoredState(savedInstanceState)
                 }
             }
@@ -3233,7 +3235,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         val messages = findViewById<RecyclerView>(R.id.messages)
         val layoutParams = messages.layoutParams as ViewGroup.MarginLayoutParams
 
-        if (Build.VERSION.SDK_INT >= 30) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             layoutParams.topMargin = dpToPx(64) + window.decorView.rootWindowInsets.getInsets(WindowInsets.Type.statusBars()).top
         } else {
             val view = findViewById<View>(android.R.id.content) ?: return
