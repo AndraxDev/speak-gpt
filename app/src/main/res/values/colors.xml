@@ -39,10 +39,10 @@
     <color name="amoled_window_background">#000000</color>
 
     <color name="accent_50">#FFF4FE</color>
-    <color name="accent_100">#EFEBFF</color>
+    <color name="accent_100">#dfdded</color>
     <color name="accent_100x2">#F4ECFF</color>
     <color name="accent_200">#F3E6FF</color>
-    <color name="accent_250">#E8DEFF</color>
+    <color name="accent_250">#cac1de</color>
     <color name="accent_250_static">#E8DEFF</color>
     <color name="accent_300">#EAD9FF</color>
     <color name="accent_400">#DAD0FF</color>

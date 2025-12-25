@@ -1472,6 +1472,10 @@ class SettingsActivity : FragmentActivity() {
 
     @Suppress("DEPRECATION")
     private fun reloadAmoled() {
+        if (Build.VERSION.SDK_INT < 30) {
+            window.statusBarColor = 0x00000000
+            window.navigationBarColor = 0x00000000
+        }
         if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack() == true) {
             btnBack?.setBackgroundResource(R.drawable.btn_accent_icon_large_amoled)
         } else {
@@ -1515,7 +1519,11 @@ class SettingsActivity : FragmentActivity() {
         return if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack() == true) {
             ResourcesCompat.getColor(resources, R.color.accent_50, theme)
         } else {
-            SurfaceColors.SURFACE_5.getColor(this)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                SurfaceColors.SURFACE_5.getColor(this)
+            } else {
+                getColor(R.color.accent_100)
+            }
         }
     }
 

@@ -32,6 +32,7 @@ import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.RectF
 import android.net.Uri
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.text.SpannableStringBuilder
@@ -270,7 +271,7 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
                 }
 
                 Handler(Looper.getMainLooper()).postDelayed({
-                    (debugContext as FragmentActivity).runOnUiThread {
+                    debugContext.runOnUiThread {
                         applyMarkdown(chatMessage)
                     }
                 }, 100)
@@ -627,7 +628,11 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
         return if (isDarkThemeEnabled() && preferences.getAmoledPitchBlack()) {
             ResourcesCompat.getColor(context.resources, R.color.amoled_accent_50, null)
         } else {
-            SurfaceColors.SURFACE_2.getColor(context)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                SurfaceColors.SURFACE_2.getColor(context)
+            } else {
+                context.getColor(R.color.accent_100)
+            }
         }
     }
 
@@ -643,7 +648,11 @@ class ChatAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, privat
         return if (isDarkThemeEnabled() && preferences.getAmoledPitchBlack()) {
             ResourcesCompat.getColor(context.resources, R.color.amoled_accent_100, null)
         } else {
-            SurfaceColors.SURFACE_4.getColor(context)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                SurfaceColors.SURFACE_4.getColor(context)
+            } else {
+                context.getColor(R.color.accent_250)
+            }
         }
     }
 

@@ -245,7 +245,6 @@
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </eightbitlab.com.blurview.BlurView>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -290,6 +289,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/accent_100"
+        app:itemActiveIndicatorStyle="@style/BottomNavigationView.ActiveIndicator"
+        app:itemIconTint="@drawable/bottom_navigation_tint"
+        app:itemTextColor="@color/accent_900"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

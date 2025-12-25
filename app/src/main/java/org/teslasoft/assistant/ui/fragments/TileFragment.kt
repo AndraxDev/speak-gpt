@@ -19,6 +19,7 @@ package org.teslasoft.assistant.ui.fragments
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -373,7 +374,11 @@ class TileFragment : Fragment() {
         return if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack() == true){
             requireActivity().getColor(R.color.amoled_accent_50)
         } else {
-            SurfaceColors.SURFACE_5.getColor(requireActivity())
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                SurfaceColors.SURFACE_5.getColor(requireActivity())
+            } else {
+                requireActivity().getColor(R.color.accent_100)
+            }
         }
     }
 

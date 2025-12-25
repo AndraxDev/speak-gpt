@@ -73,6 +73,7 @@ import org.teslasoft.core.auth.SystemInfo
 import org.teslasoft.core.auth.internal.ApplicationSignature
 import java.util.EnumSet
 import androidx.core.graphics.drawable.toDrawable
+import androidx.core.view.WindowCompat
 import eightbitlab.com.blurview.BlurView
 
 class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener {

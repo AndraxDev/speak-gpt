@@ -149,6 +149,7 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
         }
     }
 
+    @Suppress("DEPRECATION")
     private fun updateUiFromCat(cat: String?) {
         if (uiIsUpdated) return
         textCat?.text = when (cat) {
@@ -228,6 +229,11 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
             "entertainment" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.cat_entertainment, theme))
             "sport" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.cat_sport, theme))
             else -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.grey, theme))
+        }
+
+        if (Build.VERSION.SDK_INT < 30) {
+            window.statusBarColor = bgColor
+            window.navigationBarColor = bgColor
         }
 
         val tintDrawable1 = GradientDrawable()
@@ -329,8 +335,6 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
 
     override fun onResume() {
         super.onResume()
-
-        // Reset preferences singleton
         Preferences.getPreferences(this, "")
     }
 
@@ -583,27 +587,31 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
             } catch (_: Exception) { /* unused */ }
         } else {
             try {
-                val view = findViewById<TextView>(R.id.activity_view_title)
-                val cached = view.getTag(R.id.activity_view_title) as? Pair<*, *>
+                val layout = R.id.hideable
+                val view = findViewById<View>(layout)
+                val cached = view.getTag(layout) as? Pair<*, *>
                 val originalTop = cached?.first as? Int ?: view.paddingTop
                 val originalBottom = cached?.second as? Int ?: view.paddingBottom
-                if (cached == null) view.setTag(R.id.activity_view_title, originalTop to originalBottom)
+                if (cached == null) view.setTag(layout, originalTop to originalBottom)
 
                 ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
                     val statusTop = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+                    val navBottom = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+                    val padTop = (statusTop / resources.displayMetrics.density).toInt()
+                    val padBottom = (navBottom / resources.displayMetrics.density).toInt()
 
                     v.setPadding(
                         view.paddingLeft,
-                        statusTop + ((originalTop + view.paddingTop) / resources.displayMetrics.density).toInt(),
+                        view.paddingTop + padTop,
                         view.paddingRight,
-                        view.paddingBottom,
+                        view.paddingBottom + padBottom,
                     )
 
                     insets
                 }
 
                 ViewCompat.requestApplyInsets(view)
-            } catch (_: Exception) { /* unused */ }
+            } catch (_: Exception) { /* ign, debug entry point */ }
         }
     }
 

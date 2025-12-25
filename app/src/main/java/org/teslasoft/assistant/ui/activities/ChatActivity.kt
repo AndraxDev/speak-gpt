@@ -546,10 +546,10 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
     @Suppress("deprecation")
     private fun reloadAmoled() {
         ThemeManager.getThemeManager().applyTheme(this, isDarkThemeEnabled() && GlobalPreferences.getPreferences(this).getAmoledPitchBlack())
+        window.statusBarColor = 0x00000000
         if (isDarkThemeEnabled() && GlobalPreferences.getPreferences(this).getAmoledPitchBlack()) {
             if (Build.VERSION.SDK_INT < 30) {
-                window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme)
-                window.navigationBarColor = ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme)
+                window.navigationBarColor = getColor(R.color.amoled_accent_100)
             }
             progress?.setBackgroundResource(R.drawable.assistant_clear_amoled)
             keyboardFrame?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme))
@@ -605,13 +605,20 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
             )
         } else {
             if (Build.VERSION.SDK_INT < 30) {
-                window.statusBarColor = SurfaceColors.SURFACE_4.getColor(this)
-                window.navigationBarColor = SurfaceColors.SURFACE_2.getColor(this)
+                window.navigationBarColor = getColor(R.color.accent_100)
             }
             progress?.setBackgroundResource(R.drawable.assistant_clear_v2)
-            keyboardFrame?.setBackgroundColor(SurfaceColors.SURFACE_2.getColor(this))
-            actionBar?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
-            activityTitle?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                keyboardFrame?.setBackgroundColor(SurfaceColors.SURFACE_2.getColor(this))
+                actionBar?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
+                activityTitle?.setBackgroundColor(SurfaceColors.SURFACE_4.getColor(this))
+            } else {
+                keyboardFrame?.setBackgroundColor(getColor(R.color.accent_100))
+                actionBar?.setBackgroundColor(getColor(R.color.accent_250))
+                activityTitle?.setBackgroundColor(getColor(R.color.accent_250))
+            }
+
             messageInput?.setHintTextColor(ResourcesCompat.getColor(resources, R.color.accent_900, theme))
             btnBack?.background = getDarkAccentDrawable(
                 AppCompatResources.getDrawable(
@@ -1147,7 +1154,11 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
     }
 
     private fun getSurfaceColor(context: Context) : Int {
-        return SurfaceColors.SURFACE_4.getColor(context)
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            SurfaceColors.SURFACE_4.getColor(context)
+        } else {
+            getColor(R.color.accent_250)
+        }
     }
 
     private fun getAmoledSurfaceColor(context: Context) : Int {
