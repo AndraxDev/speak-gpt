@@ -6,7 +6,7 @@
     <string name="teslasoft_services_auth_core_sync">App sync</string>
     <string name="teslasoft_services_auth_core_required">To use your account with multiple apps you need Teslasoft Core.</string>
     <string name="teslasoft_services_auth_core_permission">To use this feature please allow this app to use Teslasoft Core authentication API.</string>
-    <string name="teslasoft_services_auth_core_permission_denied">You can not use this feature because this app do not have permission.</string>
+    <string name="teslasoft_services_auth_core_permission_denied">You cannot use this feature because this app do not have permission.</string>
     <string name="teslasoft_services_auth_permission_allow">Allow</string>
     <string name="teslasoft_services_auth_permission_deny">No, thanks</string>
     <string name="teslasoft_services_auth_dialog_close">Close</string>

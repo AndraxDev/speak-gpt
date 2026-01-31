@@ -1,6 +1,5 @@
 plugins {
     id 'com.android.library'
-    id 'org.jetbrains.kotlin.android'
     id 'kotlinx-serialization'
 }
 
@@ -10,22 +9,21 @@ android {
 
     defaultConfig {
         minSdk 28
-        targetSdk 36
     }
 
     buildTypes {
         release {
-            debuggable false
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             multiDexEnabled true
+            debuggable false
         }
 
         debug {
-            debuggable false
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             multiDexEnabled true
+            debuggable false
         }
     }
 
@@ -33,12 +31,15 @@ android {
         sourceCompatibility JavaVersion.VERSION_21
         targetCompatibility JavaVersion.VERSION_21
     }
+    lint {
+        targetSdk 36
+    }
 }
 
 dependencies {
     implementation 'androidx.core:core-ktx:1.17.0'
     implementation 'androidx.appcompat:appcompat:1.7.1'
-    implementation 'com.google.android.material:material:1.14.0-alpha08'
+    implementation 'com.google.android.material:material:1.14.0-alpha09'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'com.squareup.okhttp3:okhttp:5.3.2'
     implementation 'com.github.bumptech.glide:glide:5.0.5'

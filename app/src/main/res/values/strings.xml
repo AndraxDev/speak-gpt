@@ -299,8 +299,8 @@
     <string name="title_terms_of_service">Terms of Service</string>
     <string name="title_setup_api_endpoint">Setup API Endpoint</string>
     <string name="app_version">App version:</string>
-    <string name="default_api_endpoint_error">Default API endpoint label can not be edited</string>
-    <string name="default_api_endpoint_error_delete">Default API endpoint can not be deleted</string>
+    <string name="default_api_endpoint_error">Default API endpoint label cannot be edited</string>
+    <string name="default_api_endpoint_error_delete">Default API endpoint cannot be deleted</string>
     <string name="api_endpoint_error_zero">At least 1 API endpoint must be set</string>
     <string name="message_saved">Saved</string>
     <string name="message_save_failed">Save failed</string>
@@ -383,12 +383,12 @@
 
     <string name="tile_amoled_mode_desc">This feature allows you to enable AMOLED mode for supported displays. It can significantly save battery. AMOLED mode is only available in dark theme.</string>
     <string name="tile_las_title">Lock assistant window</string>
-    <string name="tile_las_desc">This feature allows you to lock assistant window. When assistant window is locked, it can not be closed by pressing back button or swiping window down. But you can use \'exit\' button. This feature can prevent accidental closing of assistant window and losing unsaved conversation.</string>
+    <string name="tile_las_desc">This feature allows you to lock assistant window. When assistant window is locked, it cannot be closed by pressing back button or swiping window down. But you can use \'exit\' button. This feature can prevent accidental closing of assistant window and losing unsaved conversation.</string>
     <string name="tile_assistant_customize_title">Customize Assistant</string>
     <string name="tile_assistant_customize_desc">This feature allows you change assistant\'s name and avatar for individual chat or globally.</string>
     <string name="tile_delete_data_title">Delete data</string>
     <string name="tile_delete_data_subtitle">Delete diagnostics data</string>
-    <string name="tile_delete_data_desc">This feature allows you to delete all diagnostics data collected by SpeakGPT. This action can not be undone.</string>
+    <string name="tile_delete_data_desc">This feature allows you to delete all diagnostics data collected by SpeakGPT. This action cannot be undone.</string>
     <string name="tile_uad_title">Usage and diagnostics</string>
     <string name="tile_assign_iid_title">Get new installation ID</string>
     <string name="tile_assign_iid_desc">This feature allows you to get new installation ID.</string>
@@ -408,7 +408,7 @@
     <string name="off">Off</string>
     <string name="tile_about_app_subtitle">About SpeakGPT</string>
     <string name="label_clear_chat">Clear chat</string>
-    <string name="msg_clear_chat">Are you sure? This action can not be undone.</string>
+    <string name="msg_clear_chat">Are you sure? This action cannot be undone.</string>
     <string name="submsg_chat_cleared">Chat cleared</string>
     <string name="submsg_data_deletion">Data deleted</string>
     <string name="label_delete_data">Delete data</string>
@@ -437,7 +437,7 @@
     <string name="label_record_error">Failed to record audio</string>
 
 
-    <string name="prompt_rejected">Your prompt contains inappropriate content and can not be processed. We strive to make AI safe and relevant for everyone.</string>
+    <string name="prompt_rejected">Your prompt contains inappropriate content and  be processed. We strive to make AI safe and relevant for everyone.</string>
     <string name="prompt_offline">You are currently offline. Please check your connection and try again.</string>
     <string name="prompt_key_invalid"><![CDATA[Your API key is incorrect. Change it in Settings > Change OpenAI key. If you think this is an error please check if your API key has not been rotated. If you accidentally published your key it might be automatically revoked.]]></string>
     <string name="prompt_error_unknown">An error occurred while generating response. It may be due to a weak connection or high demand. Try again later.</string>
@@ -455,8 +455,8 @@
     <string name="msg_use_microphone">SpeakGPT allows you to interact with ChatGPT via voice activation. To enable voice activation please allow this app to use your device microphone. Allow microphone access?</string>
     <string name="btn_allow">Allow</string>
     <string name="btn_no_thanks">No thanks</string>
-    <string name="msg_camera_denied">You can not use this feature because app do not have camera access.</string>
-    <string name="msg_microphone_denied">You can not use this feature because app do not have microphone access.</string>
+    <string name="msg_camera_denied">You cannot use this feature because app do not have camera access.</string>
+    <string name="msg_microphone_denied">You cannot use this feature because app do not have microphone access.</string>
     <string name="label_error">Error</string>
     <string name="msg_error_importing_chat">An error is occurred while analyzing file. The file might be corrupted or invalid.</string>
     <string name="label_error_details">Error details</string>
@@ -470,7 +470,7 @@
 
 
     <string name="label_confirm_deletion">Confirm deletion</string>
-    <string name="msg_confirm_deletion_chat">This action can not be undone.</string>
+    <string name="msg_confirm_deletion_chat">This action cannot be undone.</string>
     <string name="msg_api_compatibility_change">API endpoint has changed to support this model.</string>
     <string name="label_favorite_ai_models">Favorite AI models</string>
     <string name="label_added_to_favorites">Added to favorites</string>
