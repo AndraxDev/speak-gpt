@@ -148,8 +148,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.io.files.Path
-import kotlinx.io.files.SystemFileSystem
+// import kotlinx.io.files.Path
+// import kotlinx.io.files.SystemFileSystem
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.add
 import kotlinx.serialization.json.jsonPrimitive
@@ -188,6 +188,9 @@ import java.util.Optional
 import kotlin.time.Duration.Companion.seconds
 import androidx.core.content.edit
 import androidx.core.view.WindowInsetsCompat
+import kotlinx.coroutines.flow.flowOn
+import okio.FileSystem
+import okio.Path.Companion.toPath
 
 class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
@@ -1534,8 +1537,8 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         try {
             val transcriptionRequest = TranscriptionRequest(
                 audio = FileSource(
-                    path = Path("${externalCacheDir?.absolutePath}/tmp.m4a"),
-                    fileSystem = SystemFileSystem
+                    path = "${externalCacheDir?.absolutePath}/tmp.m4a".toPath(),
+                    fileSystem = FileSystem.SYSTEM
                 ),
                 model = ModelId("whisper-1"),
             )
@@ -2036,7 +2039,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
                 scroll(true)
 
-                completions.collect { v ->
+                completions.flowOn(Dispatchers.IO).collect { v ->
                     run {
                         if (!currentCoroutineContext().isActive) throw CancellationException()
                         else if (v.choices[0].delta != null && v.choices[0].delta?.content != null && v.choices[0].delta?.content.toString() != "null") {
@@ -2101,7 +2104,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
                 val completions: Flow<TextCompletion> = ai!!.completions(completionRequest)
 
-                completions.collect { v ->
+                completions.flowOn(Dispatchers.IO).collect { v ->
                     run {
                         if (!currentCoroutineContext().isActive) throw CancellationException()
                         else if (v.choices[0] != null && v.choices[0].text != null && v.choices[0].text.toString() != "null") {
@@ -2377,7 +2380,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
         scroll(true)
 
-        completions.collect { v ->
+        completions.flowOn(Dispatchers.IO).collect { v ->
             run {
                 if (!currentCoroutineContext().isActive) throw CancellationException()
                 else if (v.choices[0].delta != null && v.choices[0].delta?.content != null && v.choices[0].delta?.content.toString() != "null") {

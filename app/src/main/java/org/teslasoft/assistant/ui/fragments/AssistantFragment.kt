@@ -125,8 +125,8 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.io.files.Path
-import kotlinx.io.files.SystemFileSystem
+// import kotlinx.io.files.Path
+// import kotlinx.io.files.SystemFileSystem
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.add
 import kotlinx.serialization.json.jsonPrimitive
@@ -170,6 +170,9 @@ import com.openai.client.okhttp.OpenAIOkHttpClient
 import com.openai.models.images.Image
 import com.openai.models.images.ImageGenerateParams
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.flowOn
+import okio.FileSystem
+import okio.Path.Companion.toPath
 import java.util.Optional
 
 class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListener {
@@ -847,8 +850,10 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         try {
             val transcriptionRequest = TranscriptionRequest(
                 audio = FileSource(
-                    path = Path("${mContext?.externalCacheDir?.absolutePath}/tmp.m4a"),
-                    fileSystem = SystemFileSystem
+                    // path = Path("${mContext?.externalCacheDir?.absolutePath}/tmp.m4a"),
+                    // fileSystem = SystemFileSystem
+                    path = "${mContext?.externalCacheDir?.absolutePath}/tmp.m4a".toPath(),
+                    fileSystem = FileSystem.SYSTEM
                 ),
                 model = ModelId("whisper-1"),
             )
@@ -1449,7 +1454,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
                 scroll(true)
 
-                completions.collect { v ->
+                completions.flowOn(Dispatchers.IO).collect { v ->
                     run {
                         if (stopper) {
                             stopper = false
@@ -1519,7 +1524,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
                 val completions: Flow<TextCompletion> = ai!!.completions(completionRequest)
 
-                completions.collect { v ->
+                completions.flowOn(Dispatchers.IO).collect { v ->
                     run {
                         if (stopper) {
                             stopper = false
@@ -1792,7 +1797,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
         scroll(true)
 
-        completions.collect { v ->
+        completions.flowOn(Dispatchers.IO).collect { v ->
             run {
                 if (stopper) {
                     stopper = false

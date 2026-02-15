@@ -33,6 +33,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import com.aallam.ktoken.Encoding
 import com.aallam.ktoken.Tokenizer
 import com.aallam.openai.api.chat.ChatCompletionChunk
@@ -56,6 +57,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.teslasoft.assistant.R
@@ -193,7 +196,7 @@ class PlaygroundFragment : Fragment() {
             btnStop?.visibility = View.VISIBLE
             btnRun?.visibility = View.GONE
 
-            CoroutineScope(Dispatchers.Main).launch {
+            lifecycleScope.launch {
                 runAIRequest()
 
                 btnStop?.setOnClickListener {
