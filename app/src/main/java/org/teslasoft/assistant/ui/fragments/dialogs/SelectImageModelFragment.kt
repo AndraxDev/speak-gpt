@@ -52,6 +52,7 @@ class SelectImageModelFragment : DialogFragment() {
     private var dalle2: RadioButton? = null
     private var dalle3: RadioButton? = null
     private var gptImage: RadioButton? = null
+    private var gptImageMini: RadioButton? = null
     private var gptImage15: RadioButton? = null
 
     private var imageModel = ""
@@ -64,6 +65,7 @@ class SelectImageModelFragment : DialogFragment() {
         dalle2 = view.findViewById(R.id.dalle2)
         dalle3 = view.findViewById(R.id.dalle3)
         gptImage = view.findViewById(R.id.gpt_image)
+        gptImageMini = view.findViewById(R.id.gpt_image_mini)
         gptImage15 = view.findViewById(R.id.gpt_image1_5)
 
         imageModel = requireArguments().getString("imageModel").toString()
@@ -71,6 +73,7 @@ class SelectImageModelFragment : DialogFragment() {
         dalle2?.isChecked = imageModel == "dall-e-2"
         dalle3?.isChecked = imageModel == "dall-e-3"
         gptImage?.isChecked = imageModel == "gpt-image-1"
+        gptImageMini?.isChecked = imageModel == "gpt-image-1-mini"
         gptImage15?.isChecked = imageModel == "gpt-image-1.5"
 
         when (imageModel) {
@@ -86,6 +89,10 @@ class SelectImageModelFragment : DialogFragment() {
                 setSelection(gptImage, null)
             }
 
+            "gpt-image-1-mini" -> {
+                setSelection(gptImageMini, null)
+            }
+
             "gpt-image-1.5" -> {
                 setSelection(gptImage15, null)
             }
@@ -94,6 +101,7 @@ class SelectImageModelFragment : DialogFragment() {
         bindOnClickListener(dalle2, "dall-e-2")
         bindOnClickListener(dalle3, "dall-e-3")
         bindOnClickListener(gptImage, "gpt-image-1")
+        bindOnClickListener(gptImageMini, "gpt-image-1-mini")
         bindOnClickListener(gptImage15, "gpt-image-1.5")
 
         builder!!.setView(view)
@@ -131,6 +139,7 @@ class SelectImageModelFragment : DialogFragment() {
         clearSingleSelection(dalle2, isTop = true)
         clearSingleSelection(dalle3)
         clearSingleSelection(gptImage)
+        clearSingleSelection(gptImageMini)
         clearSingleSelection(gptImage15, isBottom = true)
     }
 

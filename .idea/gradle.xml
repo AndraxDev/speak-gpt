@@ -8,9 +8,9 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/teslasoft-id" />
+            <option value="/mnt/data/Github/speak-gpt" />
+            <option value="/mnt/data/Github/speak-gpt/app" />
+            <option value="/mnt/data/Github/speak-gpt/teslasoft-id" />
           </set>
         </option>
       </GradleProjectSettings>

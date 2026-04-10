@@ -50,11 +50,11 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.17.0'
+    implementation 'androidx.core:core-ktx:1.18.0'
     implementation 'com.github.Dimezis:BlurView:version-2.0.6'
-    implementation 'androidx.activity:activity-ktx:1.12.4'
+    implementation 'androidx.activity:activity-ktx:1.13.0'
     implementation 'androidx.appcompat:appcompat:1.7.1'
-    implementation 'com.google.android.material:material:1.14.0-alpha09'
+    implementation 'com.google.android.material:material:1.14.0-alpha10'
     implementation 'com.google.code.gson:gson:2.13.2'
     implementation 'com.aallam.openai:openai-client:3.8.2'
     implementation 'io.ktor:ktor-client-android:2.3.12' // Do not update, incompatible with OpenAI API
@@ -80,7 +80,7 @@ dependencies {
     implementation 'org.conscrypt:conscrypt-android:2.5.3'
     implementation 'com.aallam.ktoken:ktoken:0.4.0'
     implementation 'androidx.core:core-splashscreen:1.2.0'
-    implementation ('com.openai:openai-java:4.21.0') {
+    implementation ('com.openai:openai-java:4.31.0') {
         exclude group: 'org.apache.httpcomponents.client5', module: 'httpclient5'
         exclude group: 'org.apache.httpcomponents.core5', module: 'httpcore5-h2'
         exclude group: 'org.apache.httpcomponents.core5', module: 'httpcore5'

@@ -235,7 +235,8 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
     private var isInitialized = false
     private var imageIsSelected = false
     private var stopper = false
-    private var bulkSelectionMode: Boolean = false
+    private var bulkSelectionMode = false
+    private var chatAutoSaveAfterSaveToChatEnabled = false
 
     // init AI
     private var ai: OpenAI? = null
@@ -2193,13 +2194,14 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
     private fun save(id: String) {
         isSaved = true
+        chatAutoSaveAfterSaveToChatEnabled = true
         chatID = id
         adapter?.setChatId(chatID)
         saveSettings()
         preferences = Preferences.getPreferences(mContext ?: return, chatID)
 
         apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(mContext ?: return)
-        LogitBiasPreferences(mContext ?: return, preferences?.getLogitBiasesConfigId()!!)
+        logitBiasPreferences = LogitBiasPreferences(mContext ?: return, preferences?.getLogitBiasesConfigId()!!)
         apiEndpointObject = apiEndpointPreferences?.getApiEndpoint(mContext ?: return, preferences?.getApiEndpointId()!!)
         btnSaveToChat?.isEnabled = false
         btnSaveToChat?.setImageResource(R.drawable.ic_done)
@@ -2211,13 +2213,13 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         chatID = "temp_state"
         preferences = Preferences.getPreferences(mContext ?: return, "")
         apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(mContext ?: return)
-        LogitBiasPreferences(mContext ?: return, preferences?.getLogitBiasesConfigId()!!)
+        logitBiasPreferences = LogitBiasPreferences(mContext ?: return, preferences?.getLogitBiasesConfigId()!!)
         apiEndpointObject = apiEndpointPreferences?.getApiEndpoint(mContext ?: return, preferences?.getApiEndpointId()!!)
         saveSettings()
     }
 
     private fun autosave() {
-        if (preferences!!.getChatsAutosave()) {
+        if (preferences!!.getChatsAutosave() || chatAutoSaveAfterSaveToChatEnabled) {
             isAutosaveEnabled = true
             chatPreferences = ChatPreferences.getChatPreferences()
 

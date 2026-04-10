@@ -64,7 +64,7 @@
                     android:paddingVertical="16dp"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:text="dall-e-2"
+                    android:text="dall-e-2 (deprecated)"
                     android:textSize="16sp" />
 
                 <RadioButton
@@ -76,7 +76,7 @@
                     android:paddingVertical="16dp"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:text="dall-e-3"
+                    android:text="dall-e-3 (deprecated)"
                     android:textSize="16sp" />
 
                 <RadioButton
@@ -89,6 +89,18 @@
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
                     android:text="gpt-image-1"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/gpt_image_mini"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:button="@null"
+                    android:paddingVertical="16dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:text="gpt-image-1-mini"
                     android:textSize="16sp" />
 
                 <RadioButton
@@ -110,7 +122,7 @@
                     android:layout_marginTop="16dp"
                     android:background="@drawable/btn_tip2"
                     android:padding="16dp"
-                    android:text="GPT Image flagship models may not be available for all users. You may need to have a higher tier and verify your identity. This model is very time consuming. Image generation may take up to 2 minutes to complete."
+                    android:text="GPT Image flagship models may not be available for all users. You may need to have a higher tier and verify your identity using government ID. Flagship models is very time consuming. Image generation may take up to 2 minutes to complete. Dalle 2 and 3 are deprecated and may stop working at any time. Official shutdown date is May 12 2026."
                     android:textColor="@color/error"
                     android:textSize="14sp"
                     android:textStyle="bold" />

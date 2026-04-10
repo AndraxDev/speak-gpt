@@ -20,20 +20,13 @@ import android.content.Context
 import android.content.SharedPreferences
 import org.teslasoft.assistant.util.Hash
 import androidx.core.content.edit
+import org.teslasoft.assistant.ui.activities.SettingsActivity
 
 class Preferences private constructor(private var preferences: SharedPreferences, private var gp: SharedPreferences, private var chatId: String) {
     companion object {
         private var preferences: Preferences? = null
         fun getPreferences(context: Context, xchatId: String) : Preferences {
-            if (preferences == null) preferences = Preferences(context.getSharedPreferences("settings.$xchatId", Context.MODE_PRIVATE), context.getSharedPreferences("settings", Context.MODE_PRIVATE), xchatId)
-
-            else {
-                if (preferences?.chatId != xchatId) {
-                    preferences?.setPreferences(xchatId, context)
-                }
-            }
-
-            return preferences!!
+            return Preferences(context.getSharedPreferences("settings.$xchatId", Context.MODE_PRIVATE), context.getSharedPreferences("settings", Context.MODE_PRIVATE), xchatId)
         }
     }
 
