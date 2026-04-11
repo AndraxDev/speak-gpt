@@ -20,30 +20,11 @@ import android.content.Context
 import android.content.SharedPreferences
 import org.teslasoft.assistant.util.Hash
 import androidx.core.content.edit
-import org.teslasoft.assistant.ui.activities.SettingsActivity
 
 class Preferences private constructor(private var preferences: SharedPreferences, private var gp: SharedPreferences, private var chatId: String) {
     companion object {
-        private var preferences: Preferences? = null
         fun getPreferences(context: Context, xchatId: String) : Preferences {
             return Preferences(context.getSharedPreferences("settings.$xchatId", Context.MODE_PRIVATE), context.getSharedPreferences("settings", Context.MODE_PRIVATE), xchatId)
-        }
-    }
-
-    fun interface PreferencesChangedListener {
-        fun onPreferencesChanged(key: String, value: String)
-    }
-
-    private var listeners: ArrayList<PreferencesChangedListener> = ArrayList()
-
-    fun addOnPreferencesChangedListener(listener: PreferencesChangedListener): Preferences {
-        listeners.add(listener)
-        return this
-    }
-
-    fun forceUpdate() {
-        for (listener in listeners) {
-            listener.onPreferencesChanged("forceUpdate", "true")
         }
     }
 
@@ -79,10 +60,8 @@ class Preferences private constructor(private var preferences: SharedPreferences
         val oldValue = getGlobalString(param, default)
 
         if (oldValue != value) {
-            gp.edit()?.putString(param, value)?.apply()
-
-            for (listener in listeners) {
-                listener.onPreferencesChanged(param, value)
+            gp.edit {
+                putString(param, value)
             }
         }
     }
@@ -107,10 +86,8 @@ class Preferences private constructor(private var preferences: SharedPreferences
         val oldValue = getGlobalBoolean(param, default)
 
         if (oldValue != value) {
-            gp.edit()?.putBoolean(param, value)?.apply()
-
-            for (listener in listeners) {
-                listener.onPreferencesChanged(param, value.toString())
+            gp.edit {
+                putBoolean(param, value)
             }
         }
     }
@@ -137,10 +114,6 @@ class Preferences private constructor(private var preferences: SharedPreferences
 
         if (oldValue != value) {
             preferences.edit { putString(param, value) }
-
-            for (listener in listeners) {
-                listener.onPreferencesChanged(param, value)
-            }
         }
     }
 
@@ -166,10 +139,6 @@ class Preferences private constructor(private var preferences: SharedPreferences
 
         if (oldValue != value) {
             preferences.edit { putBoolean(param, value) }
-
-            for (listener in listeners) {
-                listener.onPreferencesChanged(param, value.toString())
-            }
         }
     }
 
@@ -239,10 +208,12 @@ class Preferences private constructor(private var preferences: SharedPreferences
     /**
      * Retrieves the image model name from the shared preferences.
      *
-     * @return The imageModel value or "dall-e-3" if not found.
+     * Dalle 2 and 3 are shutdown on May 12, 2026
+     *
+     * @return The imageModel value or "gpt-image-1" if not found.
      */
     fun getImageModel() : String {
-        return getString("imageModel", "dall-e-3")
+        return getString("imageModel", "gpt-image-1")
     }
 
     /**
@@ -614,7 +585,6 @@ class Preferences private constructor(private var preferences: SharedPreferences
      */
     fun setAvatarType(type: String) {
         putString("avatar_type", type)
-        listeners.forEach { it.onPreferencesChanged("avatar_type", type) }
     }
 
     /**
@@ -637,7 +607,6 @@ class Preferences private constructor(private var preferences: SharedPreferences
      * @param id The avatar Id value to be stored.
      */
     fun setAvatarId(id: String) {
-        listeners.forEach { it.onPreferencesChanged("avatar_id", id) }
         putString("avatar_id", id)
     }
 

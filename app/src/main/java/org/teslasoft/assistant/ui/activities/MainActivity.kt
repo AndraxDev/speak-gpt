@@ -42,6 +42,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.edit
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.splashscreen.SplashScreen
@@ -73,10 +74,9 @@ import org.teslasoft.core.auth.SystemInfo
 import org.teslasoft.core.auth.internal.ApplicationSignature
 import java.util.EnumSet
 import androidx.core.graphics.drawable.toDrawable
-import androidx.core.view.WindowCompat
 import eightbitlab.com.blurview.BlurView
 
-class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener {
+class MainActivity : FragmentActivity() {
 
     private var navigationBar: BottomNavigationView? = null
     private var fragmentContainer: ConstraintLayout? = null
@@ -96,11 +96,17 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     private var root: ConstraintLayout? = null
     private var preferences: Preferences? = null
     private var btnDebugActivity: MaterialButton? = null
-    private var needsRestart: Boolean = false
     private var selectedTab: Int = 1
     private var isInitialized: Boolean = false
     private var splashScreen: SplashScreen? = null
     private var debugBlurView: BlurView? = null
+
+    private val appearanceFlags: HashMap<String, Boolean> = hashMapOf(
+        "debug_mode" to false,
+        "amoled_pitch_black" to false,
+        "hide_model_names" to false,
+        "monochrome_background_for_chat_list" to false
+    )
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -126,7 +132,12 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
 
         setContentView(R.layout.activity_main)
 
-        preferences = Preferences.getPreferences(this, "").addOnPreferencesChangedListener(this)
+        preferences = Preferences.getPreferences(this, "")
+
+        appearanceFlags["debug_mode"] = preferences!!.getDebugMode()
+        appearanceFlags["amoled_pitch_black"] = preferences!!.getAmoledPitchBlack()
+        appearanceFlags["hide_model_names"] = preferences!!.getHideModelNames()
+        appearanceFlags["monochrome_background_for_chat_list"] = preferences!!.getMonochromeBackgroundForChatList()
 
         navigationBar = findViewById(R.id.navigation_bar)
 
@@ -349,7 +360,9 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
             if (preferences!!.getApiKey(this) == "") {
                 if (preferences!!.getOldApiKey() == "") {
                     startActivity(Intent(this, WelcomeActivity::class.java).setAction(Intent.ACTION_VIEW))
-                    getSharedPreferences("chat_list", MODE_PRIVATE)?.edit()?.putString("data", "[]")?.apply()
+                    getSharedPreferences("chat_list", MODE_PRIVATE)?.edit {
+                        putString("data", "[]")
+                    }
                     finish()
                 } else {
                     preferences!!.secureApiKey(this)
@@ -393,15 +406,18 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
     }
 
     override fun onResume() {
-        if (needsRestart) {
-            restartActivity()
-        }
-
         super.onResume()
 
         if (isInitialized) {
-            // Reset preferences singleton to global settings
             preferences = Preferences.getPreferences(this, "")
+
+            if (
+                appearanceFlags["debug_mode"] != preferences!!.getDebugMode() ||
+                appearanceFlags["amoled_pitch_black"] != preferences!!.getAmoledPitchBlack() ||
+                appearanceFlags["hide_model_names"] != preferences!!.getHideModelNames() ||
+                appearanceFlags["monochrome_background_for_chat_list"] != preferences!!.getMonochromeBackgroundForChatList()) {
+                restartActivity()
+            }
 
             reloadAmoled()
         }
@@ -536,12 +552,6 @@ class MainActivity : FragmentActivity(), Preferences.PreferencesChangedListener 
                 navigationBar?.selectedItemId = R.id.menu_tips
                 loadFragment(frameExplore, 1, 1)
             }
-        }
-    }
-
-    override fun onPreferencesChanged(key: String, value: String) {
-        if (key == "debug_mode" || key == "amoled_pitch_black" || key == "hide_model_names" || key == "monochrome_background_for_chat_list") {
-            needsRestart = true
         }
     }
 

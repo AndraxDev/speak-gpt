@@ -73,6 +73,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.content.edit
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.scale
 import androidx.core.util.Pair
@@ -364,8 +365,13 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
                         baseImageString = "data:image/$imageType;base64,$base64Image"
 
-                        mContext?.getSharedPreferences("imageTemp", Context.MODE_PRIVATE)?.edit()?.putString("image", baseImageString)?.apply()
-                        mContext?.getSharedPreferences("imageTemp", Context.MODE_PRIVATE)?.edit()?.putString("type", selectedImageType)?.apply()
+                        mContext?.getSharedPreferences("imageTemp", Context.MODE_PRIVATE)?.edit {
+                            putString("image", baseImageString)
+                        }
+
+                        mContext?.getSharedPreferences("imageTemp", Context.MODE_PRIVATE)?.edit {
+                            putString("type", selectedImageType)
+                        }
                     }
                 }
             }
@@ -627,12 +633,9 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         if (savedInstanceState == null) {
             if (messages.isEmpty()) {
                 val chatPreferences = ChatPreferences.getChatPreferences()
-
                 chatPreferences.deleteChatById(mContext ?: return, chatID)
-
-                preferences?.forceUpdate()
             }
-            mContext?.getSharedPreferences("imageTemp", Context.MODE_PRIVATE)?.edit()?.clear()?.apply()
+            clearImageTemp()
             (mContext as Activity?)?.finishAndRemoveTask()
         }
     }
@@ -650,7 +653,8 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
         if (key == null) {
             startActivity(Intent(mContext ?: return, WelcomeActivity::class.java).setAction(Intent.ACTION_VIEW))
-            mContext?.getSharedPreferences("imageTemp", Context.MODE_PRIVATE)?.edit()?.clear()?.apply()
+            clearImageTemp()
+
             (mContext as Activity?)?.finishAndRemoveTask()
         } else {
             silenceMode = preferences!!.getSilence()
@@ -992,7 +996,8 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
     private fun initAI() {
         if (key == null) {
             startActivity(Intent(mContext ?: return, WelcomeActivity::class.java).setAction(Intent.ACTION_VIEW))
-            mContext?.getSharedPreferences("imageTemp", Context.MODE_PRIVATE)?.edit()?.clear()?.apply()
+            clearImageTemp()
+
             (mContext as Activity?)?.finish()
         } else {
             val config = OpenAIConfig(
@@ -1232,7 +1237,8 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
     @SuppressLint("SetTextI18n")
     private fun parseMessage(message: String, shouldAdd: Boolean = true) {
-        mContext?.getSharedPreferences("imageTemp", Context.MODE_PRIVATE)?.edit()?.clear()?.apply()
+        clearImageTemp()
+
         autosave()
         try {
             if (mediaPlayer!!.isPlaying) {
@@ -2166,14 +2172,12 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                 "chat_$chatID",
                 FragmentActivity.MODE_PRIVATE
             )
-            val editor = chat?.edit()
-            val gson = Gson()
-            val json: String = gson.toJson(messages)
 
-            if (json == "") editor?.putString("chat", "[]")
-            else editor?.putString("chat", json)
+            val json: String = Gson().toJson(messages)
 
-            editor?.apply()
+            chat?.edit {
+                putString("chat", if (json == "") "[]" else json)
+            }
         }
 
         isProcessing = false
@@ -2205,8 +2209,6 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         apiEndpointObject = apiEndpointPreferences?.getApiEndpoint(mContext ?: return, preferences?.getApiEndpointId()!!)
         btnSaveToChat?.isEnabled = false
         btnSaveToChat?.setImageResource(R.drawable.ic_done)
-
-        preferences?.forceUpdate()
     }
 
     private fun saveChatState() {
@@ -2227,8 +2229,6 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
             btnSaveToChat?.isEnabled = false
             btnSaveToChat?.setImageResource(R.drawable.ic_done)
-
-            preferences?.forceUpdate()
 
             isInitialized = true
         } else {
@@ -2470,7 +2470,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         }
 
         btnRemoveImage?.setOnClickListener {
-            mContext?.getSharedPreferences("imageTemp", Context.MODE_PRIVATE)?.edit()?.clear()?.apply()
+            clearImageTemp()
             attachedImage?.visibility = View.GONE
             imageIsSelected = false
             bitmap = null
@@ -2483,7 +2483,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         }
 
         btnExit?.setOnClickListener {
-            mContext?.getSharedPreferences("imageTemp", Context.MODE_PRIVATE)?.edit()?.clear()?.apply()
+            clearImageTemp()
             (mContext as Activity?)?.finishAndRemoveTask()
         }
 
@@ -2492,7 +2492,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         assistantTitle?.setOnClickListener {
             val intent = Intent(mContext ?: return@setOnClickListener, MainActivity::class.java).setAction(Intent.ACTION_VIEW)
             startActivity(intent)
-            mContext?.getSharedPreferences("imageTemp", Context.MODE_PRIVATE)?.edit()?.clear()?.apply()
+            clearImageTemp()
             (mContext as Activity?)?.finish()
         }
 
@@ -2529,6 +2529,12 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         }
 
         hideKeyboard()
+    }
+
+    private fun clearImageTemp() {
+        mContext?.getSharedPreferences("imageTemp", Context.MODE_PRIVATE)?.edit {
+            clear()
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")

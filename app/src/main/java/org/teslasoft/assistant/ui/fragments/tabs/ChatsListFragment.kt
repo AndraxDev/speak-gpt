@@ -69,9 +69,10 @@ import kotlin.math.abs
 import androidx.core.net.toUri
 import org.teslasoft.assistant.util.WindowInsetsUtil
 import java.util.EnumSet
+import androidx.core.content.edit
 
 
-class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, ChatListAdapter.OnInteractionListener {
+class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
 
     private var adapter: ChatListAdapter? = null
     private var chatsList: RecyclerView? = null
@@ -99,16 +100,22 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
 
     private var mContext: Context? = null
 
+    private val appearanceFlags: HashMap<String, Boolean> = hashMapOf(
+        "debug_mode" to false,
+        "amoled_pitch_black" to false,
+        "hide_model_names" to false,
+        "monochrome_background_for_chat_list" to false
+    )
+
     private var chatListUpdatedListener: AddChatDialogFragment.StateChangesListener = object : AddChatDialogFragment.StateChangesListener {
         override fun onAdd(name: String, id: String, fromFile: Boolean) {
             initSettings()
 
             if (fromFile && selectedFile.replace("null", "") != "") {
                 val chat = mContext?.getSharedPreferences("chat_$id", FragmentActivity.MODE_PRIVATE)
-                val editor = chat?.edit()
-
-                editor?.putString("chat", selectedFile)
-                editor?.apply()
+                chat?.edit {
+                    putString("chat", selectedFile)
+                }
             }
 
             val i = Intent(
@@ -180,7 +187,8 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
     }
 
     fun reloadAmoled(context: Context) {
-        if (!isDestroyed && isDarkThemeEnabled() && preferences!!.getAmoledPitchBlack()) {
+        preferences = Preferences.getPreferences(context, "")
+        if (!isDestroyed && isDarkThemeEnabled() && preferences?.getAmoledPitchBlack() == true) {
             btnSettings?.background = ResourcesCompat.getDrawable(context.resources?: return, R.drawable.btn_accent_tonal_amoled, context.theme)!!
             bgSearch?.background = ResourcesCompat.getDrawable(context.resources?: return, R.drawable.btn_accent_tonal_amoled, context.theme)!!
         } else {
@@ -202,7 +210,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
                 Thread.sleep(100)
             }
 
-            preferences = Preferences.getPreferences(mContext ?: return@Thread, "").addOnPreferencesChangedListener(this)
+            // preferences = Preferences.getPreferences(mContext ?: return@Thread, "").addOnPreferencesChangedListener(this)
 
             (mContext as Activity?)?.runOnUiThread {
                 initUI(view)
@@ -458,6 +466,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
         })
     }
 
+    @SuppressLint("CheckResult")
     private fun isValidJson(jsonStr: String?): Boolean {
         return try {
             Gson().fromJson(jsonStr, ArrayList::class.java)
@@ -481,7 +490,7 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
         return stringBuilder.toString()
     }
 
-    val activityResultCallback: ActivityResultCallback<ActivityResult> = ActivityResultCallback<ActivityResult> { result ->
+    val activityResultCallback: ActivityResultCallback<ActivityResult> = ActivityResultCallback { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.also { uri ->
                 selectedFile = readFile(uri)
@@ -520,6 +529,13 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
 
     private fun initSettings(action: String = "", position: Int = -1) {
         chats = ChatPreferences.getChatPreferences().getChatList(mContext?: return)
+
+        preferences = Preferences.getPreferences(mContext ?: return, "")
+
+        appearanceFlags["debug_mode"] = preferences!!.getDebugMode()
+        appearanceFlags["amoled_pitch_black"] = preferences!!.getAmoledPitchBlack()
+        appearanceFlags["hide_model_names"] = preferences!!.getHideModelNames()
+        appearanceFlags["monochrome_background_for_chat_list"] = preferences!!.getMonochromeBackgroundForChatList()
 
         // R8 went fuck himself...
         if (chats == null) chats = arrayListOf()
@@ -603,14 +619,6 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
         } else 0
     }
 
-    override fun onPreferencesChanged(key: String, value: String) {
-        if ((key == "model" || key == "avatar_type" || key == "avatar_id" || key == "firstMessage" || key == "forceUpdate") && isAttached && !isDestroyed) {
-            (mContext as Activity?)?.runOnUiThread {
-                initSettings()
-            }
-        }
-    }
-
     override fun onResume() {
         super.onResume()
 
@@ -653,6 +661,16 @@ class ChatsListFragment : Fragment(), Preferences.PreferencesChangedListener, Ch
                     initSettings()
                 }
             }
+        }
+
+        preferences = Preferences.getPreferences(mContext ?: return, "")
+
+        if (
+            appearanceFlags["debug_mode"] != preferences!!.getDebugMode() ||
+            appearanceFlags["amoled_pitch_black"] != preferences!!.getAmoledPitchBlack() ||
+            appearanceFlags["hide_model_names"] != preferences!!.getHideModelNames() ||
+            appearanceFlags["monochrome_background_for_chat_list"] != preferences!!.getMonochromeBackgroundForChatList()) {
+            initSettings()
         }
     }
 
