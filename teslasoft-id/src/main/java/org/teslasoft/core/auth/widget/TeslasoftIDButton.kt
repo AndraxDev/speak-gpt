@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -46,6 +45,9 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.teslasoft.core.auth.*
 import org.teslasoft.core.auth.internal.Config.Companion.AUTH_SERVER
+import androidx.core.content.edit
+import androidx.core.net.toUri
+import org.teslasoft.core.auth.annotation.PublicAPI
 
 class TeslasoftIDButton : Fragment() {
     private var accountIcon: ImageView? = null
@@ -124,9 +126,9 @@ class TeslasoftIDButton : Fragment() {
             val uid: String? = result.data!!.getStringExtra("account_id")
             token = result.data!!.getStringExtra("auth_token")
 
-            val edit: SharedPreferences.Editor? = accountSettings?.edit()
-            edit?.putString("token", token)
-            edit?.apply()
+            accountSettings?.edit {
+                this?.putString("token", token)
+            }
 
             sync(uid, sig)
         } else {
@@ -181,11 +183,11 @@ class TeslasoftIDButton : Fragment() {
     }
 
     private fun invalidate() {
-        val edit = accountSettings?.edit()
-        edit?.remove("user_id")
-        edit?.remove("signature")
-        edit?.remove("token")
-        edit?.apply()
+        accountSettings?.edit {
+            remove("user_id")
+            remove("signature")
+            remove("token")
+        }
         disableWidget()
     }
 
@@ -209,10 +211,10 @@ class TeslasoftIDButton : Fragment() {
         accountIcon?.visibility = View.INVISIBLE
         accountLoader?.visibility = View.VISIBLE
 
-        val edit: SharedPreferences.Editor? = accountSettings?.edit()
-        edit?.putString("user_id", uid)
-        edit?.putString("signature", sig)
-        edit?.apply()
+        accountSettings?.edit {
+            putString("user_id", uid)
+            putString("signature", sig)
+        }
 
         var requestOptions = RequestOptions()
         requestOptions = requestOptions.transform(
@@ -223,7 +225,7 @@ class TeslasoftIDButton : Fragment() {
         )
 
         Glide.with(this)
-            .load(Uri.parse("$AUTH_SERVER/users/$uid.png"))
+            .load("$AUTH_SERVER/users/$uid.png".toUri())
             .apply(requestOptions).into(accountIcon ?: return)
 
         verificationApi?.startRequestNetwork(RequestNetworkController.GET, "$AUTH_SERVER/GetAccountInfo.php?sig=$sig&uid=$uid&token=$token", "A", verificationApiListener)
@@ -243,6 +245,8 @@ class TeslasoftIDButton : Fragment() {
      *
      * @param listener An implemented interface org.teslasoft.core.auth.AccountSyncListener.
      * */
+    @PublicAPI
+    @Suppress("unused")
     fun setAccountSyncListener(listener: AccountSyncListener) {
         this.listener = listener
     }

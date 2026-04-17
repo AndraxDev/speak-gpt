@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,9 +63,7 @@ open class RequestNetworkController {
                 trustManagerFactory.init(null as KeyStore?)
                 val trustManagers = trustManagerFactory.trustManagers
                 check(!(trustManagers.size != 1 || trustManagers[0] !is X509TrustManager)) {
-                    "Unexpected default trust managers:" + Arrays.toString(
-                        trustManagers
-                    )
+                    "Unexpected default trust managers:" + trustManagers.contentToString()
                 }
                 val trustManager = trustManagers[0] as X509TrustManager
 
@@ -95,7 +93,7 @@ open class RequestNetworkController {
         val reqBuilder: Request.Builder = Request.Builder()
         val headerBuilder: Headers.Builder = Headers.Builder()
 
-        if (requestNetwork.getHeaders().size > 0) {
+        if (requestNetwork.getHeaders().isNotEmpty()) {
             val headers: HashMap<String, Any> = requestNetwork.getHeaders()
 
             for (header: MutableMap.MutableEntry<String, Any> in headers.entries) {
@@ -161,7 +159,7 @@ open class RequestNetworkController {
                 "unexpected url: $url"
             )
 
-        if (requestNetwork.getParams().size > 0) {
+        if (requestNetwork.getParams().isNotEmpty()) {
             val params: HashMap<String, Any> = requestNetwork.getParams()
 
             for (param: MutableMap.MutableEntry<String, Any> in params.entries) {
@@ -181,7 +179,7 @@ open class RequestNetworkController {
     ) {
         val formBuilder: FormBody.Builder = FormBody.Builder()
 
-        if (requestNetwork.getParams().size > 0) {
+        if (requestNetwork.getParams().isNotEmpty()) {
             val params: HashMap<String, Any> = requestNetwork.getParams()
 
             for (param: MutableMap.MutableEntry<String, Any> in params.entries) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@
 package org.teslasoft.core.auth.client
 
 import android.app.Activity
-import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import org.teslasoft.core.auth.RequestNetwork
+import org.teslasoft.core.auth.annotation.PublicAPI
 import org.teslasoft.core.auth.internal.Config.Companion.AUTH_SERVER
 
 class TeslasoftIDClient(private val context: Activity, private val applicationSignature: String, private var apiKey: String, private var appId: String, private var settingsListener: SettingsListener?, private var syncListener: SyncListener?) {
@@ -60,6 +60,8 @@ class TeslasoftIDClient(private val context: Activity, private val applicationSi
     /**
      * Get account info.
      * */
+    @PublicAPI
+    @Suppress("unused")
     fun getAccount(): Map<String, String>? {
         val map: MutableMap<String, String> = mutableMapOf()
 
@@ -80,7 +82,9 @@ class TeslasoftIDClient(private val context: Activity, private val applicationSi
     /**
      * Determine if user is signed in.
      * */
-    fun doesUserSignedIn(): Boolean {
+    @PublicAPI
+    @Suppress("unused")
+    fun isUserSignedIn(): Boolean {
         val accountSettings = context.getSharedPreferences("account", FragmentActivity.MODE_PRIVATE)
 
         val uid: String? = accountSettings?.getString("user_id", null)
@@ -90,8 +94,23 @@ class TeslasoftIDClient(private val context: Activity, private val applicationSi
     }
 
     /**
+     * Determine if user is signed in.
+     *
+     * WARNING: Depredated, inconsistent function name, left for
+     * compatibility, use isUserSignedIn instead.
+     * */
+    @PublicAPI
+    @Suppress("unused")
+    @Deprecated("Use isUserSignedIn instead")
+    fun doesUserSignedIn() : Boolean {
+        return isUserSignedIn()
+    }
+
+    /**
      * Retrieve app settings from the server.
      * */
+    @PublicAPI
+    @Suppress("unused")
     fun getAppSettings() {
         val account: Map<String, String> = getAccount()!!
         val url = "$AUTH_SERVER/GetSettings.php?s=$applicationSignature&k=$apiKey&appId=$appId&token=${account["token"]}&u=${account["user_id"]}"
@@ -103,6 +122,8 @@ class TeslasoftIDClient(private val context: Activity, private val applicationSi
      *
      * @param settings JSON encoded settings.
      * */
+    @PublicAPI
+    @Suppress("unused")
     fun syncAppSettings(settings: String) {
         val account: Map<String, String> = getAccount()!!
         val url = "$AUTH_SERVER/SetSettings.php?s=$applicationSignature&k=$apiKey&appId=$appId&token=${account["token"]}&u=${account["user_id"]}&settings=$settings"

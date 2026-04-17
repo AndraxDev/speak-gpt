@@ -10,14 +10,14 @@ configurations {
 
 android {
     namespace 'org.teslasoft.assistant'
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId "org.teslasoft.assistant"
         minSdk 28
-        targetSdk 36
-        versionCode 43810
-        versionName "4.38-stable"
+        targetSdk 37
+        versionCode 43901
+        versionName "4.39-alpha01"
     }
 
     buildTypes {
@@ -80,7 +80,7 @@ dependencies {
     implementation 'org.conscrypt:conscrypt-android:2.5.3'
     implementation 'com.aallam.ktoken:ktoken:0.4.0'
     implementation 'androidx.core:core-splashscreen:1.2.0'
-    implementation ('com.openai:openai-java:4.31.0') {
+    implementation ('com.openai:openai-java:4.32.0') {
         exclude group: 'org.apache.httpcomponents.client5', module: 'httpclient5'
         exclude group: 'org.apache.httpcomponents.core5', module: 'httpcore5-h2'
         exclude group: 'org.apache.httpcomponents.core5', module: 'httpcore5'

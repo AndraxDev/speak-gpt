@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023-2025 Dmytro Ostapenko. All rights reserved.
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.teslasoft.core.auth.client
 
 import android.app.Activity
+import org.teslasoft.core.auth.annotation.PublicAPI
 import org.teslasoft.core.auth.internal.ApplicationSignature
 
 class TeslasoftIDClientBuilder(private val context: Activity) {
@@ -33,6 +34,8 @@ class TeslasoftIDClientBuilder(private val context: Activity) {
      *
      * @param apiKey API key.
      * */
+    @PublicAPI
+    @Suppress("unused")
     fun setApiKey(apiKey: String): TeslasoftIDClientBuilder {
         this.apiKey = apiKey
         return this
@@ -43,6 +46,8 @@ class TeslasoftIDClientBuilder(private val context: Activity) {
      *
      * @param appId app ID.
      * */
+    @PublicAPI
+    @Suppress("unused")
     fun setAppId(appId: String): TeslasoftIDClientBuilder {
         this.appId = appId
         return this
@@ -53,6 +58,8 @@ class TeslasoftIDClientBuilder(private val context: Activity) {
      *
      * @param listener Settings listener.
      * */
+    @PublicAPI
+    @Suppress("unused")
     fun setSettingsListener(listener: SettingsListener): TeslasoftIDClientBuilder {
         this.settingsListener = listener
         return this
@@ -63,6 +70,8 @@ class TeslasoftIDClientBuilder(private val context: Activity) {
      *
      * @param listener Sync listener.
      * */
+    @PublicAPI
+    @Suppress("unused")
     fun setSyncListener(listener: SyncListener): TeslasoftIDClientBuilder {
         this.syncListener = listener
         return this
@@ -71,6 +80,8 @@ class TeslasoftIDClientBuilder(private val context: Activity) {
     /**
      * Builds Teslasoft ID client.
      * */
+    @PublicAPI
+    @Suppress("unused")
     fun build() : TeslasoftIDClient {
         val applicationSignature = ApplicationSignature(context)
         teslasoftIDClient = TeslasoftIDClient(context, applicationSignature.getCertificateFingerprint("SHA256")!!, apiKey!!, appId!!, settingsListener, syncListener)
