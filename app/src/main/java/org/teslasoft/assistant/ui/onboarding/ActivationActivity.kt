@@ -76,20 +76,32 @@ class ActivationActivity : FragmentActivity() {
                 Toast.makeText(this, "Please enter API endpoint", Toast.LENGTH_SHORT).show()
             } else {
                 if (hostInput?.text.toString().trim() == "debug") {
+                    runOnUiThread {
+                        btnNext?.isEnabled = false
+                        btnNext?.alpha = 0.5f
+                        debugFeatures?.visibility = ConstraintLayout.VISIBLE
+                    }
+
                     val password = keyInput?.text.toString().trim()
                     val requestNetwork = RequestNetwork(this)
-                    debugFeatures?.visibility = ConstraintLayout.VISIBLE
+
                     requestNetwork.startRequestNetwork("GET", "https://gpt.teslasoft.org/key?password=$password", "A", object : RequestNetwork.RequestListener {
                         override fun onResponse(tag: String, message: String) {
-                            debugFeatures?.visibility = ConstraintLayout.INVISIBLE
+                            runOnUiThread {
+                                debugFeatures?.visibility = ConstraintLayout.INVISIBLE
+                            }
                             if (message == "incorrect") {
-                                MaterialAlertDialogBuilder(this@ActivationActivity)
-                                    .setTitle("Error")
-                                    .setMessage("Failed to activate developer mode: Invalid developer access key.")
-                                    .setPositiveButton("Close") { dialog, _ ->
-                                        dialog.dismiss()
-                                    }
-                                    .show()
+                                runOnUiThread {
+                                    btnNext?.isEnabled = true
+                                    btnNext?.alpha = 1.0f
+                                    MaterialAlertDialogBuilder(this@ActivationActivity)
+                                        .setTitle("Error")
+                                        .setMessage("Failed to activate developer mode: Invalid developer access key.")
+                                        .setPositiveButton("Close") { dialog, _ ->
+                                            dialog.dismiss()
+                                        }
+                                        .show()
+                                }
                             } else {
                                 val hostname = "https://api.openai.com/v1/"
                                 val apiEndpointObject = ApiEndpointObject("Default", hostname, message)
@@ -107,6 +119,8 @@ class ActivationActivity : FragmentActivity() {
 
                         override fun onErrorResponse(tag: String, message: String) {
                             runOnUiThread {
+                                btnNext?.isEnabled = true
+                                btnNext?.alpha = 1.0f
                                 debugFeatures?.visibility = ConstraintLayout.INVISIBLE
                                 MaterialAlertDialogBuilder(this@ActivationActivity)
                                     .setTitle("Error")
