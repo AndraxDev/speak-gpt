@@ -16,8 +16,8 @@ android {
         applicationId "org.teslasoft.assistant"
         minSdk 28
         targetSdk 37
-        versionCode 43910
-        versionName "4.39-stable"
+        versionCode 44001
+        versionName "4.40-beta"
     }
 
     buildTypes {
@@ -27,6 +27,9 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             multiDexEnabled true
+            optimization {
+                enable = true // Enables code and resource optimizations.
+            }
         }
 
         debug {
@@ -35,6 +38,9 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             multiDexEnabled true
+            optimization {
+                enable = true // Enables code and resource optimizations.
+            }
         }
     }
 
@@ -51,7 +57,6 @@ android {
 
 dependencies {
     implementation 'androidx.core:core-ktx:1.19.0'
-    implementation 'com.github.Dimezis:BlurView:version-2.0.6'
     implementation 'androidx.activity:activity-ktx:1.13.0'
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'com.google.android.material:material:1.14.0'

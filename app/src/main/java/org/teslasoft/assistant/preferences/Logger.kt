@@ -78,33 +78,29 @@ class Logger {
          * @param message - log message
          * */
         fun log(context: Context, type: String, tag: String, level: String, message: String) {
-            val installationId = DeviceInfoProvider.getInstallationId(context)
-
             // If installation ID is zero it means user revoked authorization to collect user data
             // All logs will be skipped
-            if (installationId != "00000000-0000-0000-0000-000000000000") {
-                if (level == "info" || level == "error" || level == "warning" || level == "debug" || level == "verbose") {
-                    val timestamp = DateTimeFormatter.ISO_INSTANT.format(Instant.now()).toString()
-                    val logString =
-                        "[$timestamp] [$installationId] [$tag] [${level.uppercase()}] $message\n"
-                    when (type) {
-                        "crash" -> {
-                            val log = "${getCrashLog(context)}$logString"
-                            setCrashLog(context, log)
-                        }
-
-                        "event" -> {
-                            val log = "${getEventLog(context)}$logString"
-                            setEventLog(context, log)
-                        }
-
-                        else -> {
-                            error("Invalid log type")
-                        }
+            if (level == "info" || level == "error" || level == "warning" || level == "debug" || level == "verbose") {
+                val timestamp = DateTimeFormatter.ISO_INSTANT.format(Instant.now()).toString()
+                val logString =
+                    "[$timestamp] [$tag] [${level.uppercase()}] $message\n"
+                when (type) {
+                    "crash" -> {
+                        val log = "${getCrashLog(context)}$logString"
+                        setCrashLog(context, log)
                     }
-                } else {
-                    error("Invalid log level")
+
+                    "event" -> {
+                        val log = "${getEventLog(context)}$logString"
+                        setEventLog(context, log)
+                    }
+
+                    else -> {
+                        error("Invalid log type")
+                    }
                 }
+            } else {
+                error("Invalid log level")
             }
         }
 

@@ -50,11 +50,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <eightbitlab.com.blurview.BlurView
+        <LinearLayout
             android:id="@+id/debug_blur"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:blurOverlayColor="@color/transparent"
+            android:background="@color/shadow"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -244,7 +244,7 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </eightbitlab.com.blurview.BlurView>
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

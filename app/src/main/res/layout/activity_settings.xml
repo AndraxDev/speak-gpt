@@ -652,20 +652,18 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/tile_function_calling"
+                        android:id="@+id/tile_slash_commands"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_marginHorizontal="4dp"
                         android:layout_weight="1" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/tile_slash_commands"
+                        android:id="@+id/tile_desktop_mode"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_marginHorizontal="4dp"
-                        android:layout_weight="1">
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                        android:layout_weight="1" />
 
                 </LinearLayout>
 
@@ -684,20 +682,18 @@
                     app:layout_constraintTop_toBottomOf="@+id/linearLayout10">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/tile_desktop_mode"
+                        android:id="@+id/tile_lock_assistant"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_marginHorizontal="4dp"
                         android:layout_weight="1" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/tile_lock_assistant"
+                        android:id="@+id/tile_amoled_mode"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_marginHorizontal="4dp"
-                        android:layout_weight="1">
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                        android:layout_weight="1" />
 
                 </LinearLayout>
 
@@ -715,37 +711,14 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/linearLayout11">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/tile_amoled_mode"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginHorizontal="4dp"
-                        android:layout_weight="1" />
+
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/tile_customize"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_marginHorizontal="4dp"
-                        android:layout_weight="1">
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/linearLayout119"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="12dp"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal"
-                    android:weightSum="2"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout112">
+                        android:layout_weight="1" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/tile_chats_autosave"
@@ -754,14 +727,6 @@
                         android:layout_marginHorizontal="4dp"
                         android:layout_weight="1" />
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/tile_empty_9"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginHorizontal="4dp"
-                        android:layout_weight="1">
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 

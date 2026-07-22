@@ -23,53 +23,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/background_decoration"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/harmonized_blur_background"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/tl"
-            android:layout_width="300dp"
-            android:layout_height="1000dp"
-            android:layout_marginTop="-200dp"
-            android:layout_marginEnd="-275dp"
-            android:background="@color/harmonized_blur_foreground1"
-            android:rotation="-22.5"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/tr"
-            android:layout_width="300dp"
-            android:layout_height="1000dp"
-            android:layout_marginStart="-275dp"
-            android:layout_marginBottom="-200dp"
-            android:background="@color/harmonized_blur_foreground2"
-            android:rotation="-22.5"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/foreground_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <eightbitlab.com.blurview.BlurView
+        <LinearLayout
             android:id="@+id/foreground_blur"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:blurOverlayColor="@color/transparent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -213,6 +174,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
-        </eightbitlab.com.blurview.BlurView>
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

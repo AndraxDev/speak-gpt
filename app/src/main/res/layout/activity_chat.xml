@@ -359,11 +359,11 @@
                 app:cardCornerRadius="48dp"
                 app:strokeWidth="0dp">
 
-                <eightbitlab.com.blurview.BlurView
+                <LinearLayout
                     android:id="@+id/attach_bg"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:blurOverlayColor="@color/blur_background"
+                    android:background="@drawable/btn_accent_50"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -427,7 +427,7 @@
                             app:srcCompat="@drawable/ic_book" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
-                </eightbitlab.com.blurview.BlurView>
+                </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 

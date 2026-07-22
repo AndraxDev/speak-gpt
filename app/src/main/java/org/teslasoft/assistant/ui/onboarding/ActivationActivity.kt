@@ -33,7 +33,6 @@ import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
 import org.teslasoft.assistant.util.Hash
 import org.teslasoft.core.api.network.RequestNetwork
 import androidx.core.content.edit
-import eightbitlab.com.blurview.BlurView
 
 class ActivationActivity : FragmentActivity() {
 
@@ -41,7 +40,6 @@ class ActivationActivity : FragmentActivity() {
     private var keyInput: EditText? = null
     private var hostInput: EditText? = null
     private var debugFeatures: ConstraintLayout? = null
-    private var foregroundBlur: BlurView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,22 +50,6 @@ class ActivationActivity : FragmentActivity() {
         hostInput = findViewById(R.id.username)
         debugFeatures = findViewById(R.id.debug_features)
         debugFeatures?.visibility = ConstraintLayout.INVISIBLE
-
-        foregroundBlur = findViewById(R.id.foreground_blur)
-
-        // Deprecated renderscript seems does not work properly on the older android versions
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.S) {
-            val tl = findViewById<ConstraintLayout>(R.id.tl)
-            val tr = findViewById<ConstraintLayout>(R.id.tr)
-            tl?.visibility = ConstraintLayout.GONE
-            tr?.visibility = ConstraintLayout.GONE
-        } else {
-            val decorView = window.decorView
-            val rootView: ViewGroup = decorView.findViewById(android.R.id.content)
-            val windowBackground = decorView.background
-
-            foregroundBlur?.setupWith(rootView)?.setFrameClearDrawable(windowBackground)?.setBlurRadius(250f)
-        }
 
         btnNext?.setOnClickListener {
             if (keyInput?.text.toString().trim() == "") {

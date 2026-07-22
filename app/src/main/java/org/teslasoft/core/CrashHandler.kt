@@ -33,7 +33,6 @@ import androidx.fragment.app.FragmentActivity
 import cat.ereza.customactivityoncrash.CustomActivityOnCrash
 import com.google.android.material.button.MaterialButton
 import org.teslasoft.assistant.R
-import org.teslasoft.assistant.preferences.DeviceInfoProvider
 import org.teslasoft.assistant.preferences.Logger
 import org.teslasoft.assistant.ui.activities.MainActivity
 import org.teslasoft.core.auth.SystemInfo
@@ -98,18 +97,12 @@ class CrashHandlerActivity : FragmentActivity() {
                 }
             })
 
-            val iID = when (val installationId = DeviceInfoProvider.getInstallationId(this)) {
-                "00000000-0000-0000-0000-000000000000" -> "<Authorization revoked>"
-                "" -> "<Not assigned>"
-                else -> installationId
-            }
-
             textError = findViewById(R.id.text_error)
             btnRestart = findViewById(R.id.btn_restart)
             btnCopy = findViewById(R.id.btn_copy)
 
             textError!!.setTextIsSelectable(true)
-            textError!!.text = "\nApp has been crashed and needs to be restarted.\n\n===== BEGIN SYSTEM INFO =====\nAndroid version: ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT} ${Build.VERSION.CODENAME})\nROM version: ${Build.VERSION.INCREMENTAL}\nApp version: $appVersion ($versionCode)\nDevice model: ${Build.MODEL}\nAndroid device ID: ${Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)}\nInstallation ID: ${iID}\nTeslasoft ID version: ${SystemInfo.VERSION} (${SystemInfo.VERSION_CODE})\nEffective time: ${
+            textError!!.text = "\nApp has been crashed and needs to be restarted.\n\n===== BEGIN SYSTEM INFO =====\nAndroid version: ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT} ${Build.VERSION.CODENAME})\nROM version: ${Build.VERSION.INCREMENTAL}\nApp version: $appVersion ($versionCode)\nDevice model: ${Build.MODEL}\nAndroid device ID: ${Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)}\nInstallation ID: [data collection removed in this build]\nTeslasoft ID version: ${SystemInfo.VERSION} (${SystemInfo.VERSION_CODE})\nEffective time: ${
                 DateTimeFormatter.ISO_INSTANT.format(
                     Instant.now())}\n===== END SYSTEM INFO =====\n\n===== BEGIN OF CRASH =====\n$error\n===== END OF CRASH =====\n"
 

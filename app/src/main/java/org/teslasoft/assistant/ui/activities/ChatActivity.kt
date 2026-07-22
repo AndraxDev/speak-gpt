@@ -110,15 +110,11 @@ import com.aallam.openai.api.chat.ContentPart
 import com.aallam.openai.api.chat.ImagePart
 import com.aallam.openai.api.chat.TextPart
 import com.aallam.openai.api.chat.ToolCall
-import com.aallam.openai.api.chat.ToolChoice
-import com.aallam.openai.api.chat.chatCompletionRequest
 import com.aallam.openai.api.completion.CompletionRequest
 import com.aallam.openai.api.completion.TextCompletion
 import com.aallam.openai.api.core.Role
 import com.aallam.openai.api.file.FileSource
 import com.aallam.openai.api.http.Timeout
-import com.aallam.openai.api.image.ImageCreation
-import com.aallam.openai.api.image.ImageSize
 import com.aallam.openai.api.logging.LogLevel
 import com.aallam.openai.api.logging.Logger
 import com.aallam.openai.api.model.ModelId
@@ -137,7 +133,6 @@ import com.openai.client.OpenAIClient
 import com.openai.client.okhttp.OpenAIOkHttpClient
 import com.openai.models.images.Image
 import com.openai.models.images.ImageGenerateParams
-import eightbitlab.com.blurview.BlurView
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -148,14 +143,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-// import kotlinx.io.files.Path
-// import kotlinx.io.files.SystemFileSystem
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.add
 import kotlinx.serialization.json.jsonPrimitive
-import kotlinx.serialization.json.put
-import kotlinx.serialization.json.putJsonArray
-import kotlinx.serialization.json.putJsonObject
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ApiEndpointPreferences
 import org.teslasoft.assistant.preferences.ChatPreferences
@@ -181,7 +170,6 @@ import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStreamReader
-import java.net.URL
 import java.util.EnumSet
 import java.util.Locale
 import java.util.Optional
@@ -191,6 +179,8 @@ import androidx.core.view.WindowInsetsCompat
 import kotlinx.coroutines.flow.flowOn
 import okio.FileSystem
 import okio.Path.Companion.toPath
+import org.teslasoft.assistant.migration.UnsupportedImageModelMigration
+import org.teslasoft.assistant.util.AssistantErrorResponseParser
 
 class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
@@ -224,7 +214,6 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
     private var btnShareSelected: ImageButton? = null
     private var selectedCount: TextView? = null
     private var expandableWindowRoot: CoordinatorLayout? = null
-    private var blurSelectorView: BlurView? = null
 
     // Init chat
     private var messages: ArrayList<HashMap<String, Any>> = arrayListOf()
@@ -451,7 +440,6 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         }
     }
 
-    @Suppress("deprecation")
     private fun preloadAmoled() {
         if (isDarkThemeEnabled() && GlobalPreferences.getPreferences(this).getAmoledPitchBlack()) {
             threadLoader?.backgroundTintList = ColorStateList.valueOf(ResourcesCompat.getColor(resources, R.color.amoled_accent_50, theme))
@@ -801,6 +789,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
                 initChatId()
                 initSettings()
+                UnsupportedImageModelMigration().migrate(this, chatId)
 
                 if (savedInstanceState != null) {
                     if (Build.VERSION.SDK_INT != Build.VERSION_CODES.R) {
@@ -915,18 +904,6 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         btnShareSelected = findViewById(R.id.btn_share_selected)
         selectedCount = findViewById(R.id.text_selected_count)
         expandableWindowRoot = findViewById(R.id.expandable_window_root)
-        blurSelectorView = findViewById(R.id.attach_bg)
-
-        val radius = 16f
-        val decorView = window.decorView
-        val rootView = decorView.findViewById<ViewGroup>(android.R.id.content)
-        val windowBackground = decorView.background
-        blurSelectorView?.setupWith(rootView)
-            ?.setFrameClearDrawable(windowBackground)
-            ?.setBlurRadius(radius)
-
-        blurSelectorView?.outlineProvider = ViewOutlineProvider.BACKGROUND
-        blurSelectorView?.setClipToOutline(true)
 
         if (isDarkThemeEnabled() && GlobalPreferences.getPreferences(this).getAmoledPitchBlack()) {
             expandableWindowRoot?.backgroundTintList = ColorStateList.valueOf(getColor(R.color.amoled_window_background))
@@ -1978,7 +1955,6 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         startActivity(intent)
     }
 
-    @Suppress("deprecation")
     private suspend fun generateResponse(request: String, shouldPronounce: Boolean) {
         disableAutoScroll = false
         try {
@@ -2139,93 +2115,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                 progress?.visibility = View.GONE
                 messageInput?.requestFocus()
             } else {
-                val functionCallingEnabled: Boolean = preferences!!.getFunctionCalling()
-
-                if (functionCallingEnabled && openAIKey != null) {
-                    val cm = mutableListOf(
-                        ChatMessage(
-                            role = ChatRole.User,
-                            content = request
-                        )
-                    )
-
-                    val functionRequest = chatCompletionRequest {
-                        model = ModelId("gpt-4o")
-                        messages = cm
-
-                        tools {
-                            function(
-                                name = "generateImage",
-                                description = "Generate an image based on the entered prompt"
-                            ) {
-                                put("type", "object")
-                                putJsonObject("properties") {
-                                    putJsonObject("prompt") {
-                                        put("type", "string")
-                                        put("description", "The prompt for image generation")
-                                    }
-                                }
-                                putJsonArray("required") {
-                                    add("prompt")
-                                }
-                            }
-
-                            function(
-                                name = "searchAtInternet",
-                                description = "Search the Internet",
-                            ) {
-                                put("type", "object")
-                                putJsonObject("properties") {
-                                    putJsonObject("prompt") {
-                                        put("type", "string")
-                                        put("description", "Search query")
-                                    }
-                                }
-                                putJsonArray("required") {
-                                    add("prompt")
-                                }
-                            }
-                        }
-
-                        toolChoice = ToolChoice.Auto
-                    }
-
-                    val response1 = openAIAI?.chatCompletion(functionRequest)
-
-                    val message = response1?.choices?.first()?.message
-
-                    if (message?.toolCalls != null) {
-                        val toolsCalls = message.toolCalls!!
-
-                        if (toolsCalls.isEmpty()) {
-                            regularGPTResponse(shouldPronounce)
-                        } else {
-                            for (toolCall in toolsCalls) {
-                                require(toolCall is ToolCall.Function) { "Tool call is not a function" }
-                                toolCall.execute()
-                            }
-
-                            // Put timestamp to chat to sort chats by last message
-                            ChatPreferences.getChatPreferences().putTimestampToChatById(this, chatId)
-                        }
-                    } else {
-                        regularGPTResponse(shouldPronounce)
-                    }
-                } else if (functionCallingEnabled) {
-                    putMessage("Function calling requires OpenAI endpoint which is missing on your device. Please go to the settings and add OpenAI endpoint or disable Function Calling. OpenAI base url (host) is: https://api.openai.com/v1/ (don't forget to add slash at the end otherwise you will receive an error).", true)
-                    saveSettings()
-                    restoreUIState()
-                    MaterialAlertDialogBuilder(this, R.style.App_MaterialAlertDialog)
-                        .setTitle("Unsupported feature")
-                        .setMessage("Function calling feature is unavailable because it requires OpenAI endpoint. Would you like to disable this feature?")
-                        .setPositiveButton("Disable") { _, _ -> run {
-                            preferences?.setFunctionCalling(false)
-                        }}
-                        .setNegativeButton("Cancel") { _, _ -> }
-                        .show()
-                } else {
-                    regularGPTResponse(shouldPronounce)
-                }
+                regularGPTResponse(shouldPronounce)
             }
         } catch (_: CancellationException) {
             calculateCost()
@@ -2233,45 +2123,12 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                 restoreUIState()
             }
         } catch (e: Exception) {
-            val response = when {
-                e.stackTraceToString().contains("invalid model") -> {
-                    getString(R.string.prompt_no_model_provided)
-                }
-                e.stackTraceToString().contains("does not exist") -> {
-                    String.format(getString(R.string.prompt_model_not_available), model)
-                }
-                e.stackTraceToString().contains("Connect timeout has expired") || e.stackTraceToString().contains("SocketTimeoutException") -> {
-                    getString(R.string.prompt_timed_out)
-                }
-                e.stackTraceToString().contains("This model's maximum") -> {
-                    getString(R.string.prompt_max_tokens_error)
-                }
-                e.stackTraceToString().contains("No address associated with hostname") -> {
-                    getString(R.string.prompt_offline)
-                }
-                e.stackTraceToString().contains("Incorrect API key") -> {
-                    getString(R.string.prompt_key_invalid)
-                }
-                e.stackTraceToString().contains("you must provide a model") -> {
-                    getString(R.string.prompt_no_model)
-                }
-                e.stackTraceToString().contains("Software caused connection abort") -> {
-                    getString(R.string.prompt_error_unknown)
-                }
-                e.stackTraceToString().contains("You exceeded your current quota") -> {
-                    getString(R.string.prompt_quota_reached)
-                }
-                else -> {
-                    e.stackTraceToString() + "\n\n" + e.message
-                }
-            }
-
             if (messages[messages.size - 1]["isBot"] == false) {
                 putMessage("", true)
             }
 
             if (preferences?.showChatErrors() == true) {
-                messages[messages.size - 1]["message"] = "${messages[messages.size - 1]["message"]}\n\n${getString(R.string.prompt_show_error)}\n\n$response"
+                messages[messages.size - 1]["message"] = "${messages[messages.size - 1]["message"]}\n\n${getString(R.string.prompt_show_error)}\n\n${AssistantErrorResponseParser.parseFromException(this, e, model)}"
                 if (messages.size > 2) {
                     adapter?.notifyItemRangeChanged(messages.size - 3, messages.size - 1)
                 } else {
@@ -2664,7 +2521,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private suspend fun generateImageR(p: String) {
+    private fun generateImageR(p: String) {
         runOnUiThread {
             btnMicro?.isEnabled = false
             btnSend?.isEnabled = false
@@ -2673,110 +2530,33 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
         chat?.setOnTouchListener(null)
         disableAutoScroll = false
-        // chat?.transcriptMode = ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL
+
         try {
-            if (preferences!!.getImageModel().contains("gpt-image-")) {
-                val client: OpenAIClient = OpenAIOkHttpClient
-                    .builder()
-                    .baseUrl(apiEndpointPreferences!!.getApiEndpoint(this, preferences!!.getApiEndpointId()).host)
-                    .apiKey(apiEndpointPreferences!!.getApiEndpoint(this, preferences!!.getApiEndpointId()).apiKey)
-                    .build()
+            val client: OpenAIClient = OpenAIOkHttpClient
+                .builder()
+                .baseUrl(apiEndpointPreferences!!.getApiEndpoint(this, preferences!!.getApiEndpointId()).host)
+                .apiKey(apiEndpointPreferences!!.getApiEndpoint(this, preferences!!.getApiEndpointId()).apiKey)
+                .build()
 
-                val params = ImageGenerateParams.builder()
-                    .prompt(p)
-                    .model(preferences!!.getImageModel())
-                    .n(1L)
-                    .quality(ImageGenerateParams.Quality.AUTO) // Settings param "quality" does not exists yet.
-                    .size(ImageGenerateParams.Size._1024X1024) // Settings param "resolution" is ignored as this model supports only 1024x1024 resolution
-                    .build()
+            val params = ImageGenerateParams.builder()
+                .prompt(p)
+                .model(preferences!!.getImageModel())
+                .n(1L)
+                .quality(ImageGenerateParams.Quality.AUTO) // Settings param "quality" does not exists yet.
+                .size(ImageGenerateParams.Size._1024X1024) // Settings param "resolution" is ignored as this model supports only 1024x1024 resolution
+                .build()
 
-                generateGptImageJob = generateImageAsync(
-                    client,
-                    params,
-                    onSuccess = { file ->
-                        if (file == "cancelled") {
-                            runOnUiThread {
-                                restoreUIState()
-                            }
-                            return@generateImageAsync
-                        }
-
+            generateGptImageJob = generateImageAsync(
+                client,
+                params,
+                onSuccess = { file ->
+                    if (file == "cancelled") {
                         runOnUiThread {
-                            putMessage("~file:$file", true)
-
-                            chat?.setOnTouchListener { _, event ->
-                                run {
-                                    if (event.action == MotionEvent.ACTION_SCROLL || event.action == MotionEvent.ACTION_UP) {
-                                        // chat?.transcriptMode = ListView.TRANSCRIPT_MODE_DISABLED
-                                        disableAutoScroll = true
-                                    }
-                                    return@setOnTouchListener false
-                                }
-                            }
-
-                            scroll(true)
-                            scroll(false)
-
-                            saveSettings()
-
-                            btnMicro?.isEnabled = true
-                            btnSend?.isEnabled = true
-                            progress?.visibility = View.GONE
-
-                            messageInput?.requestFocus()
-
-                            // Put timestamp to chat to sort chats by last message
-                            ChatPreferences.getChatPreferences().putTimestampToChatById(this@ChatActivity, chatId)
-                            initSettings()
+                            restoreUIState()
                         }
-                    },
-                    onError = { error ->
-                        runOnUiThread {
-                            if (preferences?.showChatErrors() == true) {
-                                putMessage(
-                                    when (error) {
-                                        else -> error.stackTraceToString()
-                                    }, true
-                                )
-                            }
-                            btnMicro?.isEnabled = true
-                            btnSend?.isEnabled = true
-                            progress?.visibility = View.GONE
-                            messageInput?.requestFocus()
-                        }
+                        return@generateImageAsync
                     }
-                )
-            } else {
-                val images = openAIAI?.imageURL(
-                    creation = ImageCreation(
-                        prompt = p,
-                        model = ModelId(preferences!!.getImageModel()),
-                        n = 1,
-                        size = ImageSize(resolution)
-                    )
-                )
 
-                val imageUrl = images?.get(0)?.url!!
-
-                val url = URL(imageUrl)
-
-                val `is` = withContext(Dispatchers.IO) {
-                    url.openStream()
-                }
-                var file = ""
-                val th = Thread {
-                    val bytes: ByteArray = org.apache.commons.io.IOUtils.toByteArray(`is`)
-
-                    writeImageToCache(bytes)
-
-                    val encoded = java.util.Base64.getEncoder().encodeToString(bytes)
-
-                    file = Hash.hash(encoded)
-                }
-
-                th.start()
-                withContext(Dispatchers.IO) {
-                    th.join()
                     runOnUiThread {
                         putMessage("~file:$file", true)
 
@@ -2805,8 +2585,23 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
                         ChatPreferences.getChatPreferences().putTimestampToChatById(this@ChatActivity, chatId)
                         initSettings()
                     }
+                },
+                onError = { error ->
+                    runOnUiThread {
+                        if (preferences?.showChatErrors() == true) {
+                            putMessage(
+                                when (error) {
+                                    else -> error.stackTraceToString()
+                                }, true
+                            )
+                        }
+                        btnMicro?.isEnabled = true
+                        btnSend?.isEnabled = true
+                        progress?.visibility = View.GONE
+                        messageInput?.requestFocus()
+                    }
                 }
-            }
+            )
         } catch (_: CancellationException) {
             runOnUiThread {
                 restoreUIState()

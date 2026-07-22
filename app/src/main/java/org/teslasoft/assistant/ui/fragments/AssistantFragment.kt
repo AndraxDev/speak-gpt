@@ -93,15 +93,12 @@ import com.aallam.openai.api.chat.ContentPart
 import com.aallam.openai.api.chat.ImagePart
 import com.aallam.openai.api.chat.TextPart
 import com.aallam.openai.api.chat.ToolCall
-import com.aallam.openai.api.chat.ToolChoice
 import com.aallam.openai.api.chat.chatCompletionRequest
 import com.aallam.openai.api.completion.CompletionRequest
 import com.aallam.openai.api.completion.TextCompletion
 import com.aallam.openai.api.core.Role
 import com.aallam.openai.api.file.FileSource
 import com.aallam.openai.api.http.Timeout
-import com.aallam.openai.api.image.ImageCreation
-import com.aallam.openai.api.image.ImageSize
 import com.aallam.openai.api.logging.LogLevel
 import com.aallam.openai.api.logging.Logger
 import com.aallam.openai.api.model.ModelId
@@ -126,14 +123,8 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-// import kotlinx.io.files.Path
-// import kotlinx.io.files.SystemFileSystem
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.add
 import kotlinx.serialization.json.jsonPrimitive
-import kotlinx.serialization.json.put
-import kotlinx.serialization.json.putJsonArray
-import kotlinx.serialization.json.putJsonObject
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ApiEndpointPreferences
 import org.teslasoft.assistant.preferences.ChatPreferences
@@ -160,7 +151,6 @@ import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStreamReader
-import java.net.URL
 import java.util.Base64
 import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
@@ -174,6 +164,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.flowOn
 import okio.FileSystem
 import okio.Path.Companion.toPath
+import org.teslasoft.assistant.util.AssistantErrorResponseParser
 import java.util.Optional
 
 class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListener {
@@ -1397,7 +1388,6 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         startActivity(intent)
     }
 
-    @Suppress("deprecation")
     private suspend fun generateResponse(request: String, shouldPronounce: Boolean) {
         isProcessing = true
         assistantConversation?.visibility = View.VISIBLE
@@ -1571,135 +1561,19 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                 assistantLoading?.visibility = View.GONE
                 isProcessing = false
             } else {
-                val functionCallingEnabled: Boolean = preferences!!.getFunctionCalling()
-
-                if (functionCallingEnabled && openAIKey != null) {
-                    val cm = mutableListOf(
-                        ChatMessage(
-                            role = ChatRole.User,
-                            content = request
-                        )
-                    )
-
-                    val functionRequest = chatCompletionRequest {
-                        model = ModelId("gpt-4o")
-                        messages = cm
-
-                        tools {
-                            function(
-                                name = "generateImage",
-                                description = "Generate an image based on the entered prompt"
-                            ) {
-                                put("type", "object")
-                                putJsonObject("properties") {
-                                    putJsonObject("prompt") {
-                                        put("type", "string")
-                                        put("description", "The prompt for image generation")
-                                    }
-                                }
-                                putJsonArray("required") {
-                                    add("prompt")
-                                }
-                            }
-
-                            function(
-                                name = "searchAtInternet",
-                                description = "Search the Internet",
-                            ) {
-                                put("type", "object")
-                                putJsonObject("properties") {
-                                    putJsonObject("prompt") {
-                                        put("type", "string")
-                                        put("description", "Search query")
-                                    }
-                                }
-                                putJsonArray("required") {
-                                    add("prompt")
-                                }
-                            }
-                        }
-
-                        toolChoice = ToolChoice.Auto
-                    }
-
-                    val response1 = openAIAI?.chatCompletion(functionRequest)
-
-                    val message = response1?.choices?.first()?.message
-
-                    if (message?.toolCalls != null) {
-                        val toolsCalls = message.toolCalls!!
-
-                        if (toolsCalls.isEmpty()) {
-                            regularGPTResponse(shouldPronounce)
-                        } else {
-                            for (toolCall in toolsCalls) {
-                                require(toolCall is ToolCall.Function) { "Tool call is not a function" }
-                                toolCall.execute()
-                            }
-                        }
-                    } else {
-                        regularGPTResponse(shouldPronounce)
-                    }
-                } else if (functionCallingEnabled) {
-                    putMessage("Function calling requires OpenAI endpoint which is missing on your device. Please go to the settings and add OpenAI endpoint or disable Function Calling. OpenAI base url (host) is: https://api.openai.com/v1/ (don't forget to add slash at the end otherwise you will receive an error).", true)
-                    saveSettings()
-                    restoreUIState()
-                    MaterialAlertDialogBuilder(mContext ?: return, R.style.App_MaterialAlertDialog)
-                        .setTitle("Unsupported feature")
-                        .setMessage("Function calling feature is unavailable because it requires OpenAI endpoint. Would you like to disable this feature?")
-                        .setPositiveButton("Disable") { _, _ -> run {
-                            preferences?.setFunctionCalling(false)
-                        }}
-                        .setNegativeButton("Cancel") { _, _ -> }
-                        .show()
-                } else {
-                    regularGPTResponse(shouldPronounce)
-                }
+                regularGPTResponse(shouldPronounce)
             }
         } catch (_: CancellationException) {
             (mContext as Activity?)?.runOnUiThread {
                 restoreUIState()
             }
         } catch (e: Exception) {
-            val response = when {
-                e.stackTraceToString().contains("invalid model") -> {
-                    getString(R.string.prompt_no_model_provided)
-                }
-                e.stackTraceToString().contains("does not exist") -> {
-                    String.format(getString(R.string.prompt_model_not_available), model)
-                }
-                e.stackTraceToString().contains("Connect timeout has expired") || e.stackTraceToString().contains("SocketTimeoutException") -> {
-                    getString(R.string.prompt_timed_out)
-                }
-                e.stackTraceToString().contains("This model's maximum") -> {
-                    getString(R.string.prompt_max_tokens_error)
-                }
-                e.stackTraceToString().contains("No address associated with hostname") -> {
-                    getString(R.string.prompt_offline)
-                }
-                e.stackTraceToString().contains("Incorrect API key") -> {
-                    getString(R.string.prompt_key_invalid)
-                }
-                e.stackTraceToString().contains("you must provide a model") -> {
-                    getString(R.string.prompt_no_model)
-                }
-                e.stackTraceToString().contains("Software caused connection abort") -> {
-                    getString(R.string.prompt_error_unknown)
-                }
-                e.stackTraceToString().contains("You exceeded your current quota") -> {
-                    getString(R.string.prompt_quota_reached)
-                }
-                else -> {
-                    e.stackTraceToString()
-                }
-            }
-
             if (messages[messages.size - 1]["isBot"] == false) {
                 putMessage("", true)
             }
 
             if (preferences?.showChatErrors() == true) {
-                messages[messages.size - 1]["message"] = "${messages[messages.size - 1]["message"]}\n\n${getString(R.string.prompt_show_error)}\n\n$response"
+                messages[messages.size - 1]["message"] = "${messages[messages.size - 1]["message"]}\n\n${getString(R.string.prompt_show_error)}\n\n${AssistantErrorResponseParser.parseFromException(requireContext(), e, model)}"
                 if (messages.size > 2) {
                     adapter?.notifyItemRangeChanged(messages.size - 3, messages.size - 1)
                 } else {
@@ -2002,94 +1876,33 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         disableAutoScroll = false
 
         try {
-            if (preferences!!.getImageModel().contains("gpt-image-")) {
-                val client: OpenAIClient = OpenAIOkHttpClient
-                    .builder()
-                    .baseUrl(apiEndpointPreferences!!.getApiEndpoint(mContext ?: return, preferences!!.getApiEndpointId()).host)
-                    .apiKey(apiEndpointPreferences!!.getApiEndpoint(mContext ?: return, preferences!!.getApiEndpointId()).apiKey)
-                    .build()
+            val client: OpenAIClient = OpenAIOkHttpClient
+                .builder()
+                .baseUrl(apiEndpointPreferences!!.getApiEndpoint(mContext ?: return, preferences!!.getApiEndpointId()).host)
+                .apiKey(apiEndpointPreferences!!.getApiEndpoint(mContext ?: return, preferences!!.getApiEndpointId()).apiKey)
+                .build()
 
-                val params = ImageGenerateParams.builder()
-                    .prompt(p)
-                    .model(preferences!!.getImageModel())
-                    .n(1L)
-                    .quality(ImageGenerateParams.Quality.AUTO) // Settings param "quality" does not exists yet.
-                    .size(ImageGenerateParams.Size._1024X1024) // Settings param "resolution" is ignored as this model supports only 1024x1024 resolution
-                    .build()
+            val params = ImageGenerateParams.builder()
+                .prompt(p)
+                .model(preferences!!.getImageModel())
+                .n(1L)
+                .quality(ImageGenerateParams.Quality.AUTO) // Settings param "quality" does not exists yet.
+                .size(ImageGenerateParams.Size._1024X1024) // Settings param "resolution" is ignored as this model supports only 1024x1024 resolution
+                .build()
 
-                generateImageAsync(
-                    client,
-                    params,
-                    onSuccess = { file ->
-                        if (file == "cancelled") {
-                            (mContext as Activity?)?.runOnUiThread {
-                                restoreUIState()
-                            }
-                            return@generateImageAsync
-                        }
-
+            generateImageAsync(
+                client,
+                params,
+                onSuccess = { file ->
+                    if (file == "cancelled") {
                         (mContext as Activity?)?.runOnUiThread {
-                            putMessage("data:image/png;base64,$file", true)
-                            scroll(true)
-                            saveSettings()
-
-                            btnAssistantVoiceClickable?.isEnabled = true
-                            btnAssistantSend?.isEnabled = true
-                            assistantLoading?.visibility = View.GONE
-                            isProcessing = false
+                            restoreUIState()
                         }
-                    },
-                    onError = { error ->
-                        (mContext as Activity?)?.runOnUiThread {
-                            if (preferences?.showChatErrors() == true) {
-                                putMessage(
-                                    when (error) {
-                                        else -> error.stackTraceToString()
-                                    }, true
-                                )
-                            }
-                            btnAssistantVoiceClickable?.isEnabled = true
-                            btnAssistantSend?.isEnabled = true
-                            assistantLoading?.visibility = View.GONE
-                            isProcessing = false
-                        }
+                        return@generateImageAsync
                     }
-                )
-            } else {
-                val images = openAIAI?.imageURL(
-                    creation = ImageCreation(
-                        prompt = p,
-                        n = 1,
-                        model = ModelId(preferences!!.getImageModel()),
-                        size = ImageSize(resolution)
-                    )
-                )
-
-                val url = URL(images?.get(0)?.url!!)
-
-                val `is` = withContext(Dispatchers.IO) {
-                    url.openStream()
-                }
-
-                var path = ""
-
-                val th = Thread {
-                    val bytes: ByteArray = org.apache.commons.io.IOUtils.toByteArray(`is`)
-
-                    writeImageToCache(bytes)
-
-                    val encoded = Base64.getEncoder().encodeToString(bytes)
-
-                    path = "data:image/png;base64,$encoded"
-                }
-
-                th.start()
-
-                withContext(Dispatchers.IO) {
-                    th.join()
 
                     (mContext as Activity?)?.runOnUiThread {
-                        putMessage(path, true)
+                        putMessage("data:image/png;base64,$file", true)
                         scroll(true)
                         saveSettings()
 
@@ -2098,8 +1911,23 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                         assistantLoading?.visibility = View.GONE
                         isProcessing = false
                     }
+                },
+                onError = { error ->
+                    (mContext as Activity?)?.runOnUiThread {
+                        if (preferences?.showChatErrors() == true) {
+                            putMessage(
+                                when (error) {
+                                    else -> error.stackTraceToString()
+                                }, true
+                            )
+                        }
+                        btnAssistantVoiceClickable?.isEnabled = true
+                        btnAssistantSend?.isEnabled = true
+                        assistantLoading?.visibility = View.GONE
+                        isProcessing = false
+                    }
                 }
-            }
+            )
         } catch (_: CancellationException) {
             (mContext as Activity?)?.runOnUiThread {
                 restoreUIState()

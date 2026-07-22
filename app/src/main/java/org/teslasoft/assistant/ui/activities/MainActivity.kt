@@ -31,7 +31,6 @@ import android.os.Handler
 import android.os.Looper
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageButton
@@ -57,7 +56,6 @@ import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.navigation.NavigationBarView
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ApiEndpointPreferences
-import org.teslasoft.assistant.preferences.DeviceInfoProvider
 import org.teslasoft.assistant.preferences.GlobalPreferences
 import org.teslasoft.assistant.preferences.Logger
 import org.teslasoft.assistant.preferences.Preferences
@@ -74,7 +72,7 @@ import org.teslasoft.core.auth.SystemInfo
 import org.teslasoft.core.auth.internal.ApplicationSignature
 import java.util.EnumSet
 import androidx.core.graphics.drawable.toDrawable
-import eightbitlab.com.blurview.BlurView
+import org.teslasoft.assistant.migration.UnsupportedImageModelMigration
 
 class MainActivity : FragmentActivity() {
 
@@ -99,7 +97,6 @@ class MainActivity : FragmentActivity() {
     private var selectedTab: Int = 1
     private var isInitialized: Boolean = false
     private var splashScreen: SplashScreen? = null
-    private var debugBlurView: BlurView? = null
 
     private val appearanceFlags: HashMap<String, Boolean> = hashMapOf(
         "debug_mode" to false,
@@ -134,6 +131,8 @@ class MainActivity : FragmentActivity() {
 
         preferences = Preferences.getPreferences(this, "")
 
+        UnsupportedImageModelMigration().migrate(this, "")
+
         appearanceFlags["debug_mode"] = preferences!!.getDebugMode()
         appearanceFlags["amoled_pitch_black"] = preferences!!.getAmoledPitchBlack()
         appearanceFlags["hide_model_names"] = preferences!!.getHideModelNames()
@@ -152,15 +151,6 @@ class MainActivity : FragmentActivity() {
         btnTogglePWA = findViewById(R.id.btn_toggle_pwa)
         devIds = findViewById(R.id.dev_ids)
         threadLoader = findViewById(R.id.thread_loader)
-        debugBlurView = findViewById(R.id.debug_blur)
-
-        val decorView = window.decorView
-        val rootView: ViewGroup = decorView.findViewById(android.R.id.content)
-        val windowBackground = decorView.background
-
-        debugBlurView?.setupWith(rootView)
-            ?.setFrameClearDrawable(windowBackground)
-            ?.setBlurRadius(24f)
 
         threadLoader?.visibility = View.VISIBLE
 
@@ -231,8 +221,6 @@ class MainActivity : FragmentActivity() {
         }
 
         Thread {
-            DeviceInfoProvider.assignInstallationId(this)
-
             runOnUiThread {
                 navigationBar!!.setOnItemSelectedListener(NavigationBarView.OnItemSelectedListener { item: MenuItem ->
                     when (item.itemId) {
@@ -260,9 +248,6 @@ class MainActivity : FragmentActivity() {
 
                     return@OnItemSelectedListener false
                 })
-
-                val installationId = DeviceInfoProvider.getInstallationId(this)
-                val androidId = DeviceInfoProvider.getAndroidId(this)
 
                 if (preferences!!.getDebugMode()) {
                     btnDebugger?.visibility = View.VISIBLE
@@ -306,7 +291,7 @@ class MainActivity : FragmentActivity() {
                     val sha1 = signature.getCertificateFingerprint("SHA1")
                     val sha256 = signature.getCertificateFingerprint("SHA256")
 
-                    devIds?.text = "${devIds?.text}\n\nInstallation ID: $installationId\nAndroid ID: $androidId"
+                    devIds?.text = "${devIds?.text}\n\nInstallation ID: [data collection removed in this build]\nAndroid ID: [data collection removed in this build]"
                     devIds?.text = "${devIds?.text}\nApp Version: ${packageManager.getPackageInfo(packageName, 0).versionName} (${packageManager.getPackageInfo(packageName, 0).versionCode})"
                     devIds?.text = "${devIds?.text}\nTeslasoft ID version: ${SystemInfo.NAME} ${SystemInfo.VERSION} (${SystemInfo.VERSION_CODE})"
                     devIds?.text = "${devIds?.text}\nKotlin language version: ${KotlinVersion.CURRENT}"

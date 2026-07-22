@@ -46,16 +46,13 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.google.android.material.loadingindicator.LoadingIndicator
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import eightbitlab.com.blurview.BlurView
 import org.teslasoft.assistant.Api
 import org.teslasoft.assistant.Config.Companion.API_ENDPOINT
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.model.SimpleResponseModel
-import org.teslasoft.assistant.preferences.DeviceInfoProvider
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.PromptAdapterNew
 import org.teslasoft.assistant.ui.fragments.dialogs.PostPromptDialogFragment
-import org.teslasoft.assistant.util.Hash
 import org.teslasoft.assistant.util.WindowInsetsUtil
 import org.teslasoft.core.api.network.RequestNetwork
 import java.net.URLEncoder
@@ -95,7 +92,6 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private var btnTextModel: MaterialButton? = null
     private var btnImageModel: MaterialButton? = null
     private var btnSearch: ImageButton? = null
-    private var headerBackground: BlurView? = null
     private var promptsContainer: NestedScrollView? = null
 
     private var query = ""
@@ -128,8 +124,6 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             type: String,
             category: String
         ) {
-            val androidId = DeviceInfoProvider.getAndroidId(mContext ?: return)
-            val deviceIdHash = Hash.hash(androidId) // Add a layer of privacy by hashing the Android ID
             val appVersionCode: String = (mContext?.packageManager?.getPackageInfo(mContext?.packageName ?: "", 0)?.longVersionCode ?: 0L).toString()
 
             // Device version and app version are used to ensure compatibility and track changes and prevent abuse.
@@ -146,7 +140,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
             requestNetwork?.startRequestNetwork(
                 "GET",
-                "${API_ENDPOINT}/post.php?api_key=${Api.TESLASOFT_API_KEY}&name=${b64urlEncode(name)}&title=${b64urlEncode(title)}&desc=${b64urlEncode(desc)}&prompt=${b64urlEncode(prompt)}&type=$type&category=$category&deviceId=$deviceIdHash&appVersion=$appVersionCode&mode=base64",
+                "${API_ENDPOINT}/post.php?api_key=${Api.TESLASOFT_API_KEY}&name=${b64urlEncode(name)}&title=${b64urlEncode(title)}&desc=${b64urlEncode(desc)}&prompt=${b64urlEncode(prompt)}&type=$type&category=$category&deviceId=700000000000000F&appVersion=$appVersionCode&mode=base64",
                 "A",
                 promptPostListener
             )
@@ -296,25 +290,18 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun filter(plist: ArrayList<HashMap<String, String>>) {
-        if (selectedCategory == "all") {
-            promptsAdapter = PromptAdapterNew(plist, this)
-
-            promptsList?.adapter = promptsAdapter
-
-            promptsAdapter?.notifyDataSetChanged()
+        val displayedPrompts = if (selectedCategory == "all") {
+            plist
         } else {
-            val filtered = arrayListOf<HashMap<String, String>>()
-
-            for (map: HashMap<String, String> in plist) {
-                if (selectedCategory == map["category"]) {
-                    filtered.add(map)
-                }
-            }
-
-            promptsAdapter = PromptAdapterNew(filtered, this)
-            promptsList?.adapter = promptsAdapter
-            promptsAdapter?.notifyDataSetChanged()
+            plist.filterTo(arrayListOf()) { it["category"] == selectedCategory }
         }
+
+        if (promptsAdapter == null) {
+            promptsAdapter = PromptAdapterNew(this)
+            promptsList?.adapter = promptsAdapter
+        }
+
+        promptsAdapter?.submitPrompts(displayedPrompts)
 
         noInternetLayout?.visibility = View.GONE
         promptsContainer?.visibility = View.VISIBLE
@@ -362,14 +349,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         btnTextModel = view.findViewById(R.id.btn_text_model)
         btnImageModel = view.findViewById(R.id.btn_image_model)
 
-        headerBackground = view.findViewById(R.id.prompts_header)
         promptsContainer = view.findViewById(R.id.prompts_container)
-
-        val decorView: View = activity?.window?.decorView?: return
-        val rootView = decorView.findViewById<View>(android.R.id.content)
-        val windowBackground: Drawable = decorView.background
-
-        headerBackground?.setupWith(rootView as ViewGroup)?.setFrameClearDrawable(windowBackground)?.setBlurRadius(16f)
 
         promptsList?.layoutManager = LinearLayoutManager(mContext)
 
@@ -423,10 +403,9 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         refreshLayout?.setSize(SwipeRefreshLayout.LARGE)
         refreshLayout?.setOnRefreshListener(this)
 
-        promptsAdapter = PromptAdapterNew(prompts, this)
-
+        promptsAdapter = PromptAdapterNew(this)
         promptsList?.adapter = promptsAdapter
-        promptsAdapter?.notifyDataSetChanged()
+        promptsAdapter?.submitPrompts(prompts)
 
         requestNetwork = RequestNetwork((mContext as Activity?)?: return)
 

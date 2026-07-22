@@ -35,13 +35,25 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.util.Pair
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.color.MaterialColors
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.ui.activities.PromptViewActivity
 
-class PromptAdapterNew(private val data: ArrayList<HashMap<String, String>>?, private val mContext: Fragment) : RecyclerView.Adapter<PromptAdapterNew.ViewHolder>() {
+class PromptAdapterNew(private val mContext: Fragment) : ListAdapter<HashMap<String, String>, PromptAdapterNew.ViewHolder>(DiffCallback) {
+
+    private object DiffCallback : DiffUtil.ItemCallback<HashMap<String, String>>() {
+        override fun areItemsTheSame(oldItem: HashMap<String, String>, newItem: HashMap<String, String>): Boolean {
+            return oldItem["id"] == newItem["id"]
+        }
+
+        override fun areContentsTheSame(oldItem: HashMap<String, String>, newItem: HashMap<String, String>): Boolean {
+            return oldItem == newItem
+        }
+    }
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         private var background: MaterialCardView = view.findViewById(R.id.tile_bg)
@@ -141,18 +153,18 @@ class PromptAdapterNew(private val data: ArrayList<HashMap<String, String>>?, pr
         }
     }
 
+    fun submitPrompts(items: List<HashMap<String, String>>) {
+        submitList(ArrayList(items))
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.view_prompt, parent, false)
 
         return ViewHolder(view)
     }
 
-    override fun getItemCount(): Int {
-        return data!!.size
-    }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = data!![position]
+        val item = getItem(position)
         holder.bind(item, mContext)
     }
 }

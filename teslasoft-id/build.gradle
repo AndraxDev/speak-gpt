@@ -9,6 +9,7 @@ android {
 
     defaultConfig {
         minSdk 28
+        targetSdk 37
     }
 
     buildTypes {
@@ -31,8 +32,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_21
         targetCompatibility JavaVersion.VERSION_21
     }
+
     lint {
-        targetSdk 36
+        targetSdk 37
     }
 }
 
