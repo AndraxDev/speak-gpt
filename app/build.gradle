@@ -34,12 +34,12 @@ android {
 
         debug {
             debuggable false
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             multiDexEnabled true
             optimization {
-                enable = true // Enables code and resource optimizations.
+                enable = false // Enables code and resource optimizations.
             }
         }
     }
@@ -58,7 +58,7 @@ android {
 dependencies {
     implementation 'androidx.core:core-ktx:1.19.0'
     implementation 'androidx.activity:activity-ktx:1.13.0'
-    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'androidx.appcompat:appcompat:1.8.0'
     implementation 'com.google.android.material:material:1.14.0'
     implementation 'com.google.code.gson:gson:2.14.0'
     implementation 'com.aallam.openai:openai-client:3.8.2' // Do not touch, at least for now...
@@ -77,15 +77,16 @@ dependencies {
     implementation 'io.noties.markwon:ext-tables:4.6.2'
     implementation 'io.noties.markwon:ext-tasklist:4.6.2'
     implementation 'io.noties.markwon:ext-latex:4.6.2'
-    implementation 'com.squareup.okhttp3:okhttp:5.4.0'
+    implementation 'com.squareup.okhttp3:okhttp:5.5.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.2.0'
     implementation 'androidx.security:security-crypto-ktx:1.1.0'
     implementation 'com.google.mlkit:language-id:17.0.6'
     implementation 'cat.ereza:customactivityoncrash:2.4.0'
-    implementation 'org.conscrypt:conscrypt-android:2.6.1'
+    implementation 'org.conscrypt:conscrypt-android:2.7.0'
     implementation 'com.aallam.ktoken:ktoken:0.4.0'
     implementation 'androidx.core:core-splashscreen:1.2.0'
-    implementation ('com.openai:openai-java:4.43.0') {
+    implementation 'com.google.mlkit:genai-prompt:1.0.0-beta4'
+    implementation ('com.openai:openai-java:4.54.0') {
         exclude group: 'org.apache.httpcomponents.client5', module: 'httpclient5'
         exclude group: 'org.apache.httpcomponents.core5', module: 'httpcore5-h2'
         exclude group: 'org.apache.httpcomponents.core5', module: 'httpcore5'

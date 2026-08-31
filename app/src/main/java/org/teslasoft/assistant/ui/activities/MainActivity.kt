@@ -73,6 +73,7 @@ import org.teslasoft.core.auth.internal.ApplicationSignature
 import java.util.EnumSet
 import androidx.core.graphics.drawable.toDrawable
 import org.teslasoft.assistant.migration.UnsupportedImageModelMigration
+import org.teslasoft.assistant.ui.debug.aicore.OnDeviceInferenceActivity
 
 class MainActivity : FragmentActivity() {
 
@@ -94,6 +95,7 @@ class MainActivity : FragmentActivity() {
     private var root: ConstraintLayout? = null
     private var preferences: Preferences? = null
     private var btnDebugActivity: MaterialButton? = null
+    private var btnDebugAiCore: MaterialButton? = null
     private var selectedTab: Int = 1
     private var isInitialized: Boolean = false
     private var splashScreen: SplashScreen? = null
@@ -147,6 +149,7 @@ class MainActivity : FragmentActivity() {
         btnCloseDebugger = findViewById(R.id.btn_close_debugger)
         btnInitiateCrash = findViewById(R.id.btn_initiate_crash)
         btnDebugActivity = findViewById(R.id.btn_debug_activity)
+        btnDebugAiCore = findViewById(R.id.btn_debug_aicore)
         btnLaunchPWA = findViewById(R.id.btn_launch_pwa)
         btnTogglePWA = findViewById(R.id.btn_toggle_pwa)
         devIds = findViewById(R.id.dev_ids)
@@ -265,6 +268,10 @@ class MainActivity : FragmentActivity() {
 
                     btnDebugActivity?.setOnClickListener {
                         startActivity(Intent(this, DebugMaterial::class.java))
+                    }
+
+                    btnDebugAiCore?.setOnClickListener {
+                        startActivity(Intent(this, OnDeviceInferenceActivity::class.java))
                     }
 
                     btnLaunchPWA?.setOnClickListener {
