@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -78,7 +79,7 @@
         app:boxCornerRadiusTopStart="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout15">
+        app:layout_constraintTop_toBottomOf="@+id/btn_init">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/field_message"
@@ -111,7 +112,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toTopOf="@+id/btn_warmup"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -151,6 +152,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
             android:layout_weight="1"
+            android:enabled="false"
             android:text="Send" />
 
         <com.google.android.material.button.MaterialButton
@@ -159,7 +161,72 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
             android:layout_weight="1"
+            android:enabled="false"
             android:text="Stop" />
     </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/radioGroup5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_warning">
+
+        <RadioButton
+            android:id="@+id/btn_fast"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fast model" />
+
+        <RadioButton
+            android:id="@+id/btn_full"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Full model" />
+    </RadioGroup>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_init"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="24dp"
+        android:text="Initialize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup5" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progress_indicator"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:indeterminate="true"
+        app:wavelength="36dp"
+        app:waveAmplitude="4dp"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_warmup"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/output_scroll" />
+
+    <ImageButton
+        android:id="@+id/btn_clear"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/mtrl_shape_clover"
+        android:backgroundTint="@color/warn_bg"
+        android:elevation="6dp"
+        android:tint="@color/error"
+        android:src="@drawable/ic_close"
+        app:layout_constraintEnd_toEndOf="@+id/output_scroll"
+        app:layout_constraintTop_toTopOf="@+id/output_scroll"
+        app:srcCompat="@drawable/ic_close"
+        tools:ignore="UseAppTint" /> <!-- Nope! -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

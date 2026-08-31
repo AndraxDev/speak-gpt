@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.mlkit.genai.prompt.GenerativeModel
+import com.google.mlkit.genai.prompt.ModelPreference
+import com.google.mlkit.genai.prompt.ModelReleaseStage
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -25,10 +27,13 @@ class NanoViewModel : ViewModel() {
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
-    fun initialize() {
+    fun initialize(
+        releaseStage: Int = ModelReleaseStage.PREVIEW,
+        preference: Int = ModelPreference.FAST
+    ) {
         viewModelScope.launch {
             try {
-                nanoManager.initialize()
+                nanoManager.initialize(releaseStage, preference)
             } catch (e: Exception) {
                 _error.value = e.message
             }
