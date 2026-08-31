@@ -122,7 +122,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import org.teslasoft.assistant.R
@@ -156,16 +155,12 @@ import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
 import androidx.core.graphics.createBitmap
 import androidx.core.net.toUri
-import com.openai.client.OpenAIClient
-import com.openai.client.okhttp.OpenAIOkHttpClient
-import com.openai.models.images.Image
-import com.openai.models.images.ImageGenerateParams
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.flowOn
 import okio.FileSystem
 import okio.Path.Companion.toPath
+import org.json.JSONObject
 import org.teslasoft.assistant.util.AssistantErrorResponseParser
-import java.util.Optional
+import org.teslasoft.core.api.network.RequestNetwork
 
 class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListener {
 
@@ -243,7 +238,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
     private var apiEndpointObject: ApiEndpointObject? = null
 
     // Init DALL-e
-    private var resolution = "512x152"
+    private var resolution = "1024x1024"
 
     // Autosave
     private var chatPreferences: ChatPreferences? = null
@@ -1282,7 +1277,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                 if (openAIKey == null) {
                     openAIMissing("dalle", x)
                 } else {
-                    sendImageRequest(x)
+                    generateImageR(x)
                 }
             } else if (m.lowercase().contains("/imagine") && m.length <= 9 && imagineCommandEnabled) {
                 putMessage("Prompt can not be empty. Use /imagine &lt;PROMPT&gt;", true)
@@ -1326,19 +1321,6 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         resolution = preferences!!.getResolution()
     }
 
-    private fun sendImageRequest(str: String) {
-        CoroutineScope(Dispatchers.Main).launch {
-            assistantLoading?.setOnClickListener {
-                cancel()
-                restoreUIState()
-            }
-
-            try {
-                generateImageR(str)
-            } catch (_: CancellationException) { /* ignore */ }
-        }
-    }
-
     private fun startRecognition() {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
@@ -1365,10 +1347,6 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         scroll(true)
 
         updateMessagesSelectionProjection()
-    }
-
-    private fun generateImages(prompt: String) {
-        sendImageRequest(prompt)
     }
 
     private fun searchInternet(prompt: String) {
@@ -1611,9 +1589,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
             assistantLoading?.visibility = View.VISIBLE
         }
 
-        CoroutineScope(Dispatchers.Main).launch {
-            generateImages(prompt)
-        }
+        generateImageR(prompt)
     }
 
     private fun searchAtInternet(args: JsonObject) {
@@ -1824,46 +1800,78 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
         }
     }
 
-    fun generateImageAsync(
-        client: OpenAIClient,
-        params: ImageGenerateParams,
-        onSuccess: (String) -> Unit,
-        onError: (Throwable) -> Unit
-    ) : Job {
-        return CoroutineScope(Dispatchers.IO).launch {
-            assistantLoading?.setOnClickListener {
-                cancel()
-                restoreUIState()
+    private var imageRequestNetwork: RequestNetwork? = null
+
+    private val imageRequestListener: RequestNetwork.RequestListener = object : RequestNetwork.RequestListener {
+        @SuppressLint("ClickableViewAccessibility")
+        override fun onResponse(tag: String, message: String) {
+            if (mContext == null) {
+                return // UI context has died before operation finished, ignore result
             }
 
             try {
-                val response = client.images().generate(params)
-                val data: Optional<List<Image>> = response.data()
-                val images = data.orElse(emptyList())
+                val json = JSONObject(message)
 
-                val b64 = images.firstOrNull()?.b64Json()?.get()
-                    ?: throw NullPointerException("Base64 string is null or empty, stopping...")
+                val data = json.getJSONArray("data")
+                if (data.length() == 0) {
+                    throw IllegalStateException("Image response contains no data")
+                }
+
+                val b64 = data
+                    .getJSONObject(0)
+                    .getString("b64_json")
+
+                if (b64.isBlank()) {
+                    throw IllegalStateException("Image response contains empty b64_json")
+                }
 
                 val byteArray = android.util.Base64.decode(b64, android.util.Base64.DEFAULT)
                 writeImageToCache(byteArray)
 
-                withContext(Dispatchers.Main) {
-                    onSuccess(b64)
-                }
-            } catch (_: CancellationException) {
-                withContext(Dispatchers.Main) {
-                    onSuccess("cancelled")
+                (mContext as Activity?)?.runOnUiThread {
+                    putMessage("data:image/png;base64,$b64", true)
+                    scroll(true)
+                    saveSettings()
+
+                    btnAssistantVoiceClickable?.isEnabled = true
+                    btnAssistantSend?.isEnabled = true
+                    assistantLoading?.visibility = View.GONE
+                    isProcessing = false
                 }
             } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    onError(e)
+                (mContext as Activity?)?.runOnUiThread {
+                    if (preferences?.showChatErrors() == true) {
+                        putMessage(
+                            e.stackTraceToString() + "\n\nServer response: $message", true
+                        )
+                        saveSettings()
+                    }
+                    btnAssistantVoiceClickable?.isEnabled = true
+                    btnAssistantSend?.isEnabled = true
+                    assistantLoading?.visibility = View.GONE
+                    isProcessing = false
                 }
+            }
+        }
+
+        override fun onErrorResponse(tag: String, message: String) {
+            (mContext as Activity?)?.runOnUiThread {
+                if (preferences?.showChatErrors() == true) {
+                    putMessage(
+                        message, true
+                    )
+                    saveSettings()
+                }
+                btnAssistantVoiceClickable?.isEnabled = true
+                btnAssistantSend?.isEnabled = true
+                assistantLoading?.visibility = View.GONE
+                isProcessing = false
             }
         }
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private suspend fun generateImageR(p: String) {
+    private fun generateImageR(p: String) {
         isProcessing = true
         btnAssistantVoiceClickable?.isEnabled = false
         assistantConversation?.setOnTouchListener(null)
@@ -1875,63 +1883,28 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
 
         disableAutoScroll = false
 
+        assistantLoading?.setOnClickListener {
+            restoreUIState()
+        }
+
         try {
-            val client: OpenAIClient = OpenAIOkHttpClient
-                .builder()
-                .baseUrl(apiEndpointPreferences!!.getApiEndpoint(mContext ?: return, preferences!!.getApiEndpointId()).host)
-                .apiKey(apiEndpointPreferences!!.getApiEndpoint(mContext ?: return, preferences!!.getApiEndpointId()).apiKey)
-                .build()
+            val authHeaders: HashMap<String, Any> = hashMapOf()
+            authHeaders["Authorization"] = "Bearer ${apiEndpointPreferences!!.getApiEndpoint(mContext ?: return, preferences!!.getApiEndpointId()).apiKey}"
+            authHeaders["Content-Type"] = "application/json"
+            val requestBodyObject = HashMap<String, Any>()
+            requestBodyObject["prompt"] = p
+            requestBodyObject["model"] = preferences!!.getImageModel()
+            requestBodyObject["size"] = "1024x1024"
 
-            val params = ImageGenerateParams.builder()
-                .prompt(p)
-                .model(preferences!!.getImageModel())
-                .n(1L)
-                .quality(ImageGenerateParams.Quality.AUTO) // Settings param "quality" does not exists yet.
-                .size(ImageGenerateParams.Size._1024X1024) // Settings param "resolution" is ignored as this model supports only 1024x1024 resolution
-                .build()
-
-            generateImageAsync(
-                client,
-                params,
-                onSuccess = { file ->
-                    if (file == "cancelled") {
-                        (mContext as Activity?)?.runOnUiThread {
-                            restoreUIState()
-                        }
-                        return@generateImageAsync
-                    }
-
-                    (mContext as Activity?)?.runOnUiThread {
-                        putMessage("data:image/png;base64,$file", true)
-                        scroll(true)
-                        saveSettings()
-
-                        btnAssistantVoiceClickable?.isEnabled = true
-                        btnAssistantSend?.isEnabled = true
-                        assistantLoading?.visibility = View.GONE
-                        isProcessing = false
-                    }
-                },
-                onError = { error ->
-                    (mContext as Activity?)?.runOnUiThread {
-                        if (preferences?.showChatErrors() == true) {
-                            putMessage(
-                                when (error) {
-                                    else -> error.stackTraceToString()
-                                }, true
-                            )
-                        }
-                        btnAssistantVoiceClickable?.isEnabled = true
-                        btnAssistantSend?.isEnabled = true
-                        assistantLoading?.visibility = View.GONE
-                        isProcessing = false
-                    }
-                }
+            imageRequestNetwork = RequestNetwork((mContext as Activity?) ?: return)
+            imageRequestNetwork?.setHeaders(authHeaders)
+            imageRequestNetwork?.setParams(requestBodyObject, 1)
+            imageRequestNetwork?.startRequestNetwork(
+                "POST",
+                "https://api.openai.com/v1/images/generations",
+                "ACTION_GENERATE_IMAGE",
+                imageRequestListener
             )
-        } catch (_: CancellationException) {
-            (mContext as Activity?)?.runOnUiThread {
-                restoreUIState()
-            }
         } catch (e: Exception) {
             if (preferences?.showChatErrors() == true) {
                 when {
@@ -1973,12 +1946,6 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
             btnAssistantSend?.isEnabled = true
             assistantLoading?.visibility = View.GONE
             isProcessing = false
-        } finally {
-            if (!preferences!!.getImageModel().contains("gpt-image-")) {
-                (mContext as Activity?)?.runOnUiThread {
-                    restoreUIState()
-                }
-            }
         }
     }
 
@@ -2848,14 +2815,7 @@ class AssistantFragment : BottomSheetDialogFragment(), ChatAdapter.OnUpdateListe
                 btnAssistantSend?.isEnabled = false
                 assistantLoading?.visibility = View.VISIBLE
 
-                CoroutineScope(Dispatchers.Main).launch {
-                    assistantLoading?.setOnClickListener {
-                        cancel()
-                        restoreUIState()
-                    }
-
-                    generateImageR(prompt)
-                }
+                generateImageR(prompt)
             }
             "tts" -> speak(prompt)
             "whisper" -> handleWhisperSpeechRecognition()

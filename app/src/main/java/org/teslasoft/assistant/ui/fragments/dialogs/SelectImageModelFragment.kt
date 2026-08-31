@@ -52,6 +52,7 @@ class SelectImageModelFragment : DialogFragment() {
     private var gptImage: RadioButton? = null
     private var gptImageMini: RadioButton? = null
     private var gptImage15: RadioButton? = null
+    private var gptImage2: RadioButton? = null
 
     private var imageModel = ""
 
@@ -62,12 +63,14 @@ class SelectImageModelFragment : DialogFragment() {
         gptImage = view.findViewById(R.id.gpt_image)
         gptImageMini = view.findViewById(R.id.gpt_image_mini)
         gptImage15 = view.findViewById(R.id.gpt_image1_5)
+        gptImage2 = view.findViewById(R.id.gpt_image2)
 
         imageModel = requireArguments().getString("imageModel").toString()
 
         gptImage?.isChecked = imageModel == "gpt-image-1"
         gptImageMini?.isChecked = imageModel == "gpt-image-1-mini"
         gptImage15?.isChecked = imageModel == "gpt-image-1.5"
+        gptImage2?.isChecked = imageModel == "gpt-image-2"
 
         when (imageModel) {
             "gpt-image-1" -> {
@@ -81,11 +84,16 @@ class SelectImageModelFragment : DialogFragment() {
             "gpt-image-1.5" -> {
                 setSelection(gptImage15, null)
             }
+
+            "gpt-image-2" -> {
+                setSelection(gptImage2, null)
+            }
         }
 
         bindOnClickListener(gptImage, "gpt-image-1")
         bindOnClickListener(gptImageMini, "gpt-image-1-mini")
         bindOnClickListener(gptImage15, "gpt-image-1.5")
+        bindOnClickListener(gptImage2, "gpt-image-2")
 
         builder!!.setView(view)
             .setCancelable(false)
@@ -121,7 +129,8 @@ class SelectImageModelFragment : DialogFragment() {
     private fun clearSelection() {
         clearSingleSelection(gptImage, isTop = true)
         clearSingleSelection(gptImageMini)
-        clearSingleSelection(gptImage15, isBottom = true)
+        clearSingleSelection(gptImage15)
+        clearSingleSelection(gptImage2, isBottom = true)
     }
 
     private fun getDarkAccentDrawable(drawable: Drawable, context: Context) : Drawable {

@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
 import com.google.mlkit.genai.prompt.GenerativeModel
@@ -127,11 +128,13 @@ class OnDeviceInferenceActivity : FragmentActivity() {
 
         viewModel.error.observe(this) { error ->
             if (error != null) {
-                Toast.makeText(
-                    this,
-                    error,
-                    Toast.LENGTH_LONG
-                ).show()
+                runOnUiThread {
+                    MaterialAlertDialogBuilder(this)
+                        .setTitle("Error")
+                        .setMessage(error)
+                        .setPositiveButton("OK", null)
+                        .show()
+                }
             }
         }
     }

@@ -71,3 +71,5 @@
 # Keep the public GenAI API.
 -keep class com.google.mlkit.genai.** { *; }
 -keep interface com.google.mlkit.genai.** { *; }
+
+-keep class kotlin.coroutines.Continuation { *; }

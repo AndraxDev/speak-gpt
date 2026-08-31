@@ -62,7 +62,6 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewOutlineProvider
 import android.view.WindowInsets
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -129,10 +128,6 @@ import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.gson.Gson
 import com.google.mlkit.nl.languageid.LanguageIdentification
 import com.google.mlkit.nl.languageid.LanguageIdentifier
-import com.openai.client.OpenAIClient
-import com.openai.client.okhttp.OpenAIOkHttpClient
-import com.openai.models.images.Image
-import com.openai.models.images.ImageGenerateParams
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -142,7 +137,6 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import org.teslasoft.assistant.R
@@ -172,15 +166,16 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.util.EnumSet
 import java.util.Locale
-import java.util.Optional
 import kotlin.time.Duration.Companion.seconds
 import androidx.core.content.edit
 import androidx.core.view.WindowInsetsCompat
 import kotlinx.coroutines.flow.flowOn
 import okio.FileSystem
 import okio.Path.Companion.toPath
+import org.json.JSONObject
 import org.teslasoft.assistant.migration.UnsupportedImageModelMigration
 import org.teslasoft.assistant.util.AssistantErrorResponseParser
+import org.teslasoft.core.api.network.RequestNetwork
 
 class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
 
@@ -255,7 +250,7 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
     private var apiEndpointObject: ApiEndpointObject? = null
 
     // Init DALL-e
-    private var resolution = "512x152"
+    private var resolution = "1024x1024"
 
     private var messageCounter = 0
 
@@ -2480,42 +2475,87 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         }
     }
 
-    fun generateImageAsync(
-        client: OpenAIClient,
-        params: ImageGenerateParams,
-        onSuccess: (String) -> Unit,
-        onError: (Throwable) -> Unit
-    ) : Job {
-        return CoroutineScope(Dispatchers.IO).launch {
-            progress?.setOnClickListener {
-                cancel()
-                restoreUIState()
-            }
+    private var imageRequestNetwork: RequestNetwork? = null
 
+    private val imageRequestListener: RequestNetwork.RequestListener = object : RequestNetwork.RequestListener {
+        @SuppressLint("ClickableViewAccessibility")
+        override fun onResponse(tag: String, message: String) {
             try {
-                var imageId: String
-                val response = client.images().generate(params)
-                val data: Optional<List<Image>> = response.data()
-                val images = data.orElse(emptyList())
+                val json = JSONObject(message)
 
-                val b64 = images.firstOrNull()?.b64Json()?.get()
-                    ?: throw NullPointerException("Base64 string is null or empty, stopping...")
+                val data = json.getJSONArray("data")
+                if (data.length() == 0) {
+                    throw IllegalStateException("Image response contains no data")
+                }
+
+                val b64 = data
+                    .getJSONObject(0)
+                    .getString("b64_json")
+
+                if (b64.isBlank()) {
+                    throw IllegalStateException("Image response contains empty b64_json")
+                }
 
                 val byteArray = Base64.decode(b64, Base64.DEFAULT)
                 writeImageToCache(byteArray)
-                imageId = Hash.hash(b64)
+                var imageId = Hash.hash(b64)
 
-                withContext(Dispatchers.Main) {
-                    onSuccess(imageId)
+                runOnUiThread {
+                    putMessage("~file:$imageId", true)
+
+                    chat?.setOnTouchListener { _, event ->
+                        run {
+                            if (event.action == MotionEvent.ACTION_SCROLL || event.action == MotionEvent.ACTION_UP) {
+                                disableAutoScroll = true
+                            }
+                            return@setOnTouchListener false
+                        }
+                    }
+
+                    scroll(true)
+                    scroll(false)
+
+                    saveSettings()
+
+                    btnMicro?.isEnabled = true
+                    btnSend?.isEnabled = true
+                    progress?.visibility = View.GONE
+
+                    messageInput?.requestFocus()
+
+                    // Put timestamp to chat to sort chats by last message
+                    ChatPreferences.getChatPreferences().putTimestampToChatById(this@ChatActivity, chatId)
+                    initSettings()
                 }
-            } catch (_: CancellationException) {
-                withContext(Dispatchers.Main) {
-                    onSuccess("cancelled")
-                }
+
             } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    onError(e)
+                runOnUiThread {
+                    if (preferences?.showChatErrors() == true) {
+                        putMessage(
+                            e.stackTraceToString() + "\n\nServer response: $message", true
+                        )
+                        saveSettings()
+                    }
+                    btnMicro?.isEnabled = true
+                    btnSend?.isEnabled = true
+                    progress?.visibility = View.GONE
+                    messageInput?.requestFocus()
                 }
+            }
+        }
+
+        override fun onErrorResponse(tag: String, message: String) {
+            runOnUiThread {
+                if (preferences?.showChatErrors() == true) {
+                    putMessage(
+                        message, true
+                    )
+                    saveSettings()
+                }
+                btnMicro?.isEnabled = true
+                btnSend?.isEnabled = true
+                progress?.visibility = View.GONE
+                messageInput?.requestFocus()
             }
         }
     }
@@ -2532,80 +2572,27 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
         disableAutoScroll = false
 
         try {
-            val client: OpenAIClient = OpenAIOkHttpClient
-                .builder()
-                .baseUrl(apiEndpointPreferences!!.getApiEndpoint(this, preferences!!.getApiEndpointId()).host)
-                .apiKey(apiEndpointPreferences!!.getApiEndpoint(this, preferences!!.getApiEndpointId()).apiKey)
-                .build()
-
-            val params = ImageGenerateParams.builder()
-                .prompt(p)
-                .model(preferences!!.getImageModel())
-                .n(1L)
-                .quality(ImageGenerateParams.Quality.AUTO) // Settings param "quality" does not exists yet.
-                .size(ImageGenerateParams.Size._1024X1024) // Settings param "resolution" is ignored as this model supports only 1024x1024 resolution
-                .build()
-
-            generateGptImageJob = generateImageAsync(
-                client,
-                params,
-                onSuccess = { file ->
-                    if (file == "cancelled") {
-                        runOnUiThread {
-                            restoreUIState()
-                        }
-                        return@generateImageAsync
-                    }
-
-                    runOnUiThread {
-                        putMessage("~file:$file", true)
-
-                        chat?.setOnTouchListener { _, event ->
-                            run {
-                                if (event.action == MotionEvent.ACTION_SCROLL || event.action == MotionEvent.ACTION_UP) {
-                                    // chat?.transcriptMode = ListView.TRANSCRIPT_MODE_DISABLED
-                                    disableAutoScroll = true
-                                }
-                                return@setOnTouchListener false
-                            }
-                        }
-
-                        scroll(true)
-                        scroll(false)
-
-                        saveSettings()
-
-                        btnMicro?.isEnabled = true
-                        btnSend?.isEnabled = true
-                        progress?.visibility = View.GONE
-
-                        messageInput?.requestFocus()
-
-                        // Put timestamp to chat to sort chats by last message
-                        ChatPreferences.getChatPreferences().putTimestampToChatById(this@ChatActivity, chatId)
-                        initSettings()
-                    }
-                },
-                onError = { error ->
-                    runOnUiThread {
-                        if (preferences?.showChatErrors() == true) {
-                            putMessage(
-                                when (error) {
-                                    else -> error.stackTraceToString()
-                                }, true
-                            )
-                        }
-                        btnMicro?.isEnabled = true
-                        btnSend?.isEnabled = true
-                        progress?.visibility = View.GONE
-                        messageInput?.requestFocus()
-                    }
-                }
-            )
-        } catch (_: CancellationException) {
-            runOnUiThread {
+            progress?.setOnClickListener {
                 restoreUIState()
             }
+
+            val authHeaders: HashMap<String, Any> = hashMapOf()
+            authHeaders["Authorization"] = "Bearer ${apiEndpointPreferences!!.getApiEndpoint(this, preferences!!.getApiEndpointId()).apiKey}"
+            authHeaders["Content-Type"] = "application/json"
+            val requestBodyObject = HashMap<String, Any>()
+            requestBodyObject["prompt"] = p
+            requestBodyObject["model"] = preferences!!.getImageModel()
+            requestBodyObject["size"] = "1024x1024"
+
+            imageRequestNetwork = RequestNetwork(this@ChatActivity)
+            imageRequestNetwork?.setHeaders(authHeaders)
+            imageRequestNetwork?.setParams(requestBodyObject, 1)
+            imageRequestNetwork?.startRequestNetwork(
+                "POST",
+                "https://api.openai.com/v1/images/generations",
+                "ACTION_GENERATE_IMAGE",
+                imageRequestListener
+            )
         } catch (e: Exception) {
             if (preferences?.showChatErrors() == true) {
                 putMessage(
@@ -2647,12 +2634,6 @@ class ChatActivity : FragmentActivity(), ChatAdapter.OnUpdateListener {
             progress?.visibility = View.GONE
 
             messageInput?.requestFocus()
-        } finally {
-            if (!preferences!!.getImageModel().contains("gpt-image-")) {
-                runOnUiThread {
-                    restoreUIState()
-                }
-            }
         }
     }
 

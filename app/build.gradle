@@ -16,7 +16,7 @@ android {
         applicationId "org.teslasoft.assistant"
         minSdk 28
         targetSdk 37
-        versionCode 44001
+        versionCode 44002
         versionName "4.40-beta"
     }
 
@@ -34,12 +34,12 @@ android {
 
         debug {
             debuggable false
-            minifyEnabled false
-            shrinkResources false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             multiDexEnabled true
             optimization {
-                enable = false // Enables code and resource optimizations.
+                enable = true // Enables code and resource optimizations.
             }
         }
     }
@@ -86,12 +86,6 @@ dependencies {
     implementation 'com.aallam.ktoken:ktoken:0.4.0'
     implementation 'androidx.core:core-splashscreen:1.2.0'
     implementation 'com.google.mlkit:genai-prompt:1.0.0-beta4'
-    implementation ('com.openai:openai-java:4.54.0') {
-        exclude group: 'org.apache.httpcomponents.client5', module: 'httpclient5'
-        exclude group: 'org.apache.httpcomponents.core5', module: 'httpcore5-h2'
-        exclude group: 'org.apache.httpcomponents.core5', module: 'httpcore5'
-    }
-
     implementation ('com.github.chrisbanes.photoview:library:1.2.4') {
         exclude group: 'com.android.support', module: 'support-v4'
     }
