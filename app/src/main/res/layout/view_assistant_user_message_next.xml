@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**************************************************************************
+* Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*  http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+**************************************************************************/
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ui"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="24dp"
+        android:gravity="end"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bubble_bg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="0dp"
+            android:background="@drawable/btn_accent_24"
+            android:backgroundTint="@color/accent_250"
+            android:gravity="end"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/username"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="4dp"
+                android:text="@string/user"
+                android:textColor="@color/accent_900"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:contentDescription="@null"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_launcher_foreground" />
+
+            <TextView
+                android:id="@+id/message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="12dp"
+                android:text="Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis."
+                android:textColor="@color/text"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/image_frame"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/message">
+
+                <ImageView
+                    android:id="@+id/dalle_image"
+                    android:layout_width="240dp"
+                    android:layout_height="240dp"
+                    android:contentDescription="@null"
+                    app:srcCompat="@drawable/assistant" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/image_frame">
+
+                <ImageButton
+                    android:id="@+id/btn_report"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_accent_tonal"
+                    android:contentDescription="Report abuse"
+                    android:descendantFocusability="blocksDescendants"
+                    android:src="@drawable/ic_report"
+                    android:tooltipText="Report abuse"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_retry"
+                    app:layout_constraintTop_toTopOf="@+id/username"
+                    app:srcCompat="@drawable/ic_report" />
+
+                <ImageButton
+                    android:id="@+id/btn_share"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_accent_tonal"
+                    android:contentDescription="Share message"
+                    android:descendantFocusability="blocksDescendants"
+                    android:src="@drawable/ic_share"
+                    android:tooltipText="Share message"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_share" />
+
+                <ImageButton
+                    android:id="@+id/btn_retry"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/btn_accent_tonal"
+                    android:backgroundTint="@color/accent_250"
+                    android:contentDescription="@string/btn_msg_retry"
+                    android:descendantFocusability="blocksDescendants"
+                    android:src="@drawable/ic_retry"
+                    android:tint="@color/accent_900"
+                    android:tooltipText="@string/btn_msg_retry"
+                    app:srcCompat="@drawable/ic_retry"
+                    tools:ignore="UseAppTint" />
+
+                <ImageButton
+                    android:id="@+id/btn_copy"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/btn_accent_tonal"
+                    android:backgroundTint="@color/accent_250"
+                    android:contentDescription="@string/btn_copy"
+                    android:descendantFocusability="blocksDescendants"
+                    android:tint="@color/accent_900"
+                    android:tooltipText="@string/btn_copy"
+                    app:srcCompat="@drawable/ic_copy"
+                    tools:ignore="UseAppTint" />
+
+                <ImageButton
+                    android:id="@+id/btn_edit"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/btn_accent_tonal"
+                    android:backgroundTint="@color/accent_250"
+                    android:contentDescription="@string/btn_msg_edit"
+                    android:descendantFocusability="blocksDescendants"
+                    android:src="@drawable/ic_edit"
+                    android:tint="@color/accent_900"
+                    android:tooltipText="@string/btn_msg_edit"
+                    app:srcCompat="@drawable/ic_edit"
+                    tools:ignore="UseAppTint" />
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

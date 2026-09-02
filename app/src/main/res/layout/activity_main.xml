@@ -67,6 +67,7 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    android:background="@color/shadow"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -196,6 +197,21 @@
                             app:layout_constraintTop_toBottomOf="@+id/btn_debug_activity" />
 
                         <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_debug_next_ui"
+                            style="@style/Widget.Material3.Button.TonalButton"
+                            android:layout_width="0dp"
+                            android:layout_height="56dp"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_marginEnd="24dp"
+                            android:background="@drawable/btn_accent_center"
+                            android:text="Try NextUI"
+                            app:backgroundTint="@color/blur_background"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/btn_debug_aicore" />
+
+                        <com.google.android.material.button.MaterialButton
                             android:id="@+id/btn_launch_pwa"
                             style="@style/Widget.Material3.Button.TonalButton"
                             android:layout_width="0dp"
@@ -208,7 +224,7 @@
                             app:backgroundTint="@color/blur_background"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/btn_debug_aicore" />
+                            app:layout_constraintTop_toBottomOf="@+id/btn_debug_next_ui" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btn_toggle_pwa"

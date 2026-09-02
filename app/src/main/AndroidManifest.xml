@@ -67,6 +67,12 @@
         </activity>
 
         <activity
+            android:name=".ui.activities.ChatNextActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+
+        <activity
             android:name=".ui.activities.DebugMaterial"
             android:exported="false"
             android:windowSoftInputMode="adjustResize">

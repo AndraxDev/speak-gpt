@@ -96,6 +96,7 @@ class MainActivity : FragmentActivity() {
     private var preferences: Preferences? = null
     private var btnDebugActivity: MaterialButton? = null
     private var btnDebugAiCore: MaterialButton? = null
+    private var btnDebugNextUI: MaterialButton? = null
     private var selectedTab: Int = 1
     private var isInitialized: Boolean = false
     private var splashScreen: SplashScreen? = null
@@ -150,6 +151,7 @@ class MainActivity : FragmentActivity() {
         btnInitiateCrash = findViewById(R.id.btn_initiate_crash)
         btnDebugActivity = findViewById(R.id.btn_debug_activity)
         btnDebugAiCore = findViewById(R.id.btn_debug_aicore)
+        btnDebugNextUI = findViewById(R.id.btn_debug_next_ui)
         btnLaunchPWA = findViewById(R.id.btn_launch_pwa)
         btnTogglePWA = findViewById(R.id.btn_toggle_pwa)
         devIds = findViewById(R.id.dev_ids)
@@ -272,6 +274,10 @@ class MainActivity : FragmentActivity() {
 
                     btnDebugAiCore?.setOnClickListener {
                         startActivity(Intent(this, OnDeviceInferenceActivity::class.java))
+                    }
+
+                    btnDebugNextUI?.setOnClickListener {
+                        startActivity(Intent(this, ChatNextActivity::class.java))
                     }
 
                     btnLaunchPWA?.setOnClickListener {
