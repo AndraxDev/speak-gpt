@@ -1,3 +1,19 @@
+/**************************************************************************
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ **************************************************************************/
+
 package org.teslasoft.assistant.ui.debug.aicore
 
 import androidx.lifecycle.LiveData
@@ -24,6 +40,9 @@ class NanoViewModel : ViewModel() {
     private val _generating = MutableLiveData(false)
     val generating: LiveData<Boolean> = _generating
 
+    private val _finished = MutableLiveData(false)
+    val finished: LiveData<Boolean> = _finished
+
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
@@ -47,6 +66,7 @@ class NanoViewModel : ViewModel() {
 
         _response.value = ""
         _generating.value = true
+        _finished.value = false
         _error.value = null
 
         generationJob = viewModelScope.launch {
@@ -66,19 +86,17 @@ class NanoViewModel : ViewModel() {
                                 .orEmpty()
 
                         output.append(text)
-
                         _response.value = output.toString()
                     }
 
             } catch (e: CancellationException) {
                 // User pressed Stop.
                 throw e
-
             } catch (e: Exception) {
                 _error.value = e.message
-
             } finally {
                 _generating.value = false
+                _finished.value = true
                 generationJob = null
             }
         }

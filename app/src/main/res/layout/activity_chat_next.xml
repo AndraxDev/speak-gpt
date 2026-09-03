@@ -8,6 +8,95 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bulk_actions_box"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/btn_accent_50"
+        android:elevation="8dp"
+        android:padding="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btn_select_all"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/btn_accent_50"
+            android:contentDescription="@string/select_all"
+            android:src="@drawable/ic_select_all"
+            android:tooltipText="@string/select_all"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btn_deselect_all"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/btn_accent_50"
+            android:contentDescription="@string/deselect_all"
+            android:src="@drawable/ic_deselect_all"
+            android:tooltipText="@string/deselect_all"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btn_select_all"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_selected_messages_count"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="start|center_vertical"
+            android:text="0"
+            android:textColor="@color/text_title"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_delete_selected"
+            app:layout_constraintStart_toEndOf="@+id/btn_deselect_all"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btn_delete_selected"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/btn_accent_50"
+            android:contentDescription="@string/btn_delete"
+            android:src="@drawable/ic_delete"
+            android:tooltipText="@string/btn_delete"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_copy_selected"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btn_copy_selected"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/btn_accent_50"
+            android:contentDescription="@string/btn_copy"
+            android:src="@drawable/ic_copy_normal"
+            android:tooltipText="@string/btn_copy"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_share_selected"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btn_share_selected"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/btn_accent_50"
+            android:contentDescription="@string/btn_share"
+            android:src="@drawable/ic_share"
+            android:tooltipText="@string/btn_share"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <ImageButton
         android:id="@+id/btn_back"
         android:layout_width="48dp"
@@ -146,7 +235,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:background="@drawable/btn_accent_50"
-        android:elevation="0.02dp"
+        android:elevation="8dp"
         android:padding="8dp"
         app:layout_constraintBottom_toTopOf="@+id/message_box"
         app:layout_constraintStart_toStartOf="@+id/message_box">

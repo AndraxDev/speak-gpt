@@ -30,7 +30,7 @@
         android:background="@drawable/btn_accent_tonal_16"
         android:backgroundTint="@color/warn_bg"
         android:padding="16dp"
-        android:text="WARNING! This feature is experimental. Running AI models locally may drain battery and cause device to heat. Not all devices support this feature. Enrollment to AICore preview program and eligible device are required to use certain models. Currently, only text messages are supported."
+        android:text="WARNING! This feature is experimental. Running AI models locally may drain battery and cause device to heat. Not all devices support this feature. Enrollment to AICore preview program and eligible device are required to use certain models. Currently, only text messages are supported. All entered data stays on your device. No data is used to train artificial intelligence models. All computations are performed on device CPU/NPU/TPU."
         android:textColor="@color/error"
         android:textSize="12sp"
         android:textStyle="bold"
@@ -180,13 +180,13 @@
             android:id="@+id/btn_fast"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Fast model" />
+            android:text="Fast model (E2B)" />
 
         <RadioButton
             android:id="@+id/btn_full"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Full model" />
+            android:text="Full model (E4B)" />
     </RadioGroup>
 
     <com.google.android.material.button.MaterialButton
@@ -224,6 +224,8 @@
         android:elevation="6dp"
         android:tint="@color/error"
         android:src="@drawable/ic_close"
+        android:contentDescription="@string/btn_clear_chat"
+        android:tooltipText="@string/btn_clear_chat"
         app:layout_constraintEnd_toEndOf="@+id/output_scroll"
         app:layout_constraintTop_toTopOf="@+id/output_scroll"
         app:srcCompat="@drawable/ic_close"

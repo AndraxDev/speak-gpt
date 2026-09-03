@@ -11,6 +11,7 @@
     <color name="accent_500">#a895e9</color>
     <color name="accent_600">#a895e9</color>
     <color name="accent_900">#d7d0f2</color>
+    <color name="accent_inverted">#27222D</color>
     <color name="neutral_200">#ddd9e6</color>
     <color name="icon_50">@color/purple_50</color>
     <color name="icon_100">@color/purple_100</color>

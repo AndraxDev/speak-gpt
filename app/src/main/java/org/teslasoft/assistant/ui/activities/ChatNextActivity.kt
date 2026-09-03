@@ -1,3 +1,19 @@
+/**************************************************************************
+ * Copyright (c) 2023-2026 Dmytro Ostapenko. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ **************************************************************************/
+
 package org.teslasoft.assistant.ui.activities
 
 import android.annotation.SuppressLint
@@ -5,9 +21,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityOptionsCompat
@@ -20,6 +38,7 @@ import com.google.android.material.progressindicator.CircularProgressIndicator
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.chat.ChatNextAdapter
+import kotlin.jvm.optionals.toCollection
 
 class ChatNextActivity : FragmentActivity(), ChatNextAdapter.OnUpdateListener {
 
@@ -34,6 +53,14 @@ class ChatNextActivity : FragmentActivity(), ChatNextAdapter.OnUpdateListener {
     private var attachFileBox: ConstraintLayout? = null
     private var chatView: RecyclerView? = null
     private var assistantBusy: CircularProgressIndicator? = null
+    private var bulkActionsBox: ConstraintLayout? = null
+    private var btnSelectAll: ImageButton? = null
+    private var btnDeselectAll: ImageButton? = null
+    private var btnDeleteSelected: ImageButton? = null
+    private var btnCopySelected: ImageButton? = null
+    private var btnShareSelected: ImageButton? = null
+    private var textSelectedMessagesCount: TextView? = null
+
     private val chatData: ArrayList<HashMap<String, Any>> = arrayListOf()
     private val selectedMessages: ArrayList<Boolean> = arrayListOf()
     private var chatAdapter: ChatNextAdapter? = null
@@ -67,6 +94,13 @@ class ChatNextActivity : FragmentActivity(), ChatNextAdapter.OnUpdateListener {
         attachFileBox = findViewById(R.id.attach_file_box)
         chatView = findViewById(R.id.chat_view)
         assistantBusy = findViewById(R.id.assistant_busy)
+        bulkActionsBox = findViewById(R.id.bulk_actions_box)
+        btnSelectAll = findViewById(R.id.btn_select_all)
+        btnDeselectAll = findViewById(R.id.btn_deselect_all)
+        btnDeleteSelected = findViewById(R.id.btn_delete_selected)
+        btnCopySelected = findViewById(R.id.btn_copy_selected)
+        btnShareSelected = findViewById(R.id.btn_share_selected)
+        textSelectedMessagesCount = findViewById(R.id.text_selected_messages_count)
 
         resetUiState()
     }
@@ -117,6 +151,26 @@ class ChatNextActivity : FragmentActivity(), ChatNextAdapter.OnUpdateListener {
             openCamera()
         }
 
+        btnSelectAll?.setOnClickListener {
+            chatAdapter?.selectAll()
+        }
+
+        btnDeselectAll?.setOnClickListener {
+            chatAdapter?.unselectAll()
+        }
+
+        btnDeleteSelected?.setOnClickListener {
+
+        }
+
+        btnCopySelected?.setOnClickListener {
+
+        }
+
+        btnShareSelected?.setOnClickListener {
+
+        }
+
         fieldMessage?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) { /**/ }
 
@@ -141,6 +195,20 @@ class ChatNextActivity : FragmentActivity(), ChatNextAdapter.OnUpdateListener {
     private fun resetUiState() {
         hideAttachFileBox()
         setMessageSpeakMode()
+
+        bulkActionsBox?.visibility = View.INVISIBLE
+        bulkActionsBox?.translationY = -(bulkActionsBox?.height?.toFloat()?: 0f) - 100f
+    }
+
+    private fun showBulkActionsBoxAnimated() {
+        bulkActionsBox?.visibility = View.VISIBLE
+        bulkActionsBox?.animate()?.translationY(0f)?.setDuration(200)?.start()
+    }
+
+    private fun hideBulkActionsBoxAnimated() {
+        bulkActionsBox?.animate()?.translationY(-(bulkActionsBox?.height?.toFloat()?: 0f) - 100f)?.setDuration(200)?.withEndAction {
+            bulkActionsBox?.visibility = View.INVISIBLE
+        }?.start()
     }
 
     private fun setMessageSpeakMode() {
@@ -240,19 +308,9 @@ class ChatNextActivity : FragmentActivity(), ChatNextAdapter.OnUpdateListener {
         }
 
         chatData.add(map)
-        updateMessagesSelectionProjection()
+        selectedMessages.add(false)
         chatAdapter?.notifyItemInserted(chatData.size - 1)
         scrollOnce()
-    }
-
-    private fun updateMessagesSelectionProjection() {
-        chatAdapter?.setBulkActionMode(false)
-
-        selectedMessages.clear()
-
-        chatData.forEach { _ ->
-            selectedMessages.add(false)
-        }
     }
 
     private fun updateMessage(position: Int, message: String) {
@@ -280,10 +338,15 @@ class ChatNextActivity : FragmentActivity(), ChatNextAdapter.OnUpdateListener {
     }
 
     override fun onBulkSelectionChanged(position: Int, selected: Boolean) {
-
+        chatAdapter?.notifyItemChanged(position)
+        textSelectedMessagesCount?.text = selectedMessages.stream().filter { it }.count().toString()
     }
 
     override fun onChangeBulkActionMode(mode: Boolean) {
-
+        if (mode) {
+            showBulkActionsBoxAnimated()
+        } else {
+            hideBulkActionsBoxAnimated()
+        }
     }
 }

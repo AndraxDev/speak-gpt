@@ -49,6 +49,7 @@
     <color name="accent_500">#302936</color>
     <color name="accent_600">#221F28</color>
     <color name="accent_900">#27222D</color>
+    <color name="accent_inverted">#d7d0f2</color>
     <color name="neutral_200">#312e36</color>
     <color name="shadow_assistant">#e3dfec</color>
     <color name="fab">@color/accent_100</color>

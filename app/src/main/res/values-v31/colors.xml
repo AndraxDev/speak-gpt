@@ -11,6 +11,7 @@
     <color name="accent_500">@android:color/system_accent1_600</color>
     <color name="accent_600">@android:color/system_accent1_600</color>
     <color name="accent_900">@android:color/system_accent1_800</color>
+    <color name="accent_inverted">@android:color/system_accent1_100</color>
     <color name="neutral_200">@android:color/system_neutral2_800</color>
     <color name="icon_50">@android:color/system_accent1_50</color>
     <color name="icon_100">@android:color/system_accent1_100</color>

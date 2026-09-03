@@ -26,6 +26,7 @@ import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
@@ -109,7 +110,7 @@ class ChatNextAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, pr
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(dataArray[position], position)
+        holder.bind(dataArray[position])
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -133,6 +134,7 @@ class ChatNextAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, pr
 
     private fun deleteMessage(position: Int) {
         dataArray.removeAt(position)
+        selectorProjection.removeAt(position)
         notifyItemRemoved(position)
         if (position > 0) {
             notifyItemRangeChanged(position - 1, itemCount)
@@ -150,32 +152,27 @@ class ChatNextAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, pr
     }
 
     private fun checkSelectionIsEmpty(): Boolean {
-        var isEmpty = true
-
-        for (projection in selectorProjection) {
-            if (projection) {
-                isEmpty = false
-                break
-            }
-        }
-
-        return isEmpty
+        return selectorProjection.stream().filter { it }.count() == 0L
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun unselectAll() {
         selectorProjection.clear()
         dataArray.forEach { _ -> selectorProjection.add(false) }
 
         bulkActionMode = false
         listener?.onChangeBulkActionMode(false)
+        notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun selectAll() {
         selectorProjection.clear()
         dataArray.forEach { _ -> selectorProjection.add(true) }
 
         bulkActionMode = true
         listener?.onChangeBulkActionMode(true)
+        notifyDataSetChanged()
     }
 
     open inner class ViewHolder(itemView: View, private val debugContext: Context) : RecyclerView.ViewHolder(itemView) {
@@ -190,23 +187,20 @@ class ChatNextAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, pr
         private val btnShare: ImageButton = itemView.findViewById(R.id.btn_share)
 
         @SuppressLint("SetTextI18n", "SetJavaScriptEnabled")
-        open fun bind(chatMessage: HashMap<String, Any>, position: Int) {
-            updateRetryButton(chatMessage, position)
+        open fun bind(chatMessage: HashMap<String, Any>) {
+            updateRetryButton(chatMessage, bindingAdapterPosition)
             updateReportButton(chatMessage)
             updateShareButton(chatMessage)
-
-            if (selectorProjection[position]) {
-                ui.setBackgroundColor(getSurface3Color(context))
-            }
+            updateBackgroundColorForSelection(bindingAdapterPosition)
 
             ui.setOnLongClickListener {
-                switchBulkActionState(position)
+                switchBulkActionState(bindingAdapterPosition)
                 return@setOnLongClickListener true
             }
 
             ui.setOnClickListener {
                 if (bulkActionMode) {
-                    switchBulkActionState(position)
+                    switchBulkActionState(bindingAdapterPosition)
                 }
             }
 
@@ -216,19 +210,19 @@ class ChatNextAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, pr
             }
 
             message.setOnLongClickListener {
-                switchBulkActionState(position)
+                switchBulkActionState(bindingAdapterPosition)
                 return@setOnLongClickListener true
             }
 
             message.setOnClickListener {
                 if (bulkActionMode) {
-                    switchBulkActionState(position)
+                    switchBulkActionState(bindingAdapterPosition)
                 }
             }
 
             btnEdit.setOnClickListener {
                 if (!bulkActionMode) {
-                    openEditDialog(chatMessage, position)
+                    openEditDialog(chatMessage, bindingAdapterPosition)
                 }
             }
 
@@ -251,7 +245,7 @@ class ChatNextAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, pr
                 if (chatMessage["isBot"] == true) {
                     message.visibility = View.GONE
                 }
-                processFile(chatMessage, position, "png", dalleImageStringList, true)
+                processFile(chatMessage, bindingAdapterPosition, "png", dalleImageStringList, true)
             } else {
                 (debugContext as FragmentActivity).runOnUiThread {
                     applyMarkdown(chatMessage)
@@ -266,7 +260,7 @@ class ChatNextAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, pr
                 if (chatMessage["isBot"] == false && chatMessage["image"] !== null) {
                     dalleImage.visibility = View.VISIBLE
 
-                    processFile(chatMessage, position, chatMessage["imageType"].toString(), imageStringList, false)
+                    processFile(chatMessage, bindingAdapterPosition, chatMessage["imageType"].toString(), imageStringList, false)
                 } else {
                     dalleImage.visibility = View.GONE
 
@@ -354,17 +348,15 @@ class ChatNextAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, pr
         }
 
         private fun switchBulkActionState(position: Int) {
-            if (selectorProjection[position]) {
-                selectorProjection[position] = false
-                if (checkSelectionIsEmpty()) bulkActionMode = false
-            } else {
-                ui.setBackgroundColor(getSurface3Color(context))
-                bulkActionMode = true
-                selectorProjection[position] = true
-            }
-
+            selectorProjection[position] = !selectorProjection[position]
+            bulkActionMode = !checkSelectionIsEmpty()
+            updateBackgroundColorForSelection(position)
             listener?.onBulkSelectionChanged(position, selectorProjection[position])
             listener?.onChangeBulkActionMode(bulkActionMode)
+        }
+
+        private fun updateBackgroundColorForSelection(position: Int) {
+            ui.setBackgroundColor(if (selectorProjection[position]) getSurface3Color(context) else Color.TRANSPARENT)
         }
 
         inner class BottomPaddingSpan(private val bottomPadding: Int) : LineHeightSpan {
@@ -558,35 +550,10 @@ class ChatNextAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, pr
             dialog.setStateChangedListener(this@ChatNextAdapter)
             dialog.show(context.supportFragmentManager, "EditMessageDialogFragment")
         }
-
-        fun resetView() {
-            itemView.translationX = 0f
-            itemView.alpha = 1f
-        }
     }
 
     private fun convertDpToPixel(context: Context): Float {
         return 24f * context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT
-    }
-
-    private fun getSurfaceColor(context: Context): Int {
-        return if (isDarkThemeEnabled() && preferences.getAmoledPitchBlack()) {
-            ResourcesCompat.getColor(context.resources, R.color.amoled_accent_50, null)
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                SurfaceColors.SURFACE_2.getColor(context)
-            } else {
-                context.getColor(R.color.accent_100)
-            }
-        }
-    }
-
-    private fun getSurface2Color(context: Context): Int {
-        return if (isDarkThemeEnabled() && preferences.getAmoledPitchBlack()) {
-            ResourcesCompat.getColor(context.resources, R.color.amoled_window_background, null)
-        } else {
-            SurfaceColors.SURFACE_1.getColor(context)
-        }
     }
 
     private fun getSurface3Color(context: Context): Int {
@@ -614,7 +581,7 @@ class ChatNextAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, pr
         editMessage(position, prompt)
         notifyItemChanged(position)
 
-        if (chatId !== "") {
+        if (chatId != "") {
             ChatPreferences.getChatPreferences().editMessage(context, chatId, position, prompt)
         }
     }
@@ -622,7 +589,7 @@ class ChatNextAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, pr
     override fun onDelete(position: Int) {
         deleteMessage(position)
 
-        if (chatId !== "") {
+        if (chatId != "") {
             ChatPreferences.getChatPreferences().deleteMessage(context, chatId, position)
         }
 
