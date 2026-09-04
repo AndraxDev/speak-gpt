@@ -25,7 +25,6 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityOptionsCompat
@@ -38,7 +37,6 @@ import com.google.android.material.progressindicator.CircularProgressIndicator
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.chat.ChatNextAdapter
-import kotlin.jvm.optionals.toCollection
 
 class ChatNextActivity : FragmentActivity(), ChatNextAdapter.OnUpdateListener {
 
