@@ -33,10 +33,12 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.chat.ChatNextAdapter
+import org.teslasoft.assistant.util.ChatBulkActionsUtil
 
 class ChatNextActivity : FragmentActivity(), ChatNextAdapter.OnUpdateListener {
 
@@ -158,15 +160,30 @@ class ChatNextActivity : FragmentActivity(), ChatNextAdapter.OnUpdateListener {
         }
 
         btnDeleteSelected?.setOnClickListener {
+            MaterialAlertDialogBuilder(this)
+                .setTitle("Are you sure?")
+                .setMessage("Selected messages will be removed. This action cannot be undone.")
+                .setPositiveButton("Delete") { _, _ -> run {
+                    for (i in selectedMessages.size - 1 downTo 0) {
+                        if (selectedMessages[i]) {
+                            chatAdapter?.onDelete(i)
+                        }
+                    }
 
+                    chatAdapter?.unselectAll()
+                }}
+                .setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
+                .show()
         }
 
         btnCopySelected?.setOnClickListener {
-
+            val chatString = ChatBulkActionsUtil.selectedMessagesToString(chatData, selectedMessages)
+            ChatBulkActionsUtil.copyStringToClipboard(this, chatString)
         }
 
         btnShareSelected?.setOnClickListener {
-
+            val chatString = ChatBulkActionsUtil.selectedMessagesToString(chatData, selectedMessages)
+            ChatBulkActionsUtil.shareString(this, chatString)
         }
 
         fieldMessage?.addTextChangedListener(object : TextWatcher {
@@ -260,7 +277,7 @@ class ChatNextActivity : FragmentActivity(), ChatNextAdapter.OnUpdateListener {
     private fun testPrefillDatabase() {
         chatData.clear()
         preferences = Preferences.getPreferences(this, testChatId)
-        chatAdapter = ChatNextAdapter(chatData, selectedMessages, this, preferences ?: return, testChatId)
+        chatAdapter = ChatNextAdapter(chatData, selectedMessages, this, preferences ?: return, testChatId, false)
         chatAdapter?.setOnUpdateListener(this)
 
         chatView?.layoutManager = LinearLayoutManager(this)

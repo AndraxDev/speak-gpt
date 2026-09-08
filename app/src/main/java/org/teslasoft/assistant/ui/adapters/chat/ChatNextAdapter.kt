@@ -85,7 +85,7 @@ import org.teslasoft.assistant.ui.fragments.dialogs.ReportAIContentBottomSheet
 import org.teslasoft.assistant.util.ShareUtil.Companion.shareBase64Image
 import org.teslasoft.assistant.util.ShareUtil.Companion.sharePlainText
 
-class ChatNextAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, private val selectorProjection: ArrayList<Boolean>, private val context: FragmentActivity, private val preferences: Preferences, private var chatId: String) : RecyclerView.Adapter<ChatNextAdapter.ViewHolder>(), EditMessageDialogFragment.StateChangesListener {
+class ChatNextAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, private val selectorProjection: ArrayList<Boolean>, private val context: FragmentActivity, private val preferences: Preferences, private var chatId: String, private var shouldEditChatPreferences: Boolean = true) : RecyclerView.Adapter<ChatNextAdapter.ViewHolder>(), EditMessageDialogFragment.StateChangesListener {
 
     private var dalleImageStringList = ArrayList<String>(Collections.nCopies(itemCount + 1, ""))
     private var imageStringList = ArrayList<String>(Collections.nCopies(itemCount + 1, ""))
@@ -581,7 +581,7 @@ class ChatNextAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, pr
         editMessage(position, prompt)
         notifyItemChanged(position)
 
-        if (chatId != "") {
+        if (chatId != "" && shouldEditChatPreferences) {
             ChatPreferences.getChatPreferences().editMessage(context, chatId, position, prompt)
         }
     }
@@ -589,7 +589,7 @@ class ChatNextAdapter(private val dataArray: ArrayList<HashMap<String, Any>>, pr
     override fun onDelete(position: Int) {
         deleteMessage(position)
 
-        if (chatId != "") {
+        if (chatId != "" && shouldEditChatPreferences) {
             ChatPreferences.getChatPreferences().deleteMessage(context, chatId, position)
         }
 
