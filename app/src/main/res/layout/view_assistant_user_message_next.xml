@@ -147,10 +147,9 @@
                     android:backgroundTint="@color/accent_inverted"
                     android:contentDescription="@string/btn_msg_retry"
                     android:descendantFocusability="blocksDescendants"
-                    android:src="@drawable/ic_retry"
+                    android:src="@drawable/ic_retry_new"
                     android:tint="@color/accent_900"
                     android:tooltipText="@string/btn_msg_retry"
-                    app:srcCompat="@drawable/ic_retry"
                     tools:ignore="UseAppTint" />
 
                 <ImageButton
@@ -163,7 +162,7 @@
                     android:descendantFocusability="blocksDescendants"
                     android:tint="@color/accent_900"
                     android:tooltipText="@string/btn_copy"
-                    app:srcCompat="@drawable/ic_copy"
+                    android:src="@drawable/ic_copy_new"
                     tools:ignore="UseAppTint" />
 
                 <ImageButton
@@ -174,10 +173,9 @@
                     android:backgroundTint="@color/accent_inverted"
                     android:contentDescription="@string/btn_msg_edit"
                     android:descendantFocusability="blocksDescendants"
-                    android:src="@drawable/ic_edit"
+                    android:src="@drawable/ic_edit_new"
                     android:tint="@color/accent_900"
                     android:tooltipText="@string/btn_msg_edit"
-                    app:srcCompat="@drawable/ic_edit"
                     tools:ignore="UseAppTint" />
             </LinearLayout>
 

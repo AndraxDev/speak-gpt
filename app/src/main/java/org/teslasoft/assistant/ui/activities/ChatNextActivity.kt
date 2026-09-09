@@ -33,6 +33,7 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.liquidglass.LiquidGlassView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import org.teslasoft.assistant.R
@@ -101,6 +102,16 @@ class ChatNextActivity : FragmentActivity(), ChatNextAdapter.OnUpdateListener {
         btnCopySelected = findViewById(R.id.btn_copy_selected)
         btnShareSelected = findViewById(R.id.btn_share_selected)
         textSelectedMessagesCount = findViewById(R.id.text_selected_messages_count)
+
+        val bulkActionsBoxGlass = findViewById<LiquidGlassView>(R.id.bulk_actions_box_glass)
+        val messageBoxGlass = findViewById<LiquidGlassView>(R.id.message_box_glass)
+        val btnBackGlass = findViewById<LiquidGlassView>(R.id.btn_back_glass)
+        val btnSettingsGlass = findViewById<LiquidGlassView>(R.id.btn_settings_glass)
+
+        bulkActionsBoxGlass.enableDynamicBackground = true
+        messageBoxGlass.enableDynamicBackground = true
+        btnBackGlass.enableDynamicBackground = true
+        btnSettingsGlass.enableDynamicBackground = true
 
         resetUiState()
     }
@@ -217,6 +228,7 @@ class ChatNextActivity : FragmentActivity(), ChatNextAdapter.OnUpdateListener {
 
     private fun showBulkActionsBoxAnimated() {
         bulkActionsBox?.visibility = View.VISIBLE
+        textChatName?.animate()?.translationY(-(textChatName?.height?.toFloat()?: 0f) - 100f)?.setDuration(200)?.start()
         bulkActionsBox?.animate()?.translationY(0f)?.setDuration(200)?.start()
     }
 
@@ -224,23 +236,24 @@ class ChatNextActivity : FragmentActivity(), ChatNextAdapter.OnUpdateListener {
         bulkActionsBox?.animate()?.translationY(-(bulkActionsBox?.height?.toFloat()?: 0f) - 100f)?.setDuration(200)?.withEndAction {
             bulkActionsBox?.visibility = View.INVISIBLE
         }?.start()
+        textChatName?.animate()?.translationY(0f)?.setDuration(200)?.start()
     }
 
     private fun setMessageSpeakMode() {
         assistantState = 0
-        btnMessageAction?.setImageResource(R.drawable.ic_microphone)
+        btnMessageAction?.setImageResource(R.drawable.ic_mic_new)
         assistantBusy?.hide()
     }
 
     private fun setMessageTypeMode() {
         assistantState = 1
-        btnMessageAction?.setImageResource(R.drawable.ic_send)
+        btnMessageAction?.setImageResource(R.drawable.ic_send_new)
         assistantBusy?.hide()
     }
 
     private fun setAssistantBusy() {
         assistantState = 2
-        btnMessageAction?.setImageResource(R.drawable.ic_stop_recording)
+        btnMessageAction?.setImageResource(R.drawable.ic_stop_new)
         assistantBusy?.show()
     }
 

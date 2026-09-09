@@ -85,6 +85,7 @@ dependencies {
     implementation 'org.conscrypt:conscrypt-android:2.7.0'
     implementation 'com.aallam.ktoken:ktoken:0.4.0'
     implementation 'androidx.core:core-splashscreen:1.2.0'
+    implementation 'com.github.QWEA0:liquidglass:v2.0.10'
     implementation 'com.google.mlkit:genai-prompt:1.0.0-beta4'
     implementation ('com.github.chrisbanes.photoview:library:1.2.4') {
         exclude group: 'com.android.support', module: 'support-v4'

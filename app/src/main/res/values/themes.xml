@@ -84,6 +84,15 @@
         <item name="android:fontFamily">@font/default_font</item>
     </style>
 
+    <style name="Theme.Transparent.Blur" parent="@style/Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
     <style name="Theme.Assistant" parent="@style/Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowAnimationStyle">@null</item>
         <item name="android:windowBackground">@color/transparent</item>

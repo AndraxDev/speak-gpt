@@ -527,4 +527,5 @@
     <string name="select_all">Select all</string>
     <string name="deselect_all">Deselect all</string>
     <string name="btn_share">Share</string>
+    <string name="report_abuse">Report abuse</string>
 </resources>

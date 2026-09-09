@@ -8,148 +8,119 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/bulk_actions_box"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chat_view"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingTop="64dp"
+        android:paddingBottom="100dp"
+        android:overScrollMode="never"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/gradient_top"
+        android:layout_width="0dp"
+        android:layout_height="84dp"
+        android:background="@drawable/gradient_header"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/chat_view" />
+
+    <com.example.liquidglass.LiquidGlassView
+        android:id="@+id/btn_back_glass"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
+        android:padding="4dp"
+        app:adaptiveTint="true"
+        app:backdropSourceId="@+id/root"
+        app:bevelWidth="32dp"
+        app:blurAmount="0.1"
+        app:cornerRadius="32dp"
+        app:dispersionStrength="0.1"
+        app:glassMaterial="regular"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:refractionFalloff="1.0"
+        app:refractionHeight="32dp"
+        app:sensorHighlight="false">
+
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/ripple_transparent"
+            android:contentDescription="@string/go_back"
+            android:src="@drawable/ic_back_new"
+            android:tint="@color/accent_900"
+            android:tooltipText="@string/go_back"
+            tools:ignore="UseAppTint" />
+    </com.example.liquidglass.LiquidGlassView>
+
+    <com.example.liquidglass.LiquidGlassView
+        android:id="@+id/btn_settings_glass"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
-        android:background="@drawable/btn_accent_50"
-        android:elevation="8dp"
-        android:padding="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageButton
-            android:id="@+id/btn_select_all"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/btn_accent_50"
-            android:contentDescription="@string/select_all"
-            android:src="@drawable/ic_select_all"
-            android:tooltipText="@string/select_all"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageButton
-            android:id="@+id/btn_deselect_all"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/btn_accent_50"
-            android:contentDescription="@string/deselect_all"
-            android:src="@drawable/ic_deselect_all"
-            android:tooltipText="@string/deselect_all"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btn_select_all"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/text_selected_messages_count"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="start|center_vertical"
-            android:text="0"
-            android:textColor="@color/text_title"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_delete_selected"
-            app:layout_constraintStart_toEndOf="@+id/btn_deselect_all"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageButton
-            android:id="@+id/btn_delete_selected"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/btn_accent_50"
-            android:contentDescription="@string/btn_delete"
-            android:src="@drawable/ic_delete"
-            android:tooltipText="@string/btn_delete"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_copy_selected"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageButton
-            android:id="@+id/btn_copy_selected"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/btn_accent_50"
-            android:contentDescription="@string/btn_copy"
-            android:src="@drawable/ic_copy_normal"
-            android:tooltipText="@string/btn_copy"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_share_selected"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageButton
-            android:id="@+id/btn_share_selected"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/btn_accent_50"
-            android:contentDescription="@string/btn_share"
-            android:src="@drawable/ic_share"
-            android:tooltipText="@string/btn_share"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <ImageButton
-        android:id="@+id/btn_back"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/btn_accent_50"
-        android:backgroundTint="@color/window_background"
-        android:contentDescription="@string/go_back"
-        android:elevation="0.02dp"
-        android:src="@drawable/ic_back"
-        android:tint="@color/accent_900"
-        android:tooltipText="@string/go_back"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_back"
-        tools:ignore="UseAppTint" />
-
-    <ImageButton
-        android:id="@+id/btn_settings"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/btn_accent_50"
-        android:backgroundTint="@color/window_background"
-        android:contentDescription="@string/settings"
-        android:elevation="0.02dp"
-        android:src="@drawable/ic_settings"
-        android:tint="@color/accent_900"
-        android:tooltipText="@string/settings"
-        android:transitionName="settings"
+        android:padding="4dp"
+        app:adaptiveTint="true"
+        app:backdropSourceId="@+id/root"
+        app:bevelWidth="32dp"
+        app:blurAmount="0.1"
+        app:cornerRadius="32dp"
+        app:dispersionStrength="0.1"
+        app:glassMaterial="regular"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_settings"
-        tools:ignore="UseAppTint" />
+        app:refractionFalloff="1.0"
+        app:refractionHeight="32dp"
+        app:sensorHighlight="false">
+
+        <ImageButton
+            android:id="@+id/btn_settings"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/ripple_transparent"
+            android:contentDescription="@string/settings"
+            android:src="@drawable/ic_settings_new"
+            android:tint="@color/accent_900"
+            android:tooltipText="@string/settings"
+            android:transitionName="settings"
+            tools:ignore="UseAppTint" />
+    </com.example.liquidglass.LiquidGlassView>
 
     <TextView
         android:id="@+id/text_chat_name"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:elevation="0.02dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
         android:gravity="center"
         android:text="Chat Title"
         android:textColor="@color/text_title"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_back"
-        app:layout_constraintEnd_toStartOf="@+id/btn_settings"
-        app:layout_constraintStart_toEndOf="@+id/btn_back"
-        app:layout_constraintTop_toTopOf="@+id/btn_back" />
+        app:layout_constraintBottom_toBottomOf="@+id/btn_back_glass"
+        app:layout_constraintEnd_toStartOf="@+id/btn_settings_glass"
+        app:layout_constraintStart_toEndOf="@+id/btn_back_glass"
+        app:layout_constraintTop_toTopOf="@+id/btn_back_glass" />
+
+    <LinearLayout
+        android:id="@+id/gradient_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/gradient_footer"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/chat_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/message_box"
@@ -158,75 +129,95 @@
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
-        android:background="@drawable/btn_accent_32"
-        android:elevation="8dp"
-        android:maxHeight="200dp"
-        android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <ImageButton
-            android:id="@+id/btn_message_action"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/btn_accent_50"
-            android:contentDescription="@string/btn_speak"
-            android:src="@drawable/ic_microphone"
-            android:tint="@color/accent_900"
+        <com.example.liquidglass.LiquidGlassView
+            android:id="@+id/message_box_glass"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:adaptiveTint="true"
+            app:backdropSourceId="@+id/root"
+            app:bevelWidth="32dp"
+            app:refractionFalloff="1.0"
+            app:cornerRadius="32dp"
+            app:dispersionStrength="0.1"
+            app:blurAmount="0.1"
+            app:glassMaterial="regular"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_microphone"
-            tools:ignore="UseAppTint" />
-
-        <ImageButton
-            android:id="@+id/btn_attach_file"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/btn_accent_50"
-            android:contentDescription="@string/btn_attach"
-            android:src="@drawable/ic_attach"
-            android:tint="@color/accent_900"
-            android:tooltipText="@string/btn_attach"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/ic_attach"
-            tools:ignore="UseAppTint" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:refractionHeight="32dp"
+            app:sensorHighlight="false">
 
-        <EditText
-            android:id="@+id/field_message"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:autofillHints="none"
-            android:background="@color/transparent"
-            android:ems="10"
-            android:gravity="top|start"
-            android:hint="@string/chat_enter_message_here"
-            android:inputType="text|textMultiLine"
-            android:maxHeight="160dp"
-            android:overScrollMode="ifContentScrolls"
-            android:paddingHorizontal="8dp"
-            android:paddingVertical="12dp"
-            android:scrollbars="vertical"
-            android:textColorHint="@color/hint"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_message_action"
-            app:layout_constraintStart_toEndOf="@+id/btn_attach_file" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="8dp">
 
-        <com.google.android.material.progressindicator.CircularProgressIndicator
-            android:id="@+id/assistant_busy"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:indeterminate="true"
-            app:waveAmplitude="2dp"
-            app:wavelength="18dp"
-            app:indeterminateAnimationTypeCircular="advance"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_message_action"
-            app:layout_constraintEnd_toEndOf="@+id/btn_message_action"
-            app:layout_constraintStart_toStartOf="@+id/btn_message_action"
-            app:layout_constraintTop_toTopOf="@+id/btn_message_action" />
+                <ImageButton
+                    android:id="@+id/btn_message_action"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/ripple_transparent"
+                    android:contentDescription="@string/btn_speak"
+                    android:src="@drawable/ic_mic_new"
+                    android:tint="@color/accent_900"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:ignore="UseAppTint" />
 
+                <ImageButton
+                    android:id="@+id/btn_attach_file"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/ripple_transparent"
+                    android:contentDescription="@string/btn_attach"
+                    android:src="@drawable/ic_attach_new"
+                    android:tint="@color/accent_900"
+                    android:tooltipText="@string/btn_attach"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:ignore="UseAppTint" />
+
+                <EditText
+                    android:id="@+id/field_message"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="none"
+                    android:background="@color/transparent"
+                    android:ems="10"
+                    android:gravity="top|start"
+                    android:hint="@string/chat_enter_message_here"
+                    android:inputType="text|textMultiLine"
+                    android:maxHeight="160dp"
+                    android:overScrollMode="ifContentScrolls"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="12dp"
+                    android:scrollbars="vertical"
+                    android:textColorHint="@color/hint"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_message_action"
+                    app:layout_constraintStart_toEndOf="@+id/btn_attach_file" />
+
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/assistant_busy"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:indeterminate="true"
+                    app:indeterminateAnimationTypeCircular="advance"
+                    app:layout_constraintBottom_toBottomOf="@+id/btn_message_action"
+                    app:layout_constraintEnd_toEndOf="@+id/btn_message_action"
+                    app:layout_constraintStart_toStartOf="@+id/btn_message_action"
+                    app:layout_constraintTop_toTopOf="@+id/btn_message_action"
+                    app:waveAmplitude="2dp"
+                    app:wavelength="18dp" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.example.liquidglass.LiquidGlassView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -247,13 +238,12 @@
             android:background="@drawable/btn_accent"
             android:backgroundTint="@color/accent_900"
             android:contentDescription="@string/image"
-            android:src="@drawable/ic_photo"
+            android:src="@drawable/ic_photo_new"
             android:tint="@color/accent_250"
             android:tooltipText="@string/image"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_photo"
             tools:ignore="UseAppTint" />
 
         <ImageButton
@@ -264,49 +254,139 @@
             android:background="@drawable/btn_accent"
             android:backgroundTint="@color/accent_900"
             android:contentDescription="@string/btn_camera"
-            android:src="@drawable/ic_camera"
+            android:src="@drawable/ic_camera_new"
             android:tint="@color/accent_250"
             android:tooltipText="@string/btn_camera"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/btn_attach_picture"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_camera"
             tools:ignore="UseAppTint" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chat_view"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bulk_actions_box"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:clipToPadding="false"
-        android:paddingTop="64dp"
-        android:paddingBottom="100dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="12dp"
+        app:layout_constraintEnd_toStartOf="@+id/btn_settings_glass"
+        app:layout_constraintStart_toEndOf="@+id/btn_back_glass"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <LinearLayout
-        android:id="@+id/gradient_top"
-        android:layout_width="0dp"
-        android:layout_height="84dp"
-        android:background="@drawable/gradient_header"
-        android:elevation="0.01dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/chat_view"></LinearLayout>
+        <com.example.liquidglass.LiquidGlassView
+            android:id="@+id/bulk_actions_box_glass"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:adaptiveTint="true"
+            app:backdropSourceId="@+id/root"
+            app:bevelWidth="128dp"
+            app:blurAmount="0.1"
+            app:cornerRadius="32dp"
+            app:dispersionStrength="0.5"
+            app:glassMaterial="regular"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:refractionFalloff="0.2"
+            app:refractionHeight="128dp"
+            app:sensorHighlight="false">
 
-    <LinearLayout
-        android:id="@+id/gradient_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="@drawable/gradient_footer"
-        android:elevation="0.01dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="@+id/chat_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"></LinearLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="6dp">
 
+                <ImageButton
+                    android:id="@+id/btn_select_all"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="2dp"
+                    android:background="@drawable/ripple_transparent"
+                    android:contentDescription="@string/select_all"
+                    android:src="@drawable/ic_select_new"
+                    android:tint="@color/accent_900"
+                    android:tooltipText="@string/select_all"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="UseAppTint" />
+
+                <ImageButton
+                    android:id="@+id/btn_deselect_all"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="@drawable/ripple_transparent"
+                    android:contentDescription="@string/deselect_all"
+                    android:src="@drawable/ic_unselect_new"
+                    android:tint="@color/accent_900"
+                    android:tooltipText="@string/deselect_all"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/btn_select_all"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="UseAppTint" />
+
+                <TextView
+                    android:id="@+id/text_selected_messages_count"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:gravity="start|center_vertical"
+                    android:text="0"
+                    android:textColor="@color/text_title"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_delete_selected"
+                    app:layout_constraintStart_toEndOf="@+id/btn_deselect_all"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageButton
+                    android:id="@+id/btn_delete_selected"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="@drawable/ripple_transparent"
+                    android:contentDescription="@string/btn_delete"
+                    android:src="@drawable/ic_delete_new"
+                    android:tooltipText="@string/btn_delete"
+                    android:tint="@color/accent_900"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_copy_selected"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="UseAppTint" />
+
+                <ImageButton
+                    android:id="@+id/btn_copy_selected"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="@drawable/ripple_transparent"
+                    android:contentDescription="@string/btn_copy"
+                    android:src="@drawable/ic_copy_new"
+                    android:tooltipText="@string/btn_copy"
+                    android:tint="@color/accent_900"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_share_selected"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="UseAppTint" />
+
+                <ImageButton
+                    android:id="@+id/btn_share_selected"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginEnd="2dp"
+                    android:background="@drawable/ripple_transparent"
+                    android:contentDescription="@string/btn_share"
+                    android:src="@drawable/ic_share_new"
+                    android:tint="@color/accent_900"
+                    android:tooltipText="@string/btn_share"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="UseAppTint" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.example.liquidglass.LiquidGlassView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

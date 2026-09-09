@@ -19,7 +19,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ui"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -28,30 +27,28 @@
 
     <ImageButton
         android:id="@+id/btn_report"
-        android:layout_width="36dp"
+        android:layout_width="32dp"
         android:layout_height="36dp"
         android:background="@color/transparent"
-        android:contentDescription="Report abuse"
+        android:contentDescription="@string/report_abuse"
         android:descendantFocusability="blocksDescendants"
-        android:src="@drawable/ic_report"
-        android:tooltipText="Report abuse"
+        android:src="@drawable/ic_report_new"
+        android:tooltipText="@string/report_abuse"
         app:layout_constraintStart_toEndOf="@+id/btn_share"
-        app:layout_constraintTop_toTopOf="@+id/btn_share"
-        app:srcCompat="@drawable/ic_report" />
+        app:layout_constraintTop_toTopOf="@+id/btn_share" />
 
     <ImageButton
         android:id="@+id/btn_share"
-        android:layout_width="36dp"
+        android:layout_width="32dp"
         android:layout_height="36dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="18dp"
         android:background="@color/transparent"
-        android:contentDescription="Share message"
+        android:contentDescription="@string/btn_share"
         android:descendantFocusability="blocksDescendants"
-        android:src="@drawable/ic_share"
-        android:tooltipText="Share message"
+        android:src="@drawable/ic_share_new"
+        android:tooltipText="@string/btn_share"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_frame"
-        app:srcCompat="@drawable/ic_share" />
+        app:layout_constraintTop_toBottomOf="@+id/image_frame" />
 
     <TextView
         android:id="@+id/username"
@@ -123,40 +120,38 @@
 
     <ImageButton
         android:id="@+id/btn_retry"
-        android:layout_width="36dp"
+        android:layout_width="32dp"
         android:layout_height="36dp"
         android:background="@color/transparent"
         android:contentDescription="@string/btn_msg_retry"
         android:descendantFocusability="blocksDescendants"
-        android:src="@drawable/ic_retry"
+        android:src="@drawable/ic_retry_new"
         android:tooltipText="@string/btn_msg_retry"
         app:layout_constraintStart_toEndOf="@+id/btn_report"
-        app:layout_constraintTop_toTopOf="@+id/btn_report"
-        app:srcCompat="@drawable/ic_retry" />
+        app:layout_constraintTop_toTopOf="@+id/btn_report" />
 
     <ImageButton
         android:id="@+id/btn_copy"
-        android:layout_width="36dp"
+        android:layout_width="32dp"
         android:layout_height="36dp"
         android:background="@color/transparent"
         android:contentDescription="@string/btn_copy"
         android:descendantFocusability="blocksDescendants"
+        android:src="@drawable/ic_copy_new"
         android:tooltipText="@string/btn_copy"
         app:layout_constraintStart_toEndOf="@+id/btn_retry"
-        app:layout_constraintTop_toTopOf="@+id/btn_retry"
-        app:srcCompat="@drawable/ic_copy" />
+        app:layout_constraintTop_toTopOf="@+id/btn_retry" />
 
     <ImageButton
         android:id="@+id/btn_edit"
-        android:layout_width="36dp"
+        android:layout_width="32dp"
         android:layout_height="36dp"
         android:background="@color/transparent"
         android:contentDescription="@string/btn_msg_edit"
         android:descendantFocusability="blocksDescendants"
-        android:src="@drawable/ic_edit"
+        android:src="@drawable/ic_edit_new"
         android:tooltipText="@string/btn_msg_edit"
         app:layout_constraintStart_toEndOf="@+id/btn_copy"
-        app:layout_constraintTop_toTopOf="@+id/btn_copy"
-        app:srcCompat="@drawable/ic_edit" />
+        app:layout_constraintTop_toTopOf="@+id/btn_copy" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
