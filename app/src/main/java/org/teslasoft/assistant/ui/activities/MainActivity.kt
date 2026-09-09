@@ -430,9 +430,6 @@ class MainActivity : FragmentActivity() {
             }
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
             navigationBar!!.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme))
-
-            btnDebugger?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, theme)
-            btnCloseDebugger?.background = ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal_amoled, theme)
         } else {
             if (Build.VERSION.SDK_INT < 30) {
                 window.navigationBarColor = SurfaceColors.SURFACE_3.getColor(this)
@@ -441,9 +438,6 @@ class MainActivity : FragmentActivity() {
             val colorDrawable = SurfaceColors.SURFACE_0.getColor(this).toDrawable()
             window.setBackgroundDrawable(colorDrawable)
             navigationBar!!.setBackgroundColor(SurfaceColors.SURFACE_3.getColor(this))
-
-            btnDebugger?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal, theme)!!)
-            btnCloseDebugger?.background = getDisabledDrawable(ResourcesCompat.getDrawable(resources, R.drawable.btn_accent_tonal, theme)!!)
         }
 
         (frameChats as ChatsListFragment).reloadAmoled(this)

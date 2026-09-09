@@ -22,6 +22,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
@@ -39,6 +40,7 @@ import com.google.android.material.progressindicator.CircularProgressIndicator
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.chat.ChatNextAdapter
+import org.teslasoft.assistant.ui.liquidglass.LiquidGlassUtil
 import org.teslasoft.assistant.util.ChatBulkActionsUtil
 
 class ChatNextActivity : FragmentActivity(), ChatNextAdapter.OnUpdateListener {
@@ -103,17 +105,33 @@ class ChatNextActivity : FragmentActivity(), ChatNextAdapter.OnUpdateListener {
         btnShareSelected = findViewById(R.id.btn_share_selected)
         textSelectedMessagesCount = findViewById(R.id.text_selected_messages_count)
 
-        val bulkActionsBoxGlass = findViewById<LiquidGlassView>(R.id.bulk_actions_box_glass)
-        val messageBoxGlass = findViewById<LiquidGlassView>(R.id.message_box_glass)
-        val btnBackGlass = findViewById<LiquidGlassView>(R.id.btn_back_glass)
-        val btnSettingsGlass = findViewById<LiquidGlassView>(R.id.btn_settings_glass)
-
-        bulkActionsBoxGlass.enableDynamicBackground = true
-        messageBoxGlass.enableDynamicBackground = true
-        btnBackGlass.enableDynamicBackground = true
-        btnSettingsGlass.enableDynamicBackground = true
-
+        initializeAllLiquidGlassViews()
         resetUiState()
+    }
+
+    private fun initializeAllLiquidGlassViews() {
+        val rootViewForScan = findViewById<View>(android.R.id.content)
+
+        fun scanView(view: View) {
+            if (view is LiquidGlassView) {
+                if (view.id != View.NO_ID) {
+                    initializeLiquidGlassView(view.id)
+                }
+            }
+
+            if (view is ViewGroup) {
+                for (i in 0 until view.childCount) {
+                    scanView(view.getChildAt(i))
+                }
+            }
+        }
+
+        scanView(rootViewForScan)
+    }
+
+    private fun initializeLiquidGlassView(viewId: Int) {
+        LiquidGlassUtil.initializeLiquidGlassViewById(viewId, this)
+        LiquidGlassUtil.setAccentColorForLiquidGlassView(viewId, this)
     }
 
     private fun initializeViewListeners() {

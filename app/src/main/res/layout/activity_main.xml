@@ -21,6 +21,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
+    android:background="@color/window_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -54,7 +55,6 @@
             android:id="@+id/debug_blur"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/shadow"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -64,19 +64,33 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <LinearLayout
+                <com.example.liquidglass.LiquidGlassView
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:background="@color/shadow"
+                    android:layout_marginStart="-4dp"
+                    android:layout_marginEnd="-4dp"
+                    app:adaptiveTint="true"
+                    app:backdropSourceId="@+id/root"
+                    app:bevelWidth="32dp"
+                    app:blurAmount="6.0"
+                    app:cornerRadius="0dp"
+                    app:dispersionStrength="0.1"
+                    app:glassMaterial="clear"
+                    app:glassTintStrength="0.1"
+                    app:glassTint="@color/window_background"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:refractionFalloff="1.0"
+                    app:refractionHeight="8dp"
+                    app:sensorHighlight="false">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/d"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_marginHorizontal="4dp"
                         android:clickable="true"
                         android:elevation="9dp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -124,19 +138,37 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/progressBar6" />
 
-                        <ImageButton
-                            android:id="@+id/btn_close_debugger"
+                        <com.example.liquidglass.LiquidGlassView
+                            android:id="@+id/btn_back_glass"
                             android:layout_width="56dp"
                             android:layout_height="56dp"
                             android:layout_marginStart="24dp"
                             android:layout_marginTop="16dp"
-                            android:background="@drawable/btn_accent_tonal"
-                            android:contentDescription="Close"
-                            android:src="@drawable/ic_cancel"
-                            android:tooltipText="Close"
+                            app:adaptiveTint="true"
+                            app:backdropSourceId="@+id/root"
+                            app:bevelWidth="32dp"
+                            app:blurAmount="0.1"
+                            app:cornerRadius="32dp"
+                            app:dispersionStrength="0.1"
+                            app:glassMaterial="clear"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/ic_cancel" />
+                            app:refractionFalloff="1.0"
+                            app:refractionHeight="32dp"
+                            app:sensorHighlight="false">
+
+                            <ImageButton
+                                android:id="@+id/btn_close_debugger"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:background="@drawable/ripple_transparent"
+                                android:contentDescription="@string/btn_close"
+                                android:src="@drawable/ic_cancel"
+                                android:tooltipText="@string/btn_close"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                        </com.example.liquidglass.LiquidGlassView>
 
                         <TextView
                             android:id="@+id/textView59"
@@ -157,14 +189,14 @@
                             android:layout_width="0dp"
                             android:layout_height="56dp"
                             android:layout_marginStart="24dp"
-                            android:layout_marginTop="20dp"
+                            android:layout_marginTop="16dp"
                             android:layout_marginEnd="24dp"
                             android:background="@drawable/btn_accent_top"
                             android:text="Initiate crash"
                             app:backgroundTint="@color/blur_background"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/btn_close_debugger" />
+                            app:layout_constraintTop_toBottomOf="@+id/btn_back_glass" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btn_debug_activity"
@@ -273,7 +305,7 @@
                             </LinearLayout>
                         </ScrollView>
                     </androidx.constraintlayout.widget.ConstraintLayout>
-                </LinearLayout>
+                </com.example.liquidglass.LiquidGlassView>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
