@@ -22,7 +22,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
@@ -34,7 +33,6 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.liquidglass.LiquidGlassView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import org.teslasoft.assistant.R
@@ -105,33 +103,8 @@ class ChatNextActivity : FragmentActivity(), ChatNextAdapter.OnUpdateListener {
         btnShareSelected = findViewById(R.id.btn_share_selected)
         textSelectedMessagesCount = findViewById(R.id.text_selected_messages_count)
 
-        initializeAllLiquidGlassViews()
+        LiquidGlassUtil.scanForLiquidGlassAndInitSettings(this)
         resetUiState()
-    }
-
-    private fun initializeAllLiquidGlassViews() {
-        val rootViewForScan = findViewById<View>(android.R.id.content)
-
-        fun scanView(view: View) {
-            if (view is LiquidGlassView) {
-                if (view.id != View.NO_ID) {
-                    initializeLiquidGlassView(view.id)
-                }
-            }
-
-            if (view is ViewGroup) {
-                for (i in 0 until view.childCount) {
-                    scanView(view.getChildAt(i))
-                }
-            }
-        }
-
-        scanView(rootViewForScan)
-    }
-
-    private fun initializeLiquidGlassView(viewId: Int) {
-        LiquidGlassUtil.initializeLiquidGlassViewById(viewId, this)
-        LiquidGlassUtil.setAccentColorForLiquidGlassView(viewId, this)
     }
 
     private fun initializeViewListeners() {

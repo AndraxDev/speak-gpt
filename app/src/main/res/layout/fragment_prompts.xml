@@ -16,10 +16,13 @@
 * limitations under the License.
 **************************************************************************/
 -->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/fragment_root"
+    android:background="@color/window_background"
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -78,7 +81,9 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="24dp">
+                android:paddingTop="24dp"
+                android:paddingBottom="16dp"
+                android:paddingHorizontal="24dp">
 
                 <TextView
                     android:id="@+id/activity_prompts_title"
@@ -101,37 +106,70 @@
                     android:weightSum="3"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/prompt_categories">
+                    app:layout_constraintTop_toBottomOf="@+id/liquidGlassView">
 
-                    <com.google.android.material.button.MaterialButton
+                    <com.example.liquidglass.LiquidGlassButton
                         android:id="@+id/btn_all_models"
-                        style="@style/Widget.Material3.Button"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="56dp"
                         android:layout_marginEnd="6dp"
                         android:layout_weight="1"
-                        android:background="@drawable/btn_accent_8"
-                        android:text="@string/cat_all" />
+                        android:text="@string/cat_all"
+                        app:adaptiveTint="true"
+                        app:backdropSourceId="@+id/prompts"
+                        app:bevelWidth="32dp"
+                        app:blurAmount="1.0"
+                        app:cornerRadius="32dp"
+                        app:dispersionStrength="0.1"
+                        app:glassMaterial="clear"
+                        app:glassTint="@color/accent_250"
+                        app:glassTintStrength="1.0"
+                        app:refractionFalloff="1.0"
+                        app:refractionHeight="128dp"
+                        app:saturation="140.0"
+                        app:sensorHighlight="false" />
 
-                    <com.google.android.material.button.MaterialButton
+                    <com.example.liquidglass.LiquidGlassButton
                         android:id="@+id/btn_text_model"
-                        style="@style/Widget.Material3.Button.TonalButton"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="56dp"
                         android:layout_marginHorizontal="6dp"
                         android:layout_weight="1"
-                        android:background="@drawable/btn_accent_8"
-                        android:text="Text" />
+                        android:text="Text"
+                        app:adaptiveTint="true"
+                        app:backdropSourceId="@+id/prompts"
+                        app:bevelWidth="32dp"
+                        app:blurAmount="1.0"
+                        app:cornerRadius="32dp"
+                        app:dispersionStrength="0.1"
+                        app:glassMaterial="clear"
+                        app:glassTint="@color/accent_250"
+                        app:glassTintStrength="1.0"
+                        app:refractionFalloff="1.0"
+                        app:refractionHeight="128dp"
+                        app:saturation="140.0"
+                        app:sensorHighlight="false" />
 
-                    <com.google.android.material.button.MaterialButton
+                    <com.example.liquidglass.LiquidGlassButton
                         android:id="@+id/btn_image_model"
-                        style="@style/Widget.Material3.Button.TonalButton"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="56dp"
                         android:layout_marginStart="6dp"
                         android:layout_weight="1"
-                        android:background="@drawable/btn_accent_8"
-                        android:text="Images" />
+                        android:text="Images"
+                        app:adaptiveTint="true"
+                        app:backdropSourceId="@+id/prompts"
+                        app:bevelWidth="32dp"
+                        app:blurAmount="1.0"
+                        app:cornerRadius="32dp"
+                        app:dispersionStrength="0.1"
+                        app:glassMaterial="clear"
+                        app:glassTint="@color/accent_250"
+                        app:glassTintStrength="1.0"
+                        app:refractionFalloff="1.0"
+                        app:refractionHeight="128dp"
+                        app:saturation="140.0"
+                        app:sensorHighlight="false" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -142,74 +180,112 @@
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/search_bar">
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout23">
 
                     <HorizontalScrollView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:overScrollMode="never"
+                        tools:ignore="UselessParent">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:orientation="horizontal">
 
-                            <LinearLayout
+                            <com.example.liquidglass.LiquidGlassView
                                 android:id="@+id/cat_all"
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
-                                android:background="@drawable/cat_all_active"
                                 android:clickable="true"
                                 android:contentDescription="@string/cat_all_new"
                                 android:orientation="vertical"
                                 android:padding="12dp"
-                                android:tooltipText="@string/cat_all">
+                                android:tooltipText="@string/cat_all"
+                                app:adaptiveTint="true"
+                                app:backdropSourceId="@+id/prompts"
+                                app:bevelWidth="32dp"
+                                app:blurAmount="1.0"
+                                app:cornerRadius="32dp"
+                                app:dispersionStrength="0.1"
+                                app:glassMaterial="clear"
+                                app:glassTint="@color/accent_250"
+                                app:glassTintStrength="1.0"
+                                app:refractionFalloff="1.0"
+                                app:refractionHeight="128dp"
+                                app:saturation="140.0"
+                                app:sensorHighlight="false">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:background="@drawable/ic_all"
                                     android:orientation="vertical" />
-                            </LinearLayout>
+                            </com.example.liquidglass.LiquidGlassView>
 
-                            <LinearLayout
+                            <com.example.liquidglass.LiquidGlassView
                                 android:id="@+id/cat_development"
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
                                 android:layout_marginStart="12dp"
-                                android:background="@drawable/cat_development"
                                 android:clickable="true"
                                 android:contentDescription="@string/cat_development"
                                 android:orientation="vertical"
                                 android:padding="12dp"
-                                android:tooltipText="@string/cat_development">
+                                android:tooltipText="@string/cat_development"
+                                app:adaptiveTint="true"
+                                app:backdropSourceId="@+id/prompts"
+                                app:bevelWidth="32dp"
+                                app:blurAmount="1.0"
+                                app:cornerRadius="32dp"
+                                app:dispersionStrength="0.1"
+                                app:glassMaterial="clear"
+                                app:glassTint="@color/tint_cat_development_active"
+                                app:glassTintStrength="0.2"
+                                app:refractionFalloff="1.0"
+                                app:refractionHeight="128dp"
+                                app:saturation="140.0"
+                                app:sensorHighlight="false">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:background="@drawable/ic_development"
                                     android:orientation="vertical" />
-                            </LinearLayout>
+                            </com.example.liquidglass.LiquidGlassView>
 
-                            <LinearLayout
+                            <com.example.liquidglass.LiquidGlassView
                                 android:id="@+id/cat_music"
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
                                 android:layout_marginStart="12dp"
-                                android:background="@drawable/cat_music"
                                 android:clickable="true"
                                 android:contentDescription="@string/cat_music"
                                 android:orientation="vertical"
                                 android:padding="12dp"
-                                android:tooltipText="@string/cat_music">
+                                android:tooltipText="@string/cat_music"
+                                app:adaptiveTint="true"
+                                app:backdropSourceId="@+id/prompts"
+                                app:bevelWidth="32dp"
+                                app:blurAmount="1.0"
+                                app:cornerRadius="32dp"
+                                app:dispersionStrength="0.1"
+                                app:glassMaterial="clear"
+                                app:glassTint="@color/tint_cat_music_active"
+                                app:glassTintStrength="0.2"
+                                app:refractionFalloff="1.0"
+                                app:refractionHeight="128dp"
+                                app:saturation="140.0"
+                                app:sensorHighlight="false">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:background="@drawable/ic_music"
                                     android:orientation="vertical" />
-                            </LinearLayout>
+                            </com.example.liquidglass.LiquidGlassView>
 
-                            <LinearLayout
+                            <com.example.liquidglass.LiquidGlassView
                                 android:id="@+id/cat_art"
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
@@ -219,16 +295,29 @@
                                 android:contentDescription="@string/cat_art"
                                 android:orientation="vertical"
                                 android:padding="12dp"
-                                android:tooltipText="@string/cat_art">
+                                android:tooltipText="@string/cat_art"
+                                app:adaptiveTint="true"
+                                app:backdropSourceId="@+id/prompts"
+                                app:bevelWidth="32dp"
+                                app:blurAmount="1.0"
+                                app:cornerRadius="32dp"
+                                app:dispersionStrength="0.1"
+                                app:glassMaterial="clear"
+                                app:glassTint="@color/tint_cat_art_active"
+                                app:glassTintStrength="0.2"
+                                app:refractionFalloff="1.0"
+                                app:refractionHeight="128dp"
+                                app:saturation="140.0"
+                                app:sensorHighlight="false">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:background="@drawable/ic_art"
                                     android:orientation="vertical" />
-                            </LinearLayout>
+                            </com.example.liquidglass.LiquidGlassView>
 
-                            <LinearLayout
+                            <com.example.liquidglass.LiquidGlassView
                                 android:id="@+id/cat_culture"
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
@@ -238,16 +327,29 @@
                                 android:contentDescription="@string/cat_culture"
                                 android:orientation="vertical"
                                 android:padding="12dp"
-                                android:tooltipText="@string/cat_culture">
+                                android:tooltipText="@string/cat_culture"
+                                app:adaptiveTint="true"
+                                app:backdropSourceId="@+id/prompts"
+                                app:bevelWidth="32dp"
+                                app:blurAmount="1.0"
+                                app:cornerRadius="32dp"
+                                app:dispersionStrength="0.1"
+                                app:glassMaterial="clear"
+                                app:glassTint="@color/tint_cat_culture_active"
+                                app:glassTintStrength="0.2"
+                                app:refractionFalloff="1.0"
+                                app:refractionHeight="128dp"
+                                app:saturation="140.0"
+                                app:sensorHighlight="false">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:background="@drawable/ic_culture"
                                     android:orientation="vertical" />
-                            </LinearLayout>
+                            </com.example.liquidglass.LiquidGlassView>
 
-                            <LinearLayout
+                            <com.example.liquidglass.LiquidGlassView
                                 android:id="@+id/cat_business"
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
@@ -257,253 +359,407 @@
                                 android:contentDescription="@string/cat_business"
                                 android:orientation="vertical"
                                 android:padding="12dp"
-                                android:tooltipText="@string/cat_business">
+                                android:tooltipText="@string/cat_business"
+                                app:adaptiveTint="true"
+                                app:backdropSourceId="@+id/prompts"
+                                app:bevelWidth="32dp"
+                                app:blurAmount="1.0"
+                                app:cornerRadius="32dp"
+                                app:dispersionStrength="0.1"
+                                app:glassMaterial="clear"
+                                app:glassTint="@color/tint_cat_business_active"
+                                app:glassTintStrength="0.2"
+                                app:refractionFalloff="1.0"
+                                app:refractionHeight="128dp"
+                                app:saturation="140.0"
+                                app:sensorHighlight="false">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:background="@drawable/ic_business"
                                     android:orientation="vertical" />
-                            </LinearLayout>
+                            </com.example.liquidglass.LiquidGlassView>
 
-                            <LinearLayout
+                            <com.example.liquidglass.LiquidGlassView
                                 android:id="@+id/cat_gaming"
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
                                 android:layout_marginStart="12dp"
-                                android:background="@drawable/cat_gaming"
                                 android:clickable="true"
                                 android:contentDescription="@string/cat_gaming"
                                 android:orientation="vertical"
                                 android:padding="12dp"
-                                android:tooltipText="@string/cat_gaming">
+                                android:tooltipText="@string/cat_gaming"
+                                app:adaptiveTint="true"
+                                app:backdropSourceId="@+id/prompts"
+                                app:bevelWidth="32dp"
+                                app:blurAmount="1.0"
+                                app:cornerRadius="32dp"
+                                app:dispersionStrength="0.1"
+                                app:glassMaterial="clear"
+                                app:glassTint="@color/tint_cat_gaming_active"
+                                app:glassTintStrength="0.2"
+                                app:refractionFalloff="1.0"
+                                app:refractionHeight="128dp"
+                                app:saturation="140.0"
+                                app:sensorHighlight="false">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:background="@drawable/ic_gaming"
                                     android:orientation="vertical" />
-                            </LinearLayout>
+                            </com.example.liquidglass.LiquidGlassView>
 
-                            <LinearLayout
+                            <com.example.liquidglass.LiquidGlassView
                                 android:id="@+id/cat_education"
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
                                 android:layout_marginStart="12dp"
-                                android:background="@drawable/cat_education"
                                 android:clickable="true"
                                 android:contentDescription="@string/cat_education"
                                 android:orientation="vertical"
                                 android:padding="12dp"
-                                android:tooltipText="@string/cat_education">
+                                android:tooltipText="@string/cat_education"
+                                app:adaptiveTint="true"
+                                app:backdropSourceId="@+id/prompts"
+                                app:bevelWidth="32dp"
+                                app:blurAmount="1.0"
+                                app:cornerRadius="32dp"
+                                app:dispersionStrength="0.1"
+                                app:glassMaterial="clear"
+                                app:glassTint="@color/tint_cat_education_active"
+                                app:glassTintStrength="0.2"
+                                app:refractionFalloff="1.0"
+                                app:refractionHeight="128dp"
+                                app:saturation="140.0"
+                                app:sensorHighlight="false">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:background="@drawable/ic_education"
                                     android:orientation="vertical" />
-                            </LinearLayout>
+                            </com.example.liquidglass.LiquidGlassView>
 
-                            <LinearLayout
+                            <com.example.liquidglass.LiquidGlassView
                                 android:id="@+id/cat_history"
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
                                 android:layout_marginStart="12dp"
-                                android:background="@drawable/cat_history"
                                 android:clickable="true"
                                 android:contentDescription="@string/cat_history"
                                 android:orientation="vertical"
                                 android:padding="12dp"
-                                android:tooltipText="@string/cat_history">
+                                android:tooltipText="@string/cat_history"
+                                app:adaptiveTint="true"
+                                app:backdropSourceId="@+id/prompts"
+                                app:bevelWidth="32dp"
+                                app:blurAmount="1.0"
+                                app:cornerRadius="32dp"
+                                app:dispersionStrength="0.1"
+                                app:glassMaterial="clear"
+                                app:glassTint="@color/tint_cat_history_active"
+                                app:glassTintStrength="0.2"
+                                app:refractionFalloff="1.0"
+                                app:refractionHeight="128dp"
+                                app:saturation="140.0"
+                                app:sensorHighlight="false">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:background="@drawable/ic_history"
                                     android:orientation="vertical" />
-                            </LinearLayout>
+                            </com.example.liquidglass.LiquidGlassView>
 
-                            <LinearLayout
+                            <com.example.liquidglass.LiquidGlassView
                                 android:id="@+id/cat_food"
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
                                 android:layout_marginStart="12dp"
-                                android:background="@drawable/cat_food"
                                 android:clickable="true"
                                 android:contentDescription="@string/cat_food"
                                 android:orientation="vertical"
                                 android:padding="12dp"
-                                android:tooltipText="@string/cat_food">
+                                android:tooltipText="@string/cat_food"
+                                app:adaptiveTint="true"
+                                app:backdropSourceId="@+id/prompts"
+                                app:bevelWidth="32dp"
+                                app:blurAmount="1.0"
+                                app:cornerRadius="32dp"
+                                app:dispersionStrength="0.1"
+                                app:glassMaterial="clear"
+                                app:glassTint="@color/tint_cat_food_active"
+                                app:glassTintStrength="0.2"
+                                app:refractionFalloff="1.0"
+                                app:refractionHeight="128dp"
+                                app:saturation="140.0"
+                                app:sensorHighlight="false">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:background="@drawable/ic_food"
                                     android:orientation="vertical" />
-                            </LinearLayout>
+                            </com.example.liquidglass.LiquidGlassView>
 
-                            <LinearLayout
+                            <com.example.liquidglass.LiquidGlassView
                                 android:id="@+id/cat_tourism"
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
                                 android:layout_marginStart="12dp"
-                                android:background="@drawable/cat_tourism"
                                 android:clickable="true"
                                 android:contentDescription="@string/cat_tourism"
                                 android:orientation="vertical"
                                 android:padding="12dp"
-                                android:tooltipText="@string/cat_tourism">
+                                android:tooltipText="@string/cat_tourism"
+                                app:adaptiveTint="true"
+                                app:backdropSourceId="@+id/prompts"
+                                app:bevelWidth="32dp"
+                                app:blurAmount="1.0"
+                                app:cornerRadius="32dp"
+                                app:dispersionStrength="0.1"
+                                app:glassMaterial="clear"
+                                app:glassTint="@color/tint_cat_tourism_active"
+                                app:glassTintStrength="0.2"
+                                app:refractionFalloff="1.0"
+                                app:refractionHeight="128dp"
+                                app:saturation="140.0"
+                                app:sensorHighlight="false">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:background="@drawable/ic_tourism"
                                     android:orientation="vertical" />
-                            </LinearLayout>
+                            </com.example.liquidglass.LiquidGlassView>
 
-                            <LinearLayout
+                            <com.example.liquidglass.LiquidGlassView
                                 android:id="@+id/cat_productivity"
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
                                 android:layout_marginStart="12dp"
-                                android:background="@drawable/cat_productivity"
                                 android:clickable="true"
                                 android:contentDescription="@string/cat_productivity"
                                 android:orientation="vertical"
                                 android:padding="12dp"
-                                android:tooltipText="@string/cat_productivity">
+                                android:tooltipText="@string/cat_productivity"
+                                app:adaptiveTint="true"
+                                app:backdropSourceId="@+id/prompts"
+                                app:bevelWidth="32dp"
+                                app:blurAmount="1.0"
+                                app:cornerRadius="32dp"
+                                app:dispersionStrength="0.1"
+                                app:glassMaterial="clear"
+                                app:glassTint="@color/tint_cat_productivity_active"
+                                app:glassTintStrength="0.2"
+                                app:refractionFalloff="1.0"
+                                app:refractionHeight="128dp"
+                                app:saturation="140.0"
+                                app:sensorHighlight="false">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:background="@drawable/ic_productivity"
                                     android:orientation="vertical" />
-                            </LinearLayout>
+                            </com.example.liquidglass.LiquidGlassView>
 
-                            <LinearLayout
+                            <com.example.liquidglass.LiquidGlassView
                                 android:id="@+id/cat_tools"
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
                                 android:layout_marginStart="12dp"
-                                android:background="@drawable/cat_tools"
                                 android:clickable="true"
                                 android:contentDescription="@string/cat_tools"
                                 android:orientation="vertical"
                                 android:padding="12dp"
-                                android:tooltipText="@string/cat_tools">
+                                android:tooltipText="@string/cat_tools"
+                                app:adaptiveTint="true"
+                                app:backdropSourceId="@+id/prompts"
+                                app:bevelWidth="32dp"
+                                app:blurAmount="1.0"
+                                app:cornerRadius="32dp"
+                                app:dispersionStrength="0.1"
+                                app:glassMaterial="clear"
+                                app:glassTint="@color/tint_cat_tools_active"
+                                app:glassTintStrength="0.2"
+                                app:refractionFalloff="1.0"
+                                app:refractionHeight="128dp"
+                                app:saturation="140.0"
+                                app:sensorHighlight="false">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:background="@drawable/ic_tools"
                                     android:orientation="vertical" />
-                            </LinearLayout>
+                            </com.example.liquidglass.LiquidGlassView>
 
-                            <LinearLayout
+                            <com.example.liquidglass.LiquidGlassView
                                 android:id="@+id/cat_entertainment"
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
                                 android:layout_marginStart="12dp"
-                                android:background="@drawable/cat_entertainment"
                                 android:clickable="true"
                                 android:contentDescription="@string/cat_entertainment"
                                 android:orientation="vertical"
                                 android:padding="12dp"
-                                android:tooltipText="@string/cat_entertainment">
+                                android:tooltipText="@string/cat_entertainment"
+                                app:adaptiveTint="true"
+                                app:backdropSourceId="@+id/prompts"
+                                app:bevelWidth="32dp"
+                                app:blurAmount="1.0"
+                                app:cornerRadius="32dp"
+                                app:dispersionStrength="0.1"
+                                app:glassMaterial="clear"
+                                app:glassTint="@color/tint_cat_entertainment_active"
+                                app:glassTintStrength="0.2"
+                                app:refractionFalloff="1.0"
+                                app:refractionHeight="128dp"
+                                app:saturation="140.0"
+                                app:sensorHighlight="false">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:background="@drawable/ic_entertainment"
                                     android:orientation="vertical" />
-                            </LinearLayout>
+                            </com.example.liquidglass.LiquidGlassView>
 
-                            <LinearLayout
+                            <com.example.liquidglass.LiquidGlassView
                                 android:id="@+id/cat_sport"
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
                                 android:layout_marginStart="12dp"
-                                android:background="@drawable/cat_sport"
                                 android:clickable="true"
                                 android:contentDescription="@string/cat_sport"
                                 android:orientation="vertical"
                                 android:padding="12dp"
-                                android:tooltipText="@string/cat_sport">
+                                android:tooltipText="@string/cat_sport"
+                                app:adaptiveTint="true"
+                                app:backdropSourceId="@+id/prompts"
+                                app:bevelWidth="32dp"
+                                app:blurAmount="1.0"
+                                app:cornerRadius="32dp"
+                                app:dispersionStrength="0.1"
+                                app:glassMaterial="clear"
+                                app:glassTint="@color/tint_cat_sport_active"
+                                app:glassTintStrength="0.2"
+                                app:refractionFalloff="1.0"
+                                app:refractionHeight="128dp"
+                                app:saturation="140.0"
+                                app:sensorHighlight="false">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:background="@drawable/ic_sport"
                                     android:orientation="vertical" />
-                            </LinearLayout>
+                            </com.example.liquidglass.LiquidGlassView>
 
-                            <LinearLayout
+                            <com.example.liquidglass.LiquidGlassView
                                 android:id="@+id/cat_health"
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
                                 android:layout_marginStart="12dp"
-                                android:background="@drawable/cat_health"
                                 android:clickable="true"
                                 android:contentDescription="@string/cat_health"
                                 android:orientation="vertical"
                                 android:padding="12dp"
-                                android:tooltipText="@string/cat_health">
+                                android:tooltipText="@string/cat_health"
+                                app:adaptiveTint="true"
+                                app:backdropSourceId="@+id/prompts"
+                                app:bevelWidth="32dp"
+                                app:blurAmount="1.0"
+                                app:cornerRadius="32dp"
+                                app:dispersionStrength="0.1"
+                                app:glassMaterial="clear"
+                                app:glassTint="@color/tint_cat_health_active"
+                                app:glassTintStrength="0.2"
+                                app:refractionFalloff="1.0"
+                                app:refractionHeight="128dp"
+                                app:saturation="140.0"
+                                app:sensorHighlight="false">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:background="@drawable/ic_health"
                                     android:orientation="vertical" />
-                            </LinearLayout>
+                            </com.example.liquidglass.LiquidGlassView>
                         </LinearLayout>
                     </HorizontalScrollView>
                 </LinearLayout>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/search_bar"
+                <com.example.liquidglass.LiquidGlassView
+                    android:id="@+id/liquidGlassView"
                     android:layout_width="0dp"
                     android:layout_height="56dp"
-                    android:layout_marginTop="24dp"
-                    android:background="@drawable/btn_accent_tonal"
-                    android:clickable="true"
-                    android:focusable="true"
+                    android:layout_marginTop="16dp"
+                    app:adaptiveTint="true"
+                    app:backdropSourceId="@+id/prompts"
+                    app:bevelWidth="32dp"
+                    app:blurAmount="1.0"
+                    app:cornerRadius="32dp"
+                    app:dispersionStrength="0.1"
+                    app:glassMaterial="clear"
+                    app:glassTint="@color/accent_300"
+                    app:glassTintStrength="1.0"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/activity_prompts_title">
+                    app:layout_constraintTop_toBottomOf="@+id/activity_prompts_title"
+                    app:refractionFalloff="1.0"
+                    app:refractionHeight="128dp"
+                    app:saturation="140.0"
+                    app:sensorHighlight="false">
 
-                    <EditText
-                        android:id="@+id/field_search"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_marginEnd="4dp"
-                        android:autofillHints="Search"
-                        android:background="@color/transparent"
-                        android:ems="10"
-                        android:hint="@string/label_search_prompts"
-                        android:inputType="text"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
-                        android:textColor="@color/text_field"
-                        android:textColorHint="@color/text_hint"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/btn_search"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageButton
-                        android:id="@+id/btn_search"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:layout_marginEnd="4dp"
-                        android:background="@color/transparent"
-                        android:contentDescription="@string/waffle_play_2"
-                        android:src="@drawable/ic_search"
-                        android:tooltipText="@string/hint_search"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/search_bar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clickable="true"
+                        android:focusable="true"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_search" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/activity_prompts_title">
+
+                        <EditText
+                            android:id="@+id/field_search"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_marginEnd="4dp"
+                            android:autofillHints="Search"
+                            android:background="@color/transparent"
+                            android:ems="10"
+                            android:hint="@string/label_search_prompts"
+                            android:inputType="text"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:textColor="@color/text_field"
+                            android:textColorHint="@color/text_hint"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/btn_search"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageButton
+                            android:id="@+id/btn_search"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_marginEnd="4dp"
+                            android:background="@color/transparent"
+                            android:contentDescription="@string/waffle_play_2"
+                            android:src="@drawable/ic_search"
+                            android:tooltipText="@string/hint_search"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/ic_search" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.example.liquidglass.LiquidGlassView>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -554,16 +810,16 @@
             android:id="@+id/prompts_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingTop="300dp"
-            android:paddingBottom="84dp">
+            android:overScrollMode="never">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/prompts"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:overScrollMode="never"
                 android:clipToPadding="false"
-                android:paddingBottom="16dp"
+                android:paddingTop="292dp"
+                android:paddingBottom="100dp"
                 tools:listitem="@layout/view_prompt" />
         </androidx.core.widget.NestedScrollView>
 
@@ -579,6 +835,5 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </LinearLayout>
-
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

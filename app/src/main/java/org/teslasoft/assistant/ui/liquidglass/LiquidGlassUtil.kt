@@ -17,26 +17,82 @@
 package org.teslasoft.assistant.ui.liquidglass
 
 import android.app.Activity
+import android.content.Context
+import android.view.View
+import android.view.ViewGroup
+import com.example.liquidglass.LiquidGlassButton
 import com.example.liquidglass.LiquidGlassView
 
+@Suppress("unused")
 class LiquidGlassUtil {
     companion object {
-        fun initializeLiquidGlassViewById(viewId: Int, activity: Activity) {
-            val liquidGlassView = activity.findViewById<LiquidGlassView>(viewId)
+        // For fragments
+        fun initializeLiquidGlassViewById(viewId: Int, parentView: View) {
+            val liquidGlassView = parentView.findViewById<LiquidGlassView>(viewId)
             liquidGlassView.enableDynamicBackground = true
+            liquidGlassView.edgeHighlightOpacity = 50.0f
+            liquidGlassView.edgeHighlightBorderWidth = 4.0f
+            liquidGlassView.blurAmount = 0.5f
+            liquidGlassView.pressScale = 0.8f
         }
 
-        fun setAccentColorForLiquidGlassView(viewId: Int, activity: Activity) {
-            val liquidGlassView = activity.findViewById<LiquidGlassView>(viewId)
+        // For activities
+        fun initializeLiquidGlassViewById(viewId: Int, activity: Activity) {
+            initializeLiquidGlassViewById(viewId, activity.findViewById(android.R.id.content))
+        }
+
+        // For fragments
+        fun setAccentColorForLiquidGlassView(viewId: Int, parentView: View, context: Context) {
+            val liquidGlassView = parentView.findViewById<LiquidGlassView>(viewId)
             if (android.os.Build.VERSION.SDK_INT >= 31) {
-                val systemAccentDark = activity.getColor(android.R.color.system_accent1_600)
-                val systemAccentLight = activity.getColor(android.R.color.system_accent1_100)
-                liquidGlassView.glassTint = if (isDarkModeEnabled(activity)) systemAccentDark else systemAccentLight
+                val systemAccentDark = saturateColor(context.getColor(android.R.color.system_accent1_500), 0.6f)
+                val systemAccentLight = context.getColor(android.R.color.system_accent1_200)
+                liquidGlassView.glassTint = if (isDarkModeEnabled(context)) systemAccentDark else systemAccentLight
             }
         }
 
-        fun isDarkModeEnabled(activity: Activity): Boolean {
-            val uiMode = activity.resources.configuration.uiMode
+        // For activities
+        fun setAccentColorForLiquidGlassView(viewId: Int, activity: Activity) {
+            setAccentColorForLiquidGlassView(viewId, activity.findViewById(android.R.id.content), activity)
+        }
+
+        // For fragments
+        fun scanForLiquidGlassAndInitSettings(parentView: View, context: Context, excludedViews: ArrayList<Int>? = arrayListOf(), tintMode: Boolean = true) {
+            fun scanView(view: View) {
+                if (view is LiquidGlassView) {
+                    if (view.id != View.NO_ID && !(excludedViews ?: arrayListOf()).contains(view.id)) {
+                        initializeLiquidGlassViewById(view.id, parentView)
+
+                        if (tintMode) {
+                            setAccentColorForLiquidGlassView(view.id, parentView, context)
+                        }
+                    }
+                }
+
+                if (view is ViewGroup) {
+                    for (i in 0 until view.childCount) {
+                        scanView(view.getChildAt(i))
+                    }
+                }
+            }
+
+            scanView(parentView)
+        }
+
+        // For activities
+        fun scanForLiquidGlassAndInitSettings(activity: Activity, excludedViews: ArrayList<Int>? = arrayListOf(), tintMode: Boolean = true) {
+            scanForLiquidGlassAndInitSettings(activity.findViewById(android.R.id.content), activity, excludedViews, tintMode)
+        }
+
+        private fun saturateColor(color: Int, saturation: Float): Int {
+            val hsv = FloatArray(3)
+            android.graphics.Color.colorToHSV(color, hsv)
+            hsv[1] = saturation
+            return android.graphics.Color.HSVToColor(hsv)
+        }
+
+        private fun isDarkModeEnabled(context: Context): Boolean {
+            val uiMode = context.resources.configuration.uiMode
             val nightModeFlags = uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
             return nightModeFlags == android.content.res.Configuration.UI_MODE_NIGHT_YES
         }

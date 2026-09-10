@@ -39,6 +39,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.liquidglass.LiquidGlassButton
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
@@ -53,6 +54,7 @@ import org.teslasoft.assistant.model.SimpleResponseModel
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.PromptAdapterNew
 import org.teslasoft.assistant.ui.fragments.dialogs.PostPromptDialogFragment
+import org.teslasoft.assistant.ui.liquidglass.LiquidGlassUtil
 import org.teslasoft.assistant.util.WindowInsetsUtil
 import org.teslasoft.core.api.network.RequestNetwork
 import java.net.URLEncoder
@@ -71,28 +73,30 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private var btnDetails: MaterialButton? = null
     private var noInternetLayout: LinearLayout? = null
     private var progressbar: LoadingIndicator? = null
-    private var catAll: LinearLayout? = null
-    private var catDevelopment: LinearLayout? = null
-    private var catMusic: LinearLayout? = null
-    private var catArt: LinearLayout? = null
-    private var catCulture: LinearLayout? = null
-    private var catBusiness: LinearLayout? = null
-    private var catGaming: LinearLayout? = null
-    private var catEducation: LinearLayout? = null
-    private var catHistory: LinearLayout? = null
-    private var catFood: LinearLayout? = null
-    private var catTourism: LinearLayout? = null
-    private var catProductivity: LinearLayout? = null
-    private var catTools: LinearLayout? = null
-    private var catEntertainment: LinearLayout? = null
-    private var catSport: LinearLayout? = null
-    private var catHealth: LinearLayout? = null
+    private var catAll: View? = null
+    private var catDevelopment: View? = null
+    private var catMusic: View? = null
+    private var catArt: View? = null
+    private var catCulture: View? = null
+    private var catBusiness: View? = null
+    private var catGaming: View? = null
+    private var catEducation: View? = null
+    private var catHistory: View? = null
+    private var catFood: View? = null
+    private var catTourism: View? = null
+    private var catProductivity: View? = null
+    private var catTools: View? = null
+    private var catEntertainment: View? = null
+    private var catSport: View? = null
+    private var catHealth: View? = null
     private var searchBar: ConstraintLayout? = null
-    private var btnAllModels: MaterialButton? = null
-    private var btnTextModel: MaterialButton? = null
-    private var btnImageModel: MaterialButton? = null
+    private var btnAllModels: LiquidGlassButton? = null
+    private var btnTextModel: LiquidGlassButton? = null
+    private var btnImageModel: LiquidGlassButton? = null
     private var btnSearch: ImageButton? = null
     private var promptsContainer: NestedScrollView? = null
+
+    private var fragmentRoot: ConstraintLayout? = null
 
     private var query = ""
     private var selectedCategory = "all"
@@ -344,6 +348,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         catSport = view.findViewById(R.id.cat_sport)
         catHealth = view.findViewById(R.id.cat_health)
         searchBar = view.findViewById(R.id.search_bar)
+        fragmentRoot = view.findViewById(R.id.fragment_root)
 
         btnAllModels = view.findViewById(R.id.btn_all_models)
         btnTextModel = view.findViewById(R.id.btn_text_model)
@@ -352,6 +357,16 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         promptsContainer = view.findViewById(R.id.prompts_container)
 
         promptsList?.layoutManager = LinearLayoutManager(mContext)
+
+        val preferences = Preferences.getPreferences(mContext?: return, "")
+
+        if (isDarkThemeEnabled() && preferences.getAmoledPitchBlack()) {
+            promptsList?.background = ResourcesCompat.getDrawable(resources, R.color.amoled_window_background, null)
+        } else {
+            promptsList?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(mContext ?: return))
+        }
+
+        LiquidGlassUtil.scanForLiquidGlassAndInitSettings(view, mContext ?: return, null, false)
 
         Thread {
             while (!onAttach) {
@@ -366,7 +381,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
     private fun initLogic() {
-        updateModelsPanel(R.color.accent_900, R.color.accent_100, R.color.accent_100, R.color.window_background, R.color.accent_900, R.color.accent_900)
+        updateModelsPanel(R.color.accent_600, R.color.accent_250, R.color.accent_250)
 
         initializeCat()
 
@@ -384,8 +399,6 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 super.onScrolled(recyclerView, dx, dy)
             }
         })
-
-        reloadAmoled(mContext?: return)
 
         noInternetLayout?.visibility = View.GONE
         promptsContainer?.visibility = View.GONE
@@ -420,11 +433,11 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 query = s.toString()
 
                 if (query.lowercase().contains("type:gpt")) {
-                    updateModelsPanel(R.color.accent_100, R.color.accent_900, R.color.accent_100, R.color.accent_900, R.color.window_background, R.color.accent_900)
+                    updateModelsPanel(R.color.accent_250, R.color.accent_600, R.color.accent_250)
                 } else if (query.lowercase().contains("type:dall-e")) {
-                    updateModelsPanel(R.color.accent_100, R.color.accent_100, R.color.accent_900, R.color.accent_900, R.color.accent_900, R.color.window_background)
+                    updateModelsPanel(R.color.accent_250, R.color.accent_250, R.color.accent_600)
                 } else {
-                    updateModelsPanel(R.color.accent_900, R.color.accent_100, R.color.accent_100, R.color.window_background, R.color.accent_900, R.color.accent_900)
+                    updateModelsPanel(R.color.accent_600, R.color.accent_250, R.color.accent_250)
                 }
 
                 loadData()
@@ -446,19 +459,19 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         btnAllModels?.setOnClickListener {
             fieldSearch?.setText("")
             model = "all"
-            updateModelsPanel(R.color.accent_900, R.color.accent_100, R.color.accent_100, R.color.window_background, R.color.accent_900, R.color.accent_900)
+            updateModelsPanel(R.color.accent_600, R.color.accent_250, R.color.accent_250)
         }
 
         btnTextModel?.setOnClickListener {
             fieldSearch?.setText("type:gpt")
             model = "type:gpt"
-            updateModelsPanel(R.color.accent_100, R.color.accent_900, R.color.accent_100, R.color.accent_900, R.color.window_background, R.color.accent_900)
+            updateModelsPanel(R.color.accent_250, R.color.accent_600, R.color.accent_250)
         }
 
         btnImageModel?.setOnClickListener {
             fieldSearch?.setText("type:dall-e")
             model = "type:dall-e"
-            updateModelsPanel(R.color.accent_100, R.color.accent_100, R.color.accent_900, R.color.accent_900, R.color.accent_900, R.color.window_background)
+            updateModelsPanel(R.color.accent_250, R.color.accent_250, R.color.accent_600)
         }
 
         btnDetails?.setOnClickListener {
@@ -478,13 +491,10 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }
     }
 
-    private fun updateModelsPanel(btnAllBg: Int, btnTextBg: Int, btnImageBg: Int, btnAllText: Int, btnTextText: Int, btnImageText: Int) {
-        btnTextModel?.backgroundTintList = ResourcesCompat.getColorStateList(mContext?.resources?: return, btnTextBg, mContext?.theme)
-        btnImageModel?.backgroundTintList = ResourcesCompat.getColorStateList(mContext?.resources?: return, btnImageBg, mContext?.theme)
-        btnAllModels?.backgroundTintList = ResourcesCompat.getColorStateList(mContext?.resources?: return, btnAllBg, mContext?.theme)
-        btnTextModel?.setTextColor(ResourcesCompat.getColor(mContext?.resources?: return, btnTextText, mContext?.theme))
-        btnImageModel?.setTextColor(ResourcesCompat.getColor(mContext?.resources?: return, btnImageText, mContext?.theme))
-        btnAllModels?.setTextColor(ResourcesCompat.getColor(mContext?.resources?: return, btnAllText, mContext?.theme))
+    private fun updateModelsPanel(btnAllBg: Int, btnTextBg: Int, btnImageBg: Int) {
+        btnTextModel?.glassTint = mContext?.getColor(btnTextBg) ?: return
+        btnImageModel?.glassTint = mContext?.getColor(btnImageBg) ?: return
+        btnAllModels?.glassTint = mContext?.getColor(btnAllBg) ?: return
     }
 
     private fun isDarkThemeEnabled(): Boolean {
@@ -496,130 +506,71 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }
     }
 
-    fun reloadAmoled(context: Context) {
-        if (isDarkThemeEnabled() && Preferences.getPreferences(context, "").getAmoledPitchBlack()) {
-            searchBar?.background = ResourcesCompat.getDrawable(mContext?.resources?: return, R.drawable.btn_accent_tonal_amoled, context.theme)!!
-        } else {
-            searchBar?.background = getDisabledDrawable(ResourcesCompat.getDrawable(mContext?.resources?: return, R.drawable.btn_accent_tonal, context.theme)!!)
-        }
-    }
-
     private fun initializeCat() {
         catAll?.setOnClickListener {
-            clearSelection()
-            catAll?.setBackgroundResource(R.drawable.cat_all_active)
             selectedCategory = "all"
             filter(prompts)
         }
         catDevelopment?.setOnClickListener {
-            clearSelection()
-            catDevelopment?.setBackgroundResource(R.drawable.cat_development_active)
             selectedCategory = "development"
             filter(prompts)
         }
         catMusic?.setOnClickListener {
-            clearSelection()
-            catMusic?.setBackgroundResource(R.drawable.cat_music_active)
             selectedCategory = "music"
             filter(prompts)
         }
         catArt?.setOnClickListener {
-            clearSelection()
-            catArt?.setBackgroundResource(R.drawable.cat_art_active)
             selectedCategory = "art"
             filter(prompts)
         }
         catCulture?.setOnClickListener {
-            clearSelection()
-            catCulture?.setBackgroundResource(R.drawable.cat_culture_active)
             selectedCategory = "culture"
             filter(prompts)
         }
         catBusiness?.setOnClickListener {
-            clearSelection()
-            catBusiness?.setBackgroundResource(R.drawable.cat_business_active)
             selectedCategory = "business"
             filter(prompts)
         }
         catGaming?.setOnClickListener {
-            clearSelection()
-            catGaming?.setBackgroundResource(R.drawable.cat_gaming_active)
             selectedCategory = "gaming"
             filter(prompts)
         }
         catEducation?.setOnClickListener {
-            clearSelection()
-            catEducation?.setBackgroundResource(R.drawable.cat_education_active)
             selectedCategory = "education"
             filter(prompts)
         }
         catHistory?.setOnClickListener {
-            clearSelection()
-            catHistory?.setBackgroundResource(R.drawable.cat_history_active)
             selectedCategory = "history"
             filter(prompts)
         }
         catFood?.setOnClickListener {
-            clearSelection()
-            catFood?.setBackgroundResource(R.drawable.cat_food_active)
             selectedCategory = "food"
             filter(prompts)
         }
         catTourism?.setOnClickListener {
-            clearSelection()
-            catTourism?.setBackgroundResource(R.drawable.cat_tourism_active)
             selectedCategory = "tourism"
             filter(prompts)
         }
         catProductivity?.setOnClickListener {
-            clearSelection()
-            catProductivity?.setBackgroundResource(R.drawable.cat_productivity_active)
             selectedCategory = "productivity"
             filter(prompts)
         }
         catTools?.setOnClickListener {
-            clearSelection()
-            catTools?.setBackgroundResource(R.drawable.cat_tools_active)
             selectedCategory = "tools"
             filter(prompts)
         }
         catEntertainment?.setOnClickListener {
-            clearSelection()
-            catEntertainment?.setBackgroundResource(R.drawable.cat_entertainment_active)
             selectedCategory = "entertainment"
             filter(prompts)
         }
         catSport?.setOnClickListener {
-            clearSelection()
-            catSport?.setBackgroundResource(R.drawable.cat_sport_active)
             selectedCategory = "sport"
             filter(prompts)
         }
         catHealth?.setOnClickListener {
-            clearSelection()
-            catHealth?.setBackgroundResource(R.drawable.cat_health_active)
             selectedCategory = "health"
             filter(prompts)
         }
-    }
-
-    private fun clearSelection () {
-        catAll?.setBackgroundResource(R.drawable.cat_all)
-        catDevelopment?.setBackgroundResource(R.drawable.cat_development)
-        catMusic?.setBackgroundResource(R.drawable.cat_music)
-        catArt?.setBackgroundResource(R.drawable.cat_art)
-        catCulture?.setBackgroundResource(R.drawable.cat_culture)
-        catBusiness?.setBackgroundResource(R.drawable.cat_business)
-        catGaming?.setBackgroundResource(R.drawable.cat_gaming)
-        catEducation?.setBackgroundResource(R.drawable.cat_education)
-        catHistory?.setBackgroundResource(R.drawable.cat_history)
-        catFood?.setBackgroundResource(R.drawable.cat_food)
-        catTourism?.setBackgroundResource(R.drawable.cat_tourism)
-        catProductivity?.setBackgroundResource(R.drawable.cat_productivity)
-        catTools?.setBackgroundResource(R.drawable.cat_tools)
-        catEntertainment?.setBackgroundResource(R.drawable.cat_entertainment)
-        catSport?.setBackgroundResource(R.drawable.cat_sport)
-        catHealth?.setBackgroundResource(R.drawable.cat_health)
     }
 
     private fun loadData() {

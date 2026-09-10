@@ -74,6 +74,7 @@ import java.util.EnumSet
 import androidx.core.graphics.drawable.toDrawable
 import org.teslasoft.assistant.migration.UnsupportedImageModelMigration
 import org.teslasoft.assistant.ui.debug.aicore.OnDeviceInferenceActivity
+import org.teslasoft.assistant.ui.liquidglass.LiquidGlassUtil
 
 class MainActivity : FragmentActivity() {
 
@@ -156,6 +157,11 @@ class MainActivity : FragmentActivity() {
         btnTogglePWA = findViewById(R.id.btn_toggle_pwa)
         devIds = findViewById(R.id.dev_ids)
         threadLoader = findViewById(R.id.thread_loader)
+
+        val excludedLiquidGlassViews = arrayListOf<Int>()
+        excludedLiquidGlassViews.add(R.id.debugger_bg_liquid_glass)
+
+        LiquidGlassUtil.scanForLiquidGlassAndInitSettings(this, excludedLiquidGlassViews)
 
         threadLoader?.visibility = View.VISIBLE
 
@@ -441,7 +447,6 @@ class MainActivity : FragmentActivity() {
         }
 
         (frameChats as ChatsListFragment).reloadAmoled(this)
-        (framePrompts as PromptsFragment).reloadAmoled(this)
     }
 
     @Suppress("DEPRECATION")
@@ -453,12 +458,14 @@ class MainActivity : FragmentActivity() {
                 window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
             }
             threadLoader?.background = ResourcesCompat.getDrawable(resources, R.color.amoled_window_background, null)
+            root?.background = ResourcesCompat.getDrawable(resources, R.color.amoled_window_background, null)
         } else {
             if (Build.VERSION.SDK_INT < 30) {
                 window.navigationBarColor = SurfaceColors.SURFACE_3.getColor(this)
                 window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
             }
             threadLoader?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
+            root?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
         }
     }
 

@@ -7,7 +7,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/window_background"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    tools:background="@tools:sample/backgrounds/scenic">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chat_view"
@@ -30,15 +31,16 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/chat_view" />
+        app:layout_constraintTop_toTopOf="@+id/chat_view"
+        tools:visibility="gone" />
 
     <com.example.liquidglass.LiquidGlassView
         android:id="@+id/btn_back_glass"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
-        android:padding="4dp"
+        android:padding="8dp"
         app:adaptiveTint="true"
         app:backdropSourceId="@+id/root"
         app:bevelWidth="32dp"
@@ -50,6 +52,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:refractionFalloff="1.0"
         app:refractionHeight="128dp"
+        app:saturation="140.0"
         app:sensorHighlight="false">
 
         <ImageButton
@@ -66,11 +69,11 @@
 
     <com.example.liquidglass.LiquidGlassView
         android:id="@+id/btn_settings_glass"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
-        android:padding="4dp"
+        android:padding="8dp"
         app:adaptiveTint="true"
         app:backdropSourceId="@+id/root"
         app:bevelWidth="32dp"
@@ -82,6 +85,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:refractionFalloff="1.0"
         app:refractionHeight="128dp"
+        app:saturation="140.0"
         app:sensorHighlight="false">
 
         <ImageButton
@@ -121,7 +125,8 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="@+id/chat_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="gone" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/message_box"
@@ -145,6 +150,7 @@
             app:cornerRadius="32dp"
             app:dispersionStrength="0.1"
             app:glassMaterial="clear"
+            app:saturation="140.0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -246,6 +252,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:refractionFalloff="0.2"
+            app:saturation="140.0"
             app:refractionHeight="128dp"
             app:sensorHighlight="false">
 
@@ -314,13 +321,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:refractionFalloff="0.2"
+            app:saturation="140.0"
             app:refractionHeight="128dp"
             app:sensorHighlight="false">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="6dp">
+                android:padding="10dp">
 
                 <ImageButton
                     android:id="@+id/btn_select_all"
@@ -374,8 +382,8 @@
                     android:background="@drawable/ripple_transparent"
                     android:contentDescription="@string/btn_delete"
                     android:src="@drawable/ic_delete_new"
-                    android:tooltipText="@string/btn_delete"
                     android:tint="@color/accent_900"
+                    android:tooltipText="@string/btn_delete"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/btn_copy_selected"
                     app:layout_constraintTop_toTopOf="parent"
@@ -388,8 +396,8 @@
                     android:background="@drawable/ripple_transparent"
                     android:contentDescription="@string/btn_copy"
                     android:src="@drawable/ic_copy_new"
-                    android:tooltipText="@string/btn_copy"
                     android:tint="@color/accent_900"
+                    android:tooltipText="@string/btn_copy"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/btn_share_selected"
                     app:layout_constraintTop_toTopOf="parent"
