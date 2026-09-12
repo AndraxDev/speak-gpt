@@ -68,7 +68,6 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private var btnPost: ExtendedFloatingActionButton? = null
     private var promptsList: RecyclerView? = null
     private var promptsAdapter: PromptAdapterNew? = null
-    private var refreshLayout: SwipeRefreshLayout? = null
     private var refreshButton: MaterialButton? = null
     private var btnDetails: MaterialButton? = null
     private var noInternetLayout: LinearLayout? = null
@@ -320,13 +319,12 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         rootView = view
 
         WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.prompts_header, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
-        WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.refresh_search, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
+        WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.prompts, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR))
 
         btnSearch = view.findViewById(R.id.btn_search)
         fieldSearch = view.findViewById(R.id.field_search)
         btnPost = view.findViewById(R.id.btn_add_prompt)
         promptsList = view.findViewById(R.id.prompts)
-        refreshLayout = view.findViewById(R.id.refresh_search)
         refreshButton = view.findViewById(R.id.btn_reconnect)
         btnDetails = view.findViewById(R.id.btn_show_details)
         noInternetLayout = view.findViewById(R.id.no_internet)
@@ -353,8 +351,6 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         btnAllModels = view.findViewById(R.id.btn_all_models)
         btnTextModel = view.findViewById(R.id.btn_text_model)
         btnImageModel = view.findViewById(R.id.btn_image_model)
-
-        promptsContainer = view.findViewById(R.id.prompts_container)
 
         promptsList?.layoutManager = LinearLayoutManager(mContext)
 
@@ -395,7 +391,6 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                     btnPost?.shrink()
                 }
 
-                refreshLayout?.isEnabled = dy < 0 && topRowVerticalPosition >= 0
                 super.onScrolled(recyclerView, dx, dy)
             }
         })
@@ -407,14 +402,6 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         refreshButton?.setOnClickListener {
             loadData()
         }
-
-        refreshLayout?.setColorSchemeResources(R.color.accent_900)
-        refreshLayout?.setProgressBackgroundColorSchemeColor(
-            SurfaceColors.SURFACE_2.getColor(mContext ?: return)
-        )
-
-        refreshLayout?.setSize(SwipeRefreshLayout.LARGE)
-        refreshLayout?.setOnRefreshListener(this)
 
         promptsAdapter = PromptAdapterNew(this)
         promptsList?.adapter = promptsAdapter
@@ -581,7 +568,6 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onRefresh() {
-        refreshLayout?.isRefreshing = false
         loadData()
     }
 
@@ -599,7 +585,7 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         onAttach = true
 
         if (rootView != null) WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.prompts_header, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
-        if (rootView != null) WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.refresh_search, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
+        if (rootView != null) WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.prompts, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR))
 
         super.onAttach(context)
     }

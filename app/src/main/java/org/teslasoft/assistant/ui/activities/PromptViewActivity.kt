@@ -48,6 +48,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.liquidglass.LiquidGlassView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -60,6 +61,7 @@ import org.teslasoft.assistant.Config
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.assistant.AssistantActivity
+import org.teslasoft.assistant.ui.liquidglass.LiquidGlassUtil
 import org.teslasoft.core.api.network.RequestNetwork
 import java.net.MalformedURLException
 import java.net.URL
@@ -83,6 +85,9 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
     private var btnFlag: ImageButton? = null
     private var promptBg: ConstraintLayout? = null
     private var promptActions: ConstraintLayout? = null
+
+    private var btnBackGlass: LiquidGlassView? = null
+    private var btnFlagGlass: LiquidGlassView? = null
 
     private var id = ""
     private var title = ""
@@ -230,6 +235,9 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
             "sport" -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.cat_sport, theme))
             else -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.grey, theme))
         }
+
+        btnBackGlass?.glassTint = LiquidGlassUtil.saturateColor(catColor, 0.7f)
+        btnFlagGlass?.glassTint = LiquidGlassUtil.saturateColor(catColor, 0.7f)
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             window.statusBarColor = bgColor
@@ -453,6 +461,8 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
         promptBg = findViewById(R.id.prompt_bg)
         promptActions = findViewById(R.id.prompt_actions)
         hideable = findViewById(R.id.hideable)
+        btnBackGlass = findViewById(R.id.btn_back_glass)
+        btnFlagGlass = findViewById(R.id.btn_flag_glass)
 
         refreshPage?.setColorSchemeResources(R.color.accent_900)
         refreshPage?.setProgressBackgroundColorSchemeColor(
@@ -468,13 +478,13 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
         loaderContainer?.setOnClickListener { /* Prevent user from interacting with the page until it finishes loading */ }
 
         noInternetLayout?.visibility = View.GONE
+        LiquidGlassUtil.scanForLiquidGlassAndInitSettings(this, null, false)
+
         updateUiFromCat(cat)
     }
 
     private fun initLogic() {
         activityTitle?.isSelected = true
-
-        btnFlag?.setImageResource(R.drawable.ic_flag)
         btnBack?.setOnClickListener { finishActivity() }
         settings = getSharedPreferences("likes", MODE_PRIVATE)
 

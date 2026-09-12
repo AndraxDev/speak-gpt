@@ -81,21 +81,9 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingTop="24dp"
-                android:paddingBottom="16dp"
-                android:paddingHorizontal="24dp">
-
-                <TextView
-                    android:id="@+id/activity_prompts_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/title_prompts_store"
-                    android:textColor="@color/text_title"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                android:paddingHorizontal="24dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="16dp">
 
                 <LinearLayout
                     android:id="@+id/linearLayout23"
@@ -186,6 +174,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:overScrollMode="never"
+                        android:scrollbars="none"
                         tools:ignore="UselessParent">
 
                         <LinearLayout
@@ -698,7 +687,6 @@
                     android:id="@+id/liquidGlassView"
                     android:layout_width="0dp"
                     android:layout_height="56dp"
-                    android:layout_marginTop="16dp"
                     app:adaptiveTint="true"
                     app:backdropSourceId="@+id/prompts"
                     app:bevelWidth="32dp"
@@ -710,7 +698,7 @@
                     app:glassTintStrength="1.0"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/activity_prompts_title"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:refractionFalloff="1.0"
                     app:refractionHeight="128dp"
                     app:saturation="140.0"
@@ -796,44 +784,35 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header_blur" />
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/refresh_search"
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/prompts"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:paddingTop="224dp"
+        android:paddingBottom="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/header_blur">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/view_prompt" />
 
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/prompts_container"
+    <LinearLayout
+        android:id="@+id/no_internet"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include
+            layout="@layout/fragment_network_error"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:overScrollMode="never">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/prompts"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:overScrollMode="never"
-                android:clipToPadding="false"
-                android:paddingTop="292dp"
-                android:paddingBottom="100dp"
-                tools:listitem="@layout/view_prompt" />
-        </androidx.core.widget.NestedScrollView>
-
-        <LinearLayout
-            android:id="@+id/no_internet"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <include
-                layout="@layout/fragment_network_error"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            android:layout_height="match_parent" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

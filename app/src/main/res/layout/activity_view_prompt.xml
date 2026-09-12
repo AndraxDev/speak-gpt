@@ -38,13 +38,14 @@
             android:id="@+id/loader_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="16dp"
             android:background="@drawable/expandable_window_background_16"
             android:elevation="1dp"
             android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_view_title"
+            app:layout_constraintTop_toBottomOf="@+id/btn_back_glass"
             tools:visibility="gone">
 
             <com.google.android.material.loadingindicator.LoadingIndicator
@@ -60,6 +61,8 @@
             android:id="@+id/activity_view_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:elevation="6dp"
             android:ellipsize="marquee"
             android:focusable="true"
@@ -67,9 +70,6 @@
             android:freezesText="true"
             android:gravity="center_vertical"
             android:marqueeRepeatLimit="marquee_forever"
-            android:paddingVertical="16dp"
-            android:paddingLeft="64dp"
-            android:paddingRight="64dp"
             android:scrollHorizontally="true"
             android:singleLine="true"
             android:text="ABC"
@@ -77,9 +77,10 @@
             android:textSize="20sp"
             android:textStyle="bold"
             android:transitionName="prompt_title"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toBottomOf="@+id/btn_back_glass"
+            app:layout_constraintEnd_toStartOf="@+id/btn_flag_glass"
+            app:layout_constraintStart_toEndOf="@+id/btn_back_glass"
+            app:layout_constraintTop_toTopOf="@+id/btn_back_glass" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/no_internet"
@@ -105,10 +106,11 @@
             android:id="@+id/view_content"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_view_title">
+            app:layout_constraintTop_toBottomOf="@+id/btn_back_glass">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/prompt_actions"
@@ -290,33 +292,71 @@
             </androidx.coordinatorlayout.widget.CoordinatorLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <ImageButton
-            android:id="@+id/btn_flag"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@color/transparent"
-            android:contentDescription="@string/btn_flag"
-            android:elevation="6.01dip"
-            android:tooltipText="@string/btn_flag"
-            app:layout_constraintBottom_toBottomOf="@+id/activity_view_title"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_flag" />
-
-        <ImageButton
-            android:id="@+id/btn_back"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@color/transparent"
-            android:contentDescription="@string/go_back"
-            android:elevation="6.01dip"
-            android:src="@drawable/ic_back"
-            app:layout_constraintBottom_toBottomOf="@+id/activity_view_title"
+        <com.example.liquidglass.LiquidGlassView
+            android:id="@+id/btn_back_glass"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:padding="4dp"
+            app:adaptiveTint="true"
+            app:backdropSourceId="@+id/root"
+            app:bevelWidth="32dp"
+            app:blurAmount="1.0"
+            app:cornerRadius="32dp"
+            app:dispersionStrength="0.1"
+            app:glassMaterial="clear"
+            app:glassTintStrength="0.3"
             app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/ic_back" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:refractionFalloff="1.0"
+            app:refractionHeight="128dp"
+            app:saturation="140.0"
+            app:sensorHighlight="false">
 
+            <ImageButton
+                android:id="@+id/btn_back"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/ripple_transparent"
+                android:contentDescription="@string/go_back"
+                android:elevation="6.01dip"
+                android:src="@drawable/ic_back_new"/>
+        </com.example.liquidglass.LiquidGlassView>
+
+        <com.example.liquidglass.LiquidGlassView
+            android:id="@+id/btn_flag_glass"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:padding="4dp"
+            app:adaptiveTint="true"
+            app:backdropSourceId="@+id/root"
+            app:bevelWidth="32dp"
+            app:blurAmount="1.0"
+            app:cornerRadius="32dp"
+            app:dispersionStrength="0.1"
+            app:glassMaterial="clear"
+            app:glassTintStrength="0.3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:refractionFalloff="1.0"
+            app:refractionHeight="128dp"
+            app:saturation="140.0"
+            app:sensorHighlight="false">
+
+            <ImageButton
+                android:id="@+id/btn_flag"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/ripple_transparent"
+                android:contentDescription="@string/btn_flag"
+                android:elevation="6.01dip"
+                android:tooltipText="@string/btn_flag"
+                android:src="@drawable/ic_flag_new" />
+        </com.example.liquidglass.LiquidGlassView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

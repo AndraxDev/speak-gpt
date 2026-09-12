@@ -20,7 +20,6 @@ import android.app.Activity
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
-import com.example.liquidglass.LiquidGlassButton
 import com.example.liquidglass.LiquidGlassView
 
 @Suppress("unused")
@@ -34,6 +33,7 @@ class LiquidGlassUtil {
             liquidGlassView.edgeHighlightBorderWidth = 4.0f
             liquidGlassView.blurAmount = 0.5f
             liquidGlassView.pressScale = 0.8f
+            liquidGlassView.enableSensorHighlight = true
         }
 
         // For activities
@@ -84,7 +84,7 @@ class LiquidGlassUtil {
             scanForLiquidGlassAndInitSettings(activity.findViewById(android.R.id.content), activity, excludedViews, tintMode)
         }
 
-        private fun saturateColor(color: Int, saturation: Float): Int {
+        fun saturateColor(color: Int, saturation: Float): Int {
             val hsv = FloatArray(3)
             android.graphics.Color.colorToHSV(color, hsv)
             hsv[1] = saturation

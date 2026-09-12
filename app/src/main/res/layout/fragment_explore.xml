@@ -63,42 +63,35 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/refresh_layout"
+    <LinearLayout
+        android:id="@+id/no_internet"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_tips">
 
-        <LinearLayout
+        <include
+            layout="@layout/fragment_network_error"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="match_parent" />
+    </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/no_internet"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <include
-                    layout="@layout/fragment_network_error"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/ai_sets_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="8dp"
-                android:clipToPadding="false"
-                android:paddingBottom="16dp"
-                tools:listitem="@layout/view_ai_set" />
-        </LinearLayout>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ai_sets_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:clipToPadding="false"
+        android:paddingBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_tips"
+        tools:listitem="@layout/view_ai_set" />
 </androidx.constraintlayout.widget.ConstraintLayout>

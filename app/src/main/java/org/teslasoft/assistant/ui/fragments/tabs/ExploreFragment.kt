@@ -59,7 +59,6 @@ import java.util.EnumSet
 class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetAdapterNew.OnInteractionListener {
 
     private var btnTips: ImageButton? = null
-    private var refreshLayout: SwipeRefreshLayout? = null
     private var loading: LoadingIndicator? = null
     private var btnRetry: MaterialButton? = null
     private var btnErrorDetails: MaterialButton? = null
@@ -86,11 +85,9 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
         override fun onResponse(tag: String, message: String) {
             requestFinished = 1
             error = ""
-            refreshLayout?.isRefreshing = false
             loading?.visibility = View.GONE
             noInternet?.visibility = View.GONE
             setsList?.visibility = View.VISIBLE
-            refreshLayout?.visibility = View.VISIBLE
             val gson = Gson()
 
             try {
@@ -111,7 +108,6 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
             requestFinished = 2
             error = message
             noInternet?.visibility = View.VISIBLE
-            refreshLayout?.isRefreshing = false
             loading?.visibility = View.GONE
             setsList?.visibility = View.GONE
         }
@@ -128,10 +124,8 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
             loading?.visibility = View.GONE
             noInternet?.visibility = View.GONE
             setsList?.visibility = View.VISIBLE
-            refreshLayout?.visibility = View.VISIBLE
         } else if (requestFinished == 2) {
             noInternet?.visibility = View.VISIBLE
-            refreshLayout?.isRefreshing = false
             loading?.visibility = View.GONE
             setsList?.visibility = View.GONE
         }
@@ -156,7 +150,6 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
 
         btnTips = view.findViewById(R.id.btn_tips)
         setsList = view.findViewById(R.id.ai_sets_list)
-        refreshLayout = view.findViewById(R.id.refresh_layout)
         loading = view.findViewById(R.id.loading)
         btnRetry = view.findViewById(R.id.btn_reconnect)
         btnErrorDetails = view.findViewById(R.id.btn_show_details)
@@ -164,14 +157,6 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
 
         preferences = Preferences.getPreferences(mContext ?: return, "")
         apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(mContext ?: return)
-
-        refreshLayout?.setColorSchemeResources(R.color.accent_900)
-        refreshLayout?.setProgressBackgroundColorSchemeColor(
-            SurfaceColors.SURFACE_2.getColor(mContext ?: return)
-        )
-
-        refreshLayout?.setSize(SwipeRefreshLayout.LARGE)
-        refreshLayout?.setOnRefreshListener(this)
 
         setsList?.layoutManager = LinearLayoutManager(mContext)
 
@@ -190,7 +175,6 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
             loading?.visibility = View.GONE
             noInternet?.visibility = View.GONE
             setsList?.visibility = View.VISIBLE
-            refreshLayout?.visibility = View.VISIBLE
             requestFinished = 1
         }
 
@@ -201,16 +185,6 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
         btnRetry?.setOnClickListener {
             runRequest()
         }
-
-        setsList?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) { /* unused */ }
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                val topRowVerticalPosition: Int = if (aiSets.isEmpty() || setsList == null || setsList?.childCount == 0) 0 else setsList?.getChildAt(0)!!.top
-
-                refreshLayout?.isEnabled = (setsList?.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == 0 && topRowVerticalPosition >= 0
-            }
-        })
 
         btnErrorDetails?.setOnClickListener {
             MaterialAlertDialogBuilder(mContext ?: return@setOnClickListener, R.style.App_MaterialAlertDialog)
