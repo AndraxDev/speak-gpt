@@ -10,6 +10,9 @@
  * - Header removed along with "iOS" references as "iOS" is a trademark of Apple Inc.
  * - Package name
  * - Added property inactiveTintColor so user can override inactive tab tint color
+ * - Adjusted paddings and margins
+ * - Enhanced refraction
+ * - Enabled sensor-backed edge animations by default (if supported by the device)
  * */
 
 package org.teslasoft.assistant.ui.activities.nav
@@ -27,7 +30,6 @@ import android.view.animation.OvershootInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.view.marginTop
 import com.example.liquidglass.GlassMaterial
 import com.example.liquidglass.LiquidGlassView
 import com.example.liquidglass.R
@@ -106,16 +108,15 @@ open class LiquidGlassTabBar @JvmOverloads constructor(
 
         droplet.apply {
             enablePressEffect = false
-            // 玻璃滴内图标保持清晰：只折射不模糊（iOS 的滴是清透的放大镜）
             enableBackdropBlur = false
             cornerRadius = 999f
-            // iOS 的滴内部平坦、只在边缘轻微弯折——斜面窄、折射浅，
             // 否则贴近边缘的标签文字会被折射出放大的副本
             bevelWidth = dpF(16)
             refractionFalloff = 0.5f
             material = GlassMaterial.CLEAR
             refractionHeight = dpF(6)
             dispersionStrength = 0.04f
+            enableSensorHighlight = true
             visibility = GONE
         }
         // 玻璃滴叠在标签行上方，折射行内容——必须后 add（先绘制行，再绘制滴）。
@@ -151,7 +152,6 @@ open class LiquidGlassTabBar @JvmOverloads constructor(
             var icon: ImageView? = null
             val label: TextView
             if (item.icon != null) {
-                // iOS 布局：26dp 图标在上，10sp 小字在下
                 root.setPadding(dp(2), dp(7), dp(2), dp(7))
                 icon = ImageView(context).apply { setImageDrawable(item.icon) }
                 root.addView(icon, LinearLayout.LayoutParams(dp(26), dp(26)))
@@ -339,7 +339,6 @@ open class LiquidGlassTabBar @JvmOverloads constructor(
                 if (!dragging && abs(event.x - downX) > touchSlop) {
                     dragging = true
                     settleAnimator?.cancel()
-                    // 按住拖拽时玻璃滴微微鼓起（iOS 手感）
                     droplet.scaleX = 1.15f
                     droplet.scaleY = 1.15f
                 }

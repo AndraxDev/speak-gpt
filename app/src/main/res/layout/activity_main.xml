@@ -354,7 +354,7 @@
             app:adaptiveTint="true"
             app:bevelWidth="32dp"
             app:blurAmount="0.5"
-            app:cornerRadius="32dp"
+            app:cornerRadius="999dp"
             app:dispersionStrength="0.1"
             app:glassMaterial="clear"
             app:glassTintStrength="1.0"
