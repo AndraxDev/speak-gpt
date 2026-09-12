@@ -348,8 +348,19 @@
         <org.teslasoft.assistant.ui.activities.nav.LiquidGlassTabBar
             android:id="@+id/navigation_bar_glass"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="wrap_content"
             app:glassTint="@color/accent_250"
-            app:backdropSourceId="@id/root" />
+            app:backdropSourceId="@id/root"
+            app:adaptiveTint="true"
+            app:bevelWidth="32dp"
+            app:blurAmount="0.5"
+            app:cornerRadius="32dp"
+            app:dispersionStrength="0.1"
+            app:glassMaterial="clear"
+            app:glassTintStrength="1.0"
+            app:refractionFalloff="1.0"
+            app:refractionHeight="128dp"
+            app:saturation="140.0"
+            app:sensorHighlight="true"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

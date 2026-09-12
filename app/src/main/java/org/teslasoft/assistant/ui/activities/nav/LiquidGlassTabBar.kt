@@ -27,6 +27,8 @@ import android.view.animation.OvershootInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.marginTop
+import com.example.liquidglass.GlassMaterial
 import com.example.liquidglass.LiquidGlassView
 import com.example.liquidglass.R
 import kotlin.math.PI
@@ -90,11 +92,17 @@ open class LiquidGlassTabBar @JvmOverloads constructor(
         // 标签/拖拽自己处理，整条 bar 的按压缩放反而突兀
         enablePressEffect = false
 
-        val pad = dp(4)
-        setPadding(pad, pad, pad, pad)
+        val mp = dp(8)
 
         tabsRow.orientation = LinearLayout.HORIZONTAL
-        addView(tabsRow, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
+
+        tabsRow.setPadding(mp, 0, mp, 0)
+
+        val layoutParamsForTabsRow = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+        layoutParamsForTabsRow.setMargins(0, mp, 0, mp)
+        layoutParamsForTabsRow.gravity = Gravity.CENTER
+
+        addView(tabsRow, layoutParamsForTabsRow)
 
         droplet.apply {
             enablePressEffect = false
@@ -103,8 +111,10 @@ open class LiquidGlassTabBar @JvmOverloads constructor(
             cornerRadius = 999f
             // iOS 的滴内部平坦、只在边缘轻微弯折——斜面窄、折射浅，
             // 否则贴近边缘的标签文字会被折射出放大的副本
-            bevelWidth = dpF(8)
-            refractionHeight = dpF(4)
+            bevelWidth = dpF(16)
+            refractionFalloff = 0.5f
+            material = GlassMaterial.CLEAR
+            refractionHeight = dpF(6)
             dispersionStrength = 0.04f
             visibility = GONE
         }
@@ -330,8 +340,8 @@ open class LiquidGlassTabBar @JvmOverloads constructor(
                     dragging = true
                     settleAnimator?.cancel()
                     // 按住拖拽时玻璃滴微微鼓起（iOS 手感）
-                    droplet.scaleX = 1.06f
-                    droplet.scaleY = 1.06f
+                    droplet.scaleX = 1.15f
+                    droplet.scaleY = 1.15f
                 }
                 if (dragging) dragDropletTo(event.x)
                 return true
