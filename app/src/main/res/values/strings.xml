@@ -528,4 +528,6 @@
     <string name="deselect_all">Deselect all</string>
     <string name="btn_share">Share</string>
     <string name="report_abuse">Report abuse</string>
+    <string name="text">Text</string>
+    <string name="images">Images</string>
 </resources>

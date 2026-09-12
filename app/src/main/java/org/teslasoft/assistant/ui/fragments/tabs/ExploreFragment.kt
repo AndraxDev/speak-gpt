@@ -34,7 +34,6 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
@@ -56,7 +55,7 @@ import androidx.core.net.toUri
 import org.teslasoft.assistant.util.WindowInsetsUtil
 import java.util.EnumSet
 
-class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetAdapterNew.OnInteractionListener {
+class ExploreFragment : Fragment(), AISetAdapterNew.OnInteractionListener {
 
     private var btnTips: ImageButton? = null
     private var loading: LoadingIndicator? = null
@@ -237,11 +236,6 @@ class ExploreFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, AISetA
         setsList?.visibility = View.GONE
         noInternet?.visibility = View.GONE
         requestNetwork?.startRequestNetwork("GET", "https://${Config.API_SERVER_NAME}/api/v1/explore", "A", requestListener)
-    }
-
-    override fun onRefresh() {
-        isInitialized = false
-        runRequest()
     }
 
     override fun onUseGloballyClick(model: String, endpointUrl: String, endpointName: String, avatarType: String, avatarId: String, assistantName: String) {

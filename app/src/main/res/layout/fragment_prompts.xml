@@ -25,668 +25,213 @@
     android:background="@color/window_background"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/header_grad"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/prompts"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:elevation=".1dp"
-        app:layout_constraintBottom_toBottomOf="@+id/header_blur"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:paddingTop="224dp"
+        android:paddingBottom="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/view_prompt" />
+
+    <LinearLayout
+        android:id="@+id/no_internet"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout18"
+        <include
+            layout="@layout/fragment_network_error"
             android:layout_width="match_parent"
-            android:layout_height="116dp"
-            android:background="@color/window_background"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout15"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="@drawable/gradient_top"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout18">
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_height="match_parent" />
+    </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header_blur"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:elevation=".2dp"
+        android:background="@drawable/gradient_header"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:id="@+id/prompts_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <com.example.liquidglass.LiquidGlassView
+            android:id="@+id/liquidGlassView"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            app:adaptiveTint="true"
+            app:backdropSourceId="@+id/prompts"
+            app:bevelWidth="32dp"
+            app:blurAmount="1.0"
+            app:cornerRadius="32dp"
+            app:dispersionStrength="0.1"
+            app:glassMaterial="clear"
+            app:glassTint="@color/accent_300"
+            app:glassTintStrength="1.0"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:refractionFalloff="1.0"
+            app:refractionHeight="128dp"
+            app:saturation="140.0"
+            app:sensorHighlight="false">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/search_bar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingHorizontal="24dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="16dp">
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/activity_prompts_title">
 
-                <LinearLayout
-                    android:id="@+id/linearLayout23"
+                <EditText
+                    android:id="@+id/field_search"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="horizontal"
-                    android:weightSum="3"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="4dp"
+                    android:autofillHints="Search"
+                    android:background="@color/transparent"
+                    android:ems="10"
+                    android:hint="@string/label_search_prompts"
+                    android:inputType="text"
+                    android:paddingHorizontal="20dp"
+                    android:textColor="@color/text_field"
+                    android:textColorHint="@color/text_hint"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_search"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/liquidGlassView">
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                    <com.example.liquidglass.LiquidGlassButton
-                        android:id="@+id/btn_all_models"
-                        android:layout_width="0dp"
-                        android:layout_height="56dp"
-                        android:layout_marginEnd="6dp"
-                        android:layout_weight="1"
-                        android:text="@string/cat_all"
-                        app:adaptiveTint="true"
-                        app:backdropSourceId="@+id/prompts"
-                        app:bevelWidth="32dp"
-                        app:blurAmount="1.0"
-                        app:cornerRadius="32dp"
-                        app:dispersionStrength="0.1"
-                        app:glassMaterial="clear"
-                        app:glassTint="@color/accent_250"
-                        app:glassTintStrength="1.0"
-                        app:refractionFalloff="1.0"
-                        app:refractionHeight="128dp"
-                        app:saturation="140.0"
-                        app:sensorHighlight="false" />
-
-                    <com.example.liquidglass.LiquidGlassButton
-                        android:id="@+id/btn_text_model"
-                        android:layout_width="0dp"
-                        android:layout_height="56dp"
-                        android:layout_marginHorizontal="6dp"
-                        android:layout_weight="1"
-                        android:text="Text"
-                        app:adaptiveTint="true"
-                        app:backdropSourceId="@+id/prompts"
-                        app:bevelWidth="32dp"
-                        app:blurAmount="1.0"
-                        app:cornerRadius="32dp"
-                        app:dispersionStrength="0.1"
-                        app:glassMaterial="clear"
-                        app:glassTint="@color/accent_250"
-                        app:glassTintStrength="1.0"
-                        app:refractionFalloff="1.0"
-                        app:refractionHeight="128dp"
-                        app:saturation="140.0"
-                        app:sensorHighlight="false" />
-
-                    <com.example.liquidglass.LiquidGlassButton
-                        android:id="@+id/btn_image_model"
-                        android:layout_width="0dp"
-                        android:layout_height="56dp"
-                        android:layout_marginStart="6dp"
-                        android:layout_weight="1"
-                        android:text="Images"
-                        app:adaptiveTint="true"
-                        app:backdropSourceId="@+id/prompts"
-                        app:bevelWidth="32dp"
-                        app:blurAmount="1.0"
-                        app:cornerRadius="32dp"
-                        app:dispersionStrength="0.1"
-                        app:glassMaterial="clear"
-                        app:glassTint="@color/accent_250"
-                        app:glassTintStrength="1.0"
-                        app:refractionFalloff="1.0"
-                        app:refractionHeight="128dp"
-                        app:saturation="140.0"
-                        app:sensorHighlight="false" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/prompt_categories"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="horizontal"
+                <ImageButton
+                    android:id="@+id/btn_search"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="4dp"
+                    android:background="@color/transparent"
+                    android:contentDescription="@string/waffle_play_2"
+                    android:src="@drawable/ic_search"
+                    android:tooltipText="@string/hint_search"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout23">
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_search" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.example.liquidglass.LiquidGlassView>
 
-                    <HorizontalScrollView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:overScrollMode="never"
-                        android:scrollbars="none"
-                        tools:ignore="UselessParent">
+        <LinearLayout
+            android:id="@+id/linearLayout23"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            android:weightSum="3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/liquidGlassView">
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal">
+            <com.example.liquidglass.LiquidGlassButton
+                android:id="@+id/btn_all_models"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:text="@string/cat_all"
+                app:adaptiveTint="true"
+                app:backdropSourceId="@+id/prompts"
+                app:bevelWidth="32dp"
+                app:blurAmount="1.0"
+                app:cornerRadius="32dp"
+                app:dispersionStrength="0.1"
+                app:glassMaterial="clear"
+                app:glassTint="@color/accent_250"
+                app:glassTintStrength="1.0"
+                app:refractionFalloff="1.0"
+                app:refractionHeight="128dp"
+                app:saturation="140.0"
+                app:sensorHighlight="false" />
 
-                            <com.example.liquidglass.LiquidGlassView
-                                android:id="@+id/cat_all"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:clickable="true"
-                                android:contentDescription="@string/cat_all_new"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:tooltipText="@string/cat_all"
-                                app:adaptiveTint="true"
-                                app:backdropSourceId="@+id/prompts"
-                                app:bevelWidth="32dp"
-                                app:blurAmount="1.0"
-                                app:cornerRadius="32dp"
-                                app:dispersionStrength="0.1"
-                                app:glassMaterial="clear"
-                                app:glassTint="@color/accent_250"
-                                app:glassTintStrength="1.0"
-                                app:refractionFalloff="1.0"
-                                app:refractionHeight="128dp"
-                                app:saturation="140.0"
-                                app:sensorHighlight="false">
+            <com.example.liquidglass.LiquidGlassButton
+                android:id="@+id/btn_text_model"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginHorizontal="6dp"
+                android:layout_weight="1"
+                android:text="@string/text"
+                app:adaptiveTint="true"
+                app:backdropSourceId="@+id/prompts"
+                app:bevelWidth="32dp"
+                app:blurAmount="1.0"
+                app:cornerRadius="32dp"
+                app:dispersionStrength="0.1"
+                app:glassMaterial="clear"
+                app:glassTint="@color/accent_250"
+                app:glassTintStrength="1.0"
+                app:refractionFalloff="1.0"
+                app:refractionHeight="128dp"
+                app:saturation="140.0"
+                app:sensorHighlight="false" />
 
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:background="@drawable/ic_all"
-                                    android:orientation="vertical" />
-                            </com.example.liquidglass.LiquidGlassView>
+            <com.example.liquidglass.LiquidGlassButton
+                android:id="@+id/btn_image_model"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:text="@string/images"
+                app:adaptiveTint="true"
+                app:backdropSourceId="@+id/prompts"
+                app:bevelWidth="32dp"
+                app:blurAmount="1.0"
+                app:cornerRadius="32dp"
+                app:dispersionStrength="0.1"
+                app:glassMaterial="clear"
+                app:glassTint="@color/accent_250"
+                app:glassTintStrength="1.0"
+                app:refractionFalloff="1.0"
+                app:refractionHeight="128dp"
+                app:saturation="140.0"
+                app:sensorHighlight="false" />
 
-                            <com.example.liquidglass.LiquidGlassView
-                                android:id="@+id/cat_development"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:layout_marginStart="12dp"
-                                android:clickable="true"
-                                android:contentDescription="@string/cat_development"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:tooltipText="@string/cat_development"
-                                app:adaptiveTint="true"
-                                app:backdropSourceId="@+id/prompts"
-                                app:bevelWidth="32dp"
-                                app:blurAmount="1.0"
-                                app:cornerRadius="32dp"
-                                app:dispersionStrength="0.1"
-                                app:glassMaterial="clear"
-                                app:glassTint="@color/tint_cat_development_active"
-                                app:glassTintStrength="0.2"
-                                app:refractionFalloff="1.0"
-                                app:refractionHeight="128dp"
-                                app:saturation="140.0"
-                                app:sensorHighlight="false">
+        </LinearLayout>
 
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:background="@drawable/ic_development"
-                                    android:orientation="vertical" />
-                            </com.example.liquidglass.LiquidGlassView>
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout23">
 
-                            <com.example.liquidglass.LiquidGlassView
-                                android:id="@+id/cat_music"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:layout_marginStart="12dp"
-                                android:clickable="true"
-                                android:contentDescription="@string/cat_music"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:tooltipText="@string/cat_music"
-                                app:adaptiveTint="true"
-                                app:backdropSourceId="@+id/prompts"
-                                app:bevelWidth="32dp"
-                                app:blurAmount="1.0"
-                                app:cornerRadius="32dp"
-                                app:dispersionStrength="0.1"
-                                app:glassMaterial="clear"
-                                app:glassTint="@color/tint_cat_music_active"
-                                app:glassTintStrength="0.2"
-                                app:refractionFalloff="1.0"
-                                app:refractionHeight="128dp"
-                                app:saturation="140.0"
-                                app:sensorHighlight="false">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:background="@drawable/ic_music"
-                                    android:orientation="vertical" />
-                            </com.example.liquidglass.LiquidGlassView>
-
-                            <com.example.liquidglass.LiquidGlassView
-                                android:id="@+id/cat_art"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:layout_marginStart="12dp"
-                                android:background="@drawable/cat_art"
-                                android:clickable="true"
-                                android:contentDescription="@string/cat_art"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:tooltipText="@string/cat_art"
-                                app:adaptiveTint="true"
-                                app:backdropSourceId="@+id/prompts"
-                                app:bevelWidth="32dp"
-                                app:blurAmount="1.0"
-                                app:cornerRadius="32dp"
-                                app:dispersionStrength="0.1"
-                                app:glassMaterial="clear"
-                                app:glassTint="@color/tint_cat_art_active"
-                                app:glassTintStrength="0.2"
-                                app:refractionFalloff="1.0"
-                                app:refractionHeight="128dp"
-                                app:saturation="140.0"
-                                app:sensorHighlight="false">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:background="@drawable/ic_art"
-                                    android:orientation="vertical" />
-                            </com.example.liquidglass.LiquidGlassView>
-
-                            <com.example.liquidglass.LiquidGlassView
-                                android:id="@+id/cat_culture"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:layout_marginStart="12dp"
-                                android:background="@drawable/cat_culture"
-                                android:clickable="true"
-                                android:contentDescription="@string/cat_culture"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:tooltipText="@string/cat_culture"
-                                app:adaptiveTint="true"
-                                app:backdropSourceId="@+id/prompts"
-                                app:bevelWidth="32dp"
-                                app:blurAmount="1.0"
-                                app:cornerRadius="32dp"
-                                app:dispersionStrength="0.1"
-                                app:glassMaterial="clear"
-                                app:glassTint="@color/tint_cat_culture_active"
-                                app:glassTintStrength="0.2"
-                                app:refractionFalloff="1.0"
-                                app:refractionHeight="128dp"
-                                app:saturation="140.0"
-                                app:sensorHighlight="false">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:background="@drawable/ic_culture"
-                                    android:orientation="vertical" />
-                            </com.example.liquidglass.LiquidGlassView>
-
-                            <com.example.liquidglass.LiquidGlassView
-                                android:id="@+id/cat_business"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:layout_marginStart="12dp"
-                                android:background="@drawable/cat_business"
-                                android:clickable="true"
-                                android:contentDescription="@string/cat_business"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:tooltipText="@string/cat_business"
-                                app:adaptiveTint="true"
-                                app:backdropSourceId="@+id/prompts"
-                                app:bevelWidth="32dp"
-                                app:blurAmount="1.0"
-                                app:cornerRadius="32dp"
-                                app:dispersionStrength="0.1"
-                                app:glassMaterial="clear"
-                                app:glassTint="@color/tint_cat_business_active"
-                                app:glassTintStrength="0.2"
-                                app:refractionFalloff="1.0"
-                                app:refractionHeight="128dp"
-                                app:saturation="140.0"
-                                app:sensorHighlight="false">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:background="@drawable/ic_business"
-                                    android:orientation="vertical" />
-                            </com.example.liquidglass.LiquidGlassView>
-
-                            <com.example.liquidglass.LiquidGlassView
-                                android:id="@+id/cat_gaming"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:layout_marginStart="12dp"
-                                android:clickable="true"
-                                android:contentDescription="@string/cat_gaming"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:tooltipText="@string/cat_gaming"
-                                app:adaptiveTint="true"
-                                app:backdropSourceId="@+id/prompts"
-                                app:bevelWidth="32dp"
-                                app:blurAmount="1.0"
-                                app:cornerRadius="32dp"
-                                app:dispersionStrength="0.1"
-                                app:glassMaterial="clear"
-                                app:glassTint="@color/tint_cat_gaming_active"
-                                app:glassTintStrength="0.2"
-                                app:refractionFalloff="1.0"
-                                app:refractionHeight="128dp"
-                                app:saturation="140.0"
-                                app:sensorHighlight="false">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:background="@drawable/ic_gaming"
-                                    android:orientation="vertical" />
-                            </com.example.liquidglass.LiquidGlassView>
-
-                            <com.example.liquidglass.LiquidGlassView
-                                android:id="@+id/cat_education"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:layout_marginStart="12dp"
-                                android:clickable="true"
-                                android:contentDescription="@string/cat_education"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:tooltipText="@string/cat_education"
-                                app:adaptiveTint="true"
-                                app:backdropSourceId="@+id/prompts"
-                                app:bevelWidth="32dp"
-                                app:blurAmount="1.0"
-                                app:cornerRadius="32dp"
-                                app:dispersionStrength="0.1"
-                                app:glassMaterial="clear"
-                                app:glassTint="@color/tint_cat_education_active"
-                                app:glassTintStrength="0.2"
-                                app:refractionFalloff="1.0"
-                                app:refractionHeight="128dp"
-                                app:saturation="140.0"
-                                app:sensorHighlight="false">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:background="@drawable/ic_education"
-                                    android:orientation="vertical" />
-                            </com.example.liquidglass.LiquidGlassView>
-
-                            <com.example.liquidglass.LiquidGlassView
-                                android:id="@+id/cat_history"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:layout_marginStart="12dp"
-                                android:clickable="true"
-                                android:contentDescription="@string/cat_history"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:tooltipText="@string/cat_history"
-                                app:adaptiveTint="true"
-                                app:backdropSourceId="@+id/prompts"
-                                app:bevelWidth="32dp"
-                                app:blurAmount="1.0"
-                                app:cornerRadius="32dp"
-                                app:dispersionStrength="0.1"
-                                app:glassMaterial="clear"
-                                app:glassTint="@color/tint_cat_history_active"
-                                app:glassTintStrength="0.2"
-                                app:refractionFalloff="1.0"
-                                app:refractionHeight="128dp"
-                                app:saturation="140.0"
-                                app:sensorHighlight="false">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:background="@drawable/ic_history"
-                                    android:orientation="vertical" />
-                            </com.example.liquidglass.LiquidGlassView>
-
-                            <com.example.liquidglass.LiquidGlassView
-                                android:id="@+id/cat_food"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:layout_marginStart="12dp"
-                                android:clickable="true"
-                                android:contentDescription="@string/cat_food"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:tooltipText="@string/cat_food"
-                                app:adaptiveTint="true"
-                                app:backdropSourceId="@+id/prompts"
-                                app:bevelWidth="32dp"
-                                app:blurAmount="1.0"
-                                app:cornerRadius="32dp"
-                                app:dispersionStrength="0.1"
-                                app:glassMaterial="clear"
-                                app:glassTint="@color/tint_cat_food_active"
-                                app:glassTintStrength="0.2"
-                                app:refractionFalloff="1.0"
-                                app:refractionHeight="128dp"
-                                app:saturation="140.0"
-                                app:sensorHighlight="false">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:background="@drawable/ic_food"
-                                    android:orientation="vertical" />
-                            </com.example.liquidglass.LiquidGlassView>
-
-                            <com.example.liquidglass.LiquidGlassView
-                                android:id="@+id/cat_tourism"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:layout_marginStart="12dp"
-                                android:clickable="true"
-                                android:contentDescription="@string/cat_tourism"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:tooltipText="@string/cat_tourism"
-                                app:adaptiveTint="true"
-                                app:backdropSourceId="@+id/prompts"
-                                app:bevelWidth="32dp"
-                                app:blurAmount="1.0"
-                                app:cornerRadius="32dp"
-                                app:dispersionStrength="0.1"
-                                app:glassMaterial="clear"
-                                app:glassTint="@color/tint_cat_tourism_active"
-                                app:glassTintStrength="0.2"
-                                app:refractionFalloff="1.0"
-                                app:refractionHeight="128dp"
-                                app:saturation="140.0"
-                                app:sensorHighlight="false">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:background="@drawable/ic_tourism"
-                                    android:orientation="vertical" />
-                            </com.example.liquidglass.LiquidGlassView>
-
-                            <com.example.liquidglass.LiquidGlassView
-                                android:id="@+id/cat_productivity"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:layout_marginStart="12dp"
-                                android:clickable="true"
-                                android:contentDescription="@string/cat_productivity"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:tooltipText="@string/cat_productivity"
-                                app:adaptiveTint="true"
-                                app:backdropSourceId="@+id/prompts"
-                                app:bevelWidth="32dp"
-                                app:blurAmount="1.0"
-                                app:cornerRadius="32dp"
-                                app:dispersionStrength="0.1"
-                                app:glassMaterial="clear"
-                                app:glassTint="@color/tint_cat_productivity_active"
-                                app:glassTintStrength="0.2"
-                                app:refractionFalloff="1.0"
-                                app:refractionHeight="128dp"
-                                app:saturation="140.0"
-                                app:sensorHighlight="false">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:background="@drawable/ic_productivity"
-                                    android:orientation="vertical" />
-                            </com.example.liquidglass.LiquidGlassView>
-
-                            <com.example.liquidglass.LiquidGlassView
-                                android:id="@+id/cat_tools"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:layout_marginStart="12dp"
-                                android:clickable="true"
-                                android:contentDescription="@string/cat_tools"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:tooltipText="@string/cat_tools"
-                                app:adaptiveTint="true"
-                                app:backdropSourceId="@+id/prompts"
-                                app:bevelWidth="32dp"
-                                app:blurAmount="1.0"
-                                app:cornerRadius="32dp"
-                                app:dispersionStrength="0.1"
-                                app:glassMaterial="clear"
-                                app:glassTint="@color/tint_cat_tools_active"
-                                app:glassTintStrength="0.2"
-                                app:refractionFalloff="1.0"
-                                app:refractionHeight="128dp"
-                                app:saturation="140.0"
-                                app:sensorHighlight="false">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:background="@drawable/ic_tools"
-                                    android:orientation="vertical" />
-                            </com.example.liquidglass.LiquidGlassView>
-
-                            <com.example.liquidglass.LiquidGlassView
-                                android:id="@+id/cat_entertainment"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:layout_marginStart="12dp"
-                                android:clickable="true"
-                                android:contentDescription="@string/cat_entertainment"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:tooltipText="@string/cat_entertainment"
-                                app:adaptiveTint="true"
-                                app:backdropSourceId="@+id/prompts"
-                                app:bevelWidth="32dp"
-                                app:blurAmount="1.0"
-                                app:cornerRadius="32dp"
-                                app:dispersionStrength="0.1"
-                                app:glassMaterial="clear"
-                                app:glassTint="@color/tint_cat_entertainment_active"
-                                app:glassTintStrength="0.2"
-                                app:refractionFalloff="1.0"
-                                app:refractionHeight="128dp"
-                                app:saturation="140.0"
-                                app:sensorHighlight="false">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:background="@drawable/ic_entertainment"
-                                    android:orientation="vertical" />
-                            </com.example.liquidglass.LiquidGlassView>
-
-                            <com.example.liquidglass.LiquidGlassView
-                                android:id="@+id/cat_sport"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:layout_marginStart="12dp"
-                                android:clickable="true"
-                                android:contentDescription="@string/cat_sport"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:tooltipText="@string/cat_sport"
-                                app:adaptiveTint="true"
-                                app:backdropSourceId="@+id/prompts"
-                                app:bevelWidth="32dp"
-                                app:blurAmount="1.0"
-                                app:cornerRadius="32dp"
-                                app:dispersionStrength="0.1"
-                                app:glassMaterial="clear"
-                                app:glassTint="@color/tint_cat_sport_active"
-                                app:glassTintStrength="0.2"
-                                app:refractionFalloff="1.0"
-                                app:refractionHeight="128dp"
-                                app:saturation="140.0"
-                                app:sensorHighlight="false">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:background="@drawable/ic_sport"
-                                    android:orientation="vertical" />
-                            </com.example.liquidglass.LiquidGlassView>
-
-                            <com.example.liquidglass.LiquidGlassView
-                                android:id="@+id/cat_health"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:layout_marginStart="12dp"
-                                android:clickable="true"
-                                android:contentDescription="@string/cat_health"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:tooltipText="@string/cat_health"
-                                app:adaptiveTint="true"
-                                app:backdropSourceId="@+id/prompts"
-                                app:bevelWidth="32dp"
-                                app:blurAmount="1.0"
-                                app:cornerRadius="32dp"
-                                app:dispersionStrength="0.1"
-                                app:glassMaterial="clear"
-                                app:glassTint="@color/tint_cat_health_active"
-                                app:glassTintStrength="0.2"
-                                app:refractionFalloff="1.0"
-                                app:refractionHeight="128dp"
-                                app:saturation="140.0"
-                                app:sensorHighlight="false">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:background="@drawable/ic_health"
-                                    android:orientation="vertical" />
-                            </com.example.liquidglass.LiquidGlassView>
-                        </LinearLayout>
-                    </HorizontalScrollView>
-                </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
                 <com.example.liquidglass.LiquidGlassView
-                    android:id="@+id/liquidGlassView"
-                    android:layout_width="0dp"
+                    android:id="@+id/cat_all"
+                    android:layout_width="56dp"
                     android:layout_height="56dp"
+                    android:clickable="true"
+                    android:contentDescription="@string/cat_all_new"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:tooltipText="@string/cat_all"
                     app:adaptiveTint="true"
                     app:backdropSourceId="@+id/prompts"
                     app:bevelWidth="32dp"
@@ -694,62 +239,489 @@
                     app:cornerRadius="32dp"
                     app:dispersionStrength="0.1"
                     app:glassMaterial="clear"
-                    app:glassTint="@color/accent_300"
+                    app:glassTint="@color/accent_250"
                     app:glassTintStrength="1.0"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:refractionFalloff="1.0"
                     app:refractionHeight="128dp"
                     app:saturation="140.0"
                     app:sensorHighlight="false">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/search_bar"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:clickable="true"
-                        android:focusable="true"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/activity_prompts_title">
-
-                        <EditText
-                            android:id="@+id/field_search"
-                            android:layout_width="0dp"
-                            android:layout_height="0dp"
-                            android:layout_marginEnd="4dp"
-                            android:autofillHints="Search"
-                            android:background="@color/transparent"
-                            android:ems="10"
-                            android:hint="@string/label_search_prompts"
-                            android:inputType="text"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:textColor="@color/text_field"
-                            android:textColorHint="@color/text_hint"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/btn_search"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <ImageButton
-                            android:id="@+id/btn_search"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:layout_marginEnd="4dp"
-                            android:background="@color/transparent"
-                            android:contentDescription="@string/waffle_play_2"
-                            android:src="@drawable/ic_search"
-                            android:tooltipText="@string/hint_search"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/ic_search" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                        android:background="@drawable/ic_all"
+                        android:orientation="vertical" />
                 </com.example.liquidglass.LiquidGlassView>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </LinearLayout>
+
+                <com.example.liquidglass.LiquidGlassView
+                    android:id="@+id/cat_development"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="12dp"
+                    android:clickable="true"
+                    android:contentDescription="@string/cat_development"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:tooltipText="@string/cat_development"
+                    app:adaptiveTint="true"
+                    app:backdropSourceId="@+id/prompts"
+                    app:bevelWidth="32dp"
+                    app:blurAmount="1.0"
+                    app:cornerRadius="32dp"
+                    app:dispersionStrength="0.1"
+                    app:glassMaterial="clear"
+                    app:glassTint="@color/tint_cat_development_active"
+                    app:glassTintStrength="0.2"
+                    app:refractionFalloff="1.0"
+                    app:refractionHeight="128dp"
+                    app:saturation="140.0"
+                    app:sensorHighlight="false">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/ic_development"
+                        android:orientation="vertical" />
+                </com.example.liquidglass.LiquidGlassView>
+
+                <com.example.liquidglass.LiquidGlassView
+                    android:id="@+id/cat_music"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="12dp"
+                    android:clickable="true"
+                    android:contentDescription="@string/cat_music"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:tooltipText="@string/cat_music"
+                    app:adaptiveTint="true"
+                    app:backdropSourceId="@+id/prompts"
+                    app:bevelWidth="32dp"
+                    app:blurAmount="1.0"
+                    app:cornerRadius="32dp"
+                    app:dispersionStrength="0.1"
+                    app:glassMaterial="clear"
+                    app:glassTint="@color/tint_cat_music_active"
+                    app:glassTintStrength="0.2"
+                    app:refractionFalloff="1.0"
+                    app:refractionHeight="128dp"
+                    app:saturation="140.0"
+                    app:sensorHighlight="false">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/ic_music"
+                        android:orientation="vertical" />
+                </com.example.liquidglass.LiquidGlassView>
+
+                <com.example.liquidglass.LiquidGlassView
+                    android:id="@+id/cat_art"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="12dp"
+                    android:background="@drawable/cat_art"
+                    android:clickable="true"
+                    android:contentDescription="@string/cat_art"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:tooltipText="@string/cat_art"
+                    app:adaptiveTint="true"
+                    app:backdropSourceId="@+id/prompts"
+                    app:bevelWidth="32dp"
+                    app:blurAmount="1.0"
+                    app:cornerRadius="32dp"
+                    app:dispersionStrength="0.1"
+                    app:glassMaterial="clear"
+                    app:glassTint="@color/tint_cat_art_active"
+                    app:glassTintStrength="0.2"
+                    app:refractionFalloff="1.0"
+                    app:refractionHeight="128dp"
+                    app:saturation="140.0"
+                    app:sensorHighlight="false">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/ic_art"
+                        android:orientation="vertical" />
+                </com.example.liquidglass.LiquidGlassView>
+
+                <com.example.liquidglass.LiquidGlassView
+                    android:id="@+id/cat_culture"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="12dp"
+                    android:background="@drawable/cat_culture"
+                    android:clickable="true"
+                    android:contentDescription="@string/cat_culture"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:tooltipText="@string/cat_culture"
+                    app:adaptiveTint="true"
+                    app:backdropSourceId="@+id/prompts"
+                    app:bevelWidth="32dp"
+                    app:blurAmount="1.0"
+                    app:cornerRadius="32dp"
+                    app:dispersionStrength="0.1"
+                    app:glassMaterial="clear"
+                    app:glassTint="@color/tint_cat_culture_active"
+                    app:glassTintStrength="0.2"
+                    app:refractionFalloff="1.0"
+                    app:refractionHeight="128dp"
+                    app:saturation="140.0"
+                    app:sensorHighlight="false">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/ic_culture"
+                        android:orientation="vertical" />
+                </com.example.liquidglass.LiquidGlassView>
+
+                <com.example.liquidglass.LiquidGlassView
+                    android:id="@+id/cat_business"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="12dp"
+                    android:background="@drawable/cat_business"
+                    android:clickable="true"
+                    android:contentDescription="@string/cat_business"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:tooltipText="@string/cat_business"
+                    app:adaptiveTint="true"
+                    app:backdropSourceId="@+id/prompts"
+                    app:bevelWidth="32dp"
+                    app:blurAmount="1.0"
+                    app:cornerRadius="32dp"
+                    app:dispersionStrength="0.1"
+                    app:glassMaterial="clear"
+                    app:glassTint="@color/tint_cat_business_active"
+                    app:glassTintStrength="0.2"
+                    app:refractionFalloff="1.0"
+                    app:refractionHeight="128dp"
+                    app:saturation="140.0"
+                    app:sensorHighlight="false">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/ic_business"
+                        android:orientation="vertical" />
+                </com.example.liquidglass.LiquidGlassView>
+
+                <com.example.liquidglass.LiquidGlassView
+                    android:id="@+id/cat_gaming"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="12dp"
+                    android:clickable="true"
+                    android:contentDescription="@string/cat_gaming"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:tooltipText="@string/cat_gaming"
+                    app:adaptiveTint="true"
+                    app:backdropSourceId="@+id/prompts"
+                    app:bevelWidth="32dp"
+                    app:blurAmount="1.0"
+                    app:cornerRadius="32dp"
+                    app:dispersionStrength="0.1"
+                    app:glassMaterial="clear"
+                    app:glassTint="@color/tint_cat_gaming_active"
+                    app:glassTintStrength="0.2"
+                    app:refractionFalloff="1.0"
+                    app:refractionHeight="128dp"
+                    app:saturation="140.0"
+                    app:sensorHighlight="false">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/ic_gaming"
+                        android:orientation="vertical" />
+                </com.example.liquidglass.LiquidGlassView>
+
+                <com.example.liquidglass.LiquidGlassView
+                    android:id="@+id/cat_education"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="12dp"
+                    android:clickable="true"
+                    android:contentDescription="@string/cat_education"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:tooltipText="@string/cat_education"
+                    app:adaptiveTint="true"
+                    app:backdropSourceId="@+id/prompts"
+                    app:bevelWidth="32dp"
+                    app:blurAmount="1.0"
+                    app:cornerRadius="32dp"
+                    app:dispersionStrength="0.1"
+                    app:glassMaterial="clear"
+                    app:glassTint="@color/tint_cat_education_active"
+                    app:glassTintStrength="0.2"
+                    app:refractionFalloff="1.0"
+                    app:refractionHeight="128dp"
+                    app:saturation="140.0"
+                    app:sensorHighlight="false">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/ic_education"
+                        android:orientation="vertical" />
+                </com.example.liquidglass.LiquidGlassView>
+
+                <com.example.liquidglass.LiquidGlassView
+                    android:id="@+id/cat_history"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="12dp"
+                    android:clickable="true"
+                    android:contentDescription="@string/cat_history"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:tooltipText="@string/cat_history"
+                    app:adaptiveTint="true"
+                    app:backdropSourceId="@+id/prompts"
+                    app:bevelWidth="32dp"
+                    app:blurAmount="1.0"
+                    app:cornerRadius="32dp"
+                    app:dispersionStrength="0.1"
+                    app:glassMaterial="clear"
+                    app:glassTint="@color/tint_cat_history_active"
+                    app:glassTintStrength="0.2"
+                    app:refractionFalloff="1.0"
+                    app:refractionHeight="128dp"
+                    app:saturation="140.0"
+                    app:sensorHighlight="false">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/ic_history"
+                        android:orientation="vertical" />
+                </com.example.liquidglass.LiquidGlassView>
+
+                <com.example.liquidglass.LiquidGlassView
+                    android:id="@+id/cat_food"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="12dp"
+                    android:clickable="true"
+                    android:contentDescription="@string/cat_food"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:tooltipText="@string/cat_food"
+                    app:adaptiveTint="true"
+                    app:backdropSourceId="@+id/prompts"
+                    app:bevelWidth="32dp"
+                    app:blurAmount="1.0"
+                    app:cornerRadius="32dp"
+                    app:dispersionStrength="0.1"
+                    app:glassMaterial="clear"
+                    app:glassTint="@color/tint_cat_food_active"
+                    app:glassTintStrength="0.2"
+                    app:refractionFalloff="1.0"
+                    app:refractionHeight="128dp"
+                    app:saturation="140.0"
+                    app:sensorHighlight="false">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/ic_food"
+                        android:orientation="vertical" />
+                </com.example.liquidglass.LiquidGlassView>
+
+                <com.example.liquidglass.LiquidGlassView
+                    android:id="@+id/cat_tourism"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="12dp"
+                    android:clickable="true"
+                    android:contentDescription="@string/cat_tourism"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:tooltipText="@string/cat_tourism"
+                    app:adaptiveTint="true"
+                    app:backdropSourceId="@+id/prompts"
+                    app:bevelWidth="32dp"
+                    app:blurAmount="1.0"
+                    app:cornerRadius="32dp"
+                    app:dispersionStrength="0.1"
+                    app:glassMaterial="clear"
+                    app:glassTint="@color/tint_cat_tourism_active"
+                    app:glassTintStrength="0.2"
+                    app:refractionFalloff="1.0"
+                    app:refractionHeight="128dp"
+                    app:saturation="140.0"
+                    app:sensorHighlight="false">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/ic_tourism"
+                        android:orientation="vertical" />
+                </com.example.liquidglass.LiquidGlassView>
+
+                <com.example.liquidglass.LiquidGlassView
+                    android:id="@+id/cat_productivity"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="12dp"
+                    android:clickable="true"
+                    android:contentDescription="@string/cat_productivity"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:tooltipText="@string/cat_productivity"
+                    app:adaptiveTint="true"
+                    app:backdropSourceId="@+id/prompts"
+                    app:bevelWidth="32dp"
+                    app:blurAmount="1.0"
+                    app:cornerRadius="32dp"
+                    app:dispersionStrength="0.1"
+                    app:glassMaterial="clear"
+                    app:glassTint="@color/tint_cat_productivity_active"
+                    app:glassTintStrength="0.2"
+                    app:refractionFalloff="1.0"
+                    app:refractionHeight="128dp"
+                    app:saturation="140.0"
+                    app:sensorHighlight="false">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/ic_productivity"
+                        android:orientation="vertical" />
+                </com.example.liquidglass.LiquidGlassView>
+
+                <com.example.liquidglass.LiquidGlassView
+                    android:id="@+id/cat_tools"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="12dp"
+                    android:clickable="true"
+                    android:contentDescription="@string/cat_tools"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:tooltipText="@string/cat_tools"
+                    app:adaptiveTint="true"
+                    app:backdropSourceId="@+id/prompts"
+                    app:bevelWidth="32dp"
+                    app:blurAmount="1.0"
+                    app:cornerRadius="32dp"
+                    app:dispersionStrength="0.1"
+                    app:glassMaterial="clear"
+                    app:glassTint="@color/tint_cat_tools_active"
+                    app:glassTintStrength="0.2"
+                    app:refractionFalloff="1.0"
+                    app:refractionHeight="128dp"
+                    app:saturation="140.0"
+                    app:sensorHighlight="false">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/ic_tools"
+                        android:orientation="vertical" />
+                </com.example.liquidglass.LiquidGlassView>
+
+                <com.example.liquidglass.LiquidGlassView
+                    android:id="@+id/cat_entertainment"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="12dp"
+                    android:clickable="true"
+                    android:contentDescription="@string/cat_entertainment"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:tooltipText="@string/cat_entertainment"
+                    app:adaptiveTint="true"
+                    app:backdropSourceId="@+id/prompts"
+                    app:bevelWidth="32dp"
+                    app:blurAmount="1.0"
+                    app:cornerRadius="32dp"
+                    app:dispersionStrength="0.1"
+                    app:glassMaterial="clear"
+                    app:glassTint="@color/tint_cat_entertainment_active"
+                    app:glassTintStrength="0.2"
+                    app:refractionFalloff="1.0"
+                    app:refractionHeight="128dp"
+                    app:saturation="140.0"
+                    app:sensorHighlight="false">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/ic_entertainment"
+                        android:orientation="vertical" />
+                </com.example.liquidglass.LiquidGlassView>
+
+                <com.example.liquidglass.LiquidGlassView
+                    android:id="@+id/cat_sport"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="12dp"
+                    android:clickable="true"
+                    android:contentDescription="@string/cat_sport"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:tooltipText="@string/cat_sport"
+                    app:adaptiveTint="true"
+                    app:backdropSourceId="@+id/prompts"
+                    app:bevelWidth="32dp"
+                    app:blurAmount="1.0"
+                    app:cornerRadius="32dp"
+                    app:dispersionStrength="0.1"
+                    app:glassMaterial="clear"
+                    app:glassTint="@color/tint_cat_sport_active"
+                    app:glassTintStrength="0.2"
+                    app:refractionFalloff="1.0"
+                    app:refractionHeight="128dp"
+                    app:saturation="140.0"
+                    app:sensorHighlight="false">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/ic_sport"
+                        android:orientation="vertical" />
+                </com.example.liquidglass.LiquidGlassView>
+
+                <com.example.liquidglass.LiquidGlassView
+                    android:id="@+id/cat_health"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="12dp"
+                    android:clickable="true"
+                    android:contentDescription="@string/cat_health"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:tooltipText="@string/cat_health"
+                    app:adaptiveTint="true"
+                    app:backdropSourceId="@+id/prompts"
+                    app:bevelWidth="32dp"
+                    app:blurAmount="1.0"
+                    app:cornerRadius="32dp"
+                    app:dispersionStrength="0.1"
+                    app:glassMaterial="clear"
+                    app:glassTint="@color/tint_cat_health_active"
+                    app:glassTintStrength="0.2"
+                    app:refractionFalloff="1.0"
+                    app:refractionHeight="128dp"
+                    app:saturation="140.0"
+                    app:sensorHighlight="false">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/ic_health"
+                        android:orientation="vertical" />
+                </com.example.liquidglass.LiquidGlassView>
+            </LinearLayout>
+        </HorizontalScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -784,35 +756,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header_blur" />
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/prompts"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:clipToPadding="false"
-        android:overScrollMode="never"
-        android:paddingTop="224dp"
-        android:paddingBottom="100dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/view_prompt" />
-
-    <LinearLayout
-        android:id="@+id/no_internet"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <include
-            layout="@layout/fragment_network_error"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

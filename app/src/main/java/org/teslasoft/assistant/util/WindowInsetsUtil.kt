@@ -38,12 +38,12 @@ class WindowInsetsUtil {
                 try {
                     val view = parentView?.findViewById<View>(res)
                     view?.setPadding(
-                        0,
+                        view.paddingLeft * (if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else 1),
                         activity.window.decorView.rootWindowInsets.getInsets(WindowInsets.Type.statusBars()).top * (if (flags.contains(Flags.STATUS_BAR)) 1 else 0) + view.paddingTop * (if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else 1) + pxToDp(
                             activity,
                             customPaddingTop
                         ),
-                        0,
+                        view.paddingRight * (if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else 1),
                         activity.window.decorView.rootWindowInsets.getInsets(WindowInsets.Type.navigationBars()).bottom * (if (flags.contains(Flags.NAVIGATION_BAR)) 1 else 0) + view.paddingBottom * (if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else 1) + pxToDp(
                             activity,
                             customPaddingBottom
@@ -58,6 +58,8 @@ class WindowInsetsUtil {
                     val cached = view.getTag(res) as? Pair<*, *>
                     val originalTop = cached?.first as? Int ?: view.paddingTop
                     val originalBottom = cached?.second as? Int ?: view.paddingBottom
+                    val originalLeft = view.paddingLeft
+                    val originalRight = view.paddingRight
                     if (cached == null) view.setTag(res, originalTop to originalBottom)
 
                     ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
@@ -67,13 +69,16 @@ class WindowInsetsUtil {
                         val baseTop = if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else originalTop
                         val baseBottom = if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else originalBottom
 
+                        val baseLeft = if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else originalLeft
+                        val baseRight = if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else originalRight
+
                         val topInsetPart = if (flags.contains(Flags.STATUS_BAR)) statusTop else 0
                         val bottomInsetPart = if (flags.contains(Flags.NAVIGATION_BAR)) navBottom else 0
 
                         v.setPadding(
-                            0,
+                            baseLeft,
                             topInsetPart + baseTop + pxToDp(activity, customPaddingTop),
-                            0,
+                            baseRight,
                             bottomInsetPart + baseBottom + pxToDp(activity, customPaddingBottom)
                         )
 
@@ -91,12 +96,12 @@ class WindowInsetsUtil {
                 try {
                     val view = activity.findViewById<View>(res)
                     view.setPadding(
-                        0,
+                        view.paddingLeft * (if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else 1),
                         activity.window.decorView.rootWindowInsets.getInsets(WindowInsets.Type.statusBars()).top * (if (flags.contains(Flags.STATUS_BAR)) 1 else 0) + view.paddingTop * (if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else 1) + pxToDp(
                             activity,
                             customPaddingTop
                         ),
-                        0,
+                        view.paddingRight * (if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else 1),
                         activity.window.decorView.rootWindowInsets.getInsets(WindowInsets.Type.navigationBars()).bottom * (if (flags.contains(Flags.NAVIGATION_BAR)) 1 else 0) + view.paddingBottom * (if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else 1) + pxToDp(
                             activity,
                             customPaddingBottom
@@ -111,6 +116,8 @@ class WindowInsetsUtil {
                     val cached = view.getTag(res) as? Pair<*, *>
                     val originalTop = cached?.first as? Int ?: view.paddingTop
                     val originalBottom = cached?.second as? Int ?: view.paddingBottom
+                    val originalLeft = view.paddingLeft
+                    val originalRight = view.paddingRight
                     if (cached == null) view.setTag(res, originalTop to originalBottom)
 
                     ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
@@ -119,14 +126,16 @@ class WindowInsetsUtil {
 
                         val baseTop = if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else originalTop
                         val baseBottom = if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else originalBottom
+                        val baseLeft = if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else originalLeft
+                        val baseRight = if (flags.contains(Flags.IGNORE_PADDINGS)) 0 else originalRight
 
                         val topInsetPart = if (flags.contains(Flags.STATUS_BAR)) statusTop else 0
                         val bottomInsetPart = if (flags.contains(Flags.NAVIGATION_BAR)) navBottom else 0
 
                         v.setPadding(
-                            0,
+                            baseLeft,
                             topInsetPart + baseTop + pxToDp(activity, customPaddingTop),
-                            0,
+                            baseRight,
                             bottomInsetPart + baseBottom + pxToDp(activity, customPaddingBottom)
                         )
 

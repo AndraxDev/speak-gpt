@@ -34,11 +34,11 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.liquidglass.LiquidGlassButton
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -62,7 +62,7 @@ import java.util.EnumSet
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
-class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+class PromptsFragment : Fragment() {
 
     private var fieldSearch: EditText? = null
     private var btnPost: ExtendedFloatingActionButton? = null
@@ -151,22 +151,6 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         private fun b64urlEncode(input: String): String {
             return URLEncoder.encode(Base64.encode(input.toByteArray()).replace("=", ""), "UTF-8")
-        }
-
-        override fun onFormError(
-            name: String,
-            title: String,
-            desc: String,
-            prompt: String,
-            type: String,
-            category: String
-        ) {
-            Toast.makeText(mContext?: return, getString(R.string.label_error_fill_all_blanks), Toast.LENGTH_SHORT).show()
-
-            val promptDialog: PostPromptDialogFragment =
-                PostPromptDialogFragment.newInstance(name, title, desc, prompt, type, category)
-            promptDialog.setStateChangedListener(this)
-            promptDialog.show(parentFragmentManager.beginTransaction(), "PromptDialog")
         }
 
         override fun onCanceled() {
@@ -318,9 +302,6 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         rootView = view
 
-        WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.prompts_header, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
-        WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.prompts, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR))
-
         btnSearch = view.findViewById(R.id.btn_search)
         fieldSearch = view.findViewById(R.id.field_search)
         btnPost = view.findViewById(R.id.btn_add_prompt)
@@ -347,27 +328,24 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         catHealth = view.findViewById(R.id.cat_health)
         searchBar = view.findViewById(R.id.search_bar)
         fragmentRoot = view.findViewById(R.id.fragment_root)
-
         btnAllModels = view.findViewById(R.id.btn_all_models)
         btnTextModel = view.findViewById(R.id.btn_text_model)
         btnImageModel = view.findViewById(R.id.btn_image_model)
 
         promptsList?.layoutManager = LinearLayoutManager(mContext)
 
+        LiquidGlassUtil.scanForLiquidGlassAndInitSettings(view, mContext ?: return, null, false)
+        adjustInsets()
+
         val preferences = Preferences.getPreferences(mContext?: return, "")
 
-        if (isDarkThemeEnabled() && preferences.getAmoledPitchBlack()) {
-            promptsList?.background = ResourcesCompat.getDrawable(resources, R.color.amoled_window_background, null)
-        } else {
-            promptsList?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(mContext ?: return))
-        }
-
-        LiquidGlassUtil.scanForLiquidGlassAndInitSettings(view, mContext ?: return, null, false)
+        promptsList?.background = if (isDarkThemeEnabled() && preferences.getAmoledPitchBlack())
+                ResourcesCompat.getDrawable(resources, R.color.amoled_window_background, null)
+            else
+                SurfaceColors.SURFACE_0.getColor(mContext ?: return).toDrawable()
 
         Thread {
-            while (!onAttach) {
-                Thread.sleep(100)
-            }
+            while (!onAttach) Thread.sleep(50)
 
             (mContext as Activity?)?.runOnUiThread {
                 initLogic()
@@ -412,9 +390,8 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         btnSearch?.setImageResource(R.drawable.ic_search)
 
         fieldSearch?.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                /* unused */
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { /* unused */ }
+            override fun afterTextChanged(s: Editable?) { /* unused */ }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 query = s.toString()
@@ -428,10 +405,6 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 }
 
                 loadData()
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                /* unused */
             }
         })
 
@@ -567,10 +540,6 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         progressbar?.visibility = View.VISIBLE
     }
 
-    override fun onRefresh() {
-        loadData()
-    }
-
     private fun getDisabledDrawable(drawable: Drawable) : Drawable {
         DrawableCompat.setTint(DrawableCompat.wrap(drawable), getDisabledColor())
         return drawable
@@ -584,10 +553,15 @@ class PromptsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         mContext = context
         onAttach = true
 
-        if (rootView != null) WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.prompts_header, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
-        if (rootView != null) WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.prompts, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR))
-
+        adjustInsets()
         super.onAttach(context)
+    }
+
+    private fun adjustInsets() {
+        if (rootView != null) {
+            WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.header_blur, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR))
+            WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.prompts, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR))
+        }
     }
 
     override fun onDetach() {

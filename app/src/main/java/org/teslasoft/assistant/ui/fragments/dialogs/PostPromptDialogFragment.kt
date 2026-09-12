@@ -193,9 +193,6 @@ class PostPromptDialogFragment : BottomSheetDialogFragment() {
     interface StateChangesListener {
         fun onFormFilled(name: String, title: String, desc: String, prompt: String, type: String, category: String)
 
-        @Deprecated("No longer needed as BottomSheetDialog does not dismiss when action buttons are clicked")
-        fun onFormError(name: String, title: String, desc: String, prompt: String, type: String, category: String)
-
         fun onCanceled()
     }
 }
