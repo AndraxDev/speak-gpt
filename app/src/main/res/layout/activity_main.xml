@@ -25,20 +25,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/thread_loader"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/window_background"
-        android:clickable="true"
-        android:elevation="10dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/fragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/debug_btn_keeper"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/debugger_window"
@@ -46,6 +41,7 @@
         android:layout_height="match_parent"
         android:clickable="true"
         android:elevation="9999dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -144,7 +140,7 @@
                             android:layout_width="56dp"
                             android:layout_height="56dp"
                             android:layout_marginStart="24dp"
-                            android:layout_marginTop="16dp"
+                            android:layout_marginTop="8dp"
                             app:adaptiveTint="true"
                             app:backdropSourceId="@+id/root"
                             app:bevelWidth="32dp"
@@ -323,7 +319,7 @@
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/btn_accent_tonal"
             android:contentDescription="Debugger"
             android:paddingLeft="16dp"
@@ -338,28 +334,22 @@
             tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/fragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/navigation_bar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/navigation_bar"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/navigation_bar_keeper"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/accent_100"
-        app:itemActiveIndicatorStyle="@style/BottomNavigationView.ActiveIndicator"
-        app:itemIconTint="@drawable/bottom_navigation_tint"
-        app:itemTextColor="@color/accent_900"
-        app:labelVisibilityMode="labeled"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_menu" />
+        app:layout_constraintStart_toStartOf="parent">
 
+        <org.teslasoft.assistant.ui.activities.nav.LiquidGlassTabBar
+            android:id="@+id/navigation_bar_glass"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            app:glassTint="@color/accent_250"
+            app:backdropSourceId="@id/root" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

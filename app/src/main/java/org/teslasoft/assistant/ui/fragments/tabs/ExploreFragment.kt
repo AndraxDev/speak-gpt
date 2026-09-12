@@ -117,7 +117,7 @@ class ExploreFragment : Fragment(), AISetAdapterNew.OnInteractionListener {
 
         mContext = context
 
-        if (rootView != null) WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.root, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
+        applyWindowInsets()
 
         if (requestFinished == 1) {
             loading?.visibility = View.GONE
@@ -145,7 +145,6 @@ class ExploreFragment : Fragment(), AISetAdapterNew.OnInteractionListener {
         super.onViewCreated(view, savedInstanceState)
 
         rootView = view
-        WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.root, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
 
         btnTips = view.findViewById(R.id.btn_tips)
         setsList = view.findViewById(R.id.ai_sets_list)
@@ -153,6 +152,8 @@ class ExploreFragment : Fragment(), AISetAdapterNew.OnInteractionListener {
         btnRetry = view.findViewById(R.id.btn_reconnect)
         btnErrorDetails = view.findViewById(R.id.btn_show_details)
         noInternet = view.findViewById(R.id.no_internet)
+
+        applyWindowInsets()
 
         preferences = Preferences.getPreferences(mContext ?: return, "")
         apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(mContext ?: return)
@@ -205,6 +206,13 @@ class ExploreFragment : Fragment(), AISetAdapterNew.OnInteractionListener {
                 btnTips?.background = getDisabledDrawable(ResourcesCompat.getDrawable(mContext?.resources ?: return@Thread, R.drawable.btn_accent_tonal, mContext?.theme) ?: return@Thread)
             } catch (_: NullPointerException) { /* ignored */ }
         }.start()
+    }
+
+    fun applyWindowInsets() {
+        if (rootView != null && mContext != null) {
+            WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.header_keeper, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
+            WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.ai_sets_list, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR))
+        }
     }
 
     private fun getDisabledDrawable(drawable: Drawable) : Drawable {

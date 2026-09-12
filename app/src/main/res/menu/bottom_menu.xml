@@ -27,7 +27,7 @@
         android:id="@+id/menu_playground"
         android:enabled="true"
         android:icon="@drawable/ic_terminal"
-        android:title="Playground"/>
+        android:title="@string/playground"/>
 
     <item
         android:id="@+id/menu_prompts"

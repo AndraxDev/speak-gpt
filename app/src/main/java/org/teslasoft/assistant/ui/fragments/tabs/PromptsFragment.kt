@@ -22,6 +22,8 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -334,8 +336,9 @@ class PromptsFragment : Fragment() {
 
         promptsList?.layoutManager = LinearLayoutManager(mContext)
 
+        applyWindowInsets()
+
         LiquidGlassUtil.scanForLiquidGlassAndInitSettings(view, mContext ?: return, null, false)
-        adjustInsets()
 
         val preferences = Preferences.getPreferences(mContext?: return, "")
 
@@ -553,14 +556,16 @@ class PromptsFragment : Fragment() {
         mContext = context
         onAttach = true
 
-        adjustInsets()
+        applyWindowInsets()
         super.onAttach(context)
     }
 
-    private fun adjustInsets() {
-        if (rootView != null) {
+    fun applyWindowInsets() {
+        if (rootView != null && onAttach) {
             WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.header_blur, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR))
-            WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.prompts, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR))
+            WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.prompts, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR))
+            WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.fab_keeper, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR))
+            LiquidGlassUtil.scanForLiquidGlassAndInitSettings(rootView ?: return, mContext ?: return, null, false)
         }
     }
 

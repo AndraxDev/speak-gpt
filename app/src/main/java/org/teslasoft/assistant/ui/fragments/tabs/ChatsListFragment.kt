@@ -26,6 +26,8 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.DocumentsContract
 import android.text.Editable
 import android.text.TextWatcher
@@ -38,7 +40,6 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -70,16 +71,18 @@ import androidx.core.net.toUri
 import org.teslasoft.assistant.util.WindowInsetsUtil
 import java.util.EnumSet
 import androidx.core.content.edit
+import com.example.liquidglass.LiquidGlassView
+import org.teslasoft.assistant.ui.liquidglass.LiquidGlassUtil
 
 
 class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
 
     private var adapter: ChatListAdapter? = null
     private var chatsList: RecyclerView? = null
-    private var btnSettings: ImageButton? = null
+    private var btnSettings: View? = null
     private var btnAdd: ExtendedFloatingActionButton? = null
     private var btnImport: FloatingActionButton? = null
-    private var bgSearch: ConstraintLayout? = null
+    private var bgSearch: LiquidGlassView? = null
     private var fieldSearch: EditText? = null
 
     private var selectedFile: String = ""
@@ -90,7 +93,7 @@ class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
     private var selectionProjection: ArrayList<HashMap<String, String>> = arrayListOf()
     private var bulkSelect: Boolean = false
 
-    private var bulkSelectContainer: ConstraintLayout? = null
+    private var bulkSelectContainer: LiquidGlassView? = null
     private var btnBulkSelectAll: ImageButton? = null
     private var btnBulkDeselectAll: ImageButton? = null
     private var btnBulkDelete: ImageButton? = null
@@ -162,8 +165,17 @@ class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
         isAttached = true
         mContext = context
 
-        if (rootView != null) WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.root, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
+        applyWindowInsets()
         super.onAttach(context)
+    }
+
+    fun applyWindowInsets() {
+        if (rootView != null && isAttached) {
+            WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.header_keeper, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
+            WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.fab_keeper, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR))
+            WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.chats, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR))
+            LiquidGlassUtil.scanForLiquidGlassAndInitSettings(rootView ?: return, mContext ?: return, null, false)
+        }
     }
 
     override fun onDetach() {
@@ -207,10 +219,8 @@ class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
 
         Thread {
             while (!isAttached) {
-                Thread.sleep(100)
+                Thread.sleep(50)
             }
-
-            // preferences = Preferences.getPreferences(mContext ?: return@Thread, "").addOnPreferencesChangedListener(this)
 
             (mContext as Activity?)?.runOnUiThread {
                 initUI(view)
@@ -221,6 +231,7 @@ class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
         }.start()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun initUI(view: View) {
         chatsList = view.findViewById(R.id.chats)
         btnSettings = view.findViewById(R.id.btn_settings_)
@@ -228,24 +239,39 @@ class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
         fieldSearch = view.findViewById(R.id.field_search)
         bgSearch = view.findViewById(R.id.bg_search)
         btnAdd = view.findViewById(R.id.btn_add)
-
-        WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.root, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
-
         bulkSelectContainer = view.findViewById(R.id.bulk_actions_container)
         btnBulkSelectAll = view.findViewById(R.id.btn_bulk_select_all)
         btnBulkDeselectAll = view.findViewById(R.id.btn_bulk_deselect_all)
         btnBulkDelete = view.findViewById(R.id.btn_bulk_delete)
         btnBulkRename = view.findViewById(R.id.btn_bulk_edit)
 
-        bulkSelectContainer?.visibility = View.GONE
+        applyWindowInsets()
+
+        bulkSelectContainer?.visibility = View.INVISIBLE
+        bulkSelectContainer?.translationY = -(bulkSelectContainer?.height?.toFloat()?: 0f) - 100f
         fieldSearch?.isEnabled = true
 
         chatsList?.setLayoutManager(LinearLayoutManager(mContext ?: return))
+
+        LiquidGlassUtil.scanForLiquidGlassAndInitSettings(view, mContext ?: return, null, false)
 
         val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
         itemTouchHelper.attachToRecyclerView(chatsList)
 
         reloadAmoled(mContext ?: return)
+    }
+
+    private fun showBulkActionsBoxAnimated() {
+        bulkSelectContainer?.visibility = View.VISIBLE
+        bgSearch?.animate()?.translationY(-(bgSearch?.height?.toFloat()?: 0f) - 100f)?.setDuration(200)?.start()
+        bulkSelectContainer?.animate()?.translationY(0f)?.setDuration(200)?.start()
+    }
+
+    private fun hideBulkActionsBoxAnimated() {
+        bulkSelectContainer?.animate()?.translationY(-(bulkSelectContainer?.height?.toFloat()?: 0f) - 100f)?.setDuration(200)?.withEndAction {
+            bulkSelectContainer?.visibility = View.INVISIBLE
+        }?.start()
+        bgSearch?.animate()?.translationY(0f)?.setDuration(200)?.start()
     }
 
     private val itemTouchCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
@@ -371,7 +397,7 @@ class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
     @SuppressLint("NotifyDataSetChanged")
     private fun initChatsList() {
         bulkSelect = false
-        bulkSelectContainer?.visibility = View.GONE
+        bulkSelectContainer?.visibility = View.INVISIBLE
         fieldSearch?.isEnabled = true
         adapter = ChatListAdapter(chats, selectionProjection, this)
         adapter?.setOnInteractionListener(this)
@@ -690,10 +716,10 @@ class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
         bulkSelect = mode
 
         if (bulkSelect) {
-            bulkSelectContainer?.visibility = View.VISIBLE
+            showBulkActionsBoxAnimated()
             fieldSearch?.isEnabled = false
         } else {
-            bulkSelectContainer?.visibility = View.GONE
+            hideBulkActionsBoxAnimated()
             fieldSearch?.isEnabled = true
         }
     }
@@ -705,7 +731,7 @@ class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
         }
 
         adapter?.unselectAll()
-        bulkSelectContainer?.visibility = View.GONE
+        hideBulkActionsBoxAnimated()
         fieldSearch?.isEnabled = true
         adapter?.notifyDataSetChanged()
     }

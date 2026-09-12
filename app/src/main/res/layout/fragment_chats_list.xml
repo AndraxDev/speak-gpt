@@ -16,213 +16,261 @@
 * limitations under the License.
 **************************************************************************/
 -->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/btn_add"
-        style="?attr/extendedFloatingActionButtonPrimaryStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp"
-        android:clickable="true"
-        android:text="@string/btn_new_chat"
-        android:tooltipText="@string/btn_new_chat"
-        app:elevation="6dp"
-        app:icon="@drawable/ic_add"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_add" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btn_import"
-        style="?attr/extendedFloatingActionButtonTertiaryStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="20dp"
-        android:clickable="true"
-        android:contentDescription="@string/btn_import_chat"
-        android:tooltipText="@string/btn_import_chat"
-        app:elevation="6dp"
-        app:icon="@drawable/ic_download"
-        app:layout_constraintBottom_toTopOf="@+id/btn_add"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_download" />
-
-    <TextView
-        android:id="@+id/activity_chats_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:text="@string/app_name"
-        android:textColor="@color/text_title"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chats"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="-24dp"
         android:clipToPadding="false"
         android:contentDescription="@string/menu_chat"
         android:listSelector="@android:color/transparent"
         android:nestedScrollingEnabled="false"
-        android:paddingTop="40dp"
-        android:paddingBottom="20dp"
+        android:overScrollMode="never"
+        android:paddingTop="84dp"
+        android:paddingBottom="96dp"
         android:scrollbars="none"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bg_search"
+        app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/view_chat_name_min" />
 
-    <ImageButton
-        android:id="@+id/btn_settings_"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        android:background="@drawable/btn_accent_tonal"
-        android:contentDescription="@string/btn_settings"
-        android:src="@drawable/ic_settings"
-        android:tooltipText="@string/btn_settings"
-        android:transitionName="settings"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_settings" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/bg_search"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        android:background="@drawable/btn_accent_tonal"
-        android:clickable="true"
-        android:focusable="true"
+        android:id="@+id/header_keeper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_settings_">
+        app:layout_constraintTop_toTopOf="parent">
 
-        <EditText
-            android:id="@+id/field_search"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="4dp"
-            android:autofillHints="Search"
-            android:background="@color/transparent"
-            android:ems="10"
-            android:hint="@string/label_search_chats"
-            android:inputType="text"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textColor="@color/text_field"
-            android:textColorHint="@color/text_hint"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_search"
+        <LinearLayout
+            android:id="@+id/debug_placeholder"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="12dp"
+            android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/btn_settings_" />
+
+        <com.example.liquidglass.LiquidGlassView
+            android:id="@+id/bg_search"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="12dp"
+            app:adaptiveTint="true"
+            app:backdropSourceId="@+id/chats"
+            app:bevelWidth="32dp"
+            app:blurAmount="1.0"
+            app:cornerRadius="32dp"
+            app:dispersionStrength="0.1"
+            app:glassMaterial="clear"
+            app:glassTint="@color/accent_300"
+            app:glassTintStrength="1.0"
+            app:refractionFalloff="1.0"
+            app:refractionHeight="128dp"
+            app:saturation="140.0"
+            app:sensorHighlight="false"
+            app:layout_constraintEnd_toStartOf="@+id/btn_settings_"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/debug_placeholder"
+            app:layout_constraintTop_toTopOf="@+id/btn_settings_">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <EditText
+                    android:id="@+id/field_search"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="4dp"
+                    android:autofillHints="Search"
+                    android:background="@color/transparent"
+                    android:ems="10"
+                    android:hint="@string/label_search_chats"
+                    android:inputType="text"
+                    android:paddingHorizontal="20dp"
+                    android:textColor="@color/text_field"
+                    android:textColorHint="@color/text_hint"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_search"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageButton
+                    android:id="@+id/btn_search"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="4dp"
+                    android:background="@color/transparent"
+                    android:contentDescription="@string/waffle_play_01"
+                    android:src="@drawable/ic_search"
+                    android:tooltipText="@string/hint_search"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_search" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.example.liquidglass.LiquidGlassView>
+
+        <com.example.liquidglass.LiquidGlassView
+            android:id="@+id/bulk_actions_container"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:background="@drawable/btn_accent_tonal_unmodifiable"
+            android:elevation="6dp"
+            android:visibility="gone"
+            app:adaptiveTint="true"
+            app:backdropSourceId="@+id/chats"
+            app:bevelWidth="32dp"
+            app:blurAmount="1.0"
+            app:cornerRadius="32dp"
+            app:dispersionStrength="0.1"
+            app:glassMaterial="clear"
+            app:glassTint="@color/accent_300"
+            app:glassTintStrength="1.0"
+            app:refractionFalloff="1.0"
+            app:refractionHeight="128dp"
+            app:saturation="140.0"
+            app:sensorHighlight="false"
+            app:layout_constraintEnd_toEndOf="@id/bg_search"
+            app:layout_constraintStart_toStartOf="@id/bg_search"
+            app:layout_constraintTop_toTopOf="@id/bg_search">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageButton
+                    android:id="@+id/btn_bulk_select_all"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:background="@drawable/ripple_transparent"
+                    android:contentDescription="Select all"
+                    android:src="@drawable/ic_select_all"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_select_all" />
+
+                <ImageButton
+                    android:id="@+id/btn_bulk_deselect_all"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/ripple_transparent"
+                    android:contentDescription="Deselect all"
+                    android:src="@drawable/ic_deselect_all"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/btn_bulk_select_all"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_deselect_all" />
+
+                <ImageButton
+                    android:id="@+id/btn_bulk_edit"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:background="@drawable/ripple_transparent"
+                    android:contentDescription="Rename"
+                    android:src="@drawable/ic_edit_action"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_bulk_delete"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_edit_action" />
+
+                <ImageButton
+                    android:id="@+id/btn_bulk_delete"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:background="@drawable/ripple_transparent"
+                    android:contentDescription="Delete selected"
+                    android:src="@drawable/ic_delete"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_delete" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.example.liquidglass.LiquidGlassView>
 
         <ImageButton
-            android:id="@+id/btn_search"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginEnd="4dp"
-            android:background="@color/transparent"
-            android:contentDescription="@string/waffle_play_01"
-            android:src="@drawable/ic_search"
-            android:tooltipText="@string/hint_search"
+            android:id="@+id/btn_settings_"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/btn_accent_tonal"
+            android:contentDescription="@string/btn_settings"
+            android:src="@drawable/ic_settings"
+            android:tooltipText="@string/btn_settings"
+            android:transitionName="settings"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_search" />
-
+            app:srcCompat="@drawable/ic_settings" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/bulk_actions_container"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        android:background="@drawable/btn_accent_tonal_unmodifiable"
-        android:elevation="6dp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_settings_">
+        android:id="@+id/fab_keeper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="96dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <ImageButton
-            android:id="@+id/btn_bulk_select_all"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:background="@drawable/btn_accent_tonal_unmodifiable"
-            android:contentDescription="Select all"
-            android:src="@drawable/ic_select_all"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_select_all" />
-
-        <ImageButton
-            android:id="@+id/btn_bulk_deselect_all"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/btn_accent_tonal_unmodifiable"
-            android:contentDescription="Deselect all"
-            android:src="@drawable/ic_deselect_all"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btn_bulk_select_all"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_deselect_all" />
-
-        <ImageButton
-            android:id="@+id/btn_bulk_edit"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:background="@drawable/btn_accent_tonal_unmodifiable"
-            android:contentDescription="Rename"
-            android:src="@drawable/ic_edit_action"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_bulk_delete"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_edit_action" />
-
-        <ImageButton
-            android:id="@+id/btn_bulk_delete"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginBottom="4dp"
-            android:background="@drawable/btn_accent_tonal_unmodifiable"
-            android:contentDescription="Delete selected"
-            android:src="@drawable/ic_delete"
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/btn_add"
+            style="?attr/extendedFloatingActionButtonPrimaryStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="24dp"
+            android:clickable="true"
+            android:text="@string/btn_new_chat"
+            android:tooltipText="@string/btn_new_chat"
+            app:icon="@drawable/ic_add"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/ic_add" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btn_import"
+            style="?attr/extendedFloatingActionButtonTertiaryStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="24dp"
+            android:clickable="true"
+            android:contentDescription="@string/btn_import_chat"
+            android:tooltipText="@string/btn_import_chat"
+            app:icon="@drawable/ic_download"
+            app:layout_constraintBottom_toTopOf="@+id/btn_add"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_delete" />
+            app:srcCompat="@drawable/ic_download" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

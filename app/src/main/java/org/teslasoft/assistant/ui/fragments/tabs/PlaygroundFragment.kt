@@ -57,8 +57,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.teslasoft.assistant.R
@@ -100,16 +98,20 @@ class PlaygroundFragment : Fragment() {
     private var ai: OpenAI? = null
 
     override fun onAttach(context: Context) {
-        super.onAttach(context)
-
         mContext = context
+        applyWindowInsets()
+        super.onAttach(context)
+    }
 
-        if (rootView != null) WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.root, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
+    fun applyWindowInsets() {
+        if (rootView != null && mContext != null) {
+            WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.root, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
+            WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.fab_keeper, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR))
+        }
     }
 
     override fun onDetach() {
         super.onDetach()
-
         mContext = null
     }
 
@@ -122,7 +124,6 @@ class PlaygroundFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         rootView = view
-        WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.root, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
 
         btnRun = view.findViewById(R.id.btn_run)
         btnStop = view.findViewById(R.id.btn_stop)
@@ -135,6 +136,8 @@ class PlaygroundFragment : Fragment() {
         btnSettings = view.findViewById(R.id.btn_settings)
         layoutBottom = view.findViewById(R.id.layout_bottom)
         btnReport = view.findViewById(R.id.btn_report_playground_abuse)
+
+        applyWindowInsets()
 
         runLoader?.visibility = View.GONE
 

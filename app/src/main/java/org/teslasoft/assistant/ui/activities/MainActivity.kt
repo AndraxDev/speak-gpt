@@ -40,6 +40,7 @@ import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.edit
 import androidx.core.content.res.ResourcesCompat
@@ -72,21 +73,20 @@ import org.teslasoft.core.auth.SystemInfo
 import org.teslasoft.core.auth.internal.ApplicationSignature
 import java.util.EnumSet
 import androidx.core.graphics.drawable.toDrawable
+import org.teslasoft.assistant.ui.activities.nav.LiquidGlassTabBar
 import org.teslasoft.assistant.migration.UnsupportedImageModelMigration
 import org.teslasoft.assistant.ui.debug.aicore.OnDeviceInferenceActivity
 import org.teslasoft.assistant.ui.liquidglass.LiquidGlassUtil
+import org.teslasoft.assistant.ui.liquidglass.LiquidGlassUtil.Companion.saturateColor
 
 class MainActivity : FragmentActivity() {
-
-    private var navigationBar: BottomNavigationView? = null
     private var fragmentContainer: ConstraintLayout? = null
-    private var btnDebugger: ImageButton? = null
+    private var btnDebugger: View? = null
     private var debuggerWindow: ConstraintLayout? = null
     private var btnCloseDebugger: ImageButton? = null
     private var btnInitiateCrash: MaterialButton? = null
     private var btnLaunchPWA: MaterialButton? = null
     private var btnTogglePWA: MaterialButton? = null
-    private var threadLoader: LinearLayout? = null
     private var devIds: TextView? = null
     private var frameChats: Fragment? = null
     private var framePlayground: Fragment? = null
@@ -99,8 +99,8 @@ class MainActivity : FragmentActivity() {
     private var btnDebugAiCore: MaterialButton? = null
     private var btnDebugNextUI: MaterialButton? = null
     private var selectedTab: Int = 1
-    private var isInitialized: Boolean = false
     private var splashScreen: SplashScreen? = null
+    private var navigationBarGlass: LiquidGlassTabBar? = null
 
     private val appearanceFlags: HashMap<String, Boolean> = hashMapOf(
         "debug_mode" to false,
@@ -142,8 +142,6 @@ class MainActivity : FragmentActivity() {
         appearanceFlags["hide_model_names"] = preferences!!.getHideModelNames()
         appearanceFlags["monochrome_background_for_chat_list"] = preferences!!.getMonochromeBackgroundForChatList()
 
-        navigationBar = findViewById(R.id.navigation_bar)
-
         fragmentContainer = findViewById(R.id.fragment)
         root = findViewById(R.id.root)
         btnDebugger = findViewById(R.id.btn_open_debugger)
@@ -156,14 +154,41 @@ class MainActivity : FragmentActivity() {
         btnLaunchPWA = findViewById(R.id.btn_launch_pwa)
         btnTogglePWA = findViewById(R.id.btn_toggle_pwa)
         devIds = findViewById(R.id.dev_ids)
-        threadLoader = findViewById(R.id.thread_loader)
+        navigationBarGlass = findViewById(R.id.navigation_bar_glass)
 
         val excludedLiquidGlassViews = arrayListOf<Int>()
         excludedLiquidGlassViews.add(R.id.debugger_bg_liquid_glass)
+        excludedLiquidGlassViews.add(R.id.navigation_bar_glass)
 
         LiquidGlassUtil.scanForLiquidGlassAndInitSettings(this, excludedLiquidGlassViews)
+        LiquidGlassUtil.initializeLiquidGlassViewById(R.id.navigation_bar_glass, this)
 
-        threadLoader?.visibility = View.VISIBLE
+        val tabChat: LiquidGlassTabBar.TabItem = LiquidGlassTabBar.TabItem(getString(R.string.menu_chat), AppCompatResources.getDrawable(this, R.drawable.ic_chat))
+        val tabPlayground: LiquidGlassTabBar.TabItem = LiquidGlassTabBar.TabItem(getString(R.string.playground), AppCompatResources.getDrawable(this, R.drawable.ic_terminal))
+        val tabPrompts: LiquidGlassTabBar.TabItem = LiquidGlassTabBar.TabItem(getString(R.string.menu_prompts), AppCompatResources.getDrawable(this, R.drawable.ic_apps))
+        val tabExplore: LiquidGlassTabBar.TabItem = LiquidGlassTabBar.TabItem(getString(R.string.menu_explore), AppCompatResources.getDrawable(this, R.drawable.ic_explore))
+
+        val tabs: List<LiquidGlassTabBar.TabItem> = listOf(tabChat, tabPlayground, tabPrompts, tabExplore)
+        navigationBarGlass?.setTabs(tabs)
+
+        navigationBarGlass?.selectedTintColor = ResourcesCompat.getColor(resources, R.color.accent_900, theme)
+        navigationBarGlass?.inactiveTintColor = ResourcesCompat.getColor(resources, R.color.text, theme)
+
+        navigationBarGlass?.glassTint = if (isDarkThemeEnabled()) {
+            saturateColor(ResourcesCompat.getColor(resources, R.color.accent_250, theme), 0.6f) - 0x99000000.toInt()
+        } else {
+            saturateColor(ResourcesCompat.getColor(resources, R.color.accent_500, theme), 0.6f) - 0x99000000.toInt()
+        }
+
+        navigationBarGlass?.onTabSelected = { index -> run {
+            when (index) {
+                0 -> menuChats()
+                1 -> menuPlayground()
+                2 -> menuPrompts()
+                3 -> menuExplore()
+                else -> menuChats()
+            }
+        }}
 
         btnDebugger?.visibility = View.GONE
         debuggerWindow?.visibility = View.GONE
@@ -231,130 +256,80 @@ class MainActivity : FragmentActivity() {
             }
         }
 
-        Thread {
-            runOnUiThread {
-                navigationBar!!.setOnItemSelectedListener(NavigationBarView.OnItemSelectedListener { item: MenuItem ->
-                    when (item.itemId) {
-                        R.id.menu_chat -> {
-                            menuChats()
-                            return@OnItemSelectedListener true
-                        }
-                        R.id.menu_playground -> {
-                            menuPlayground()
-                            return@OnItemSelectedListener true
-                        }
-                        R.id.menu_tools -> {
-                            menuTools()
-                            return@OnItemSelectedListener true
-                        }
-                        R.id.menu_prompts -> {
-                            menuPrompts()
-                            return@OnItemSelectedListener true
-                        }
-                        R.id.menu_tips -> {
-                            menuExplore()
-                            return@OnItemSelectedListener true
-                        }
-                    }
-
-                    return@OnItemSelectedListener false
-                })
-
-                if (preferences!!.getDebugMode()) {
-                    btnDebugger?.visibility = View.VISIBLE
-                    btnDebugger?.setOnClickListener {
-                        debuggerWindow?.visibility = View.VISIBLE
-                    }
-
-                    btnCloseDebugger?.setOnClickListener {
-                        debuggerWindow?.visibility = View.GONE
-                    }
-
-                    btnInitiateCrash?.setOnClickListener {
-                        throw RuntimeException("Test crash")
-                    }
-
-                    btnDebugActivity?.setOnClickListener {
-                        startActivity(Intent(this, DebugMaterial::class.java))
-                    }
-
-                    btnDebugAiCore?.setOnClickListener {
-                        startActivity(Intent(this, OnDeviceInferenceActivity::class.java))
-                    }
-
-                    btnDebugNextUI?.setOnClickListener {
-                        startActivity(Intent(this, ChatNextActivity::class.java))
-                    }
-
-                    btnLaunchPWA?.setOnClickListener {
-                        if (isPWAActivityEnabled(this)) {
-                            startActivity(Intent(this, PWAActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-                        } else {
-                            MaterialAlertDialogBuilder(this)
-                                .setMessage("This component is disabled by the component manager.")
-                                .setPositiveButton(R.string.btn_close) { _, _ -> }
-                                .show()
-                        }
-                    }
-
-                    var androidVersion = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Build.VERSION.RELEASE_OR_PREVIEW_DISPLAY else Build.VERSION.RELEASE
-
-                    if (androidVersion.lowercase() == "baklava") {
-                        androidVersion = "16 (Beta)"
-                    }
-
-                    val pm = packageManager
-                    val pi = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { pm.getInstallSourceInfo(packageName).installingPackageName } else { "<Current OS version is not supported>" }
-
-                    val signature = ApplicationSignature(this)
-                    val sha1 = signature.getCertificateFingerprint("SHA1")
-                    val sha256 = signature.getCertificateFingerprint("SHA256")
-
-                    devIds?.text = "${devIds?.text}\n\nInstallation ID: [data collection removed in this build]\nAndroid ID: [data collection removed in this build]"
-                    devIds?.text = "${devIds?.text}\nApp Version: ${packageManager.getPackageInfo(packageName, 0).versionName} (${packageManager.getPackageInfo(packageName, 0).versionCode})"
-                    devIds?.text = "${devIds?.text}\nTeslasoft ID version: ${SystemInfo.NAME} ${SystemInfo.VERSION} (${SystemInfo.VERSION_CODE})"
-                    devIds?.text = "${devIds?.text}\nKotlin language version: ${KotlinVersion.CURRENT}"
-                    devIds?.text = "${devIds?.text}\nJava language version: 21 (LTS)"
-                    devIds?.text = "${devIds?.text}\nRuntime version: ${System.getProperty("java.runtime.name")} version ${System.getProperty("java.runtime.version")}"
-                    devIds?.text = "${devIds?.text}\nOS: Android"
-                    devIds?.text = "${devIds?.text}\nOS version: $androidVersion"
-                    devIds?.text = "${devIds?.text}\nFingerprint: ${Build.FINGERPRINT}"
-                    devIds?.text = "${devIds?.text}\nManufacturer: ${Build.MANUFACTURER}"
-                    devIds?.text = "${devIds?.text}\nModel: ${Build.MODEL}"
-                    devIds?.text = "${devIds?.text}\nProduct: ${Build.PRODUCT}"
-                    devIds?.text = "${devIds?.text}\nBrand: ${Build.BRAND}"
-                    devIds?.text = "${devIds?.text}\nInstall Source: $pi"
-                    devIds?.text = "${devIds?.text}\nPackage Certificate SHA1: $sha1"
-                    devIds?.text = "${devIds?.text}\nPackage Certificate SHA256: $sha256"
-                }
-
-                preInit()
-
-                if (savedInstanceState != null) {
-                    adjustPaddings()
-                    onRestoredState(savedInstanceState)
-                }
-
-                Handler(Looper.getMainLooper()).postDelayed({
-                    val fadeOut: Animation = AnimationUtils.loadAnimation(this, R.anim.fade_out)
-                    threadLoader?.startAnimation(fadeOut)
-
-                    fadeOut.setAnimationListener(object : Animation.AnimationListener {
-                        override fun onAnimationStart(animation: Animation) { /* UNUSED */ }
-                        override fun onAnimationEnd(animation: Animation) {
-                            runOnUiThread {
-                                threadLoader?.visibility = View.GONE
-                                threadLoader?.elevation = 0.0f
-
-                                isInitialized = true
-                            }
-                        }
-
-                        override fun onAnimationRepeat(animation: Animation) { /* UNUSED */ }
-                    })
-                }, 50)
+        if (preferences?.getDebugMode() == true) {
+            btnDebugger?.visibility = View.VISIBLE
+            btnDebugger?.setOnClickListener {
+                debuggerWindow?.visibility = View.VISIBLE
             }
-        }.start()
+
+            btnCloseDebugger?.setOnClickListener {
+                debuggerWindow?.visibility = View.GONE
+            }
+
+            btnInitiateCrash?.setOnClickListener {
+                throw RuntimeException("Test crash")
+            }
+
+            btnDebugActivity?.setOnClickListener {
+                startActivity(Intent(this, DebugMaterial::class.java))
+            }
+
+            btnDebugAiCore?.setOnClickListener {
+                startActivity(Intent(this, OnDeviceInferenceActivity::class.java))
+            }
+
+            btnDebugNextUI?.setOnClickListener {
+                startActivity(Intent(this, ChatNextActivity::class.java))
+            }
+
+            btnLaunchPWA?.setOnClickListener {
+                if (isPWAActivityEnabled(this)) {
+                    startActivity(Intent(this, PWAActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                } else {
+                    MaterialAlertDialogBuilder(this)
+                        .setMessage("This component is disabled by the component manager.")
+                        .setPositiveButton(R.string.btn_close) { _, _ -> }
+                        .show()
+                }
+            }
+
+            var androidVersion = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Build.VERSION.RELEASE_OR_PREVIEW_DISPLAY else Build.VERSION.RELEASE
+
+            if (androidVersion.lowercase() == "baklava") {
+                androidVersion = "16 (Beta)"
+            }
+
+            val pm = packageManager
+            val pi = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { pm.getInstallSourceInfo(packageName).installingPackageName } else { "<Current OS version is not supported>" }
+
+            val signature = ApplicationSignature(this)
+            val sha1 = signature.getCertificateFingerprint("SHA1")
+            val sha256 = signature.getCertificateFingerprint("SHA256")
+
+            devIds?.text = "${devIds?.text}\n\nInstallation ID: [data collection removed in this build]\nAndroid ID: [data collection removed in this build]"
+            devIds?.text = "${devIds?.text}\nApp Version: ${packageManager.getPackageInfo(packageName, 0).versionName} (${packageManager.getPackageInfo(packageName, 0).versionCode})"
+            devIds?.text = "${devIds?.text}\nTeslasoft ID version: ${SystemInfo.NAME} ${SystemInfo.VERSION} (${SystemInfo.VERSION_CODE})"
+            devIds?.text = "${devIds?.text}\nKotlin language version: ${KotlinVersion.CURRENT}"
+            devIds?.text = "${devIds?.text}\nJava language version: 21 (LTS)"
+            devIds?.text = "${devIds?.text}\nRuntime version: ${System.getProperty("java.runtime.name")} version ${System.getProperty("java.runtime.version")}"
+            devIds?.text = "${devIds?.text}\nOS: Android"
+            devIds?.text = "${devIds?.text}\nOS version: $androidVersion"
+            devIds?.text = "${devIds?.text}\nFingerprint: ${Build.FINGERPRINT}"
+            devIds?.text = "${devIds?.text}\nManufacturer: ${Build.MANUFACTURER}"
+            devIds?.text = "${devIds?.text}\nModel: ${Build.MODEL}"
+            devIds?.text = "${devIds?.text}\nProduct: ${Build.PRODUCT}"
+            devIds?.text = "${devIds?.text}\nBrand: ${Build.BRAND}"
+            devIds?.text = "${devIds?.text}\nInstall Source: $pi"
+            devIds?.text = "${devIds?.text}\nPackage Certificate SHA1: $sha1"
+            devIds?.text = "${devIds?.text}\nPackage Certificate SHA256: $sha256"
+        }
+
+        preInit()
+
+        if (savedInstanceState != null) {
+            adjustPaddings()
+            onRestoredState(savedInstanceState)
+        }
     }
 
     private fun preInit() {
@@ -412,19 +387,17 @@ class MainActivity : FragmentActivity() {
     override fun onResume() {
         super.onResume()
 
-        if (isInitialized) {
-            preferences = Preferences.getPreferences(this, "")
+        preferences = Preferences.getPreferences(this, "")
 
-            if (
-                appearanceFlags["debug_mode"] != preferences!!.getDebugMode() ||
-                appearanceFlags["amoled_pitch_black"] != preferences!!.getAmoledPitchBlack() ||
-                appearanceFlags["hide_model_names"] != preferences!!.getHideModelNames() ||
-                appearanceFlags["monochrome_background_for_chat_list"] != preferences!!.getMonochromeBackgroundForChatList()) {
-                restartActivity()
-            }
-
-            reloadAmoled()
+        if (
+            appearanceFlags["debug_mode"] != preferences!!.getDebugMode() ||
+            appearanceFlags["amoled_pitch_black"] != preferences!!.getAmoledPitchBlack() ||
+            appearanceFlags["hide_model_names"] != preferences!!.getHideModelNames() ||
+            appearanceFlags["monochrome_background_for_chat_list"] != preferences!!.getMonochromeBackgroundForChatList()) {
+            restartActivity()
         }
+
+        reloadAmoled()
     }
 
     @Suppress("DEPRECATION")
@@ -435,7 +408,6 @@ class MainActivity : FragmentActivity() {
                 window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
             }
             window.setBackgroundDrawableResource(R.color.amoled_window_background)
-            navigationBar!!.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme))
         } else {
             if (Build.VERSION.SDK_INT < 30) {
                 window.navigationBarColor = SurfaceColors.SURFACE_3.getColor(this)
@@ -443,7 +415,6 @@ class MainActivity : FragmentActivity() {
             }
             val colorDrawable = SurfaceColors.SURFACE_0.getColor(this).toDrawable()
             window.setBackgroundDrawable(colorDrawable)
-            navigationBar!!.setBackgroundColor(SurfaceColors.SURFACE_3.getColor(this))
         }
 
         (frameChats as ChatsListFragment).reloadAmoled(this)
@@ -457,14 +428,12 @@ class MainActivity : FragmentActivity() {
                 window.navigationBarColor = SurfaceColors.SURFACE_0.getColor(this)
                 window.statusBarColor = ResourcesCompat.getColor(resources, R.color.amoled_window_background, theme)
             }
-            threadLoader?.background = ResourcesCompat.getDrawable(resources, R.color.amoled_window_background, null)
             root?.background = ResourcesCompat.getDrawable(resources, R.color.amoled_window_background, null)
         } else {
             if (Build.VERSION.SDK_INT < 30) {
                 window.navigationBarColor = SurfaceColors.SURFACE_3.getColor(this)
                 window.statusBarColor = SurfaceColors.SURFACE_0.getColor(this)
             }
-            threadLoader?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
             root?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
         }
     }
@@ -498,30 +467,28 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun menuChats() {
+        if (preferences?.getDebugMode() == true) btnDebugger?.visibility = View.VISIBLE
         val st = selectedTab
         selectedTab = 1
         loadFragment(frameChats, st, selectedTab)
     }
 
     private fun menuPlayground() {
+        btnDebugger?.visibility = View.GONE
         val st = selectedTab
         selectedTab = 2
         loadFragment(framePlayground, st, selectedTab)
     }
 
-    private fun menuTools() {
-        val st = selectedTab
-        selectedTab = 3
-        loadFragment(frameTools, st, selectedTab)
-    }
-
     private fun menuPrompts() {
+        btnDebugger?.visibility = View.GONE
         val st = selectedTab
         selectedTab = 4
         loadFragment(framePrompts, st, selectedTab)
     }
 
     private fun menuExplore() {
+        btnDebugger?.visibility = View.GONE
         val st = selectedTab
         selectedTab = 5
         loadFragment(frameExplore, st, selectedTab)
@@ -532,23 +499,27 @@ class MainActivity : FragmentActivity() {
 
         when (selectedTab) {
             1 -> {
-                navigationBar?.selectedItemId = R.id.menu_chat
+                if (preferences?.getDebugMode() == true) btnDebugger?.visibility = View.VISIBLE
+                navigationBarGlass?.selectedIndex = 0
                 loadFragment(frameChats, 1, 1)
             }
             2 -> {
-                navigationBar?.selectedItemId = R.id.menu_playground
+                btnDebugger?.visibility = View.GONE
+                navigationBarGlass?.selectedIndex = 1
                 loadFragment(framePlayground, 1, 1)
             }
             3 -> {
-                navigationBar?.selectedItemId = R.id.menu_tools
+                btnDebugger?.visibility = View.GONE
                 loadFragment(frameTools, 1, 1)
             }
             4 -> {
-                navigationBar?.selectedItemId = R.id.menu_prompts
+                btnDebugger?.visibility = View.GONE
+                navigationBarGlass?.selectedIndex = 2
                 loadFragment(framePrompts, 1, 1)
             }
             5 -> {
-                navigationBar?.selectedItemId = R.id.menu_tips
+                btnDebugger?.visibility = View.GONE
+                navigationBarGlass?.selectedIndex = 3
                 loadFragment(frameExplore, 1, 1)
             }
         }
@@ -582,8 +553,12 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun adjustPaddings() {
-        WindowInsetsUtil.adjustPaddings(this, R.id.navigation_bar, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS), forceFromAndroidR = true)
         WindowInsetsUtil.adjustPaddings(this, R.id.debug_btn_keeper, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
+        WindowInsetsUtil.adjustPaddings(this, R.id.navigation_bar_keeper, EnumSet.of(WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
         WindowInsetsUtil.adjustPaddings(this, R.id.d, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
+        (frameChats as ChatsListFragment?)?.applyWindowInsets()
+        (framePlayground as PlaygroundFragment?)?.applyWindowInsets()
+        (framePrompts as PromptsFragment?)?.applyWindowInsets()
+        (frameExplore as ExploreFragment?)?.applyWindowInsets()
     }
 }

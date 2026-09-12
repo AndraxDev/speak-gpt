@@ -530,4 +530,5 @@
     <string name="report_abuse">Report abuse</string>
     <string name="text">Text</string>
     <string name="images">Images</string>
+    <string name="playground">Playground</string>
 </resources>
