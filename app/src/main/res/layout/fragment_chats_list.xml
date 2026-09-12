@@ -53,6 +53,16 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
+            android:id="@+id/reload_pixel"
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
             android:id="@+id/debug_placeholder"
             android:layout_width="56dp"
             android:layout_height="56dp"

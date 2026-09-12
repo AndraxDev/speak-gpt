@@ -338,8 +338,6 @@ class PromptsFragment : Fragment() {
 
         applyWindowInsets()
 
-        LiquidGlassUtil.scanForLiquidGlassAndInitSettings(view, mContext ?: return, null, false)
-
         val preferences = Preferences.getPreferences(mContext?: return, "")
 
         promptsList?.background = if (isDarkThemeEnabled() && preferences.getAmoledPitchBlack())
@@ -566,6 +564,20 @@ class PromptsFragment : Fragment() {
             WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.prompts, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR))
             WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.fab_keeper, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR))
             LiquidGlassUtil.scanForLiquidGlassAndInitSettings(rootView ?: return, mContext ?: return, null, false)
+
+            // Temporary workaround... (or maybe permanent, who knows...)
+            // If you wonder what it does, it just forcibly re-renders the screen contents to let liquid glass views build captures of backdrops.
+            // Fragment (tab) switch animations causes capture freeze which leads to liquid glass views not being able to render their backdrops properly.
+            Handler(Looper.getMainLooper()).postDelayed({
+                rootView?.findViewById<View>(R.id.reload_pixel)?.background = 0x11000000.toDrawable()
+                rootView?.findViewById<View>(R.id.reload_pixel2)?.background = 0x11000000.toDrawable()
+                rootView?.findViewById<View>(R.id.reload_pixel3)?.background = 0x11000000.toDrawable()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    rootView?.findViewById<View>(R.id.reload_pixel)?.background = 0x00000000.toDrawable()
+                    rootView?.findViewById<View>(R.id.reload_pixel2)?.background = 0x00000000.toDrawable()
+                    rootView?.findViewById<View>(R.id.reload_pixel3)?.background = 0x00000000.toDrawable()
+                }, 50)
+            }, 500)
         }
     }
 

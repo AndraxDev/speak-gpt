@@ -67,6 +67,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <LinearLayout
+            android:id="@+id/reload_pixel"
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="60dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <com.example.liquidglass.LiquidGlassView
             android:id="@+id/liquidGlassView"
             android:layout_width="0dp"
@@ -142,6 +152,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/liquidGlassView">
+
+            <LinearLayout
+                android:id="@+id/reload_pixel2"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:layout_marginStart="-1dp"
+                android:layout_marginTop="-1dp"
+                android:orientation="vertical"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.example.liquidglass.LiquidGlassButton
                 android:id="@+id/btn_all_models"
@@ -222,6 +242,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/reload_pixel3"
+                    android:layout_width="1dp"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="-1dp"
+                    android:layout_marginTop="-1dp"
+                    android:orientation="vertical"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.example.liquidglass.LiquidGlassView
                     android:id="@+id/cat_all"

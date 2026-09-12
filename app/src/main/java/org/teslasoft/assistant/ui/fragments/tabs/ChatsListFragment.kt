@@ -71,6 +71,7 @@ import androidx.core.net.toUri
 import org.teslasoft.assistant.util.WindowInsetsUtil
 import java.util.EnumSet
 import androidx.core.content.edit
+import androidx.core.graphics.drawable.toDrawable
 import com.example.liquidglass.LiquidGlassView
 import org.teslasoft.assistant.ui.liquidglass.LiquidGlassUtil
 
@@ -175,6 +176,16 @@ class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
             WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.fab_keeper, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR))
             WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.chats, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR))
             LiquidGlassUtil.scanForLiquidGlassAndInitSettings(rootView ?: return, mContext ?: return, null, false)
+
+            // Temporary workaround... (or maybe permanent, who knows...)
+            // If you wonder what it does, it just forcibly re-renders the screen contents to let liquid glass views build captures of backdrops.
+            // Fragment (tab) switch animations causes capture freeze which leads to liquid glass views not being able to render their backdrops properly.
+            Handler(Looper.getMainLooper()).postDelayed({
+                rootView?.findViewById<View>(R.id.reload_pixel)?.background = 0x11000000.toDrawable()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    rootView?.findViewById<View>(R.id.reload_pixel)?.background = 0x00000000.toDrawable()
+                }, 50)
+            }, 500)
         }
     }
 
@@ -252,8 +263,6 @@ class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
         fieldSearch?.isEnabled = true
 
         chatsList?.setLayoutManager(LinearLayoutManager(mContext ?: return))
-
-        LiquidGlassUtil.scanForLiquidGlassAndInitSettings(view, mContext ?: return, null, false)
 
         val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
         itemTouchHelper.attachToRecyclerView(chatsList)
@@ -488,7 +497,6 @@ class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
             override fun afterTextChanged(s: Editable?) {
                 /* unused */
             }
-
         })
     }
 
@@ -553,6 +561,7 @@ class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
         fileIntentLauncher.launch(intent)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun initSettings(action: String = "", position: Int = -1) {
         chats = ChatPreferences.getChatPreferences().getChatList(mContext?: return)
 
@@ -641,7 +650,7 @@ class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
         return if (isDarkThemeEnabled() && preferences!!.getAmoledPitchBlack()) {
             ResourcesCompat.getColor(mContext?.resources!!, R.color.amoled_accent_100,  mContext?.theme)
         } else if (mContext != null) {
-                SurfaceColors.SURFACE_5.getColor(mContext!!)
+            SurfaceColors.SURFACE_5.getColor(mContext!!)
         } else 0
     }
 
