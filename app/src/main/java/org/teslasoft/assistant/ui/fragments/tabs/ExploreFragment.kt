@@ -23,6 +23,8 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,6 +33,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -52,12 +55,14 @@ import org.teslasoft.assistant.ui.fragments.dialogs.EditApiEndpointDialogFragmen
 import org.teslasoft.assistant.util.Hash
 import org.teslasoft.core.api.network.RequestNetwork
 import androidx.core.net.toUri
+import com.example.liquidglass.LiquidGlassView
+import org.teslasoft.assistant.ui.liquidglass.LiquidGlassUtil
 import org.teslasoft.assistant.util.WindowInsetsUtil
 import java.util.EnumSet
 
 class ExploreFragment : Fragment(), AISetAdapterNew.OnInteractionListener {
 
-    private var btnTips: ImageButton? = null
+    private var btnTips: LiquidGlassView? = null
     private var loading: LoadingIndicator? = null
     private var btnRetry: MaterialButton? = null
     private var btnErrorDetails: MaterialButton? = null
@@ -118,6 +123,7 @@ class ExploreFragment : Fragment(), AISetAdapterNew.OnInteractionListener {
         mContext = context
 
         applyWindowInsets()
+        workaround()
 
         if (requestFinished == 1) {
             loading?.visibility = View.GONE
@@ -152,6 +158,12 @@ class ExploreFragment : Fragment(), AISetAdapterNew.OnInteractionListener {
         btnRetry = view.findViewById(R.id.btn_reconnect)
         btnErrorDetails = view.findViewById(R.id.btn_show_details)
         noInternet = view.findViewById(R.id.no_internet)
+
+        setsList?.background = SurfaceColors.SURFACE_0.getColor(mContext ?: return).toDrawable()
+
+        LiquidGlassUtil.scanForLiquidGlassAndInitSettings(view, mContext ?: return, null, false)
+        LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.btn_tips, view, mContext ?: return)
+        LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.title, view, mContext ?: return)
 
         applyWindowInsets()
 
@@ -206,6 +218,21 @@ class ExploreFragment : Fragment(), AISetAdapterNew.OnInteractionListener {
                 btnTips?.background = getDisabledDrawable(ResourcesCompat.getDrawable(mContext?.resources ?: return@Thread, R.drawable.btn_accent_tonal, mContext?.theme) ?: return@Thread)
             } catch (_: NullPointerException) { /* ignored */ }
         }.start()
+    }
+
+    private fun workaround() {
+        if (mContext != null) {
+            // Temporary workaround... (or maybe permanent, who knows...)
+            // If you wonder what it does, it just forcibly re-renders the screen contents to let liquid glass views build captures of backdrops.
+            // Fragment (tab) switch animations causes capture freeze which leads to liquid glass views not being able to render their backdrops properly.
+            Handler(Looper.getMainLooper()).postDelayed({
+                rootView?.findViewById<View>(R.id.reload_pixel)?.background = 0x11000000.toDrawable()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    rootView?.findViewById<View>(R.id.reload_pixel)?.background = 0x00000000.toDrawable()
+                    workaround()
+                }, 50)
+            }, 100)
+        }
     }
 
     fun applyWindowInsets() {

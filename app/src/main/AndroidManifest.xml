@@ -40,6 +40,7 @@
         <activity
             android:name=".ui.activities.MainActivity"
             android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"
             android:exported="true">
 
             <intent-filter android:priority="1000">

@@ -314,16 +314,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageButton
+        <com.example.liquidglass.LiquidGlassView
             android:id="@+id/btn_open_debugger"
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/btn_accent_tonal"
-            android:contentDescription="Debugger"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
             android:src="@drawable/ic_bug"
             android:tooltipText="Debug mode enabled"
             android:visibility="gone"
@@ -331,7 +327,28 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_bug"
-            tools:visibility="visible" />
+            app:adaptiveTint="true"
+            app:backdropSourceId="@+id/root"
+            app:bevelWidth="32dp"
+            app:blurAmount="1.0"
+            app:cornerRadius="32dp"
+            app:dispersionStrength="0.1"
+            app:glassMaterial="clear"
+            app:glassTint="@color/accent_300"
+            app:glassTintStrength="1.0"
+            app:refractionFalloff="1.0"
+            app:refractionHeight="128dp"
+            app:saturation="140.0"
+            app:sensorHighlight="false"
+            tools:visibility="visible">
+
+            <ImageView
+                android:layout_margin="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/debugger"
+                android:src="@drawable/ic_bug" />
+        </com.example.liquidglass.LiquidGlassView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout

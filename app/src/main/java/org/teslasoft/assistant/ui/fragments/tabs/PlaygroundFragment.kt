@@ -31,6 +31,7 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
@@ -49,6 +50,7 @@ import com.aallam.openai.client.OpenAI
 import com.aallam.openai.client.OpenAIConfig
 import com.aallam.openai.client.OpenAIHost
 import com.aallam.openai.client.RetryStrategy
+import com.example.liquidglass.LiquidGlassView
 import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.loadingindicator.LoadingIndicator
@@ -66,6 +68,7 @@ import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
 import org.teslasoft.assistant.ui.fragments.dialogs.QuickSettingsBottomSheetDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.ReportAIContentBottomSheet
+import org.teslasoft.assistant.ui.liquidglass.LiquidGlassUtil
 import org.teslasoft.assistant.util.WindowInsetsUtil
 import java.util.EnumSet
 import kotlin.coroutines.cancellation.CancellationException
@@ -73,7 +76,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class PlaygroundFragment : Fragment() {
 
-    private var btnSettings: ImageButton? = null
+    private var btnSettings: LiquidGlassView? = null
     private var layoutBottom: ConstraintLayout? = null
     private var btnRun: FloatingActionButton? = null
     private var btnStop: FloatingActionButton? = null
@@ -83,7 +86,7 @@ class PlaygroundFragment : Fragment() {
     private var runLoader: LoadingIndicator? = null
     private var editTextIn: EditText? = null
     private var editTextOut: EditText? = null
-    private var btnReport: ImageButton? = null
+    private var btnReport: LiquidGlassView? = null
 
     private var apiEndpointPreferences: ApiEndpointPreferences? = null
     private var logitBiasPreferences: LogitBiasPreferences? = null
@@ -137,22 +140,18 @@ class PlaygroundFragment : Fragment() {
         layoutBottom = view.findViewById(R.id.layout_bottom)
         btnReport = view.findViewById(R.id.btn_report_playground_abuse)
 
+        view.findViewById<View>(R.id.layout_top).background = SurfaceColors.SURFACE_0.getColor(mContext ?: return).toDrawable()
+
+        LiquidGlassUtil.scanForLiquidGlassAndInitSettings(view, mContext ?: return, null, false)
+        LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.btn_report_playground_abuse, view, mContext ?: return)
+        LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.title, view, mContext ?: return)
+        LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.btn_settings, view, mContext ?: return)
+
         applyWindowInsets()
 
         runLoader?.visibility = View.GONE
 
-        Thread {
-            val th = Thread {
-                while (mContext == null) { /* wait */ }
-            }
-
-            th.start()
-            th.join()
-
-            try {
-                initialize(mContext ?: return@Thread)
-            } catch (_: NullPointerException) { /* ignored */ }
-        }.start()
+        initialize(mContext ?: return)
     }
 
     @SuppressLint("SetTextI18n")
@@ -161,9 +160,6 @@ class PlaygroundFragment : Fragment() {
         apiEndpointPreferences = ApiEndpointPreferences.getApiEndpointPreferences(context)
         logitBiasPreferences = LogitBiasPreferences(context, preferences?.getLogitBiasesConfigId() ?: return)
         apiEndpoint = apiEndpointPreferences?.getApiEndpoint(context, preferences?.getApiEndpointId() ?: return)
-
-        btnSettings?.background = getDisabledDrawable(ResourcesCompat.getDrawable(context.resources, R.drawable.btn_accent_tonal, context.theme)!!)
-        btnReport?.background = getDisabledDrawable(ResourcesCompat.getDrawable(context.resources, R.drawable.btn_accent_tonal, context.theme)!!)
 
         if (isDarkThemeEnabled() && preferences!!.getAmoledPitchBlack()) {
             layoutBottom?.background = ResourcesCompat.getDrawable(context.resources, R.drawable.playground_bottom_amoled, context.theme)

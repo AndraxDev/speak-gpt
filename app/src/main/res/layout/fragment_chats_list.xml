@@ -33,7 +33,7 @@
         android:listSelector="@android:color/transparent"
         android:nestedScrollingEnabled="false"
         android:overScrollMode="never"
-        android:paddingTop="84dp"
+        android:paddingTop="80dp"
         android:paddingBottom="96dp"
         android:scrollbars="none"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -66,7 +66,7 @@
             android:id="@+id/debug_placeholder"
             android:layout_width="56dp"
             android:layout_height="56dp"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="16dp"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/btn_settings_" />
@@ -76,7 +76,7 @@
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_marginStart="24dp"
-            android:layout_marginEnd="12dp"
+            android:layout_marginEnd="16dp"
             app:adaptiveTint="true"
             app:backdropSourceId="@+id/chats"
             app:bevelWidth="32dp"
@@ -86,14 +86,14 @@
             app:glassMaterial="clear"
             app:glassTint="@color/accent_300"
             app:glassTintStrength="1.0"
-            app:refractionFalloff="1.0"
-            app:refractionHeight="128dp"
-            app:saturation="140.0"
-            app:sensorHighlight="false"
             app:layout_constraintEnd_toStartOf="@+id/btn_settings_"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/debug_placeholder"
-            app:layout_constraintTop_toTopOf="@+id/btn_settings_">
+            app:layout_constraintTop_toTopOf="@+id/btn_settings_"
+            app:refractionFalloff="1.0"
+            app:refractionHeight="128dp"
+            app:saturation="140.0"
+            app:sensorHighlight="false">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -223,22 +223,39 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.example.liquidglass.LiquidGlassView>
 
-        <ImageButton
+        <com.example.liquidglass.LiquidGlassView
             android:id="@+id/btn_settings_"
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/btn_accent_tonal"
-            android:contentDescription="@string/btn_settings"
-            android:src="@drawable/ic_settings"
             android:tooltipText="@string/btn_settings"
             android:transitionName="settings"
+            app:adaptiveTint="true"
+            app:backdropSourceId="@+id/chats"
+            app:bevelWidth="32dp"
+            app:blurAmount="1.0"
+            app:cornerRadius="32dp"
+            app:dispersionStrength="0.1"
+            app:glassMaterial="clear"
+            app:glassTint="@color/accent_300"
+            app:glassTintStrength="1.0"
+            app:refractionFalloff="1.0"
+            app:refractionHeight="128dp"
+            app:saturation="140.0"
+            app:sensorHighlight="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_settings" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/btn_settings"
+                android:layout_margin="16dp"
+                android:src="@drawable/ic_settings" />
+        </com.example.liquidglass.LiquidGlassView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

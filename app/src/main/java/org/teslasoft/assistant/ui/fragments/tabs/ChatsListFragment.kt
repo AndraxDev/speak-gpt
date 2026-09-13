@@ -80,16 +80,16 @@ class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
 
     private var adapter: ChatListAdapter? = null
     private var chatsList: RecyclerView? = null
-    private var btnSettings: View? = null
+    private var btnSettings: LiquidGlassView? = null
     private var btnAdd: ExtendedFloatingActionButton? = null
     private var btnImport: FloatingActionButton? = null
     private var bgSearch: LiquidGlassView? = null
     private var fieldSearch: EditText? = null
+    private var debugPlaceholder: View? = null
 
     private var selectedFile: String = ""
     private var searchTerm: String = ""
     private var isAttached: Boolean = false
-    private var isDestroyed: Boolean = false
     private var chats: ArrayList<HashMap<String, String>> = arrayListOf()
     private var selectionProjection: ArrayList<HashMap<String, String>> = arrayListOf()
     private var bulkSelect: Boolean = false
@@ -167,6 +167,7 @@ class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
         mContext = context
 
         applyWindowInsets()
+        workaround()
         super.onAttach(context)
     }
 
@@ -176,7 +177,11 @@ class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
             WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.fab_keeper, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR))
             WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.chats, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR))
             LiquidGlassUtil.scanForLiquidGlassAndInitSettings(rootView ?: return, mContext ?: return, null, false)
+        }
+    }
 
+    private fun workaround() {
+        if (isAttached) {
             // Temporary workaround... (or maybe permanent, who knows...)
             // If you wonder what it does, it just forcibly re-renders the screen contents to let liquid glass views build captures of backdrops.
             // Fragment (tab) switch animations causes capture freeze which leads to liquid glass views not being able to render their backdrops properly.
@@ -184,8 +189,9 @@ class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
                 rootView?.findViewById<View>(R.id.reload_pixel)?.background = 0x11000000.toDrawable()
                 Handler(Looper.getMainLooper()).postDelayed({
                     rootView?.findViewById<View>(R.id.reload_pixel)?.background = 0x00000000.toDrawable()
+                    workaround()
                 }, 50)
-            }, 500)
+            }, 100)
         }
     }
 
@@ -207,17 +213,6 @@ class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_chats_list, container, false)
-    }
-
-    fun reloadAmoled(context: Context) {
-        preferences = Preferences.getPreferences(context, "")
-        if (!isDestroyed && isDarkThemeEnabled() && preferences?.getAmoledPitchBlack() == true) {
-            btnSettings?.background = ResourcesCompat.getDrawable(context.resources?: return, R.drawable.btn_accent_tonal_amoled, context.theme)!!
-            bgSearch?.background = ResourcesCompat.getDrawable(context.resources?: return, R.drawable.btn_accent_tonal_amoled, context.theme)!!
-        } else {
-            btnSettings?.background = getDisabledDrawable(ResourcesCompat.getDrawable(context.resources?: return, R.drawable.btn_accent_tonal, context.theme)!!)
-            bgSearch?.background = getDisabledDrawable(ResourcesCompat.getDrawable(context.resources?: return, R.drawable.btn_accent_tonal, context.theme)!!)
-        }
     }
 
     private var rootView: View? = null
@@ -255,11 +250,20 @@ class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
         btnBulkDeselectAll = view.findViewById(R.id.btn_bulk_deselect_all)
         btnBulkDelete = view.findViewById(R.id.btn_bulk_delete)
         btnBulkRename = view.findViewById(R.id.btn_bulk_edit)
+        debugPlaceholder = view.findViewById(R.id.debug_placeholder)
 
         applyWindowInsets()
 
         bulkSelectContainer?.visibility = View.INVISIBLE
         bulkSelectContainer?.translationY = -(bulkSelectContainer?.height?.toFloat()?: 0f) - 100f
+        fieldSearch?.visibility = View.VISIBLE
+        fieldSearch?.translationY = 0f
+        chatsList?.background = SurfaceColors.SURFACE_0.getColor(mContext ?: return).toDrawable()
+        LiquidGlassUtil.scanForLiquidGlassAndInitSettings(view, mContext ?: return, null, false)
+        LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.btn_settings_, view, mContext ?: return)
+        LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.bulk_actions_container, view, mContext ?: return)
+        LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.bg_search, view, mContext ?: return)
+
         fieldSearch?.isEnabled = true
 
         chatsList?.setLayoutManager(LinearLayoutManager(mContext ?: return))
@@ -267,7 +271,15 @@ class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
         val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
         itemTouchHelper.attachToRecyclerView(chatsList)
 
-        reloadAmoled(mContext ?: return)
+        applyDebugMode(preferences?.getDebugMode() ?: false)
+    }
+
+    fun applyDebugMode(isDebug: Boolean) {
+        if (isDebug) {
+            debugPlaceholder?.visibility = View.VISIBLE
+        } else {
+            debugPlaceholder?.visibility = View.GONE
+        }
     }
 
     private fun showBulkActionsBoxAnimated() {
@@ -406,7 +418,7 @@ class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
     @SuppressLint("NotifyDataSetChanged")
     private fun initChatsList() {
         bulkSelect = false
-        bulkSelectContainer?.visibility = View.INVISIBLE
+        hideBulkActionsBoxAnimated()
         fieldSearch?.isEnabled = true
         adapter = ChatListAdapter(chats, selectionProjection, this)
         adapter?.setOnInteractionListener(this)
@@ -630,11 +642,6 @@ class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
                 }
             }
         })
-    }
-
-    private fun getDisabledDrawable(drawable: Drawable) : Drawable {
-        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getDisabledColor())
-        return drawable
     }
 
     private fun isDarkThemeEnabled(): Boolean {

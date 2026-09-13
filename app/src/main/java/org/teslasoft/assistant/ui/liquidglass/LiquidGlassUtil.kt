@@ -20,7 +20,9 @@ import android.app.Activity
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import com.example.liquidglass.LiquidGlassView
+import org.teslasoft.assistant.R
 
 @Suppress("unused")
 class LiquidGlassUtil {
@@ -55,6 +57,26 @@ class LiquidGlassUtil {
         fun setAccentColorForLiquidGlassView(viewId: Int, activity: Activity) {
             setAccentColorForLiquidGlassView(viewId, activity.findViewById(android.R.id.content), activity)
         }
+
+
+        // For fragments
+        fun setAccentColorMutedForLiquidGlassView(viewId: Int, parentView: View, context: Context) {
+            val liquidGlassView = parentView.findViewById<LiquidGlassView>(viewId)
+            if (android.os.Build.VERSION.SDK_INT >= 31) {
+                liquidGlassView.glassTint = if (isDarkModeEnabled(context)) {
+                    saturateColor(context.getColor(R.color.accent_250), 0.6f) - 0x99000000.toInt()
+                } else {
+                    saturateColor(context.getColor(R.color.accent_500), 0.6f) - 0xCC000000.toInt()
+                }
+            }
+        }
+
+        // For activities
+        fun setAccentColorMutedForLiquidGlassView(viewId: Int, activity: Activity) {
+            setAccentColorMutedForLiquidGlassView(viewId, activity.findViewById(android.R.id.content), activity)
+        }
+
+
 
         // For fragments
         fun scanForLiquidGlassAndInitSettings(parentView: View, context: Context, excludedViews: ArrayList<Int>? = arrayListOf(), tintMode: Boolean = true) {

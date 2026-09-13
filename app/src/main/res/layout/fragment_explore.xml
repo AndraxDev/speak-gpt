@@ -32,6 +32,7 @@
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingBottom="96dp"
+        android:background="@color/window_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -77,7 +78,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageButton
+        <LinearLayout
+            android:id="@+id/reload_pixel"
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.example.liquidglass.LiquidGlassView
             android:id="@+id/btn_tips"
             android:layout_width="56dp"
             android:layout_height="56dp"
@@ -91,20 +102,62 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_tips" />
+            app:adaptiveTint="true"
+            app:backdropSourceId="@+id/ai_sets_list"
+            app:bevelWidth="32dp"
+            app:blurAmount="1.0"
+            app:cornerRadius="32dp"
+            app:dispersionStrength="0.1"
+            app:glassMaterial="clear"
+            app:glassTint="@color/accent_300"
+            app:glassTintStrength="1.0"
+            app:refractionFalloff="1.0"
+            app:refractionHeight="128dp"
+            app:saturation="140.0"
+            app:sensorHighlight="false">
 
-        <TextView
-            android:id="@+id/text_fragment_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/menu_explore"
-            android:textColor="@color/text_title"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/menu_tips"
+                android:layout_margin="16dp"
+                android:src="@drawable/ic_tips" />
+        </com.example.liquidglass.LiquidGlassView>
+
+        <com.example.liquidglass.LiquidGlassView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_tips"
+            app:layout_constraintEnd_toStartOf="@+id/btn_tips"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/btn_tips" />
+            app:layout_constraintTop_toTopOf="@+id/btn_tips"
+            app:adaptiveTint="true"
+            app:backdropSourceId="@+id/ai_sets_list"
+            app:bevelWidth="32dp"
+            app:blurAmount="1.0"
+            app:cornerRadius="32dp"
+            app:dispersionStrength="0.1"
+            app:glassMaterial="clear"
+            app:glassTint="@color/accent_300"
+            app:glassTintStrength="1.0"
+            app:refractionFalloff="1.0"
+            app:refractionHeight="128dp"
+            app:saturation="140.0"
+            app:sensorHighlight="false">
+
+            <TextView
+                android:id="@+id/text_fragment_title"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/menu_explore"
+                android:textColor="@color/text_title"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </com.example.liquidglass.LiquidGlassView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

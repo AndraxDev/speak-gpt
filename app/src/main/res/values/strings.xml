@@ -531,4 +531,5 @@
     <string name="text">Text</string>
     <string name="images">Images</string>
     <string name="playground">Playground</string>
+    <string name="debugger">Debugger</string>
 </resources>

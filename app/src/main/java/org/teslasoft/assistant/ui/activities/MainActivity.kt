@@ -73,6 +73,7 @@ import org.teslasoft.core.auth.SystemInfo
 import org.teslasoft.core.auth.internal.ApplicationSignature
 import java.util.EnumSet
 import androidx.core.graphics.drawable.toDrawable
+import com.example.liquidglass.LiquidGlassView
 import org.teslasoft.assistant.ui.activities.nav.LiquidGlassTabBar
 import org.teslasoft.assistant.migration.UnsupportedImageModelMigration
 import org.teslasoft.assistant.ui.debug.aicore.OnDeviceInferenceActivity
@@ -81,7 +82,7 @@ import org.teslasoft.assistant.ui.liquidglass.LiquidGlassUtil.Companion.saturate
 
 class MainActivity : FragmentActivity() {
     private var fragmentContainer: ConstraintLayout? = null
-    private var btnDebugger: View? = null
+    private var btnDebugger: LiquidGlassView? = null
     private var debuggerWindow: ConstraintLayout? = null
     private var btnCloseDebugger: ImageButton? = null
     private var btnInitiateCrash: MaterialButton? = null
@@ -159,9 +160,12 @@ class MainActivity : FragmentActivity() {
         val excludedLiquidGlassViews = arrayListOf<Int>()
         excludedLiquidGlassViews.add(R.id.debugger_bg_liquid_glass)
         excludedLiquidGlassViews.add(R.id.navigation_bar_glass)
+        excludedLiquidGlassViews.add(R.id.btn_open_debugger)
 
         LiquidGlassUtil.scanForLiquidGlassAndInitSettings(this, excludedLiquidGlassViews)
         LiquidGlassUtil.initializeLiquidGlassViewById(R.id.navigation_bar_glass, this)
+        LiquidGlassUtil.initializeLiquidGlassViewById(R.id.btn_open_debugger, this)
+        LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.btn_open_debugger, this)
 
         val tabChat: LiquidGlassTabBar.TabItem = LiquidGlassTabBar.TabItem(getString(R.string.menu_chat), AppCompatResources.getDrawable(this, R.drawable.ic_chat))
         val tabPlayground: LiquidGlassTabBar.TabItem = LiquidGlassTabBar.TabItem(getString(R.string.playground), AppCompatResources.getDrawable(this, R.drawable.ic_terminal))
@@ -171,14 +175,10 @@ class MainActivity : FragmentActivity() {
         val tabs: List<LiquidGlassTabBar.TabItem> = listOf(tabChat, tabPlayground, tabPrompts, tabExplore)
         navigationBarGlass?.setTabs(tabs)
 
-        navigationBarGlass?.selectedTintColor = ResourcesCompat.getColor(resources, R.color.accent_900, theme)
-        navigationBarGlass?.inactiveTintColor = ResourcesCompat.getColor(resources, R.color.text, theme)
+        navigationBarGlass?.selectedTintColor = ResourcesCompat.getColor(resources, R.color.text_title, theme)
+        navigationBarGlass?.inactiveTintColor = ResourcesCompat.getColor(resources, R.color.accent_900, theme)
 
-        navigationBarGlass?.glassTint = if (isDarkThemeEnabled()) {
-            saturateColor(ResourcesCompat.getColor(resources, R.color.accent_250, theme), 0.6f) - 0x99000000.toInt()
-        } else {
-            saturateColor(ResourcesCompat.getColor(resources, R.color.accent_500, theme), 0.6f) - 0x99000000.toInt()
-        }
+        LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.navigation_bar_glass, this)
 
         navigationBarGlass?.onTabSelected = { index -> run {
             when (index) {
@@ -255,6 +255,8 @@ class MainActivity : FragmentActivity() {
                 Logger.log(this, "event", "ComponentManager", "info", "Component enabled: org.teslasoft.assistant.pwa.PWAActivity")
             }
         }
+
+        (frameChats as ChatsListFragment?)?.applyDebugMode(preferences?.getDebugMode() == true)
 
         if (preferences?.getDebugMode() == true) {
             btnDebugger?.visibility = View.VISIBLE
@@ -416,8 +418,6 @@ class MainActivity : FragmentActivity() {
             val colorDrawable = SurfaceColors.SURFACE_0.getColor(this).toDrawable()
             window.setBackgroundDrawable(colorDrawable)
         }
-
-        (frameChats as ChatsListFragment).reloadAmoled(this)
     }
 
     @Suppress("DEPRECATION")
@@ -436,11 +436,6 @@ class MainActivity : FragmentActivity() {
             }
             root?.setBackgroundColor(SurfaceColors.SURFACE_0.getColor(this))
         }
-    }
-
-    private fun getDisabledDrawable(drawable: Drawable) : Drawable {
-        DrawableCompat.setTint(DrawableCompat.wrap(drawable), getDisabledColor())
-        return drawable
     }
 
     private fun getDisabledColor() : Int {
@@ -471,6 +466,7 @@ class MainActivity : FragmentActivity() {
         val st = selectedTab
         selectedTab = 1
         loadFragment(frameChats, st, selectedTab)
+        (frameChats as ChatsListFragment?)?.applyDebugMode(preferences?.getDebugMode() == true)
     }
 
     private fun menuPlayground() {
@@ -502,6 +498,7 @@ class MainActivity : FragmentActivity() {
                 if (preferences?.getDebugMode() == true) btnDebugger?.visibility = View.VISIBLE
                 navigationBarGlass?.selectedIndex = 0
                 loadFragment(frameChats, 1, 1)
+                (frameChats as ChatsListFragment?)?.applyDebugMode(preferences?.getDebugMode() == true)
             }
             2 -> {
                 btnDebugger?.visibility = View.GONE
