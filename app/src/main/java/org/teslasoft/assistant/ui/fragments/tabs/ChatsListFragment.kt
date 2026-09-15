@@ -174,7 +174,7 @@ class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
     fun applyWindowInsets() {
         if (rootView != null && isAttached) {
             WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.header_keeper, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
-            WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.fab_keeper, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR))
+            WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.fab_keeper, EnumSet.of(WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR))
             WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.chats, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR))
             LiquidGlassUtil.scanForLiquidGlassAndInitSettings(rootView ?: return, mContext ?: return, null, false)
         }
@@ -255,7 +255,7 @@ class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
         applyWindowInsets()
 
         bulkSelectContainer?.visibility = View.INVISIBLE
-        bulkSelectContainer?.translationY = -(bulkSelectContainer?.height?.toFloat()?: 0f) - 100f
+        bulkSelectContainer?.translationY = -(bulkSelectContainer?.height?.toFloat()?: 0f) - 200f
         fieldSearch?.visibility = View.VISIBLE
         fieldSearch?.translationY = 0f
         chatsList?.background = SurfaceColors.SURFACE_0.getColor(mContext ?: return).toDrawable()
@@ -284,15 +284,15 @@ class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
 
     private fun showBulkActionsBoxAnimated() {
         bulkSelectContainer?.visibility = View.VISIBLE
-        bgSearch?.animate()?.translationY(-(bgSearch?.height?.toFloat()?: 0f) - 100f)?.setDuration(200)?.start()
-        bulkSelectContainer?.animate()?.translationY(0f)?.setDuration(200)?.start()
+        bgSearch?.animate()?.translationY(-(bgSearch?.height?.toFloat()?: 0f) - 200f)?.setDuration(300)?.start()
+        bulkSelectContainer?.animate()?.translationY(0f)?.setDuration(300)?.start()
     }
 
     private fun hideBulkActionsBoxAnimated() {
-        bulkSelectContainer?.animate()?.translationY(-(bulkSelectContainer?.height?.toFloat()?: 0f) - 100f)?.setDuration(200)?.withEndAction {
+        bulkSelectContainer?.animate()?.translationY(-(bulkSelectContainer?.height?.toFloat()?: 0f) - 200f)?.setDuration(300)?.withEndAction {
             bulkSelectContainer?.visibility = View.INVISIBLE
         }?.start()
-        bgSearch?.animate()?.translationY(0f)?.setDuration(200)?.start()
+        bgSearch?.animate()?.translationY(0f)?.setDuration(300)?.start()
     }
 
     private val itemTouchCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {

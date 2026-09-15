@@ -18,6 +18,7 @@ package org.teslasoft.assistant.ui.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -28,12 +29,14 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.util.Pair
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
@@ -61,6 +64,9 @@ class ChatNextActivity : FragmentActivity(), ChatNextAdapter.OnUpdateListener {
     private var btnCopySelected: ImageButton? = null
     private var btnShareSelected: ImageButton? = null
     private var textSelectedMessagesCount: TextView? = null
+    private var gradientTop: View? = null
+    private var gradientBottom: View? = null
+    private var rootView: View? = null
 
     private val chatData: ArrayList<HashMap<String, Any>> = arrayListOf()
     private val selectedMessages: ArrayList<Boolean> = arrayListOf()
@@ -102,6 +108,16 @@ class ChatNextActivity : FragmentActivity(), ChatNextAdapter.OnUpdateListener {
         btnCopySelected = findViewById(R.id.btn_copy_selected)
         btnShareSelected = findViewById(R.id.btn_share_selected)
         textSelectedMessagesCount = findViewById(R.id.text_selected_messages_count)
+        gradientTop = findViewById(R.id.gradient_top)
+        gradientBottom = findViewById(R.id.gradient_bottom)
+        rootView = findViewById(R.id.root)
+
+        window?.setBackgroundDrawable(SurfaceColors.SURFACE_0.getColor(this).toDrawable())
+        chatView?.background = SurfaceColors.SURFACE_0.getColor(this).toDrawable()
+        rootView?.background = SurfaceColors.SURFACE_0.getColor(this).toDrawable()
+        gradientTop?.backgroundTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_0.getColor(this))
+        gradientBottom?.backgroundTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_0.getColor(this))
+
 
         LiquidGlassUtil.scanForLiquidGlassAndInitSettings(this)
         resetUiState()

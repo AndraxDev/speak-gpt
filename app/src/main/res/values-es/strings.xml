@@ -505,4 +505,23 @@
     <string name="title_before_you_begin">Antes de empezar</string>
     <string name="before_you_begin">Por favor, lea esto detenidamente antes de usar esta app. En caso de que no haya leído la descripción de la app, queremos hacerle notar que esta app es el CLIENTE DE CÓDIGO ABIERTO para APIs de IA. No encontrará GPT o Gemini gratis aquí. Esta app es solo una herramienta práctica a través de la cual puede acceder a sus modelos de IA. ESTA APP SE PROPORCIONA TAL CUAL SIN GARANTÍA BAJO LA LICENCIA APACHE 2.0. Al usar esta app, acepta que todas sus preguntas sobre el uso gratuito serán rechazadas sin respuesta. Aunque existen algunas APIs gratuitas, puede usarlas con esta app.\n\n\"El queso gratis solo se encuentra en la ratonera, por lo que no puede utilizar el trabajo de otra persona de forma gratuita sin esfuerzo y sin dar crédito. Es antiético.\"\n\nP.D. Este aviso se ha puesto aquí después de que algunos usuarios informaron que SpeakGPT no contiene acceso gratuito a los modelos insignia de ChatGPT.</string>
     <string name="app_description_new">SpeakGPT es un asistente avanzado y altamente intuitivo de código abierto que utiliza los poderosos LLMs. Puede utilizar modelos en línea como ChatGPT, Gemini, Perplexity o sus modelos locales con esta app.</string>
+    <string name="select_all">Seleccionar todo</string>
+    <string name="deselect_all">Deseleccionar todo</string>
+    <string name="btn_share">Compartir</string>
+    <string name="report_abuse">Denunciar abuso</string>
+    <string name="text">Texto</string>
+    <string name="images">Imágenes</string>
+    <string name="playground">Playground</string>
+    <string name="debugger">Depurador</string>
+    <string name="playground_in">Escribe tu prompt aquí...</string>
+    <string name="playground_out">La salida del modelo de IA aparecerá aquí...</string>
+    <string name="clear_output">Borrar salida</string>
+    <string name="clear_input">Borrar entrada</string>
+    <string name="run">Ejecutar</string>
+    <string name="stop">Detener</string>
+    <string name="tokenize">Tokenizar</string>
+    <string name="nothing_to_report">Nada que denunciar</string>
+    <string name="error_input_empty">Introduce algún texto en el campo de entrada.</string>
+    <string name="input_cleared">Entrada borrada</string>
+    <string name="output_cleared">Salida borrada</string>
 </resources>

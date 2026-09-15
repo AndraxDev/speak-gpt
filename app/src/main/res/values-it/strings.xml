@@ -501,4 +501,23 @@
     <string name="title_before_you_begin">Prima di iniziare</string>
     <string name="before_you_begin">Si prega di leggere attentamente prima di utilizzare questa app. Nel caso non abbiate letto la descrizione dell\'app, vorremmo farvi notare che questa app è il CLIENT OPEN-SOURCE per le API di intelligenza artificiale. Non troverai GPT o Gemini gratuitamente qui. Questa app è solo uno strumento conveniente attraverso cui puoi accedere ai tuoi modelli di intelligenza artificiale. QUESTA APP È FORNITA COSÌ COM\'È SENZA GARANZIA SOTTO LA LICENZA APACHE 2.0. Utilizzando questa app, accetti che tutte le tue domande sull\'uso gratuito saranno respinte senza risposta. Sebbene esistano alcune API gratuite, puoi utilizzarle con questa app.\n\n\"Il formaggio gratis può essere solo in una trappola per topi, quindi non puoi usare il lavoro di qualcun altro gratuitamente senza sforzo e senza riconoscere il merito. È poco etico.\"\n\nP.S. Questo disclaimer è stato inserito qui dopo che alcuni utenti hanno segnalato che SpeakGPT non contiene accesso gratuito ai modelli principali di ChatGPT.</string>
     <string name="app_description_new">SpeakGPT è un assistente open-source avanzato e altamente intuitivo che utilizza i potenti LLM. Puoi utilizzare modelli online come ChatGPT, Gemini, Perplexity o i tuoi modelli locali con questa app.</string>
+    <string name="select_all">Seleziona tutto</string>
+    <string name="deselect_all">Deseleziona tutto</string>
+    <string name="btn_share">Condividi</string>
+    <string name="report_abuse">Segnala abuso</string>
+    <string name="text">Testo</string>
+    <string name="images">Immagini</string>
+    <string name="playground">Playground</string>
+    <string name="debugger">Debugger</string>
+    <string name="playground_in">Inserisci qui il tuo prompt...</string>
+    <string name="playground_out">L\'output del modello IA apparirà qui...</string>
+    <string name="clear_output">Cancella output</string>
+    <string name="clear_input">Cancella input</string>
+    <string name="run">Esegui</string>
+    <string name="stop">Interrompi</string>
+    <string name="tokenize">Tokenizza</string>
+    <string name="nothing_to_report">Niente da segnalare</string>
+    <string name="error_input_empty">Inserisci del testo nel campo di input.</string>
+    <string name="input_cleared">Input cancellato</string>
+    <string name="output_cleared">Output cancellato</string>
 </resources>

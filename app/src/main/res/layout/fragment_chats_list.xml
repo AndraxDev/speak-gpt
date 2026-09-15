@@ -34,7 +34,7 @@
         android:nestedScrollingEnabled="false"
         android:overScrollMode="never"
         android:paddingTop="80dp"
-        android:paddingBottom="96dp"
+        android:paddingBottom="72dp"
         android:scrollbars="none"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -48,6 +48,8 @@
         android:id="@+id/header_keeper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -262,7 +264,7 @@
         android:id="@+id/fab_keeper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="96dp"
+        android:paddingBottom="72dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 

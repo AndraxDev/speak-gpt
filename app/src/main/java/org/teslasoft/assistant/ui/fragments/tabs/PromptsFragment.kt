@@ -41,7 +41,7 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.liquidglass.LiquidGlassButton
+import com.example.liquidglass.LiquidGlassView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
@@ -74,26 +74,26 @@ class PromptsFragment : Fragment() {
     private var btnDetails: MaterialButton? = null
     private var noInternetLayout: LinearLayout? = null
     private var progressbar: LoadingIndicator? = null
-    private var catAll: View? = null
-    private var catDevelopment: View? = null
-    private var catMusic: View? = null
-    private var catArt: View? = null
-    private var catCulture: View? = null
-    private var catBusiness: View? = null
-    private var catGaming: View? = null
-    private var catEducation: View? = null
-    private var catHistory: View? = null
-    private var catFood: View? = null
-    private var catTourism: View? = null
-    private var catProductivity: View? = null
-    private var catTools: View? = null
-    private var catEntertainment: View? = null
-    private var catSport: View? = null
-    private var catHealth: View? = null
+    private var catAll: LiquidGlassView? = null
+    private var catDevelopment: LiquidGlassView? = null
+    private var catMusic: LiquidGlassView? = null
+    private var catArt: LiquidGlassView? = null
+    private var catCulture: LiquidGlassView? = null
+    private var catBusiness: LiquidGlassView? = null
+    private var catGaming: LiquidGlassView? = null
+    private var catEducation: LiquidGlassView? = null
+    private var catHistory: LiquidGlassView? = null
+    private var catFood: LiquidGlassView? = null
+    private var catTourism: LiquidGlassView? = null
+    private var catProductivity: LiquidGlassView? = null
+    private var catTools: LiquidGlassView? = null
+    private var catEntertainment: LiquidGlassView? = null
+    private var catSport: LiquidGlassView? = null
+    private var catHealth: LiquidGlassView? = null
     private var searchBar: ConstraintLayout? = null
-    private var btnAllModels: LiquidGlassButton? = null
-    private var btnTextModel: LiquidGlassButton? = null
-    private var btnImageModel: LiquidGlassButton? = null
+    private var btnAllModels: LiquidGlassView? = null
+    private var btnTextModel: LiquidGlassView? = null
+    private var btnImageModel: LiquidGlassView? = null
     private var btnSearch: ImageButton? = null
     private var promptsContainer: NestedScrollView? = null
 
@@ -563,7 +563,7 @@ class PromptsFragment : Fragment() {
         if (rootView != null && onAttach) {
             WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.header_blur, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR))
             WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.prompts, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR))
-            WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.fab_keeper, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR))
+            WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.fab_keeper, EnumSet.of(WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR))
             LiquidGlassUtil.scanForLiquidGlassAndInitSettings(rootView ?: return, mContext ?: return, null, false)
         }
     }

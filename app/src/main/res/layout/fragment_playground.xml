@@ -16,19 +16,22 @@
 * limitations under the License.
 **************************************************************************/
 -->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_top"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:background="@color/window_background"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.example.liquidglass.LiquidGlassView
             android:id="@+id/btn_report_playground_abuse"
@@ -57,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="16dp"
-                android:contentDescription="Report abuse"
+                android:contentDescription="@string/report_abuse"
                 android:src="@drawable/ic_report" />
         </com.example.liquidglass.LiquidGlassView>
 
@@ -89,7 +92,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="Playground"
+                android:text="@string/playground"
                 android:textColor="@color/text_title"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -152,10 +155,11 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginEnd="36dp"
+                android:autofillHints=""
                 android:background="@color/transparent"
                 android:ems="10"
                 android:gravity="start|top"
-                android:hint="Type your prompt here..."
+                android:hint="@string/playground_in"
                 android:inputType="textMultiLine"
                 android:padding="24dp"
                 android:paddingHorizontal="16dp"
@@ -173,10 +177,10 @@
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/mtrl_shape_clover"
                 android:backgroundTint="@color/warn_bg"
-                android:contentDescription="Clear input"
+                android:contentDescription="@string/clear_input"
                 android:src="@drawable/ic_close"
                 android:tint="@color/error"
-                android:tooltipText="Clear"
+                android:tooltipText="@string/clear_input"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_close"
@@ -211,10 +215,11 @@
                 android:layout_height="0dp"
                 android:layout_marginEnd="36dp"
                 android:layout_marginBottom="100dp"
+                android:autofillHints=""
                 android:background="@color/transparent"
                 android:ems="10"
                 android:gravity="start|top"
-                android:hint="AI model output will appear here..."
+                android:hint="@string/playground_out"
                 android:inputType="textMultiLine"
                 android:padding="24dp"
                 android:paddingHorizontal="16dp"
@@ -232,10 +237,10 @@
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/mtrl_shape_clover"
                 android:backgroundTint="@color/warn_bg"
-                android:contentDescription="Clear outputt"
+                android:contentDescription="@string/clear_output"
                 android:src="@drawable/ic_close"
                 android:tint="@color/error"
-                android:tooltipText="Clear"
+                android:tooltipText="@string/clear_output"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_close"
@@ -247,7 +252,7 @@
         android:id="@+id/fab_keeper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="96dp"
+        android:paddingBottom="72dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -260,7 +265,7 @@
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="24dp"
             android:clickable="true"
-            android:contentDescription="Run"
+            android:contentDescription="@string/run"
             android:tooltipText="Run"
             app:elevation="6dp"
             app:icon="@drawable/ic_play"
@@ -278,7 +283,7 @@
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="24dp"
             android:clickable="true"
-            android:contentDescription="Stop"
+            android:contentDescription="@string/stop"
             android:tooltipText="Run"
             android:visibility="gone"
             app:elevation="6dp"
@@ -298,7 +303,7 @@
             android:layout_marginTop="24dp"
             android:layout_marginBottom="144dp"
             android:clickable="true"
-            android:contentDescription="Tokenize"
+            android:contentDescription="@string/tokenize"
             android:tooltipText="Tokenize"
             app:elevation="6dp"
             app:fabSize="mini"

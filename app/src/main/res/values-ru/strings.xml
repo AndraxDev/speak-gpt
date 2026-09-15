@@ -500,4 +500,23 @@
     <string name="title_before_you_begin">Прежде чем начать</string>
     <string name="before_you_begin">Пожалуйста, внимательно прочтите это перед использованием данного приложения. В случае, если вы не прочитали описание приложения, мы хотели бы уведомить вас, что это приложение является ОТКРЫТЫМ КЛИЕНТОМ для API ИИ. Вы не найдете здесь GPT или Gemini бесплатно. Это приложение представляет собой просто удобный инструмент, через который вы можете получить доступ к вашим моделям ИИ. ЭТО ПРИЛОЖЕНИЕ ПРЕДОСТАВЛЯЕТСЯ КАК ЕСТЬ БЕЗ ГАРАНТИЙ ПО ЛИЦЕНЗИИ APACHE 2.0. Используя это приложение, вы соглашаетесь, что все ваши вопросы о бесплатном использовании будут отклонены без ответа. Хотя существуют некоторые бесплатные API, которые вы можете использовать с этим приложением.\n\n\"Бесплатный сыр бывает только в мышеловке, так что нельзя использовать чужую работу бесплатно, не прилагая усилий и не отдавая должное. Это неэтично.\"\n\nP.S. Этот отказ от ответственности был добавлен сюда после того, как некоторые пользователи сообщили, что SpeakGPT не содержит бесплатного доступа к флагманским моделям ChatGPT.</string>
     <string name="app_description_new">SpeakGPT — это продвинутый и высокоинтуитивный open-source помощник, использующий мощные LLM. Вы можете использовать онлайн модели, такие как ChatGPT, Gemini, Perplexity, или ваши локальные модели с этим приложением.</string>
+    <string name="select_all">Выбрать всё</string>
+    <string name="deselect_all">Снять выделение</string>
+    <string name="btn_share">Поделиться</string>
+    <string name="report_abuse">Сообщить о нарушении</string>
+    <string name="text">Текст</string>
+    <string name="images">Изображения</string>
+    <string name="playground">Песочница</string>
+    <string name="debugger">Отладчик</string>
+    <string name="playground_in">Введите свой промпт здесь...</string>
+    <string name="playground_out">Здесь появится ответ модели ИИ...</string>
+    <string name="clear_output">Очистить вывод</string>
+    <string name="clear_input">Очистить ввод</string>
+    <string name="run">Запустить</string>
+    <string name="stop">Остановить</string>
+    <string name="tokenize">Токенизировать</string>
+    <string name="nothing_to_report">Нечего сообщать</string>
+    <string name="error_input_empty">Введите текст в поле ввода.</string>
+    <string name="input_cleared">Поле ввода очищено</string>
+    <string name="output_cleared">Вывод очищен</string>
 </resources>

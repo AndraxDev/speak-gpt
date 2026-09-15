@@ -21,6 +21,7 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
+import com.example.liquidglass.GlassMaterial
 import com.example.liquidglass.LiquidGlassView
 import org.teslasoft.assistant.R
 
@@ -31,11 +32,18 @@ class LiquidGlassUtil {
         fun initializeLiquidGlassViewById(viewId: Int, parentView: View) {
             val liquidGlassView = parentView.findViewById<LiquidGlassView>(viewId)
             liquidGlassView.enableDynamicBackground = true
-            liquidGlassView.edgeHighlightOpacity = 50.0f
-            liquidGlassView.edgeHighlightBorderWidth = 4.0f
-            liquidGlassView.blurAmount = 0.5f
-            liquidGlassView.pressScale = 0.8f
+            liquidGlassView.edgeHighlightOpacity = 60.0f
+            liquidGlassView.edgeHighlightBorderWidth = 1.0f
+            liquidGlassView.blurAmount = 0.1f
+            liquidGlassView.pressScale = 0.9f
             liquidGlassView.enableSensorHighlight = true
+            liquidGlassView.enableAdaptiveTint = true
+            liquidGlassView.material = GlassMaterial.CLEAR
+
+            liquidGlassView.refractionHeight = 128.0f
+            liquidGlassView.bevelWidth = 128.0f
+            liquidGlassView.refractionFalloff = 0.0f
+            liquidGlassView.dispersionStrength = 0.2f
         }
 
         // For activities
@@ -44,13 +52,18 @@ class LiquidGlassUtil {
         }
 
         // For fragments
-        fun setAccentColorForLiquidGlassView(viewId: Int, parentView: View, context: Context) {
-            val liquidGlassView = parentView.findViewById<LiquidGlassView>(viewId)
+        fun setAccentColorForLiquidGlassView(liquidGlassView: LiquidGlassView, context: Context) {
             if (android.os.Build.VERSION.SDK_INT >= 31) {
                 val systemAccentDark = saturateColor(context.getColor(android.R.color.system_accent1_500), 0.6f)
                 val systemAccentLight = context.getColor(android.R.color.system_accent1_200)
                 liquidGlassView.glassTint = if (isDarkModeEnabled(context)) systemAccentDark else systemAccentLight
             }
+        }
+
+        // For fragments
+        fun setAccentColorForLiquidGlassView(viewId: Int, parentView: View, context: Context) {
+            val liquidGlassView = parentView.findViewById<LiquidGlassView>(viewId)
+            setAccentColorForLiquidGlassView(liquidGlassView, context)
         }
 
         // For activities
@@ -64,9 +77,9 @@ class LiquidGlassUtil {
             val liquidGlassView = parentView.findViewById<LiquidGlassView>(viewId)
             if (android.os.Build.VERSION.SDK_INT >= 31) {
                 liquidGlassView.glassTint = if (isDarkModeEnabled(context)) {
-                    saturateColor(context.getColor(R.color.accent_250), 0.6f) - 0x99000000.toInt()
+                    0x00FFFFFF
                 } else {
-                    saturateColor(context.getColor(R.color.accent_500), 0.6f) - 0xCC000000.toInt()
+                    brightenColor(saturateColor(context.getColor(R.color.accent_250), 0.6f), 2.2f)
                 }
             }
         }
@@ -111,6 +124,13 @@ class LiquidGlassUtil {
             android.graphics.Color.colorToHSV(color, hsv)
             hsv[1] = saturation
             return android.graphics.Color.HSVToColor(hsv)
+        }
+
+        fun brightenColor(color: Int, factor: Float): Int {
+            val r = (android.graphics.Color.red(color) * factor).coerceAtMost(255f).toInt()
+            val g = (android.graphics.Color.green(color) * factor).coerceAtMost(255f).toInt()
+            val b = (android.graphics.Color.blue(color) * factor).coerceAtMost(255f).toInt()
+            return android.graphics.Color.rgb(r, g, b)
         }
 
         private fun isDarkModeEnabled(context: Context): Boolean {

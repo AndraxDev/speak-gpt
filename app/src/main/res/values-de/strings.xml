@@ -499,4 +499,23 @@
     <string name="title_before_you_begin">Bevor Sie beginnen</string>
     <string name="before_you_begin">Bitte lesen Sie dies sorgfältig durch, bevor Sie diese App verwenden. Falls Sie die App-Beschreibung noch nicht gelesen haben, möchten wir darauf hinweisen, dass diese App der OPEN-SOURCE-CLIENT für AI-APIs ist. Sie werden hier nicht kostenlos GPT oder Gemini finden. Diese App ist nur ein praktisches Werkzeug, über das Sie auf Ihre AI-Modelle zugreifen können. DIESE APP WIRD WIE BESEHEN OHNE GARANTIE UNTER DER LIZENZ APACHE 2.0 BEREITGESTELLT. Durch die Verwendung dieser App stimmen Sie zu, dass alle Ihre Fragen zur kostenlosen Nutzung ohne Antwort abgelehnt werden. Obwohl es einige kostenlose APIs gibt, die Sie mit dieser App verwenden können.\n\n\"Kostenloser Käse gibt es nur in der Mausefalle, sodass Sie die Arbeit eines anderen nicht kostenlos verwenden können, ohne Mühe und ohne Anerkennung. Es ist unethisch.\"\n\nP.S. Dieser Hinweis wurde hinzugefügt, nachdem einige Benutzer berichteten, dass SpeakGPT keinen kostenlosen Zugang zu den Hauptmodellen von ChatGPT bietet.</string>
     <string name="app_description_new">SpeakGPT ist ein fortschrittlicher und äußerst intuitiver Open-Source-Assistent, der die leistungsstarken LLMs nutzt. Mit dieser App können Sie Online-Modelle wie ChatGPT, Gemini, Perplexity oder Ihre lokalen Modelle verwenden.</string>
+    <string name="select_all">Alle auswählen</string>
+    <string name="deselect_all">Auswahl aufheben</string>
+    <string name="btn_share">Teilen</string>
+    <string name="report_abuse">Missbrauch melden</string>
+    <string name="text">Text</string>
+    <string name="images">Bilder</string>
+    <string name="playground">Playground</string>
+    <string name="debugger">Debugger</string>
+    <string name="playground_in">Gib hier deinen Prompt ein...</string>
+    <string name="playground_out">Die Ausgabe des KI-Modells wird hier angezeigt...</string>
+    <string name="clear_output">Ausgabe löschen</string>
+    <string name="clear_input">Eingabe löschen</string>
+    <string name="run">Ausführen</string>
+    <string name="stop">Stoppen</string>
+    <string name="tokenize">Tokenisieren</string>
+    <string name="nothing_to_report">Nichts zu melden</string>
+    <string name="error_input_empty">Bitte gib einen Text in das Eingabefeld ein.</string>
+    <string name="input_cleared">Eingabe gelöscht</string>
+    <string name="output_cleared">Ausgabe gelöscht</string>
 </resources>

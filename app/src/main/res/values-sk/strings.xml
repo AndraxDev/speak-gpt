@@ -498,4 +498,23 @@
     <string name="title_before_you_begin">Predtým, než začnete</string>
     <string name="before_you_begin">Pred použitím tejto aplikácie si to prosím starostlivo prečítajte. V prípade, že ste si neprečítali popis aplikácie, radi by sme vás upozornili, že táto aplikácia je OPEN-SOURCE KLIENT pre AI API. Tu nenájdete GPT alebo Gemini zadarmo. Táto aplikácia je len praktický nástroj, pomocou ktorého môžete pristupovať k svojim modelom AI. TÁTO APLIKÁCIA SA POSKYTUJE TAK, AKO JE BEZ ZÁRUKY POD LICENCIOU APACHE 2.0. Použitím tejto aplikácie súhlasíte s tým, že všetky vaše otázky o bezplatnom používaní budú odmietnuté bez odpovede. Hoci niektoré bezplatné API existujú, môžete ich použiť s touto aplikáciou.\n\n\"Voľný syr môže byť len v pasci na myši, takže nemôžete používať prácu niekoho iného zadarmo bez námahy a bez uznania zásluh. Je to neetické.\"\n\nPS Tento zrieknutie sa zodpovednosti bolo vložené sem po tom, čo niektorí používatelia nahlásili, že SpeakGPT neobsahuje voľný prístup k vlajkovým modelom ChatGPT.</string>
     <string name="app_description_new">SpeakGPT je pokročilý a vysoko intuitívny open-source asistent, ktorý používa výkonné LLM. S touto aplikáciou môžete využívať online modely ako ChatGPT, Gemini, Perplexity, alebo vaše lokálne modely.</string>
+    <string name="select_all">Vybrať všetko</string>
+    <string name="deselect_all">Zrušiť výber</string>
+    <string name="btn_share">Zdieľať</string>
+    <string name="report_abuse">Nahlásiť zneužitie</string>
+    <string name="text">Text</string>
+    <string name="images">Obrázky</string>
+    <string name="playground">Playground</string>
+    <string name="debugger">Ladiaci nástroj</string>
+    <string name="playground_in">Sem zadajte svoj prompt...</string>
+    <string name="playground_out">Tu sa zobrazí výstup modelu AI...</string>
+    <string name="clear_output">Vymazať výstup</string>
+    <string name="clear_input">Vymazať vstup</string>
+    <string name="run">Spustiť</string>
+    <string name="stop">Zastaviť</string>
+    <string name="tokenize">Tokenizovať</string>
+    <string name="nothing_to_report">Nie je čo nahlásiť</string>
+    <string name="error_input_empty">Zadajte text do vstupného poľa.</string>
+    <string name="input_cleared">Vstup bol vymazaný</string>
+    <string name="output_cleared">Výstup bol vymazaný</string>
 </resources>

@@ -163,12 +163,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.example.liquidglass.LiquidGlassButton
+            <org.teslasoft.assistant.ui.liquidglass.LiquidGlassButton
                 android:id="@+id/btn_all_models"
                 android:layout_width="0dp"
                 android:layout_height="56dp"
                 android:layout_marginEnd="6dp"
                 android:layout_weight="1"
+                android:padding="2dp"
+                android:paddingHorizontal="2dp"
                 android:text="@string/cat_all"
                 app:adaptiveTint="true"
                 app:backdropSourceId="@+id/prompts"
@@ -184,12 +186,14 @@
                 app:saturation="140.0"
                 app:sensorHighlight="false" />
 
-            <com.example.liquidglass.LiquidGlassButton
+            <org.teslasoft.assistant.ui.liquidglass.LiquidGlassButton
                 android:id="@+id/btn_text_model"
                 android:layout_width="0dp"
                 android:layout_height="56dp"
                 android:layout_marginHorizontal="6dp"
                 android:layout_weight="1"
+                android:padding="2dp"
+                android:paddingHorizontal="2dp"
                 android:text="@string/text"
                 app:adaptiveTint="true"
                 app:backdropSourceId="@+id/prompts"
@@ -205,12 +209,14 @@
                 app:saturation="140.0"
                 app:sensorHighlight="false" />
 
-            <com.example.liquidglass.LiquidGlassButton
+            <org.teslasoft.assistant.ui.liquidglass.LiquidGlassButton
                 android:id="@+id/btn_image_model"
                 android:layout_width="0dp"
                 android:layout_height="56dp"
                 android:layout_marginStart="6dp"
                 android:layout_weight="1"
+                android:padding="2dp"
+                android:paddingHorizontal="2dp"
                 android:text="@string/images"
                 app:adaptiveTint="true"
                 app:backdropSourceId="@+id/prompts"
@@ -770,29 +776,29 @@
         android:id="@+id/fab_keeper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="96dp"
+        android:paddingBottom="72dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            style="?attr/extendedFloatingActionButtonPrimaryStyle"
             android:id="@+id/btn_add_prompt"
+            style="?attr/extendedFloatingActionButtonPrimaryStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="24dp"
+            android:backgroundTint="@color/accent_250"
             android:clickable="true"
             android:contentDescription="@string/btn_post_your_prompt"
             android:text="@string/btn_post_your_prompt"
-            android:tooltipText="@string/btn_post_your_prompt"
-            android:backgroundTint="@color/accent_250"
             android:textColor="@color/accent_900"
-            app:iconTint="@color/accent_900"
+            android:tooltipText="@string/btn_post_your_prompt"
             app:elevation="6dp"
             app:icon="@drawable/ic_add"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:iconTint="@color/accent_900"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_add" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -499,4 +499,23 @@
     <string name="title_before_you_begin">Zanim zaczniesz</string>
     <string name="before_you_begin">Prosimy o uważne przeczytanie tego przed użyciem tej aplikacji. W przypadku, gdy nie przeczytałeś opisu aplikacji, chcielibyśmy zwrócić uwagę, że ta aplikacja jest OTWARTYM KLIENTEM dla API SI. Nie znajdziesz tutaj za darmo GPT ani Gemini. Ta aplikacja jest tylko wygodnym narzędziem, przez które możesz uzyskać dostęp do swoich modeli SI. TA APLIKACJA JEST DOSTARCZANA TAK JAK JEST BEZ GWARANCJI NA MOCY LICENCJI APACHE 2.0. Korzystając z tej aplikacji, zgadzasz się, że wszystkie Twoje pytania dotyczące darmowego użytkowania zostaną odrzucone bez odpowiedzi. Chociaż istnieją pewne darmowe API, możesz ich używać z tą aplikacją.\n\n\"Darmowy ser można znaleźć tylko w pułapce na myszy, więc nie możesz używać pracy kogoś innego za darmo bez wysiłku i uznania. To jest nieetyczne.\"\n\nP.S. To zastrzeżenie zostało umieszczone tutaj po tym, jak niektórzy użytkownicy zgłaszali, że SpeakGPT nie zawiera darmowego dostępu do flagowych modeli ChatGPT.</string>
     <string name="app_description_new">SpeakGPT to zaawansowany i bardzo intuicyjny asystent open-source, który korzysta z potężnych LLM. Możesz używać modeli online, takich jak ChatGPT, Gemini, Perplexity lub swoich lokalnych modeli za pomocą tej aplikacji.</string>
+    <string name="select_all">Zaznacz wszystko</string>
+    <string name="deselect_all">Odznacz wszystko</string>
+    <string name="btn_share">Udostępnij</string>
+    <string name="report_abuse">Zgłoś nadużycie</string>
+    <string name="text">Tekst</string>
+    <string name="images">Obrazy</string>
+    <string name="playground">Playground</string>
+    <string name="debugger">Debugger</string>
+    <string name="playground_in">Wpisz tutaj swój prompt...</string>
+    <string name="playground_out">Wynik modelu AI pojawi się tutaj...</string>
+    <string name="clear_output">Wyczyść wynik</string>
+    <string name="clear_input">Wyczyść dane wejściowe</string>
+    <string name="run">Uruchom</string>
+    <string name="stop">Zatrzymaj</string>
+    <string name="tokenize">Tokenizuj</string>
+    <string name="nothing_to_report">Nie ma czego zgłaszać</string>
+    <string name="error_input_empty">Wprowadź tekst w polu wejściowym.</string>
+    <string name="input_cleared">Dane wejściowe wyczyszczone</string>
+    <string name="output_cleared">Wynik wyczyszczony</string>
 </resources>

@@ -175,8 +175,10 @@ class MainActivity : FragmentActivity() {
         val tabs: List<LiquidGlassTabBar.TabItem> = listOf(tabChat, tabPlayground, tabPrompts, tabExplore)
         navigationBarGlass?.setTabs(tabs)
 
-        navigationBarGlass?.selectedTintColor = ResourcesCompat.getColor(resources, R.color.text_title, theme)
+        navigationBarGlass?.selectedTintColor = ResourcesCompat.getColor(resources, R.color.accent_900, theme)
         navigationBarGlass?.inactiveTintColor = ResourcesCompat.getColor(resources, R.color.accent_900, theme)
+        navigationBarGlass?.edgeHighlightOpacity = 0.0f
+        navigationBarGlass?.blurAmount = 2.0f
 
         LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.navigation_bar_glass, this)
 
@@ -438,14 +440,6 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-    private fun getDisabledColor() : Int {
-        return if (isDarkThemeEnabled() && preferences?.getAmoledPitchBlack()!!) {
-            ResourcesCompat.getColor(resources, R.color.amoled_accent_100, theme)
-        } else {
-            SurfaceColors.SURFACE_5.getColor(this)
-        }
-    }
-
     private fun isDarkThemeEnabled(): Boolean {
         return when (resources.configuration.uiMode and
                 Configuration.UI_MODE_NIGHT_MASK) {
@@ -551,7 +545,7 @@ class MainActivity : FragmentActivity() {
 
     private fun adjustPaddings() {
         WindowInsetsUtil.adjustPaddings(this, R.id.debug_btn_keeper, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
-        WindowInsetsUtil.adjustPaddings(this, R.id.navigation_bar_keeper, EnumSet.of(WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
+        WindowInsetsUtil.adjustPaddings(this, R.id.navigation_bar_keeper, EnumSet.of(WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR))
         WindowInsetsUtil.adjustPaddings(this, R.id.d, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
         (frameChats as ChatsListFragment?)?.applyWindowInsets()
         (framePlayground as PlaygroundFragment?)?.applyWindowInsets()

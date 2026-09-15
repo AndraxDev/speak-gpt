@@ -7,8 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/window_background"
-    android:fitsSystemWindows="true"
-    tools:background="@tools:sample/backgrounds/scenic">
+    android:fitsSystemWindows="true">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chat_view"
@@ -18,10 +17,12 @@
         android:paddingTop="64dp"
         android:paddingBottom="100dp"
         android:overScrollMode="never"
+        android:background="@color/window_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:background="@tools:sample/backgrounds/scenic" />
 
     <LinearLayout
         android:id="@+id/gradient_top"
@@ -42,7 +43,7 @@
         android:layout_marginTop="8dp"
         android:padding="8dp"
         app:adaptiveTint="true"
-        app:backdropSourceId="@+id/root"
+        app:backdropSourceId="@+id/chat_view"
         app:bevelWidth="32dp"
         app:blurAmount="1.0"
         app:cornerRadius="32dp"
@@ -75,7 +76,7 @@
         android:layout_marginEnd="24dp"
         android:padding="8dp"
         app:adaptiveTint="true"
-        app:backdropSourceId="@+id/root"
+        app:backdropSourceId="@+id/chat_view"
         app:bevelWidth="32dp"
         app:blurAmount="1.0"
         app:cornerRadius="32dp"
@@ -144,7 +145,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:adaptiveTint="true"
-            app:backdropSourceId="@+id/root"
+            app:backdropSourceId="@+id/chat_view"
             app:bevelWidth="32dp"
             app:blurAmount="0.5"
             app:cornerRadius="32dp"
@@ -241,7 +242,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:adaptiveTint="true"
-            app:backdropSourceId="@+id/root"
+            app:backdropSourceId="@+id/chat_view"
             app:bevelWidth="128dp"
             app:blurAmount="1.0"
             app:cornerRadius="32dp"
@@ -310,7 +311,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:adaptiveTint="true"
-            app:backdropSourceId="@+id/root"
+            app:backdropSourceId="@+id/chat_view"
             app:bevelWidth="128dp"
             app:blurAmount="1.0"
             app:cornerRadius="32dp"

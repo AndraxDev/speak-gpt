@@ -499,4 +499,23 @@
     <string name="title_before_you_begin">پیش از شروع</string>
     <string name="before_you_begin">لطفاً این را با دقت پیش از استفاده از برنامه بخوانید. در صورتی که توضیحات برنامه را نخوانده‌اید، مایلیم به شما اطلاع دهیم که این برنامه یک کلاینت منبع‌باز برای APIهای هوش مصنوعی است. شما در اینجا GPT یا Gemini را به‌صورت رایگان پیدا نخواهید کرد. این برنامه فقط یک ابزار مناسب است که می‌توانید از طریق آن به مدل‌های هوش مصنوعی خود دسترسی پیدا کنید. این برنامه به‌صورت «همان‌گونه که هست» بدون هیچ ضمانتی تحت مجوز Apache 2.0 ارائه شده است. با استفاده از این برنامه، شما موافقت می‌کنید که تمام سؤالات شما درباره استفاده رایگان بدون پاسخ رد خواهند شد. با این حال، برخی APIهای رایگان وجود دارند که می‌توانید با این برنامه از آن‌ها استفاده کنید.\n\n«پنیر رایگان فقط در تله موش پیدا می‌شود، بنابراین نمی‌توانید کار دیگران را بدون تلاش و بدون قدردانی به‌صورت رایگان استفاده کنید. این غیراخلاقی است.»\n\nنکته: این سلب مسئولیت پس از آن اضافه شد که برخی از کاربران گزارش دادند که SpeakGPT دسترسی رایگان به مدل‌های پرچمدار ChatGPT را فراهم نمی‌کند.</string>
     <string name="app_description_new">SpeakGPT یک دستیار منبع‌باز پیشرفته و بسیار شهودی است که از مدل‌های زبان قدرتمند استفاده می‌کند. می‌توانید از مدل‌های آنلاین مانند ChatGPT، Gemini، Perplexity یا مدل‌های محلی خود با این برنامه استفاده کنید.</string>
+    <string name="select_all">انتخاب همه</string>
+    <string name="deselect_all">لغو انتخاب همه</string>
+    <string name="btn_share">اشتراک‌گذاری</string>
+    <string name="report_abuse">گزارش سوءاستفاده</string>
+    <string name="text">متن</string>
+    <string name="images">تصاویر</string>
+    <string name="playground">محیط آزمایشی</string>
+    <string name="debugger">اشکال‌زدا</string>
+    <string name="playground_in">پرامپت خود را اینجا وارد کنید...</string>
+    <string name="playground_out">خروجی مدل هوش مصنوعی اینجا نمایش داده می‌شود...</string>
+    <string name="clear_output">پاک کردن خروجی</string>
+    <string name="clear_input">پاک کردن ورودی</string>
+    <string name="run">اجرا</string>
+    <string name="stop">توقف</string>
+    <string name="tokenize">توکن‌سازی</string>
+    <string name="nothing_to_report">موردی برای گزارش وجود ندارد</string>
+    <string name="error_input_empty">لطفاً متنی را در کادر ورودی وارد کنید.</string>
+    <string name="input_cleared">ورودی پاک شد</string>
+    <string name="output_cleared">خروجی پاک شد</string>
 </resources>

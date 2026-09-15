@@ -13,11 +13,13 @@
  * - Adjusted paddings and margins
  * - Enhanced refraction
  * - Enabled sensor-backed edge animations by default (if supported by the device)
+ * - Code ceanup and reformatting
  * */
 
 package org.teslasoft.assistant.ui.activities.nav
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Typeface
@@ -72,7 +74,7 @@ open class LiquidGlassTabBar @JvmOverloads constructor(
     /** 当前选中标签下标；设置时玻璃滴滑过去并触发 [onTabSelected] */
     var selectedIndex: Int
         get() = selected
-        set(value) = selectTab(value, animate = true)
+        set(value) = selectTab(value)
 
     private class TabHolder(val root: LinearLayout, val icon: ImageView?, val label: TextView)
 
@@ -93,11 +95,11 @@ open class LiquidGlassTabBar @JvmOverloads constructor(
     init {
         // 标签/拖拽自己处理，整条 bar 的按压缩放反而突兀
         enablePressEffect = false
+        layoutDirection = LAYOUT_DIRECTION_LTR
 
         val mp = dp(8)
 
         tabsRow.orientation = LinearLayout.HORIZONTAL
-
         tabsRow.setPadding(mp, 0, mp, 0)
 
         val layoutParamsForTabsRow = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
@@ -112,13 +114,17 @@ open class LiquidGlassTabBar @JvmOverloads constructor(
             cornerRadius = 999f
             // 否则贴近边缘的标签文字会被折射出放大的副本
             bevelWidth = dpF(16)
-            refractionFalloff = 0.5f
-            material = GlassMaterial.CLEAR
+            refractionFalloff = 0.7f
+            material = GlassMaterial.REGULAR
             refractionHeight = dpF(6)
-            dispersionStrength = 0.04f
+            dispersionStrength = 0.2f
+            enableAdaptiveTint = true
             enableSensorHighlight = true
             visibility = GONE
+            edgeHighlightOpacity = 60.0f
+            edgeHighlightBorderWidth = 1.0f
         }
+
         // 玻璃滴叠在标签行上方，折射行内容——必须后 add（先绘制行，再绘制滴）。
         // 背景保持默认的直接父容器（= bar 自身）：捕获到的是 bar 已渲染的玻璃面
         // + 图标，滴叠加折射后比 bar 更亮更凸。不能指向 tabsRow——行外区域是
@@ -196,12 +202,12 @@ open class LiquidGlassTabBar @JvmOverloads constructor(
 
     // ==================== 选择与样式 ====================
 
-    private fun selectTab(index: Int, animate: Boolean) {
+    private fun selectTab(index: Int) {
         val clamped = index.coerceIn(0, (tabs.size - 1).coerceAtLeast(0))
         val changed = clamped != selected
         selected = clamped
         if (changed) updateTabStyles()
-        if (animate) animateDropletTo(clamped) else syncDroplet()
+        animateDropletTo(clamped)
         if (changed) onTabSelected?.invoke(clamped)
     }
 
@@ -319,15 +325,15 @@ open class LiquidGlassTabBar @JvmOverloads constructor(
         val w = droplet.width.toFloat()
         if (rowW <= 0f || w <= 0f) return x
         val bulge = (scaleX - 1f) * w / 2f
-        val minX = bulge
         val maxX = rowW - w - bulge
-        return if (minX <= maxX) x.coerceIn(minX, maxX) else (rowW - w) / 2f
+        return if (bulge <= maxX) x.coerceIn(bulge, maxX) else (rowW - w) / 2f
     }
 
     // ==================== 触摸：点击选择 + 拖拽玻璃滴 ====================
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean = true
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
@@ -339,8 +345,8 @@ open class LiquidGlassTabBar @JvmOverloads constructor(
                 if (!dragging && abs(event.x - downX) > touchSlop) {
                     dragging = true
                     settleAnimator?.cancel()
-                    droplet.scaleX = 1.15f
-                    droplet.scaleY = 1.15f
+                    droplet.scaleX = 1.0f
+                    droplet.scaleY = 1.0f
                 }
                 if (dragging) dragDropletTo(event.x)
                 return true
@@ -348,9 +354,9 @@ open class LiquidGlassTabBar @JvmOverloads constructor(
             MotionEvent.ACTION_UP -> {
                 if (dragging) {
                     dragging = false
-                    selectTab(nearestTabIndex(), animate = true)
+                    selectTab(nearestTabIndex())
                 } else {
-                    selectTab(tabIndexAt(event.x), animate = true)
+                    selectTab(tabIndexAt(event.x))
                 }
                 return true
             }

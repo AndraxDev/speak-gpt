@@ -499,4 +499,23 @@
     <string name="title_before_you_begin">Перед тим, як почати</string>
     <string name="before_you_begin">Будь ласка, уважно прочитайте це перед використанням цього додатку. У випадку, якщо ви не прочитали опис додатку, ми хотіли б наголосити, що цей додаток є OPEN-SOURCE КЛІЄНТОМ для AI API. Тут ви не знайдете GPT або Gemini безкоштовно. Цей додаток є лише зручним інструментом, через який ви можете отримати доступ до своїх AI моделей. ЦЕЙ ДОДАТОК НАДАЄТЬСЯ ЯК Є БЕЗ ГАРАНТІЇ ПІД ЛІЦЕНЗІЄЮ APACHE 2.0. Використовуючи цей додаток, ви погоджуєтесь, що всі ваші запитання щодо безкоштовного використання будуть відхилені без відповіді. Хоч існують деякі безкоштовні API, які ви можете використовувати з цим додатком.\n\n\"Безкоштовний сир може бути лише в мишоловці, тому ви не можете використовувати роботу іншої людини безкоштовно без зусиль та без вдячності. Це неетично.\"\n\nP.S. Це застереження було вставлене сюди після того, як дехто з користувачів повідомив, що SpeakGPT не містить безкоштовного доступу до флагманських моделей ChatGPT.</string>
     <string name="app_description_new">SpeakGPT – це розвинений та надзвичайно інтуїтивний асистент з відкритим вихідним кодом, який використовує потужні LLM. Ви можете використовувати онлайн-моделі, такі як ChatGPT, Gemini, Perplexity, або ваші локальні моделі за допомогою цього додатку.</string>
+    <string name="select_all">Вибрати все</string>
+    <string name="deselect_all">Зняти виділення</string>
+    <string name="btn_share">Поділитися</string>
+    <string name="report_abuse">Повідомити про порушення</string>
+    <string name="text">Текст</string>
+    <string name="images">Зображення</string>
+    <string name="playground">Пісочниця</string>
+    <string name="debugger">Налагоджувач</string>
+    <string name="playground_in">Введіть свій промпт тут...</string>
+    <string name="playground_out">Тут з\'явиться відповідь моделі ШІ...</string>
+    <string name="clear_output">Очистити вивід</string>
+    <string name="clear_input">Очистити ввід</string>
+    <string name="run">Запустити</string>
+    <string name="stop">Зупинити</string>
+    <string name="tokenize">Токенізувати</string>
+    <string name="nothing_to_report">Немає про що повідомляти</string>
+    <string name="error_input_empty">Введіть текст у поле вводу.</string>
+    <string name="input_cleared">Поле вводу очищено</string>
+    <string name="output_cleared">Вивід очищено</string>
 </resources>

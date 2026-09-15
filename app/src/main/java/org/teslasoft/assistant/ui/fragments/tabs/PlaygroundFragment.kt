@@ -109,7 +109,7 @@ class PlaygroundFragment : Fragment() {
     fun applyWindowInsets() {
         if (rootView != null && mContext != null) {
             WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.root, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
-            WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.fab_keeper, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR))
+            WindowInsetsUtil.adjustPaddings((mContext as Activity?) ?: return, rootView, R.id.fab_keeper, EnumSet.of(WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR))
         }
     }
 
@@ -209,7 +209,7 @@ class PlaygroundFragment : Fragment() {
 
         btnReport?.setOnClickListener {
             if (editTextOut?.text?.toString()?.trim() == "") {
-                Toast.makeText(context, "Nothing to report", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.nothing_to_report), Toast.LENGTH_SHORT).show()
             } else {
                 val reportAIContentBottomSheet = ReportAIContentBottomSheet.newInstance(editTextOut?.text?.toString() ?: "", "", false, editTextIn?.text?.toString() ?: "")
                 reportAIContentBottomSheet.show(parentFragmentManager, "ReportAIContentBottomSheet")
@@ -232,7 +232,7 @@ class PlaygroundFragment : Fragment() {
                 val tokens = tokenizer.encode(editTextIn?.text.toString())
 
                 if (tokens.isEmpty()) {
-                    Toast.makeText(context, "Please enter some text to the input textarea.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.error_input_empty), Toast.LENGTH_SHORT).show()
                 } else {
                     val tokenString: StringBuilder = StringBuilder()
                     for (i in tokens) {
@@ -242,7 +242,7 @@ class PlaygroundFragment : Fragment() {
 
                     tokenString.deleteCharAt(tokenString.length - 2)
 
-                    val response = "Chars count: ${editTextIn?.text?.toList()?.size}\nTokens count: ${tokens.size}\nTokens: ${tokenString.toString()}"
+                    val response = "Chars count: ${editTextIn?.text?.toList()?.size}\nTokens count: ${tokens.size}\nTokens: $tokenString}"
 
                     editTextOut?.setText(response)
                 }
@@ -256,12 +256,12 @@ class PlaygroundFragment : Fragment() {
 
         clearIn?.setOnClickListener {
             editTextIn?.setText("")
-            Toast.makeText(requireActivity(), "Input cleared", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireActivity(), getString(R.string.input_cleared), Toast.LENGTH_SHORT).show()
         }
 
         clearOut?.setOnClickListener {
             editTextOut?.setText("")
-            Toast.makeText(requireActivity(), "Output cleared", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireActivity(), getString(R.string.output_cleared), Toast.LENGTH_SHORT).show()
         }
 
         val config = OpenAIConfig(

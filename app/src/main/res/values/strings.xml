@@ -532,4 +532,15 @@
     <string name="images">Images</string>
     <string name="playground">Playground</string>
     <string name="debugger">Debugger</string>
+    <string name="playground_in">Type your prompt here...</string>
+    <string name="playground_out">AI model output will appear here...</string>
+    <string name="clear_output">Clear output</string>
+    <string name="clear_input">Clear input</string>
+    <string name="run">Run</string>
+    <string name="stop">Stop</string>
+    <string name="tokenize">Tokenize</string>
+    <string name="nothing_to_report">Nothing to report</string>
+    <string name="error_input_empty">Please enter some text to the input textarea.</string>
+    <string name="input_cleared">Input cleared</string>
+    <string name="output_cleared">Output cleared</string>
 </resources>
