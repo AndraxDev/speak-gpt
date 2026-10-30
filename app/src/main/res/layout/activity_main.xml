@@ -60,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <com.example.liquidglass.LiquidGlassView
+                <org.teslasoft.assistant.ui.liquidglass.LiquidGlassView
                     android:id="@+id/debugger_bg_liquid_glass"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
@@ -135,7 +135,7 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/progressBar6" />
 
-                        <com.example.liquidglass.LiquidGlassView
+                        <org.teslasoft.assistant.ui.liquidglass.LiquidGlassView
                             android:id="@+id/btn_back_glass"
                             android:layout_width="56dp"
                             android:layout_height="56dp"
@@ -165,7 +165,7 @@
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
-                        </com.example.liquidglass.LiquidGlassView>
+                        </org.teslasoft.assistant.ui.liquidglass.LiquidGlassView>
 
                         <TextView
                             android:id="@+id/textView59"
@@ -302,7 +302,7 @@
                             </LinearLayout>
                         </ScrollView>
                     </androidx.constraintlayout.widget.ConstraintLayout>
-                </com.example.liquidglass.LiquidGlassView>
+                </org.teslasoft.assistant.ui.liquidglass.LiquidGlassView>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -314,7 +314,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.example.liquidglass.LiquidGlassView
+        <org.teslasoft.assistant.ui.liquidglass.LiquidGlassView
             android:id="@+id/btn_open_debugger"
             android:layout_width="56dp"
             android:layout_height="56dp"
@@ -348,7 +348,7 @@
                 android:layout_height="match_parent"
                 android:contentDescription="@string/debugger"
                 android:src="@drawable/ic_bug" />
-        </com.example.liquidglass.LiquidGlassView>
+        </org.teslasoft.assistant.ui.liquidglass.LiquidGlassView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
@@ -369,9 +369,9 @@
             app:glassTint="@color/accent_250"
             app:backdropSourceId="@id/root"
             app:adaptiveTint="true"
-            app:bevelWidth="32dp"
+            app:bevelWidth="64dp"
             app:blurAmount="0.5"
-            app:cornerRadius="999dp"
+            app:cornerRadius="42dp"
             app:dispersionStrength="0.1"
             app:glassMaterial="clear"
             app:glassTintStrength="1.0"

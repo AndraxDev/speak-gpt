@@ -73,7 +73,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/btn_settings_" />
 
-        <com.example.liquidglass.LiquidGlassView
+        <org.teslasoft.assistant.ui.liquidglass.LiquidGlassView
             android:id="@+id/bg_search"
             android:layout_width="0dp"
             android:layout_height="56dp"
@@ -134,9 +134,9 @@
                     app:srcCompat="@drawable/ic_search" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.example.liquidglass.LiquidGlassView>
+        </org.teslasoft.assistant.ui.liquidglass.LiquidGlassView>
 
-        <com.example.liquidglass.LiquidGlassView
+        <org.teslasoft.assistant.ui.liquidglass.LiquidGlassView
             android:id="@+id/bulk_actions_container"
             android:layout_width="0dp"
             android:layout_height="56dp"
@@ -223,9 +223,9 @@
                     app:srcCompat="@drawable/ic_delete" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.example.liquidglass.LiquidGlassView>
+        </org.teslasoft.assistant.ui.liquidglass.LiquidGlassView>
 
-        <com.example.liquidglass.LiquidGlassView
+        <org.teslasoft.assistant.ui.liquidglass.LiquidGlassView
             android:id="@+id/btn_settings_"
             android:layout_width="56dp"
             android:layout_height="56dp"
@@ -257,7 +257,7 @@
                 android:contentDescription="@string/btn_settings"
                 android:layout_margin="16dp"
                 android:src="@drawable/ic_settings" />
-        </com.example.liquidglass.LiquidGlassView>
+        </org.teslasoft.assistant.ui.liquidglass.LiquidGlassView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -275,7 +275,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="32dp"
             android:clickable="true"
             android:text="@string/btn_new_chat"
             android:tooltipText="@string/btn_new_chat"

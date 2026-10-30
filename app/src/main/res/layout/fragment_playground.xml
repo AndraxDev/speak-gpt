@@ -33,7 +33,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.example.liquidglass.LiquidGlassView
+        <org.teslasoft.assistant.ui.liquidglass.LiquidGlassView
             android:id="@+id/btn_report_playground_abuse"
             android:layout_width="56dp"
             android:layout_height="56dp"
@@ -62,9 +62,9 @@
                 android:layout_margin="16dp"
                 android:contentDescription="@string/report_abuse"
                 android:src="@drawable/ic_report" />
-        </com.example.liquidglass.LiquidGlassView>
+        </org.teslasoft.assistant.ui.liquidglass.LiquidGlassView>
 
-        <com.example.liquidglass.LiquidGlassView
+        <org.teslasoft.assistant.ui.liquidglass.LiquidGlassView
             android:id="@+id/title"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -97,9 +97,9 @@
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-        </com.example.liquidglass.LiquidGlassView>
+        </org.teslasoft.assistant.ui.liquidglass.LiquidGlassView>
 
-        <com.example.liquidglass.LiquidGlassView
+        <org.teslasoft.assistant.ui.liquidglass.LiquidGlassView
             android:id="@+id/btn_settings"
             android:layout_width="56dp"
             android:layout_height="56dp"
@@ -130,7 +130,7 @@
                 android:layout_margin="16dp"
                 android:contentDescription="@string/btn_settings"
                 android:src="@drawable/ic_settings" />
-        </com.example.liquidglass.LiquidGlassView>
+        </org.teslasoft.assistant.ui.liquidglass.LiquidGlassView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
@@ -263,7 +263,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="32dp"
             android:clickable="true"
             android:contentDescription="@string/run"
             android:tooltipText="Run"

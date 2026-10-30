@@ -47,10 +47,10 @@
         android:indeterminate="true"
         app:indeterminateAnimationTypeCircular="advance"
         app:indicatorSize="72dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/ai_sets_list"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/header_keeper" />
 
     <LinearLayout
         android:id="@+id/no_internet"
@@ -88,7 +88,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.example.liquidglass.LiquidGlassView
+        <org.teslasoft.assistant.ui.liquidglass.LiquidGlassView
             android:id="@+id/btn_tips"
             android:layout_width="56dp"
             android:layout_height="56dp"
@@ -122,9 +122,9 @@
                 android:contentDescription="@string/menu_tips"
                 android:layout_margin="16dp"
                 android:src="@drawable/ic_tips" />
-        </com.example.liquidglass.LiquidGlassView>
+        </org.teslasoft.assistant.ui.liquidglass.LiquidGlassView>
 
-        <com.example.liquidglass.LiquidGlassView
+        <org.teslasoft.assistant.ui.liquidglass.LiquidGlassView
             android:id="@+id/title"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -157,7 +157,7 @@
                 android:textColor="@color/text_title"
                 android:textSize="18sp"
                 android:textStyle="bold" />
-        </com.example.liquidglass.LiquidGlassView>
+        </org.teslasoft.assistant.ui.liquidglass.LiquidGlassView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

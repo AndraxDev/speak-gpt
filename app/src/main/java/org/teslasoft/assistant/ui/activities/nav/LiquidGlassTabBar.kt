@@ -13,11 +13,13 @@
  * - Adjusted paddings and margins
  * - Enhanced refraction
  * - Enabled sensor-backed edge animations by default (if supported by the device)
- * - Code ceanup and reformatting
+ * - Code cleanup and reformatting
  * */
 
 package org.teslasoft.assistant.ui.activities.nav
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
@@ -33,8 +35,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.liquidglass.GlassMaterial
-import com.example.liquidglass.LiquidGlassView
 import com.example.liquidglass.R
+import org.teslasoft.assistant.ui.liquidglass.LiquidGlassView
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.min
@@ -111,17 +113,17 @@ open class LiquidGlassTabBar @JvmOverloads constructor(
         droplet.apply {
             enablePressEffect = false
             enableBackdropBlur = false
-            cornerRadius = 999f
+            cornerRadius = dpF(32)
             // 否则贴近边缘的标签文字会被折射出放大的副本
-            bevelWidth = dpF(16)
-            refractionFalloff = 0.7f
+            bevelWidth = dpF(32)
+            refractionFalloff = 0.3f
             material = GlassMaterial.REGULAR
             refractionHeight = dpF(6)
             dispersionStrength = 0.2f
             enableAdaptiveTint = true
-            enableSensorHighlight = true
+            enableSensorHighlight = false
             visibility = GONE
-            edgeHighlightOpacity = 60.0f
+            edgeHighlightOpacity = 0.0f
             edgeHighlightBorderWidth = 1.0f
         }
 
@@ -158,7 +160,7 @@ open class LiquidGlassTabBar @JvmOverloads constructor(
             var icon: ImageView? = null
             val label: TextView
             if (item.icon != null) {
-                root.setPadding(dp(2), dp(7), dp(2), dp(7))
+                root.setPadding(dp(2), dp(10), dp(2), dp(10))
                 icon = ImageView(context).apply { setImageDrawable(item.icon) }
                 root.addView(icon, LinearLayout.LayoutParams(dp(26), dp(26)))
                 label = TextView(context).apply {
@@ -292,6 +294,7 @@ open class LiquidGlassTabBar @JvmOverloads constructor(
                 val sx = 1f + stretch * s
                 droplet.scaleX = sx
                 droplet.scaleY = 1f - stretch * 0.55f * s
+                droplet.cornerRadius = dpF(32)
                 // 过冲/拉伸可能把滴的可视边缘推出 bar——出界区域采不到背景会
                 // 渲染成黑，按当前拉伸量钳制在标签行内（到边时像液体抵住壁）
                 droplet.translationX =
@@ -300,13 +303,13 @@ open class LiquidGlassTabBar @JvmOverloads constructor(
                 // 折射内容取决于滴与标签行的相对位置，移动中必须逐帧重採
                 droplet.invalidate()
             }
-            addListener(object : android.animation.AnimatorListenerAdapter() {
+            addListener(object : AnimatorListenerAdapter() {
                 private var canceled = false
-                override fun onAnimationCancel(animation: android.animation.Animator) {
+                override fun onAnimationCancel(animation: Animator) {
                     canceled = true
                 }
 
-                override fun onAnimationEnd(animation: android.animation.Animator) {
+                override fun onAnimationEnd(animation: Animator) {
                     // cancel() 也会走到这里：动画中途重定向时不能落位，
                     // 否则滴会瞬移到新目标、新动画因距离为 0 而不播
                     if (!canceled) syncDroplet()

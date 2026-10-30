@@ -24,17 +24,10 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.view.MenuItem
 import android.view.View
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
@@ -44,17 +37,14 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.edit
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
-import com.google.android.material.navigation.NavigationBarView
 import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.ApiEndpointPreferences
 import org.teslasoft.assistant.preferences.GlobalPreferences
@@ -73,12 +63,12 @@ import org.teslasoft.core.auth.SystemInfo
 import org.teslasoft.core.auth.internal.ApplicationSignature
 import java.util.EnumSet
 import androidx.core.graphics.drawable.toDrawable
-import com.example.liquidglass.LiquidGlassView
+import com.example.liquidglass.GlassAccessibilityMode
 import org.teslasoft.assistant.ui.activities.nav.LiquidGlassTabBar
 import org.teslasoft.assistant.migration.UnsupportedImageModelMigration
 import org.teslasoft.assistant.ui.debug.aicore.OnDeviceInferenceActivity
 import org.teslasoft.assistant.ui.liquidglass.LiquidGlassUtil
-import org.teslasoft.assistant.ui.liquidglass.LiquidGlassUtil.Companion.saturateColor
+import org.teslasoft.assistant.ui.liquidglass.LiquidGlassView
 
 class MainActivity : FragmentActivity() {
     private var fragmentContainer: ConstraintLayout? = null
@@ -157,6 +147,11 @@ class MainActivity : FragmentActivity() {
         devIds = findViewById(R.id.dev_ids)
         navigationBarGlass = findViewById(R.id.navigation_bar_glass)
 
+        if (Build.VERSION.SDK_INT < 33) {
+            val debuggerLiquidGlass = findViewById<LiquidGlassView>(R.id.debugger_bg_liquid_glass)
+            debuggerLiquidGlass.accessibilityMode = GlassAccessibilityMode.FORCE_OPAQUE
+        }
+
         val excludedLiquidGlassViews = arrayListOf<Int>()
         excludedLiquidGlassViews.add(R.id.debugger_bg_liquid_glass)
         excludedLiquidGlassViews.add(R.id.navigation_bar_glass)
@@ -165,7 +160,10 @@ class MainActivity : FragmentActivity() {
         LiquidGlassUtil.scanForLiquidGlassAndInitSettings(this, excludedLiquidGlassViews)
         LiquidGlassUtil.initializeLiquidGlassViewById(R.id.navigation_bar_glass, this)
         LiquidGlassUtil.initializeLiquidGlassViewById(R.id.btn_open_debugger, this)
-        LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.btn_open_debugger, this)
+
+        if (Build.VERSION.SDK_INT >= 33) {
+            LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.btn_open_debugger, this)
+        }
 
         val tabChat: LiquidGlassTabBar.TabItem = LiquidGlassTabBar.TabItem(getString(R.string.menu_chat), AppCompatResources.getDrawable(this, R.drawable.ic_chat))
         val tabPlayground: LiquidGlassTabBar.TabItem = LiquidGlassTabBar.TabItem(getString(R.string.playground), AppCompatResources.getDrawable(this, R.drawable.ic_terminal))
@@ -180,7 +178,9 @@ class MainActivity : FragmentActivity() {
         navigationBarGlass?.edgeHighlightOpacity = 0.0f
         navigationBarGlass?.blurAmount = 2.0f
 
-        LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.navigation_bar_glass, this)
+        if (Build.VERSION.SDK_INT >= 33) {
+            LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.navigation_bar_glass, this)
+        }
 
         navigationBarGlass?.onTabSelected = { index -> run {
             when (index) {
@@ -547,7 +547,11 @@ class MainActivity : FragmentActivity() {
         WindowInsetsUtil.adjustPaddings(this, R.id.debug_btn_keeper, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
         WindowInsetsUtil.adjustPaddings(this, R.id.navigation_bar_keeper, EnumSet.of(WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR))
         WindowInsetsUtil.adjustPaddings(this, R.id.d, EnumSet.of(WindowInsetsUtil.Companion.Flags.STATUS_BAR, WindowInsetsUtil.Companion.Flags.NAVIGATION_BAR, WindowInsetsUtil.Companion.Flags.IGNORE_PADDINGS))
-        (frameChats as ChatsListFragment?)?.applyWindowInsets()
+        if (Build.VERSION.SDK_INT >= 33) {
+            // System bug that was fixed in Android 14 and causes the
+            // bottom padding to be applied twice on Android 13 and below
+            (frameChats as ChatsListFragment?)?.applyWindowInsets()
+        }
         (framePlayground as PlaygroundFragment?)?.applyWindowInsets()
         (framePrompts as PromptsFragment?)?.applyWindowInsets()
         (frameExplore as ExploreFragment?)?.applyWindowInsets()

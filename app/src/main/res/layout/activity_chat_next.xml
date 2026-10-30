@@ -35,7 +35,7 @@
         app:layout_constraintTop_toTopOf="@+id/chat_view"
         tools:visibility="gone" />
 
-    <com.example.liquidglass.LiquidGlassView
+    <org.teslasoft.assistant.ui.liquidglass.LiquidGlassView
         android:id="@+id/btn_back_glass"
         android:layout_width="56dp"
         android:layout_height="56dp"
@@ -66,9 +66,9 @@
             android:tint="@color/accent_900"
             android:tooltipText="@string/go_back"
             tools:ignore="UseAppTint" />
-    </com.example.liquidglass.LiquidGlassView>
+    </org.teslasoft.assistant.ui.liquidglass.LiquidGlassView>
 
-    <com.example.liquidglass.LiquidGlassView
+    <org.teslasoft.assistant.ui.liquidglass.LiquidGlassView
         android:id="@+id/btn_settings_glass"
         android:layout_width="56dp"
         android:layout_height="56dp"
@@ -100,7 +100,7 @@
             android:tooltipText="@string/settings"
             android:transitionName="settings"
             tools:ignore="UseAppTint" />
-    </com.example.liquidglass.LiquidGlassView>
+    </org.teslasoft.assistant.ui.liquidglass.LiquidGlassView>
 
     <TextView
         android:id="@+id/text_chat_name"
@@ -140,15 +140,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <com.example.liquidglass.LiquidGlassView
+        <org.teslasoft.assistant.ui.liquidglass.LiquidGlassView
             android:id="@+id/message_box_glass"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:adaptiveTint="true"
             app:backdropSourceId="@+id/chat_view"
-            app:bevelWidth="32dp"
+            app:bevelWidth="16dp"
             app:blurAmount="0.5"
-            app:cornerRadius="32dp"
+            app:cornerRadius="48dp"
             app:dispersionStrength="0.1"
             app:glassMaterial="clear"
             app:saturation="140.0"
@@ -156,7 +156,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:refractionFalloff="1.0"
+            app:refractionFalloff="2.0"
             app:refractionHeight="128dp"
             app:sensorHighlight="false">
 
@@ -209,7 +209,8 @@
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/btn_message_action"
-                    app:layout_constraintStart_toEndOf="@+id/btn_attach_file" />
+                    app:layout_constraintStart_toEndOf="@+id/btn_attach_file"
+                    tools:text="\n\n\n" />
 
                 <com.google.android.material.progressindicator.CircularProgressIndicator
                     android:id="@+id/assistant_busy"
@@ -225,7 +226,7 @@
                     app:wavelength="18dp" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.example.liquidglass.LiquidGlassView>
+        </org.teslasoft.assistant.ui.liquidglass.LiquidGlassView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -237,7 +238,7 @@
         app:layout_constraintBottom_toTopOf="@+id/message_box"
         app:layout_constraintStart_toStartOf="@+id/message_box">
 
-        <com.example.liquidglass.LiquidGlassView
+        <org.teslasoft.assistant.ui.liquidglass.LiquidGlassView
             android:id="@+id/attach_file_box_glass"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -292,7 +293,7 @@
                     tools:ignore="UseAppTint" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.example.liquidglass.LiquidGlassView>
+        </org.teslasoft.assistant.ui.liquidglass.LiquidGlassView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -306,7 +307,7 @@
         app:layout_constraintStart_toEndOf="@+id/btn_back_glass"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.example.liquidglass.LiquidGlassView
+        <org.teslasoft.assistant.ui.liquidglass.LiquidGlassView
             android:id="@+id/bulk_actions_box_glass"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -419,6 +420,6 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="UseAppTint" />
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.example.liquidglass.LiquidGlassView>
+        </org.teslasoft.assistant.ui.liquidglass.LiquidGlassView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

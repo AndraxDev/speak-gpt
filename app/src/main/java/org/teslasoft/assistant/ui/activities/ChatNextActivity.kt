@@ -42,6 +42,7 @@ import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.chat.ChatNextAdapter
 import org.teslasoft.assistant.ui.liquidglass.LiquidGlassUtil
+import org.teslasoft.assistant.ui.liquidglass.LiquidGlassView
 import org.teslasoft.assistant.util.ChatBulkActionsUtil
 
 class ChatNextActivity : FragmentActivity(), ChatNextAdapter.OnUpdateListener {
@@ -118,8 +119,11 @@ class ChatNextActivity : FragmentActivity(), ChatNextAdapter.OnUpdateListener {
         gradientTop?.backgroundTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_0.getColor(this))
         gradientBottom?.backgroundTintList = ColorStateList.valueOf(SurfaceColors.SURFACE_0.getColor(this))
 
-
         LiquidGlassUtil.scanForLiquidGlassAndInitSettings(this)
+
+        val messageBox: LiquidGlassView = findViewById(R.id.message_box_glass)
+        messageBox.cornerRadius = LiquidGlassUtil.dpF(48, this)
+
         resetUiState()
     }
 

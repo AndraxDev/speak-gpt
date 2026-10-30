@@ -22,7 +22,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Canvas
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -42,7 +41,6 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.util.Pair
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
@@ -72,7 +70,7 @@ import org.teslasoft.assistant.util.WindowInsetsUtil
 import java.util.EnumSet
 import androidx.core.content.edit
 import androidx.core.graphics.drawable.toDrawable
-import com.example.liquidglass.LiquidGlassView
+import org.teslasoft.assistant.ui.liquidglass.LiquidGlassView
 import org.teslasoft.assistant.ui.liquidglass.LiquidGlassUtil
 
 
@@ -260,9 +258,12 @@ class ChatsListFragment : Fragment(), ChatListAdapter.OnInteractionListener {
         fieldSearch?.translationY = 0f
         chatsList?.background = SurfaceColors.SURFACE_0.getColor(mContext ?: return).toDrawable()
         LiquidGlassUtil.scanForLiquidGlassAndInitSettings(view, mContext ?: return, null, false)
-        LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.btn_settings_, view, mContext ?: return)
-        LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.bulk_actions_container, view, mContext ?: return)
-        LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.bg_search, view, mContext ?: return)
+
+        if (android.os.Build.VERSION.SDK_INT >= 33) {
+            LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.btn_settings_, view, mContext ?: return)
+            LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.bulk_actions_container, view, mContext ?: return)
+            LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.bg_search, view, mContext ?: return)
+        }
 
         fieldSearch?.isEnabled = true
 

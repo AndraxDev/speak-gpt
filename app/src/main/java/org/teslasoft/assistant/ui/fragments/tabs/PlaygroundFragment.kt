@@ -50,7 +50,6 @@ import com.aallam.openai.client.OpenAI
 import com.aallam.openai.client.OpenAIConfig
 import com.aallam.openai.client.OpenAIHost
 import com.aallam.openai.client.RetryStrategy
-import com.example.liquidglass.LiquidGlassView
 import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.loadingindicator.LoadingIndicator
@@ -69,6 +68,7 @@ import org.teslasoft.assistant.preferences.dto.ApiEndpointObject
 import org.teslasoft.assistant.ui.fragments.dialogs.QuickSettingsBottomSheetDialogFragment
 import org.teslasoft.assistant.ui.fragments.dialogs.ReportAIContentBottomSheet
 import org.teslasoft.assistant.ui.liquidglass.LiquidGlassUtil
+import org.teslasoft.assistant.ui.liquidglass.LiquidGlassView
 import org.teslasoft.assistant.util.WindowInsetsUtil
 import java.util.EnumSet
 import kotlin.coroutines.cancellation.CancellationException
@@ -143,9 +143,12 @@ class PlaygroundFragment : Fragment() {
         view.findViewById<View>(R.id.layout_top).background = SurfaceColors.SURFACE_0.getColor(mContext ?: return).toDrawable()
 
         LiquidGlassUtil.scanForLiquidGlassAndInitSettings(view, mContext ?: return, null, false)
-        LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.btn_report_playground_abuse, view, mContext ?: return)
-        LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.title, view, mContext ?: return)
-        LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.btn_settings, view, mContext ?: return)
+
+        if (android.os.Build.VERSION.SDK_INT >= 33) {
+            LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.btn_report_playground_abuse, view, mContext ?: return)
+            LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.title, view, mContext ?: return)
+            LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.btn_settings, view, mContext ?: return)
+        }
 
         applyWindowInsets()
 

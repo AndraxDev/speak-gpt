@@ -292,7 +292,7 @@
             </androidx.coordinatorlayout.widget.CoordinatorLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.example.liquidglass.LiquidGlassView
+        <org.teslasoft.assistant.ui.liquidglass.LiquidGlassView
             android:id="@+id/btn_back_glass"
             android:layout_width="56dp"
             android:layout_height="56dp"
@@ -322,9 +322,9 @@
                 android:contentDescription="@string/go_back"
                 android:elevation="6.01dip"
                 android:src="@drawable/ic_back_new"/>
-        </com.example.liquidglass.LiquidGlassView>
+        </org.teslasoft.assistant.ui.liquidglass.LiquidGlassView>
 
-        <com.example.liquidglass.LiquidGlassView
+        <org.teslasoft.assistant.ui.liquidglass.LiquidGlassView
             android:id="@+id/btn_flag_glass"
             android:layout_width="56dp"
             android:layout_height="56dp"
@@ -357,6 +357,6 @@
                 android:elevation="6.01dip"
                 android:tooltipText="@string/btn_flag"
                 android:src="@drawable/ic_flag_new" />
-        </com.example.liquidglass.LiquidGlassView>
+        </org.teslasoft.assistant.ui.liquidglass.LiquidGlassView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

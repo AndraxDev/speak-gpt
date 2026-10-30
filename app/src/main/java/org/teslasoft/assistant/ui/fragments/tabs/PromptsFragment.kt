@@ -41,7 +41,6 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.liquidglass.LiquidGlassView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.elevation.SurfaceColors
@@ -56,7 +55,9 @@ import org.teslasoft.assistant.model.SimpleResponseModel
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.adapters.PromptAdapterNew
 import org.teslasoft.assistant.ui.fragments.dialogs.PostPromptDialogFragment
+import org.teslasoft.assistant.ui.liquidglass.LiquidGlassButton
 import org.teslasoft.assistant.ui.liquidglass.LiquidGlassUtil
+import org.teslasoft.assistant.ui.liquidglass.LiquidGlassView
 import org.teslasoft.assistant.util.WindowInsetsUtil
 import org.teslasoft.core.api.network.RequestNetwork
 import java.net.URLEncoder
@@ -91,9 +92,9 @@ class PromptsFragment : Fragment() {
     private var catSport: LiquidGlassView? = null
     private var catHealth: LiquidGlassView? = null
     private var searchBar: ConstraintLayout? = null
-    private var btnAllModels: LiquidGlassView? = null
-    private var btnTextModel: LiquidGlassView? = null
-    private var btnImageModel: LiquidGlassView? = null
+    private var btnAllModels: LiquidGlassButton? = null
+    private var btnTextModel: LiquidGlassButton? = null
+    private var btnImageModel: LiquidGlassButton? = null
     private var btnSearch: ImageButton? = null
     private var promptsContainer: NestedScrollView? = null
 

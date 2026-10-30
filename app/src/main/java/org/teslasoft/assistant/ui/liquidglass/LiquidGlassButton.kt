@@ -19,7 +19,6 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
 import android.widget.TextView
-import com.example.liquidglass.LiquidGlassView
 import com.example.liquidglass.R
 
 @Suppress("unused")

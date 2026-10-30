@@ -2,10 +2,45 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Background usage is restricted even if these permissions are allowed -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.REQUEST_ROLE" />
     <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- Allow app to be selected as default system assistant (currently, not restricted by Google Play) -->
+    <uses-permission android:name="android.permission.REQUEST_ROLE" />
+
+    <!--
+      Uncomment this if you want to use local models. Google Play version comes without that
+      because it is now forbidden to scan local network for user security and privacy.
+      Device picker cannot be used for purpose of local model discovery as local models
+      may not use mDNS which is used by Android System to provide the list of devices in
+      Device Picker API. Device picker is not suitable for virtualized LAN or complex
+      LAN topologies.
+    -->
+    <!--<uses-permission android:name="android.permission.ACCESS_LOCAL_NETWORK" />-->
+
+    <!--
+      Uncomment if you would like to use location-based services and agents skills. Now,
+      it is forbidden to request location permission for security and privacy reasons. Google Play
+      does not allow to distribute apps that request location permission when location is not core
+      feature of the app (ex. navigation, maps, etc.). However, location button is still available,
+      but it's a friction for user to tap it every time they want to use location-based services.
+      Furthermore, location-based services are based on agent skills and may or may not be used by AI
+      and location button can provide outdated location.
+    -->
+    <!--<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />-->
+    <!--<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />-->
+
+    <!--
+      Uncomment if you would like to allow agents to access files on device. Since, SpeakGPT is not
+      a file manager, Google Play restricts apps that request MANAGE_EXTERNAL_STORAGE permission.
+      Without this permission, fallback per-file selector will be used. But note, that file selector
+      allows you to use files single time, and you'll have to select each file when you want to use it
+      in SpeakGPT. Permission is lost once app is restarted.
+    -->
+    <!--<uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />-->
 
     <uses-sdk tools:overrideLibrary="org.teslasoft.core.auth"/>
 

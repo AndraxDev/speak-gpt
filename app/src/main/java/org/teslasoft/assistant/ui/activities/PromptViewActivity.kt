@@ -22,6 +22,7 @@ import android.content.ClipboardManager
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
@@ -48,7 +49,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.interpolator.view.animation.FastOutLinearInInterpolator
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.liquidglass.LiquidGlassView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -62,6 +62,7 @@ import org.teslasoft.assistant.R
 import org.teslasoft.assistant.preferences.Preferences
 import org.teslasoft.assistant.ui.assistant.AssistantActivity
 import org.teslasoft.assistant.ui.liquidglass.LiquidGlassUtil
+import org.teslasoft.assistant.ui.liquidglass.LiquidGlassView
 import org.teslasoft.core.api.network.RequestNetwork
 import java.net.MalformedURLException
 import java.net.URL
@@ -236,8 +237,13 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
             else -> harmonizeColors(ResourcesCompat.getColor(resources, R.color.grey, theme))
         }
 
-        btnBackGlass?.glassTint = LiquidGlassUtil.saturateColor(catColor, 0.7f)
-        btnFlagGlass?.glassTint = LiquidGlassUtil.saturateColor(catColor, 0.7f)
+        if (isDarkThemeEnabled()) {
+            btnBackGlass?.glassTint = LiquidGlassUtil.saturateColor(catColor, 0.7f) - 0x66000000
+            btnFlagGlass?.glassTint = LiquidGlassUtil.saturateColor(catColor, 0.7f) - 0x66000000
+        } else {
+            btnBackGlass?.glassTint = LiquidGlassUtil.brightenColor(LiquidGlassUtil.saturateColor(catColor, 0.7f), 2.6f) - 0x99000000.toInt()
+            btnFlagGlass?.glassTint = LiquidGlassUtil.brightenColor(LiquidGlassUtil.saturateColor(catColor, 0.7f), 2.6f) - 0x99000000.toInt()
+        }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             window.statusBarColor = bgColor
@@ -295,6 +301,16 @@ class PromptViewActivity : FragmentActivity(), SwipeRefreshLayout.OnRefreshListe
 
         refreshPage?.setColorSchemeColors(catColor)
         refreshPage?.setProgressBackgroundColorSchemeColor(bgColor)
+    }
+
+    private fun isDarkThemeEnabled(): Boolean {
+        return when (resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> true
+            Configuration.UI_MODE_NIGHT_NO -> false
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> false
+            else -> false
+        }
     }
 
     private fun harmonizeColors(color: Int) : Int {

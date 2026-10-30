@@ -28,7 +28,6 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
@@ -55,8 +54,8 @@ import org.teslasoft.assistant.ui.fragments.dialogs.EditApiEndpointDialogFragmen
 import org.teslasoft.assistant.util.Hash
 import org.teslasoft.core.api.network.RequestNetwork
 import androidx.core.net.toUri
-import com.example.liquidglass.LiquidGlassView
 import org.teslasoft.assistant.ui.liquidglass.LiquidGlassUtil
+import org.teslasoft.assistant.ui.liquidglass.LiquidGlassView
 import org.teslasoft.assistant.util.WindowInsetsUtil
 import java.util.EnumSet
 
@@ -162,8 +161,11 @@ class ExploreFragment : Fragment(), AISetAdapterNew.OnInteractionListener {
         setsList?.background = SurfaceColors.SURFACE_0.getColor(mContext ?: return).toDrawable()
 
         LiquidGlassUtil.scanForLiquidGlassAndInitSettings(view, mContext ?: return, null, false)
-        LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.btn_tips, view, mContext ?: return)
-        LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.title, view, mContext ?: return)
+
+        if (android.os.Build.VERSION.SDK_INT >= 33) {
+            LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.btn_tips, view, mContext ?: return)
+            LiquidGlassUtil.setAccentColorMutedForLiquidGlassView(R.id.title, view, mContext ?: return)
+        }
 
         applyWindowInsets()
 
@@ -205,24 +207,11 @@ class ExploreFragment : Fragment(), AISetAdapterNew.OnInteractionListener {
                 .setPositiveButton(R.string.btn_close) { _, _ -> }
                 .show()
         }
-
-        Thread {
-            val th = Thread {
-                while (mContext == null) { /* wait */ }
-            }
-
-            th.start()
-            th.join()
-
-            try {
-                btnTips?.background = getDisabledDrawable(ResourcesCompat.getDrawable(mContext?.resources ?: return@Thread, R.drawable.btn_accent_tonal, mContext?.theme) ?: return@Thread)
-            } catch (_: NullPointerException) { /* ignored */ }
-        }.start()
     }
 
     private fun workaround() {
         if (mContext != null) {
-            // Temporary workaround... (or maybe permanent, who knows...)
+            // Temporary workaround... (or maybe permanent, who knows...) ( here since September 2026...)
             // If you wonder what it does, it just forcibly re-renders the screen contents to let liquid glass views build captures of backdrops.
             // Fragment (tab) switch animations causes capture freeze which leads to liquid glass views not being able to render their backdrops properly.
             Handler(Looper.getMainLooper()).postDelayed({

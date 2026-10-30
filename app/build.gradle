@@ -56,17 +56,17 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.19.0'
+    implementation 'androidx.core:core-ktx:1.19.1'
     implementation 'androidx.activity:activity-ktx:1.13.0'
     implementation 'androidx.appcompat:appcompat:1.8.0'
     implementation 'com.google.android.material:material:1.14.0'
-    implementation 'com.google.code.gson:gson:2.14.0'
+    implementation 'com.google.code.gson:gson:2.15.0'
     implementation 'com.aallam.openai:openai-client:3.8.2' // Do not touch, at least for now...
     implementation 'io.ktor:ktor-client-android:2.3.12' // Do not update, incompatible with OpenAI API
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.11.0'
     implementation 'com.github.bumptech.glide:glide:5.0.9'
-    implementation 'org.apache.commons:commons-lang3:3.20.0'
+    implementation 'org.apache.commons:commons-lang3:3.21.0'
     implementation 'commons-io:commons-io:2.22.0'
     implementation 'io.noties.markwon:core:4.6.2'
     implementation 'io.noties.markwon:html:4.6.2'
@@ -77,16 +77,16 @@ dependencies {
     implementation 'io.noties.markwon:ext-tables:4.6.2'
     implementation 'io.noties.markwon:ext-tasklist:4.6.2'
     implementation 'io.noties.markwon:ext-latex:4.6.2'
-    implementation 'com.squareup.okhttp3:okhttp:5.5.0'
+    implementation 'com.squareup.okhttp3:okhttp:5.5.1'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.2.0'
     implementation 'androidx.security:security-crypto-ktx:1.1.0'
     implementation 'com.google.mlkit:language-id:17.0.6'
     implementation 'cat.ereza:customactivityoncrash:2.4.0'
-    implementation 'org.conscrypt:conscrypt-android:2.7.0'
+    implementation 'org.conscrypt:conscrypt-android:2.8.0'
     implementation 'com.aallam.ktoken:ktoken:0.4.0'
     implementation 'androidx.core:core-splashscreen:1.2.0'
     implementation 'com.github.QWEA0:liquidglass:v2.0.10'
-    implementation 'com.google.mlkit:genai-prompt:1.0.0-beta4'
+    implementation 'com.google.mlkit:genai-prompt:1.0.0-beta5'
     implementation ('com.github.chrisbanes.photoview:library:1.2.4') {
         exclude group: 'com.android.support', module: 'support-v4'
     }
